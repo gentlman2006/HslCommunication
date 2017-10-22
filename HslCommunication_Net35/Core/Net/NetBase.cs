@@ -1,0 +1,2690 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Net;
+using System.Net.Sockets;
+using System.IO;
+using System.Threading;
+using HslCommunication.BasicFramework;
+using HslCommunication.Enthernet;
+using HslCommunication.LogNet;
+
+namespace HslCommunication
+{
+    /*******************************************************************************
+     * 
+     *    网络通信类的基础类，提供所有相关的基础方法和功能
+     *
+     *    Network communication base class of the class, provides the basis of all relevant methods and functions
+     * 
+     *******************************************************************************/
+
+    #region 网络传输辅助类
+
+    /// <summary>
+    /// 静态的方法支持类，提供一些网络的静态支持
+    /// </summary>
+    internal static class NetSupport
+    {
+        /// <summary>
+        /// Socket传输中的缓冲池大小
+        /// </summary>
+        internal const int SocketBufferSize = 4096;
+
+        /// <summary>
+        /// 检查是否超时的静态方法
+        /// </summary>
+        /// <param name="timeout">数据封送对象</param>
+        /// <param name="millisecond">超时的时间</param>
+        internal static void ThreadPoolCheckConnect(HslTimeOut timeout, int millisecond)
+        {
+            while (!timeout.IsSuccessful)
+            {
+                if ((DateTime.Now - timeout.StartTime).TotalMilliseconds > millisecond)
+                {
+                    // 连接超时或是验证超时
+                    if (!timeout.IsSuccessful) timeout.WorkSocket?.Close();
+                    break;
+                }
+            }
+        }
+
+        internal static void ThreadPoolCheckTimeOut(object obj)
+        {
+            if (obj is HslTimeOut timeout)
+            {
+                while (!timeout.IsSuccessful)
+                {
+                    if ((DateTime.Now - timeout.StartTime).TotalMilliseconds > timeout.DelayTime)
+                    {
+                        // 连接超时或是验证超时
+                        if (!timeout.IsSuccessful)
+                        {
+                            timeout.Operator?.Invoke();
+                            timeout.WorkSocket?.Close();
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// 判断两个字节是否相同
+        /// </summary>
+        /// <param name="b1">第一个字节</param>
+        /// <param name="b2">第二个字节</param>
+        /// <returns></returns>
+        internal static bool IsTwoBytesEquel(byte[] b1, byte[] b2)
+        {
+            if (b1 == null || b2 == null) return false;
+            if (b1.Length != b2.Length) return false;
+            for (int i = 0; i < b1.Length; i++)
+            {
+                if (b1[i] != b2[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 判断两个数据的令牌是否相等
+        /// </summary>
+        /// <param name="head">头指令</param>
+        /// <param name="token">令牌</param>
+        /// <returns></returns>
+        internal static bool CheckTokenEquel(byte[] head, Guid token)
+        {
+            return IsTwoBytesEquel(head, 12, token.ToByteArray(), 0, 16);
+        }
+
+
+        /// <summary>
+        /// 判断两个字节的指定部分是否相同
+        /// </summary>
+        /// <param name="b1">第一个字节</param>
+        /// <param name="start1">第一个字节的起始位置</param>
+        /// <param name="b2">第二个字节</param>
+        /// <param name="start2">第二个字节的起始位置</param>
+        /// <param name="length">校验的长度</param>
+        /// <returns>返回是否相等</returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        internal static bool IsTwoBytesEquel(byte[] b1, int start1, byte[] b2, int start2, int length)
+        {
+            if (b1 == null || b2 == null) return false;
+            for (int i = 0; i < length; i++)
+            {
+                if (b1[i + start1] != b2[i + start2])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+
+        /// <summary>
+        /// 读取socket数据的基础方法，只适合用来接收指令头，或是同步数据
+        /// </summary>
+        /// <param name="socket">通信对象</param>
+        /// <param name="receive">接收的长度</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="SocketException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
+        /// <exception cref="System.Security.SecurityException"></exception>
+        internal static byte[] ReadBytesFromSocket(Socket socket, int receive)
+        {
+            return ReadBytesFromSocket(socket, receive, null, false, false);
+        }
+
+
+        /// <summary>
+        /// 读取socket数据的基础方法，只适合用来接收指令头，或是同步数据
+        /// </summary>
+        /// <param name="socket">通信对象</param>
+        /// <param name="receive">接收的长度</param>
+        /// <param name="report">用于报告接收进度的对象</param>
+        /// <param name="reportByPercent">是否按照百分比报告进度</param>
+        /// <param name="response">是否回发接收数据长度</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="SocketException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
+        /// <exception cref="System.Security.SecurityException"></exception>
+        internal static byte[] ReadBytesFromSocket(Socket socket, int receive, Action<long, long> report, bool reportByPercent, bool response)
+        {
+            byte[] bytes_receive = new byte[receive];
+            int count_receive = 0;
+            long percent = 0;
+            while (count_receive < receive)
+            {
+                // 分割成2KB来接收数据
+                int receive_length = (receive - count_receive) >= SocketBufferSize ? SocketBufferSize : (receive - count_receive);
+                count_receive += socket.Receive(bytes_receive, count_receive, receive_length, SocketFlags.None);
+                if (reportByPercent)
+                {
+                    long percentCurrent = (long)count_receive * 100 / receive;
+                    if (percent != percentCurrent)
+                    {
+                        percent = percentCurrent;
+                        // 报告进度
+                        report?.Invoke(count_receive, receive);
+                    }
+                }
+                else
+                {
+                    // 报告进度
+                    report?.Invoke(count_receive, receive);
+                }
+                // 回发进度
+                if (response) socket.Send(BitConverter.GetBytes((long)count_receive));
+            }
+            return bytes_receive;
+        }
+
+
+        /// <summary>
+        /// 从socket套接字读取数据并写入流中，必然报告进度
+        /// </summary>
+        /// <param name="socket">通信对象</param>
+        /// <param name="stream">stream</param>
+        /// <param name="receive">接收的长度</param>
+        /// <param name="report">用于报告接收进度的对象</param>
+        /// <param name="reportByPercent">是否按照百分比报告进度</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="SocketException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
+        /// <exception cref="System.Security.SecurityException"></exception>
+        internal static void WriteStreamFromSocket(Socket socket, Stream stream, long receive, Action<long, long> report, bool reportByPercent)
+        {
+            byte[] buffer = new byte[SocketBufferSize];
+            long count_receive = 0;
+            long percent = 0;
+            while (count_receive < receive)
+            {
+                // 分割成4KB来接收数据
+                int current = socket.Receive(buffer, 0, SocketBufferSize, SocketFlags.None);
+                count_receive += current;
+                stream.Write(buffer, 0, current);
+                if (reportByPercent)
+                {
+                    long percentCurrent = count_receive * 100 / receive;
+                    if (percent != percentCurrent)
+                    {
+                        percent = percentCurrent;
+                        // 报告进度
+                        report?.Invoke(count_receive, receive);
+                    }
+                }
+                else
+                {
+                    // 报告进度
+                    report?.Invoke(count_receive, receive);
+                }
+                // 回发进度
+                socket.Send(BitConverter.GetBytes(count_receive));
+            }
+            buffer = null;
+        }
+
+
+
+
+        /// <summary>
+        /// 读取流并将数据写入socket
+        /// </summary>
+        /// <param name="stream">文件流</param>
+        /// <param name="socket">连接的套接字</param>
+        /// <param name="length">返回的文件长度</param>
+        /// <param name="report">发送的进度报告</param>
+        /// <param name="reportByPercent"></param>
+        /// <exception cref="SocketException"></exception>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
+        internal static void WriteSocketFromStream(Socket socket, Stream stream, long length, Action<long, long> report, bool reportByPercent)
+        {
+            byte[] buffer = new byte[SocketBufferSize];
+            long count_send = 0;
+            stream.Position = 0;
+            long percent = 0;
+
+            while (count_send < length)
+            {
+                int count = stream.Read(buffer, 0, SocketBufferSize);
+                count_send += count;
+                socket.Send(buffer, 0, count, SocketFlags.None);
+
+                while (count_send != BitConverter.ToInt64(ReadBytesFromSocket(socket, 8), 0)) ;
+
+                long received = count_send;
+
+                if (reportByPercent)
+                {
+                    long percentCurrent = received * 100 / length;
+                    if (percent != percentCurrent)
+                    {
+                        percent = percentCurrent;
+                        // 报告进度
+                        report?.Invoke(received, length);
+                    }
+                }
+                else
+                {
+                    // 报告进度
+                    report?.Invoke(received, length);
+                }
+
+                // 双重接收验证
+                if (count == 0)
+                {
+                    break;
+                }
+            }
+            buffer = null;
+        }
+
+        /// <summary>
+        /// 检查数据是否接收完成并报告进度
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        /// <param name="length">对方需要接收的长度</param>
+        /// <param name="report">报告的委托方法</param>
+        /// <param name="reportByPercent">是否按照百分比报告进度</param>
+        /// <exception cref="SocketException"></exception>
+        /// <exception cref="ObjectDisposedException"></exception>
+        internal static void CheckSendBytesReceived(Socket socket, long length, Action<long, long> report, bool reportByPercent)
+        {
+            long remoteNeedReceive = 0;
+            long percent = 0;
+            // 确认服务器的数据是否接收完成
+            while (remoteNeedReceive < length)
+            {
+                remoteNeedReceive = BitConverter.ToInt64(ReadBytesFromSocket(socket, 8), 0);
+                if (reportByPercent)
+                {
+                    long percentCurrent = remoteNeedReceive * 100 / length;
+                    if (percent != percentCurrent)
+                    {
+                        percent = percentCurrent;
+                        // 报告进度
+                        report?.Invoke(remoteNeedReceive, length);
+                    }
+                }
+                else
+                {
+                    // 报告进度
+                    report?.Invoke(remoteNeedReceive, length);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 生成终极传送指令的方法，所有的数据均通过该方法出来
+        /// </summary>
+        /// <param name="command">命令头</param>
+        /// <param name="customer">自用自定义</param>
+        /// <param name="token">令牌</param>
+        /// <param name="data">字节数据</param>
+        /// <returns></returns>
+        internal static byte[] CommandBytes(int command, int customer, Guid token, byte[] data)
+        {
+            byte[] _temp = null;
+            int _zipped = HslCommunicationCode.Hsl_Protocol_NoZipped;
+            int _sendLength = 0;
+            if (data == null)
+            {
+                _temp = new byte[HslCommunicationCode.HeadByteLength];
+            }
+            else
+            {
+                // 加密
+                data = HslSecurity.ByteEncrypt(data);
+                if (data.Length > 10240)
+                {
+                    // 10K以上的数据，进行数据压缩
+                    data = HslZipped.CompressBytes(data);
+                    _zipped = HslCommunicationCode.Hsl_Protocol_Zipped;
+                }
+                _temp = new byte[HslCommunicationCode.HeadByteLength + data.Length];
+                _sendLength = data.Length;
+            }
+            BitConverter.GetBytes(command).CopyTo(_temp, 0);
+            BitConverter.GetBytes(customer).CopyTo(_temp, 4);
+            BitConverter.GetBytes(_zipped).CopyTo(_temp, 8);
+            token.ToByteArray().CopyTo(_temp, 12);
+            BitConverter.GetBytes(_sendLength).CopyTo(_temp, 28);
+            if (_sendLength > 0)
+            {
+                Array.Copy(data, 0, _temp, 32, _sendLength);
+            }
+            return _temp;
+        }
+
+
+        /// <summary>
+        /// 解析接收到数据，先解压缩后进行解密
+        /// </summary>
+        /// <param name="head"></param>
+        /// <param name="content"></param>
+        internal static byte[] CommandAnalysis(byte[] head, byte[] content)
+        {
+            if (content != null)
+            {
+                int _zipped = BitConverter.ToInt32(head, 8);
+                // 先进行解压
+                if (_zipped == HslCommunicationCode.Hsl_Protocol_Zipped)
+                {
+                    content = HslZipped.Decompress(content);
+                }
+                // 进行解密
+                return HslSecurity.ByteDecrypt(content);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+
+        /// <summary>
+        /// 获取发送字节数据的实际数据，带指令头
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="token"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        internal static byte[] CommandBytes(int customer, Guid token, byte[] data)
+        {
+            return CommandBytes(HslCommunicationCode.Hsl_Protocol_User_Bytes, customer, token, data);
+        }
+        /// <summary>
+        /// 获取发送字节数据的实际数据，带指令头
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="token"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        internal static byte[] CommandBytes(int customer, Guid token, string data)
+        {
+            if (data == null) return CommandBytes(HslCommunicationCode.Hsl_Protocol_User_String, customer, token, null);
+            else return CommandBytes(HslCommunicationCode.Hsl_Protocol_User_String, customer, token, Encoding.Unicode.GetBytes(data));
+        }
+
+        /// <summary>
+        /// 根据字符串及指令头返回数据信息
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        internal static byte[] GetBytesFromString(int code, string data)
+        {
+            int length = string.IsNullOrEmpty(data) ? 0 : Encoding.Unicode.GetBytes(data).Length;
+            byte[] result = new byte[length + 8];
+            BitConverter.GetBytes(code).CopyTo(result, 0);
+            BitConverter.GetBytes(length).CopyTo(result, 4);
+            if (length > 0)
+            {
+                Encoding.Unicode.GetBytes(data).CopyTo(result, 8);
+            }
+            return result;
+        }
+    }
+
+    #endregion
+
+    #region 网络通信的基类
+
+
+    /// <summary>
+    /// 一个网络通信类的基础类
+    /// </summary>
+    public abstract class NetBase
+    {
+        #region 受保护的属性
+        /// <summary>
+        /// 用于通信工作的核心对象
+        /// </summary>
+        internal Socket WorkSocket { get; set; }
+        /// <summary>
+        /// 分次接收的数据长度
+        /// </summary>
+        internal int SegmentationLength { get; set; } = 1024;
+
+        /// <summary>
+        /// 检查超时的子线程
+        /// </summary>
+        /// <param name="obj"></param>
+        internal void ThreadPoolCheckConnect(object obj)
+        {
+            if (obj is HslTimeOut timeout)
+            {
+                NetSupport.ThreadPoolCheckConnect(timeout, ConnectTimeout);
+            }
+        }
+
+        #endregion
+
+        #region 公开的属性
+
+
+        /// <summary>
+        /// 网络访问中的超时时间，单位：毫秒，默认值5000
+        /// </summary>
+        public int ConnectTimeout { get; set; } = 5000;
+
+        /// <summary>
+        /// 当前对象的身份令牌，用来在网络通信中双向认证的依据
+        /// </summary>
+        public Guid KeyToken { get; set; } = Guid.Empty;
+
+
+
+        /// <summary>
+        /// 不带参数的委托
+        /// </summary>
+        public delegate void IEDelegate();
+        /// <summary>
+        /// 带一个参数的委托
+        /// </summary>
+        /// <typeparam name="T1">T1</typeparam>
+        /// <param name="object1"></param>
+        public delegate void IEDelegate<T1>(T1 object1);
+        /// <summary>
+        /// 带二个参数的委托
+        /// </summary>
+        /// <typeparam name="T1">T1</typeparam>
+        /// <typeparam name="T2">T2</typeparam>
+        /// <param name="object1">object1</param>
+        /// <param name="object2">object2</param>
+        public delegate void IEDelegate<T1, T2>(T1 object1, T2 object2);
+        /// <summary>
+        /// 带三个参数的委托
+        /// </summary>
+        /// <typeparam name="T1">T1</typeparam>
+        /// <typeparam name="T2">T2</typeparam>
+        /// <typeparam name="T3">T3</typeparam>
+        /// <param name="object1">object1</param>
+        /// <param name="object2">object2</param>
+        /// <param name="object3">object3</param>
+        public delegate void IEDelegate<T1, T2, T3>(T1 object1, T2 object2, T3 object3);
+
+
+        /// <summary>
+        /// 日志保存类，默认为空
+        /// </summary>
+        public ILogNet LogNet { get; set; }
+
+
+
+        #endregion
+
+        #region 同步数据的七个基本操作
+
+        /****************************************************************************
+         * 
+         *    1. 创建并连接套接字
+         *    2. 接收指定长度的字节数据
+         *    3. 发送字节数据到套接字
+         *    4. 检查对方是否接收完成
+         *    5. 检查头子节令牌是否通过
+         *    6. 将文件流写入套接字
+         *    7. 从套接字接收文件流
+         * 
+         ****************************************************************************/
+
+
+
+
+
+
+
+        /// <summary>
+        /// 创建socket对象并尝试连接终结点，如果异常，则结束通信
+        /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="iPEndPoint">网络终结点</param>
+        /// <param name="result">结果对象</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        protected bool CreateSocketAndConnect(
+            out Socket socket,
+            IPEndPoint iPEndPoint,
+            OperateResult result
+            )
+        {
+            // create the socket object
+            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var timeout = new HslTimeOut()
+            {
+                WorkSocket = socket
+            };
+            ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckConnect), timeout);
+
+            try
+            {
+                socket.Connect(iPEndPoint);
+                timeout.IsSuccessful = true;
+                return true;
+            }
+            catch
+            {
+                result.Message = StringResources.ConnectedFailed;
+                LogNet?.WriteError(StringResources.ConnectedFailed);
+                socket?.Close();
+                socket = null;
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// 仅仅接收一定长度的字节数据，如果异常，则结束通信
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        /// <param name="bytes">字节数据</param>
+        /// <param name="length">长度</param>
+        /// <param name="result">结果对象</param>
+        /// <param name="receiveStatus">接收状态</param>
+        /// <param name="reportByPercent">是否根据百分比报告进度</param>
+        /// <param name="response">是否回发进度</param>
+        /// <param name="checkTimeOut">是否进行超时检查</param>
+        /// <param name="exceptionMessage">假设发生异常，应该携带什么信息</param>
+        /// <returns></returns>
+        protected bool ReceiveBytesFromSocket(
+            Socket socket,
+            out byte[] bytes,
+            int length,
+            OperateResult result,
+            Action<long, long> receiveStatus,
+            bool reportByPercent,
+            bool response,
+            bool checkTimeOut,
+            string exceptionMessage = null
+            )
+        {
+            //HslTimeOut timeout = null;
+            //if (checkTimeOut)
+            //{
+            //    timeout = new HslTimeOut()
+            //    {
+            //        WorkSocket = socket,
+            //    };
+            //    ThreadPool.QueueUserWorkItem(ThreadPoolCheckConnect, timeout);
+            //}
+
+            try
+            {
+                bytes = NetSupport.ReadBytesFromSocket(socket, length, receiveStatus, reportByPercent, response);
+                // 指示成功
+                // if (checkTimeOut) timeout.IsSuccessful = true;
+            }
+            catch (Exception ex)
+            {
+                socket?.Close();
+                result.Message = CombineExceptionString(exceptionMessage, ex.Message);
+                LogNet?.WriteException(exceptionMessage, ex);
+                bytes = null; // 这个内存清除的很重要
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 仅仅将数据发送到socket对象上去，如果异常，则结束通信
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="send"></param>
+        /// <param name="result"></param>
+        /// <param name="exceptionMessage"></param>
+        /// <returns></returns>
+        protected bool SendBytesToSocket(
+            Socket socket,
+            byte[] send,
+            OperateResult result,
+            string exceptionMessage = null
+            )
+        {
+            try
+            {
+                socket.Send(send);
+            }
+            catch (Exception ex)
+            {
+                result.Message = CombineExceptionString(exceptionMessage, ex.Message);
+                LogNet?.WriteException(exceptionMessage, ex);
+                socket?.Close();
+                send = null;
+                return false;
+            }
+            return true;
+        }
+
+
+        /// <summary>
+        /// 确认对方是否已经接收完成数据，如果异常，则结束通信
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="length"></param>
+        /// <param name="report"></param>
+        /// <param name="result"></param>
+        /// <param name="exceptionMessage"></param>
+        /// <returns></returns>
+        protected bool CheckRomoteReceived(
+            Socket socket,
+            long length,
+            Action<long, long> report,
+            OperateResult result,
+            string exceptionMessage = null
+            )
+        {
+            try
+            {
+                NetSupport.CheckSendBytesReceived(socket, length, report, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                result.Message = CombineExceptionString(exceptionMessage, ex.Message);
+                LogNet?.WriteException(exceptionMessage, ex);
+                socket?.Close();
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// 检查令牌是否正确，如果不正确，结束网络通信
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        /// <param name="head">头子令</param>
+        /// <param name="token">令牌</param>
+        /// <param name="result">结果对象</param>
+        /// <returns></returns>
+        protected bool CheckTokenPermission(
+            Socket socket,
+            byte[] head,
+            Guid token,
+            OperateResult result
+            )
+        {
+            if (NetSupport.CheckTokenEquel(head, KeyToken))
+            {
+                return true;
+            }
+            else
+            {
+                result.Message = StringResources.TokenCheckFailed;
+                LogNet?.WriteWarn(StringResources.TokenCheckFailed + " Ip:" + socket.RemoteEndPoint.AddressFamily.ToString());
+                socket?.Close();
+                head = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 将文件数据发送至套接字，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="filename"></param>
+        /// <param name="filelength"></param>
+        /// <param name="result"></param>
+        /// <param name="report"></param>
+        /// <param name="exceptionMessage"></param>
+        /// <returns></returns>
+        protected bool SendFileStreamToSocket(
+            Socket socket,
+            string filename,
+            long filelength,
+            OperateResult result,
+            Action<long, long> report = null,
+            string exceptionMessage = null
+            )
+        {
+            try
+            {
+                using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                {
+                    NetSupport.WriteSocketFromStream(socket, fs, filelength, report, true);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                socket?.Close();
+                LogNet?.WriteException(exceptionMessage, ex);
+                result.Message = CombineExceptionString(exceptionMessage, ex.Message);
+                filelength = 0;
+                return false;
+            }
+        }
+
+
+        /// <summary>
+        /// 从套接字中接收一个文件数据，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="filename"></param>
+        /// <param name="receive"></param>
+        /// <param name="report"></param>
+        /// <param name="result"></param>
+        /// <param name="exceptionMessage"></param>
+        /// <returns></returns>
+        protected bool ReceiveFileSteamFromSocket(
+            Socket socket,
+            string filename,
+            long receive,
+            Action<long, long> report,
+            OperateResult result,
+            string exceptionMessage = null
+            )
+        {
+            try
+            {
+                using(FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
+                {
+                    NetSupport.WriteStreamFromSocket(socket, fs, receive, report, true);
+                }
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                result.Message = CombineExceptionString(exceptionMessage, ex.Message);
+                LogNet?.WriteException(exceptionMessage, ex);
+                socket?.Close();
+                return false;
+            }
+        }
+
+
+
+        #endregion
+
+        #region protect method
+
+        /// <summary>
+        /// 获取错误的用于显示的信息
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="exception"></param>
+        /// <returns></returns>
+        protected string CombineExceptionString(string message, string exception)
+        {
+            return $"{message + Environment.NewLine}原因：{exception}";
+        }
+
+        #endregion
+    }
+
+    #endregion
+
+    #region 服务器客户端共同的基类
+
+    /// <summary>
+    /// 客户端服务端都拥有的一些方法
+    /// </summary>
+    public abstract class NetShareBase : NetBase
+    {
+        #region 异步发送数据块
+
+        /// <summary>
+        /// 发送数据的方法
+        /// </summary>
+        /// <param name="stateOne">通信用的核心对象</param>
+        /// <param name="content"></param>
+        internal void SendBytesAsync(AsyncStateOne stateOne, byte[] content)
+        {
+            if (content == null) return;
+            try
+            {
+                
+                // 启用另外一个套接字传送
+                AsyncStateSend state = new AsyncStateSend()
+                {
+                    WorkSocket = stateOne.WorkSocket,
+                    Content = content,
+                    AlreadySendLength = 0,
+                    HybirdLockSend = stateOne.HybirdLockSend,
+                };
+
+                state.HybirdLockSend.Enter();
+
+                state.WorkSocket.BeginSend(
+                    state.Content,
+                    state.AlreadySendLength,
+                    state.Content.Length - state.AlreadySendLength,
+                    SocketFlags.None,
+                    new AsyncCallback(SendCallBack),
+                    state);
+            }
+            catch (ObjectDisposedException ex)
+            {
+                // 不操作
+                stateOne.HybirdLockSend.Leave();
+            }
+            catch (Exception ex)
+            {
+                stateOne.HybirdLockSend.Leave();
+                if (!ex.Message.Contains(StringResources.SocketRemoteCloseException))
+                {
+                    LogNet?.WriteException(StringResources.SocketSendAsyncException, ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 发送回发方法
+        /// </summary>
+        /// <param name="ar"></param>
+        internal void SendCallBack(IAsyncResult ar)
+        {
+            if (ar.AsyncState is AsyncStateSend stateone)
+            {
+                try
+                {
+                    stateone.AlreadySendLength += stateone.WorkSocket.EndSend(ar);
+                    if (stateone.AlreadySendLength < stateone.Content.Length)
+                    {
+                        // 继续发送
+                        stateone.WorkSocket.BeginSend(stateone.Content,
+                        stateone.AlreadySendLength,
+                        stateone.Content.Length - stateone.AlreadySendLength,
+                        SocketFlags.None, new AsyncCallback(SendCallBack), stateone);
+                    }
+                    else
+                    {
+                        stateone.HybirdLockSend.Leave();
+                        // 发送完成
+                        stateone = null;
+                    }
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    stateone.HybirdLockSend.Leave();
+                    // 不处理
+                    stateone = null;
+                }
+                catch (Exception ex)
+                {
+                    LogNet?.WriteException(StringResources.SocketEndSendException, ex);
+                    stateone.HybirdLockSend.Leave();
+                    stateone = null;
+                }
+            }
+        }
+
+        #endregion
+
+        #region 异步数据接收块
+
+        /// <summary>
+        /// 重新开始接收下一次的数据传递
+        /// </summary>
+        /// <param name="receive">网络状态</param>
+        /// <param name="isProcess">是否触发数据处理</param>
+        internal void ReBeginReceiveHead(AsyncStateOne receive, bool isProcess)
+        {
+            byte[] head = receive.BytesHead, Content = receive.BytesContent;
+            receive.Clear();
+            receive.WorkSocket.BeginReceive(receive.BytesHead, receive.AlreadyReceivedHead, receive.BytesHead.Length - receive.AlreadyReceivedHead,
+                SocketFlags.None, new AsyncCallback(HeadReceiveCallback), receive);
+            // 检测是否需要数据处理
+            if (isProcess)
+            {
+                // 校验令牌
+                if (NetSupport.CheckTokenEquel(head, KeyToken))
+                {
+                    Content = NetSupport.CommandAnalysis(head, Content);
+                    int protocol = BitConverter.ToInt32(head, 0);
+                    int customer = BitConverter.ToInt32(head, 4);
+                    // 转移到数据中心处理
+                    DataProcessingCenter(receive, protocol, customer, Content);
+                }
+                else
+                {
+                    // 应该关闭网络通信
+                    LogNet?.WriteWarn(StringResources.TokenCheckFailed);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 指令头接收方法
+        /// </summary>
+        /// <param name="ar"></param>
+        internal void HeadReceiveCallback(IAsyncResult ar)
+        {
+            if (ar.AsyncState is AsyncStateOne receive)
+            {
+                try
+                {
+                    receive.AlreadyReceivedHead += receive.WorkSocket.EndReceive(ar);
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    // 不需要处理
+                    return;
+                }
+                catch (SocketException ex)
+                {
+                    // 已经断开连接了
+                    SocketReceiveException(receive, ex);
+                    LogNet?.WriteException(StringResources.SocketIOException, ex);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // 其他乱七八糟的异常重新启用接收数据
+                    ReBeginReceiveHead(receive, false);
+                    LogNet?.WriteException(null, ex);
+                    return;
+                }
+
+                if (receive.AlreadyReceivedHead < receive.BytesHead.Length)
+                {
+                    // 仍需要接收
+                    receive.WorkSocket.BeginReceive(receive.BytesHead, receive.AlreadyReceivedHead, receive.BytesHead.Length - receive.AlreadyReceivedHead,
+                        SocketFlags.None, new AsyncCallback(HeadReceiveCallback), receive);
+                }
+                else
+                {
+                    // 接收完毕，准备接收内容
+                    int receive_length = BitConverter.ToInt32(receive.BytesHead, receive.BytesHead.Length - 4);
+                    receive.BytesContent = new byte[receive_length];
+
+                    if (receive_length > 0)
+                    {
+                        int receiveSize = (receive.BytesContent.Length - receive.AlreadyReceivedContent) > SegmentationLength ? SegmentationLength : (receive.BytesContent.Length - receive.AlreadyReceivedContent);
+                        receive.WorkSocket.BeginReceive(receive.BytesContent, receive.AlreadyReceivedContent, receiveSize,
+                            SocketFlags.None, new AsyncCallback(ContentReceiveCallback), receive);
+                    }
+                    else
+                    {
+                        // 处理数据并重新启动接收
+                        ReBeginReceiveHead(receive, true);
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 接收出错的时候进行处理
+        /// </summary>
+        /// <param name="receive"></param>
+        /// <param name="ex"></param>
+        internal virtual void SocketReceiveException(AsyncStateOne receive, Exception ex)
+        {
+
+        }
+
+
+        /// <summary>
+        /// 数据内容接收方法
+        /// </summary>
+        /// <param name="ar"></param>
+        internal void ContentReceiveCallback(IAsyncResult ar)
+        {
+            if (ar.AsyncState is AsyncStateOne receive)
+            {
+                try
+                {
+                    receive.AlreadyReceivedContent += receive.WorkSocket.EndReceive(ar);
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    //不需要处理
+                    return;
+                }
+                catch (SocketException ex)
+                {
+                    //已经断开连接了
+                    SocketReceiveException(receive, ex);
+                    LogNet?.WriteException(StringResources.SocketIOException, ex);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    //其他乱七八糟的异常重新启用接收数据
+                    ReBeginReceiveHead(receive, false);
+                    LogNet?.WriteException(null, ex);
+                    return;
+                }
+
+                if (receive.AlreadyReceivedContent < receive.BytesContent.Length)
+                {
+                    int receiveSize = (receive.BytesContent.Length - receive.AlreadyReceivedContent) > SegmentationLength ? SegmentationLength : (receive.BytesContent.Length - receive.AlreadyReceivedContent);
+                    //仍需要接收
+                    receive.WorkSocket.BeginReceive(receive.BytesContent, receive.AlreadyReceivedContent, receiveSize, SocketFlags.None, new AsyncCallback(ContentReceiveCallback), receive);
+                }
+                else
+                {
+                    //处理数据并重新启动接收
+                    ReBeginReceiveHead(receive, true);
+                }
+
+            }
+        }
+
+
+        #endregion
+
+        #region 同步方式的高级数据发送
+
+        /// <summary>
+        /// [自校验] 发送字节数据并确认对方接收完成数据，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="headcode">头指令</param>
+        /// <param name="customer">用户指令</param>
+        /// <param name="send">发送的数据</param>
+        /// <param name="result">用于返回的结果</param>
+        /// <param name="sendReport">发送的进度报告</param>
+        /// <param name="failedString">失败时存储的额外描述信息</param>
+        /// <returns></returns>
+        protected bool SendBaseAndCheckReceive(
+            Socket socket,
+            int headcode,
+            int customer,
+            byte[] send,
+            OperateResult result,
+            Action<long, long> sendReport = null,
+            string failedString = null
+            )
+        {
+            // 数据处理
+            send = NetSupport.CommandBytes(headcode, customer, KeyToken, send);
+
+            // 发送数据
+            if (!SendBytesToSocket(
+                socket,                                                // 套接字
+                send,                                                  // 发送的字节数据
+                result,                                                // 结果信息对象
+                failedString                                           // 异常附加对象
+                ))
+            {
+                send = null;
+                return false;
+            }
+
+            // 确认对方是否接收完成
+            int remoteReceive = send.Length - HslCommunicationCode.HeadByteLength;
+
+            if (!CheckRomoteReceived(
+                socket,                                                // 套接字
+                remoteReceive,                                         // 对方需要接收的长度
+                sendReport,                                            // 发送进度报告
+                result,                                                // 结果信息对象
+                failedString                                           // 异常附加信息
+                ))
+            {
+                send = null;
+                return false;
+            }
+
+            // 对方接收成功
+            send = null;
+            return true;
+        }
+
+        /// <summary>
+        /// [自校验] 发送字节数据并确认对方接收完成数据，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="customer">用户指令</param>
+        /// <param name="send">发送的数据</param>
+        /// <param name="result">用于返回的结果</param>
+        /// <param name="sendReport">发送的进度报告</param>
+        /// <param name="failedString">异常时记录到日志的附加信息</param>
+        /// <returns></returns>
+        protected bool SendBytesAndCheckReceive(
+            Socket socket,
+            int customer,
+            byte[] send,
+            OperateResult result,
+            Action<long, long> sendReport = null,
+            string failedString = null
+            )
+        {
+            if (SendBaseAndCheckReceive(
+                socket,                                           // 套接字
+                HslCommunicationCode.Hsl_Protocol_User_Bytes,     // 指示字节数组
+                customer,                                         // 用户数据
+                send,                                             // 发送数据，该数据还要经过处理
+                result,                                           // 结果消息对象
+                sendReport,                                       // 发送的进度报告
+                failedString                                      // 错误的额外描述
+                ))
+            {
+                return true;
+            }
+            else
+            {
+                LogNet?.WriteError(failedString);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// [自校验] 直接发送字符串数据并确认对方接收完成数据，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="customer">用户指令</param>
+        /// <param name="send">发送的数据</param>
+        /// <param name="result">用于返回的结果</param>
+        /// <param name="sendReport">发送的进度报告</param>
+        /// <param name="failedString"></param>
+        /// <returns></returns>
+        protected bool SendStringAndCheckReceive(
+            Socket socket,
+            int customer,
+            string send,
+            OperateResult result,
+            Action<long, long> sendReport = null,
+            string failedString = null
+            )
+        {
+            byte[] data = string.IsNullOrEmpty(send) ? null : Encoding.Unicode.GetBytes(send);
+
+            if (!SendBaseAndCheckReceive(
+                socket,                                           // 套接字
+                HslCommunicationCode.Hsl_Protocol_User_String,    // 指示字符串数据
+                customer,                                         // 用户数据
+                data,                                             // 字符串的数据
+                result,                                           // 结果消息对象
+                sendReport,                                       // 发送的进度报告
+                failedString                                      // 错误的额外描述
+                ))
+            {
+                return false;
+            }
+            return true;
+        }
+
+
+        /// <summary>
+        /// [自校验] 将文件数据发送至套接字，具体发送细节将在继承类中实现，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        /// <param name="filename">文件名称，文件必须存在</param>
+        /// <param name="servername">远程端的文件名称</param>
+        /// <param name="filetag">文件的额外标签</param>
+        /// <param name="fileupload">文件的上传人</param>
+        /// <param name="result">操作结果对象</param>
+        /// <param name="sendReport">发送进度报告</param>
+        /// <param name="failedString"></param>
+        /// <returns></returns>
+        protected bool SendFileAndCheckReceive(
+            Socket socket,
+            string filename,
+            string servername,
+            string filetag,
+            string fileupload,
+            OperateResult result,
+            Action<long, long> sendReport = null,
+            string failedString = null
+            )
+        {
+            // 发送文件名，大小，标签
+            FileInfo info = new FileInfo(filename);
+
+            if (!File.Exists(filename))
+            {
+                // 如果文件不存在
+                if (!SendStringAndCheckReceive(socket, 0, "", result, null, failedString)) return false;
+                else
+                {
+                    result.Message = "找不到该文件，请重新确认文件！";
+                    socket?.Close();
+                    return false;
+                }
+            }
+
+            // 文件存在的情况
+            Newtonsoft.Json.Linq.JObject json = new Newtonsoft.Json.Linq.JObject
+            {
+                { "FileName", new Newtonsoft.Json.Linq.JValue(servername) },
+                { "FileSize", new Newtonsoft.Json.Linq.JValue(info.Length) },
+                { "FileTag", new Newtonsoft.Json.Linq.JValue(filetag) },
+                { "FileUpload", new Newtonsoft.Json.Linq.JValue(fileupload) }
+            };
+
+            if (!SendStringAndCheckReceive(socket, 1, json.ToString(), result, null, failedString)) return false;
+
+            
+            if (!SendFileStreamToSocket(socket, filename, info.Length, result, sendReport, failedString))
+            {
+                return false;
+            }
+
+            // 检查接收
+            // if (!CheckRomoteReceived(socket, info.Length, sendReport, result, failedString))
+            // {
+            //    return false;
+            // }
+
+            return true;
+        }
+
+        /// <summary>
+        /// [自校验] 将流数据发送至套接字，具体发送细节将在继承类中实现，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        /// <param name="stream">文件名称，文件必须存在</param>
+        /// <param name="servername">远程端的文件名称</param>
+        /// <param name="filetag">文件的额外标签</param>
+        /// <param name="fileupload">文件的上传人</param>
+        /// <param name="result">操作结果对象</param>
+        /// <param name="sendReport">发送进度报告</param>
+        /// <param name="failedString"></param>
+        /// <returns></returns>
+        protected bool SendFileAndCheckReceive(
+            Socket socket,
+            Stream stream,
+            string servername,
+            string filetag,
+            string fileupload,
+            OperateResult result,
+            Action<long, long> sendReport = null,
+            string failedString = null
+            )
+        {
+            // 文件存在的情况
+            Newtonsoft.Json.Linq.JObject json = new Newtonsoft.Json.Linq.JObject
+            {
+                { "FileName", new Newtonsoft.Json.Linq.JValue(servername) },
+                { "FileSize", new Newtonsoft.Json.Linq.JValue(stream.Length) },
+                { "FileTag", new Newtonsoft.Json.Linq.JValue(filetag) },
+                { "FileUpload", new Newtonsoft.Json.Linq.JValue(fileupload) }
+            };
+
+            if (!SendStringAndCheckReceive(socket, 1, json.ToString(), result, null, failedString)) return false;
+
+
+            try
+            {
+                NetSupport.WriteSocketFromStream(socket, stream, stream.Length, sendReport, true);
+            }
+            catch(Exception ex)
+            {
+                socket?.Close();
+                LogNet?.WriteException(failedString, ex);
+                result.Message = CombineExceptionString(failedString, ex.Message);
+                return false;
+            }
+
+            // 检查接收
+            // if (!CheckRomoteReceived(socket, info.Length, sendReport, result, failedString))
+            // {
+            //    return false;
+            // }
+
+            return true;
+        }
+
+
+        #endregion
+
+        #region 同步方式的高级数据接收
+
+        /// <summary>
+        /// [自校验] 接收一条完整的同步数据，包含头子节和内容字节，基础的数据，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        /// <param name="head">头子节</param>
+        /// <param name="content">内容字节</param>
+        /// <param name="result">结果</param>
+        /// <param name="receiveReport">接收进度反馈</param>
+        /// <param name="failedString">失败时用于显示的字符串</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">result</exception>
+        protected bool ReceiveAndCheckBytes(
+            Socket socket,
+            out byte[] head,
+            out byte[] content,
+            OperateResult result,
+            Action<long, long> receiveReport,
+            string failedString = null
+            )
+        {
+            // 30秒超时接收验证
+            HslTimeOut hslTimeOut = new HslTimeOut()
+            {
+                DelayTime = 30000,
+                IsSuccessful = false,
+                StartTime = DateTime.Now,
+                WorkSocket = socket,
+            };
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(NetSupport.ThreadPoolCheckTimeOut), hslTimeOut);
+
+            // 接收头
+            if (!ReceiveBytesFromSocket(
+                socket,                                     // 套接字
+                out head,                                   // 接收的头指令
+                HslCommunicationCode.HeadByteLength,        // 头指令长度
+                result,                                     // 结果消息对象
+                null,                                       // 不报告进度
+                false,                                      // 报告是否按照百分比报告
+                false,                                      // 不回发接收长度
+                true,                                       // 检查是否超时
+                failedString                                // 异常时的附加文本描述
+                ))
+            {
+                hslTimeOut.IsSuccessful = true;
+                content = null;
+                return false;
+            }
+
+            hslTimeOut.IsSuccessful = true;
+
+            // 检查令牌
+            if (!CheckTokenPermission(socket, head, KeyToken, result))
+            {
+                content = null;
+                return false;
+            }
+
+            // 接收内容
+            int contentLength = BitConverter.ToInt32(head, 28);
+            if (!ReceiveBytesFromSocket(
+                socket,                                     // 套接字
+                out content,                                // 内容字节
+                contentLength,                              // 内容数据长度
+                result,                                     // 结果消息对象
+                receiveReport,                              // 接收进度报告委托
+                true,                                       // 按照百分比进行报告数据
+                true,                                       // 回发已经接收的数据长度
+                false,                                      // 不进行超时检查
+                failedString                                // 异常时附加的文本描述
+                ))
+            {
+                head = null;
+                return false;
+            }
+
+            content = NetSupport.CommandAnalysis(head, content);
+            return true;
+        }
+
+
+
+        /// <summary>
+        /// [自校验] 从网络中接收一个字符串数据，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        /// <param name="customer">接收的用户数据</param>
+        /// <param name="receive">接收的字节数据</param>
+        /// <param name="result">结果信息对象</param>
+        /// <param name="receiveReport">接收数据时的进度报告</param>
+        /// <param name="failedString">失败时记录日志的字符串</param>
+        /// <returns></returns>
+        protected bool ReceiveStringFromSocket(
+            Socket socket,
+            out int customer,
+            out string receive,
+            OperateResult result,
+            Action<long, long> receiveReport,
+            string failedString = null
+            )
+        {
+            if (!ReceiveAndCheckBytes(socket, out byte[] head, out byte[] content, result, receiveReport, failedString))
+            {
+                customer = 0;
+                receive = null;
+                return false;
+            }
+
+            // check
+            if (BitConverter.ToInt32(head, 0) != HslCommunicationCode.Hsl_Protocol_User_String)
+            {
+                customer = 0;
+                receive = null;
+                result.Message = "数据头校验失败！";
+                LogNet?.WriteError("数据头校验失败！");
+                socket?.Close();
+                return false;
+            }
+
+            // 分析数据
+            customer = BitConverter.ToInt32(head, 4);
+            receive = Encoding.Unicode.GetString(content);
+
+            return true;
+        }
+
+        /// <summary>
+        /// [自校验] 从网络中接收一串字节数据，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket">套接字</param>
+        /// <param name="customer">接收的用户数据</param>
+        /// <param name="data">接收的字节数据</param>
+        /// <param name="result">结果信息对象</param>
+        /// <param name="failedString">失败时记录日志的字符串</param>
+        /// <returns></returns>
+        protected bool ReceiveContentFromSocket(
+            Socket socket,
+            out int customer,
+            out byte[] data,
+            OperateResult result,
+            string failedString = null
+            )
+        {
+            if (!ReceiveAndCheckBytes(socket, out byte[] head, out byte[] content, result, null, failedString))
+            {
+                result = null;
+                customer = 0;
+                data = null;
+                return false;
+            }
+
+            // check
+            if (BitConverter.ToInt32(head, 0) != HslCommunicationCode.Hsl_Protocol_User_Bytes)
+            {
+                customer = 0;
+                data = null;
+                result.Message = "数据头校验失败！";
+                LogNet?.WriteError("数据头校验失败！");
+                socket?.Close();
+                return false;
+            }
+
+            // 分析数据
+            customer = BitConverter.ToInt32(head, 4);
+            data = content;
+
+            return true;
+        }
+
+
+        /// <summary>
+        /// [自校验] 从套接字中接收文件头信息
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="filename"></param>
+        /// <param name="size"></param>
+        /// <param name="filetag"></param>
+        /// <param name="fileupload"></param>
+        /// <param name="result"></param>
+        /// <param name="failedString"></param>
+        /// <returns></returns>
+        protected bool ReceiveFileHeadFromSocket(
+            Socket socket,
+            out string filename,
+            out long size,
+            out string filetag,
+            out string fileupload,
+            OperateResult result,
+            string failedString = null
+            )
+        {
+            // 先接收文件头信息
+            if (!ReceiveStringFromSocket(socket, out int customer, out string filehead, result, null, failedString))
+            {
+                filename = null;
+                size = 0;
+                filetag = null;
+                fileupload = null;
+                return false;
+            }
+
+            // 判断文件是否存在
+            if (customer == 0)
+            {
+                LogNet?.WriteWarn("对方文件不存在，无法接收！");
+                result.Message = StringResources.FileNotExist;
+                filename = null;
+                size = 0;
+                filetag = null;
+                fileupload = null;
+                socket?.Close();
+                return false;
+            }
+
+            // 提取信息
+            Newtonsoft.Json.Linq.JObject json = Newtonsoft.Json.Linq.JObject.Parse(filehead);
+            filename = SoftBasic.GetValueFromJsonObject(json, "FileName", "");
+            size = SoftBasic.GetValueFromJsonObject(json, "FileSize", 0L);
+            filetag = SoftBasic.GetValueFromJsonObject(json, "FileTag", "");
+            fileupload = SoftBasic.GetValueFromJsonObject(json, "FileUpload", "");
+
+            return true;
+        }
+
+
+        /// <summary>
+        /// [自校验] 从网络中接收一个文件，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="savename">接收文件后保存的文件名</param>
+        /// <param name="filename">文件在对方电脑上的文件名</param>
+        /// <param name="size">文件大小</param>
+        /// <param name="filetag">文件的标识</param>
+        /// <param name="fileupload">文件的上传人</param>
+        /// <param name="result">结果信息对象</param>
+        /// <param name="receiveReport">接收进度报告</param>
+        /// <param name="failedString">失败时的记录日志字符串</param>
+        /// <returns></returns>
+        protected bool ReceiveFileFromSocket(
+            Socket socket,
+            string savename,
+            out string filename,
+            out long size,
+            out string filetag,
+            out string fileupload,
+            OperateResult result,
+            Action<long, long> receiveReport,
+            string failedString = null
+            )
+        {
+            // 先接收文件头信息
+            if (!ReceiveFileHeadFromSocket(
+                socket,
+                out filename,
+                out size,
+                out filetag,
+                out fileupload,
+                result,
+                failedString
+                ))
+            {
+                return false;
+            }
+
+            //// 先接收文件头信息
+            //if (!ReceiveStringFromSocket(socket, out int customer, out string filehead, result, null, failedString))
+            //{
+            //    filename = null;
+            //    size = 0;
+            //    filetag = null;
+            //    fileupload = null;
+            //    return false;
+            //}
+
+            //// 判断文件是否存在
+            //if (customer == 0)
+            //{
+            //    LogNet?.WriteWarn("对方文件不存在，无法接收！");
+            //    result.Message = StringResources.FileNotExist;
+            //    filename = null;
+            //    size = 0;
+            //    filetag = null;
+            //    fileupload = null;
+            //    socket?.Close();
+            //    return false;
+            //}
+
+            //// 提取信息
+            //Newtonsoft.Json.Linq.JObject json = Newtonsoft.Json.Linq.JObject.Parse(filehead);
+            //filename = SoftBasic.GetValueFromJsonObject(json, "FileName", "");
+            //size = SoftBasic.GetValueFromJsonObject(json, "FileSize", 0L);
+            //filetag = SoftBasic.GetValueFromJsonObject(json, "FileTag", "");
+            //fileupload = SoftBasic.GetValueFromJsonObject(json, "FileUpload", "");
+
+            // 接收文件消息
+            if (!ReceiveFileSteamFromSocket(socket, savename, size, receiveReport, result, failedString))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// [自校验] 从网络中接收一个文件，写入数据流，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="stream">等待写入的数据流</param>
+        /// <param name="filename">文件在对方电脑上的文件名</param>
+        /// <param name="size">文件大小</param>
+        /// <param name="filetag">文件的标识</param>
+        /// <param name="fileupload">文件的上传人</param>
+        /// <param name="result">结果信息对象</param>
+        /// <param name="receiveReport">接收进度报告</param>
+        /// <param name="failedString">失败时的记录日志字符串</param>
+        /// <returns></returns>
+        protected bool ReceiveFileFromSocket(
+            Socket socket,
+            Stream stream,
+            out string filename,
+            out long size,
+            out string filetag,
+            out string fileupload,
+            OperateResult result,
+            Action<long, long> receiveReport,
+            string failedString = null
+            )
+        {
+            // 先接收文件头信息
+            if (!ReceiveFileHeadFromSocket(
+                socket,
+                out filename,
+                out size,
+                out filetag,
+                out fileupload,
+                result,
+                failedString
+                ))
+            {
+                return false;
+            }
+
+            
+            try
+            {
+                NetSupport.WriteStreamFromSocket(socket, stream, size, receiveReport, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                socket?.Close();
+                return false;
+            }
+        }
+
+
+        #endregion
+
+        #region 删除文件的操作
+
+        /// <summary>
+        /// 删除文件的操作
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        protected bool DeleteFileByName(string filename)
+        {
+            try
+            {
+                if (!File.Exists(filename)) return true;
+                File.Delete(filename);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogNet?.WriteException("delete file failed:" + filename, ex);
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region Protect Method
+
+        /// <summary>
+        /// 预处理文件夹的名称，除去文件夹名称最后一个'\'，如果有的话
+        /// </summary>
+        /// <param name="folder">文件夹名称</param>
+        /// <returns></returns>
+        protected string PreprocessFolderName(string folder)
+        {
+            if (folder.EndsWith(@"\"))
+            {
+                return folder.Substring(0, folder.Length - 1);
+            }
+            else
+            {
+                return folder;
+            }
+        }
+
+        #endregion
+
+        #region 虚方法
+
+
+        /// <summary>
+        /// 数据处理中心，应该继承重写
+        /// </summary>
+        /// <param name="receive">连接状态</param>
+        /// <param name="protocol">协议头</param>
+        /// <param name="customer">用户自定义</param>
+        /// <param name="content">数据内容</param>
+        internal virtual void DataProcessingCenter(AsyncStateOne receive, int protocol, int customer, byte[] content)
+        {
+
+        }
+
+        #endregion
+    }
+
+
+    #endregion
+
+    #region 服务器类基类
+
+
+    /*******************************************************************************
+     * 
+     *    网络通信类的服务器基础类，提供服务器运行所有相关的方法和功能
+     *
+     *    Network Communications Server base class provides methods and features related to server running all
+     * 
+     *******************************************************************************/
+
+
+
+    /// <summary>
+    /// 所有服务器类对象的基类，添加了一些服务器属性
+    /// </summary>
+    public class NetServerBase : NetShareBase
+    {
+        //服务器端的类，提供一个启动的方法，提供两个接收数据的事件
+        /// <summary>
+        /// 服务器引擎是否启动
+        /// </summary>
+        public bool IsStarted { get; protected set; } = false;
+
+        /// <summary>
+        /// 异步传入的连接申请请求
+        /// </summary>
+        /// <param name="iar"></param>
+        protected void AsyncAcceptCallback(IAsyncResult iar)
+        {
+            //还原传入的原始套接字
+            if (iar.AsyncState is Socket server_socket)
+            {
+                Socket client = null;
+                try
+                {
+                    // 在原始套接字上调用EndAccept方法，返回新的套接字
+                    client = server_socket.EndAccept(iar);
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolLogin), client);
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    // 服务器关闭时候触发的异常，不进行记录
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // 有可能刚连接上就断开了，那就不管
+                    client?.Close();
+                    LogNet?.WriteException(StringResources.SocketAcceptCallbackException, ex);
+                }
+
+                // 如果失败，尝试启动三次
+                int i = 0;
+                while (i < 3)
+                {
+                    try
+                    {
+                        server_socket.BeginAccept(new AsyncCallback(AsyncAcceptCallback), server_socket);
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        Thread.Sleep(1000);
+                        LogNet?.WriteException(StringResources.SocketReAcceptCallbackException, ex);
+                        i++;
+                    }
+                }
+
+                if (i >= 3)
+                {
+                    LogNet?.WriteError(StringResources.SocketReAcceptCallbackException);
+                    // 抛出异常，终止应用程序
+                    throw new Exception(StringResources.SocketReAcceptCallbackException);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 用于登录的回调方法
+        /// </summary>
+        /// <param name="obj">socket对象</param>
+        protected virtual void ThreadPoolLogin(object obj)
+        {
+            Socket socket = obj as Socket;
+            socket?.Close();
+        }
+
+
+        /// <summary>
+        /// 服务器启动时额外的初始化信息
+        /// </summary>
+        protected virtual void StartInitialization()
+        {
+
+        }
+
+
+        /// <summary>
+        /// 启动服务器的引擎
+        /// </summary>
+        /// <param name="port">指定一个端口号</param>
+        public virtual void ServerStart(int port)
+        {
+            if (!IsStarted)
+            {
+                StartInitialization();
+
+                WorkSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                WorkSocket.Bind(new IPEndPoint(IPAddress.Any, port));
+                WorkSocket.Listen(500);//单次允许最后请求500个，足够小型系统应用了
+                WorkSocket.BeginAccept(new AsyncCallback(AsyncAcceptCallback), WorkSocket);
+                IsStarted = true;
+
+                LogNet?.WriteNewLine();
+                LogNet?.WriteInfo(StringResources.NetEngineStart);
+            }
+        }
+
+
+        /// <summary>
+        /// 服务器关闭的时候需要做的事情
+        /// </summary>
+        protected virtual void CloseAction()
+        {
+
+        }
+
+        /// <summary>
+        /// 关闭服务器的引擎
+        /// </summary>
+        public virtual void ServerClose()
+        {
+            if (IsStarted)
+            {
+                CloseAction();
+                WorkSocket?.Close();
+                IsStarted = false;
+                LogNet?.WriteInfo(StringResources.NetEngineClose);
+            }
+        }
+
+    }
+
+    #endregion
+    
+    #region 文件服务器基类
+
+
+    /// <summary>
+    /// 文件服务器的基类，提供了对文件的基本操作
+    /// </summary>
+    public class FileServerBase : NetServerBase
+    {
+        #region 文件的标记块
+        /// <summary>
+        /// 所有文件操作的词典锁
+        /// </summary>
+        internal Dictionary<string, FileMarkId> m_dictionary_files_marks = new Dictionary<string, FileMarkId>();
+        /// <summary>
+        /// 词典的锁
+        /// </summary>
+        private SimpleHybirdLock hybirdLock = new SimpleHybirdLock();
+
+        /// <summary>
+        /// 获取当前文件的读写锁，如果没有会自动创建
+        /// </summary>
+        /// <param name="filename">完整的文件路径</param>
+        /// <returns>读写锁</returns>
+        internal FileMarkId GetFileMarksFromDictionaryWithFileName(string filename)
+        {
+            FileMarkId fileMarkId = null;
+            hybirdLock.Enter();
+
+            // lock operator
+            if (m_dictionary_files_marks.ContainsKey(filename))
+            {
+                fileMarkId = m_dictionary_files_marks[filename];
+            }
+            else
+            {
+                fileMarkId = new FileMarkId(LogNet, filename);
+                m_dictionary_files_marks.Add(filename, fileMarkId);
+            }
+
+            hybirdLock.Leave();
+            return fileMarkId;
+        }
+
+        #endregion
+
+        #region 接收信息头数据
+
+        /// <summary>
+        /// 接收本次操作的信息头数据
+        /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="command">命令</param>
+        /// <param name="fileName">文件名</param>
+        /// <param name="factory">第一大类</param>
+        /// <param name="group">第二大类</param>
+        /// <param name="id">第三大类</param>
+        /// <param name="result">结果对象</param>
+        /// <param name="failedString">失败的字符串</param>
+        /// <returns></returns>
+        protected bool ReceiveInformationHead(
+            Socket socket,
+            out int command,
+            out string fileName,
+            out string factory,
+            out string group,
+            out string id,
+            OperateResult result,
+            string failedString = null
+            )
+        {
+            // 先接收文件名
+            if (!ReceiveStringFromSocket(socket, out command, out fileName, result, null, failedString))
+            {
+                factory = null;
+                group = null;
+                id = null;
+                return false;
+            }
+
+            // 接收Factory
+            if (!ReceiveStringFromSocket(socket, out int command1, out factory, result, null, failedString))
+            {
+                group = null;
+                id = null;
+                return false;
+            }
+
+            // 接收Group
+            if (!ReceiveStringFromSocket(socket, out int command2, out group, result, null, failedString))
+            {
+                id = null;
+                return false;
+            }
+
+            // 最后接收id
+
+            if (!ReceiveStringFromSocket(socket, out int command3, out id, result, null, failedString))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 获取一个随机的文件名，由GUID码和随机数字组成
+        /// </summary>
+        /// <returns></returns>
+        protected string CreateRandomFileName()
+        {
+            return Guid.NewGuid().ToString("N") + m_random.Next(1000, 10000).ToString();
+        }
+
+        /// <summary>
+        /// 返回服务器的绝对路径
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <param name="group"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        protected string ReturnAbsoluteFilePath(string factory, string group, string id)
+        {
+            string result = m_FilesDirectoryPath;
+            if (!string.IsNullOrEmpty(factory)) result += "\\" + factory;
+            if (!string.IsNullOrEmpty(group)) result += "\\" + group;
+            if (!string.IsNullOrEmpty(id)) result += "\\" + id;
+            return result;
+        }
+
+
+        /// <summary>
+        /// 返回服务器的绝对路径
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <param name="group"></param>
+        /// <param name="id"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        protected string ReturnAbsoluteFileName(string factory, string group, string id, string fileName)
+        {
+            return ReturnAbsoluteFilePath(factory, group, id) + "\\" + fileName;
+        }
+
+
+        /// <summary>
+        /// 返回相对路径的名称
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <param name="group"></param>
+        /// <param name="id"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        protected string ReturnRelativeFileName(string factory, string group, string id ,string fileName)
+        {
+            string result = "";
+            if (!string.IsNullOrEmpty(factory)) result += factory + "\\";
+            if (!string.IsNullOrEmpty(group)) result += group + "\\";
+            if (!string.IsNullOrEmpty(id)) result += id + "\\";
+            return result + fileName;
+        }
+        
+
+        #endregion
+
+        #region 定时清除标记块
+
+        //private Timer timer;
+
+        //private void ClearDict(object obj)
+        //{
+        //    hybirdLock.Enter();
+
+        //    List<string> waitRemove = new List<string>();
+        //    foreach(var m in m_dictionary_files_marks)
+        //    {
+        //        if(m.Value.CanClear())
+        //        {
+        //            waitRemove.Add(m.Key);
+        //        }
+        //    }
+
+        //    foreach(var m in waitRemove)
+        //    {
+        //        m_dictionary_files_marks.Remove(m);
+        //    }
+
+        //    waitRemove.Clear();
+        //    waitRemove = null;
+
+        //    hybirdLock.Leave();
+        //}
+        #endregion
+
+        #region 临时文件复制块
+
+        /// <summary>
+        /// 移动一个文件到新的文件去
+        /// </summary>
+        /// <param name="fileNameOld"></param>
+        /// <param name="fileNameNew"></param>
+        /// <returns></returns>
+        protected bool MoveFileToNewFile(string fileNameOld, string fileNameNew)
+        {
+            try
+            {
+                FileInfo info = new FileInfo(fileNameNew);
+                if (!Directory.Exists(info.DirectoryName))
+                {
+                    Directory.CreateDirectory(info.DirectoryName);
+                }
+
+                if (File.Exists(fileNameNew))
+                {
+                    File.Delete(fileNameNew);
+                }
+
+                File.Move(fileNameOld, fileNameNew);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogNet?.WriteException("Move a file to new file failed:", ex);
+                return false;
+            }
+        }
+
+        
+
+        /// <summary>
+        /// 删除文件并回发确认信息，如果结果异常，则结束通讯
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="fullname"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected bool DeleteFileAndCheck(
+            Socket socket,
+            string fullname,
+            OperateResult result
+            )
+        {
+            // 删除文件，如果失败，重复三次
+            int customer = 0;
+            int times = 0;
+            while (times < 3)
+            {
+                times++;
+                if (DeleteFileByName(fullname))
+                {
+                    customer = 1;
+                    break;
+                }
+                else
+                {
+                    Thread.Sleep(500);
+                }
+            }
+
+            // 回发消息
+            if (!SendStringAndCheckReceive(
+                socket,                                                                // 网络套接字
+                customer,                                                              // 是否移动成功
+                "成功",                                                                // 字符串数据
+                result,                                                                // 结果数据对象
+                null,                                                                  // 不进行报告
+                "回发删除结果错误")                                                    // 发送错误时的数据
+                )
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+
+
+        #endregion
+
+        #region Override Method
+
+       
+
+        /// <summary>
+        /// 服务器启动时的操作
+        /// </summary>
+        protected override void StartInitialization()
+        {
+            if (string.IsNullOrEmpty(FilesDirectoryPath))
+            {
+                throw new ArgumentNullException("FilesDirectoryPath", "No saved path is specified");
+            }
+
+            CheckFolderAndCreate(); 
+            base.StartInitialization();
+        }
+
+        #endregion
+
+        #region Protect Method
+
+
+
+        /// <summary>
+        /// 检查文件夹是否存在，不存在就创建
+        /// </summary>
+        protected virtual void CheckFolderAndCreate()
+        {
+            if (!Directory.Exists(FilesDirectoryPath))
+            {
+                Directory.CreateDirectory(FilesDirectoryPath);
+            }
+        }
+
+        #endregion
+
+        #region Public Members
+
+        /// <summary>
+        /// 文件所存储的路径
+        /// </summary>
+        public string FilesDirectoryPath
+        {
+            get { return m_FilesDirectoryPath; }
+            set { m_FilesDirectoryPath = PreprocessFolderName(value); }
+        }
+
+
+        /// <summary>
+        /// 获取文件夹的所有文件列表
+        /// </summary>
+        /// <param name="factory">第一大类</param>
+        /// <param name="group">第二大类</param>
+        /// <param name="id">第三大类</param>
+        /// <returns></returns>
+        public virtual string[] GetDirectoryFiles(string factory, string group, string id)
+        {
+            if (string.IsNullOrEmpty(FilesDirectoryPath)) return new string[0];
+
+            string absolutePath = ReturnAbsoluteFilePath(factory, group, id);
+
+            // 如果文件夹不存在
+            if (!Directory.Exists(absolutePath)) return new string[0];
+            // 返回文件列表
+            return Directory.GetFiles(absolutePath);
+        }
+
+        /// <summary>
+        /// 获取文件夹的所有文件夹列表
+        /// </summary>
+        /// <param name="factory">第一大类</param>
+        /// <param name="group">第二大类</param>
+        /// <param name="id">第三大类</param>
+        /// <returns></returns>
+        public string[] GetDirectories(string factory, string group, string id)
+        {
+            if (string.IsNullOrEmpty(FilesDirectoryPath)) return new string[0];
+
+            string absolutePath = ReturnAbsoluteFilePath(factory, group, id);
+
+            // 如果文件夹不存在
+            if (!Directory.Exists(absolutePath)) return new string[0];
+            // 返回文件列表
+            return Directory.GetDirectories(absolutePath);
+        }
+
+        #endregion
+
+        #region Private Members
+
+        private string m_FilesDirectoryPath = null;      // 文件的存储路径
+        private Random m_random = new Random();          // 随机生成的文件名
+
+        #endregion
+    }
+
+    #endregion
+    
+    #region 文件版本管理器
+    
+
+    /// <summary>
+    /// 文件集容器，绑定一个文件夹的文件信息组
+    /// </summary>
+    public class GroupFileContainer
+    {
+        #region Constructor
+        
+        /// <summary>
+        /// 实例化一个新的数据管理容器
+        /// </summary>
+        /// <param name="logNet">日志记录对象，可以为空</param>
+        /// <param name="path"></param>
+        public GroupFileContainer(ILogNet logNet, string path)
+        {
+            LogNet = logNet;
+            GroupFileContainerLoadByPath(path);
+        }
+
+        #endregion
+
+        #region Public Members
+        
+        /// <summary>
+        /// 包含所有文件列表信息的json文本缓存
+        /// </summary>
+        public string JsonArrayContent
+        {
+            get { return m_JsonArrayContent; }
+        }
+        
+        /// <summary>
+        /// 获取文件的数量
+        /// </summary>
+        public int FileCount
+        {
+            get { return m_filesCount; }
+        }
+
+        #endregion
+
+        #region Event Handle
+        
+
+        private void OnFileCountChanged()
+        {
+            FileCountChanged?.Invoke(m_filesCount);
+        }
+
+        /// <summary>
+        /// 当文件数量发生变化的时候触发的事件
+        /// </summary>
+        public event Action<int> FileCountChanged;
+
+        #endregion
+        
+        #region Upload Download Delete
+
+
+        /// <summary>
+        /// 下载文件时调用
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public string GetCurrentFileMappingName(string fileName)
+        {
+            string source = Guid.NewGuid().ToString("N");
+            hybirdLock.Enter();
+            for (int i = 0; i < m_files.Count; i++)
+            {
+                if (m_files[i].FileName == fileName)
+                {
+                    source = m_files[i].MappingName;
+                    m_files[i].DownloadTimes++;
+                }
+            }
+            hybirdLock.Leave();
+
+            // 更新缓存
+            coordinatorCacheJsonArray.StartOperaterInfomation();
+
+            return source;
+        }
+
+        /// <summary>
+        /// 上传文件时掉用
+        /// </summary>
+        /// <param name="fileName">文件名，带后缀，不带任何的路径</param>
+        /// <param name="fileSize">文件的大小</param>
+        /// <param name="mappingName">文件映射名称</param>
+        /// <param name="owner">文件的拥有者</param>
+        /// <param name="description">文件的额外描述</param>
+        /// <returns></returns>
+        public string UpdateFileMappingName(string fileName, long fileSize, string mappingName, string owner, string description)
+        {
+            string source = string.Empty;
+            hybirdLock.Enter();
+
+            for (int i = 0; i < m_files.Count; i++)
+            {
+                if (m_files[i].FileName == fileName)
+                {
+                    source = m_files[i].MappingName;
+                    m_files[i].MappingName = mappingName;
+                    m_files[i].Description = description;
+                    m_files[i].FileSize = fileSize;
+                    m_files[i].Owner = owner;
+                    m_files[i].UploadTime = DateTime.Now;
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(source))
+            {
+                // 文件不存在
+                m_files.Add(new GroupFileItem()
+                {
+                    FileName = fileName,
+                    FileSize = fileSize,
+                    DownloadTimes = 0,
+                    Description = description,
+                    Owner = owner,
+                    MappingName = mappingName,
+                    UploadTime = DateTime.Now
+                });
+            }
+
+            hybirdLock.Leave();
+
+            // 更新缓存
+            coordinatorCacheJsonArray.StartOperaterInfomation();
+
+            return source;
+        }
+
+        /// <summary>
+        /// 删除一个文件信息
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public string DeleteFile(string fileName)
+        {
+            string source= string.Empty;
+            hybirdLock.Enter();
+            for (int i = 0; i < m_files.Count; i++)
+            {
+                if (m_files[i].FileName == fileName)
+                {
+                    source = m_files[i].MappingName;
+                    m_files.RemoveAt(i);
+                    break;
+                }
+            }
+            hybirdLock.Leave();
+
+            // 更新缓存
+            coordinatorCacheJsonArray.StartOperaterInfomation();
+            return source;
+        }
+        
+        #endregion
+
+        #region Private Method
+        
+        /// <summary>
+        /// 缓存JSON文本的方法，该机制使用乐观并发模型完成
+        /// </summary>
+        private void CacheJsonArrayContent()
+        {
+            hybirdLock.Enter();
+            m_filesCount = m_files.Count;
+            m_JsonArrayContent = Newtonsoft.Json.Linq.JArray.FromObject(m_files).ToString();
+            
+            // 保存文件
+            using (StreamWriter sw = new StreamWriter(m_filePath + FileListResources, false, Encoding.UTF8))
+            {
+                sw.Write(m_JsonArrayContent);
+            }
+            
+            hybirdLock.Leave();
+            // 通知更新
+            OnFileCountChanged();
+        }
+
+        /// <summary>
+        /// 从目录进行加载数据，必须实例化的时候加载，加载失败会导致系统异常，旧的文件丢失
+        /// </summary>
+        /// <param name="path"></param>
+        private void GroupFileContainerLoadByPath(string path)
+        {
+            m_filePath = path;
+            
+            if (!Directory.Exists(m_filePath))
+            {
+                Directory.CreateDirectory(m_filePath);
+            }
+
+            if (File.Exists(m_filePath + FileListResources))
+            {
+                try
+                {
+                    using (StreamReader sr = new StreamReader(m_filePath + FileListResources, Encoding.UTF8))
+                    {
+                        m_files = Newtonsoft.Json.Linq.JArray.Parse(sr.ReadToEnd()).ToObject<List<GroupFileItem>>();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    LogNet?.WriteException("Load files txt failed,", ex);
+                }
+            }
+
+            if (m_files == null)
+            {
+                m_files = new List<GroupFileItem>();
+            }
+
+            coordinatorCacheJsonArray = new HslAsyncCoordinator(CacheJsonArrayContent);
+
+            CacheJsonArrayContent();
+        }
+        
+        #endregion
+
+        #region Private Members
+
+        private const string FileListResources = "\\list.txt";            // 文件名
+        private ILogNet LogNet;                                           // 日志对象
+        private string m_JsonArrayContent = "[]";                         // 缓存数据
+        private int m_filesCount = 0;                                     // 文件数量
+        private SimpleHybirdLock hybirdLock = new SimpleHybirdLock();     // 简单混合锁
+        private HslAsyncCoordinator coordinatorCacheJsonArray;            // 乐观并发模型
+        private List<GroupFileItem> m_files;                              // 文件队列
+        private string m_filePath;                                        // 文件路径
+
+        #endregion
+    }
+
+
+
+
+    /// <summary>
+    /// 单个文件的存储
+    /// </summary>
+    public class GroupFileItem
+    {
+        #region Public Members
+
+        /// <summary>
+        /// 文件的名称
+        /// </summary>
+        public string FileName { get; set; }
+        /// <summary>
+        /// 文件的大小
+        /// </summary>
+        public long FileSize { get; set; }
+        /// <summary>
+        /// 文件的映射名称
+        /// </summary>
+        public string MappingName { get; set; }
+        /// <summary>
+        /// 文件的下载次数
+        /// </summary>
+        public long DownloadTimes { get; set; }
+        /// <summary>
+        /// 文件的上传时间
+        /// </summary>
+        public DateTime UploadTime { get; set; }
+        /// <summary>
+        /// 文件的上传人，拥有者
+        /// </summary>
+        public string Owner { get; set; }
+        /// <summary>
+        /// 文件的额外描述
+        /// </summary>
+        public string Description { get; set; }
+
+        
+        #endregion
+
+        #region Get Size Text
+
+        /// <summary>
+        /// 获取大小
+        /// </summary>
+        /// <returns></returns>
+        public string GetTextFromFileSize()
+        {
+            return SoftBasic.GetSizeDescription(FileSize);
+        }
+        
+        #endregion
+
+    }
+
+
+
+
+
+
+
+    /// <summary>
+    /// 文件标记对象类
+    /// </summary>
+    internal class FileMarkId
+    {
+        /// <summary>
+        /// 实例化一个文件标记对象
+        /// </summary>
+        public FileMarkId(ILogNet logNet, string fileName)
+        {
+            LogNet = logNet;
+            FileName = fileName;
+        }
+
+        private ILogNet LogNet;
+
+        private string FileName = null;
+
+        private Queue<Action> queues = new Queue<Action>();
+
+        private SimpleHybirdLock hybirdLock = new SimpleHybirdLock();
+
+
+        /// <summary>
+        /// 新增一个文件的操作，仅仅是删除文件
+        /// </summary>
+        /// <param name="action"></param>
+        public void AddOperation(Action action)
+        {
+            hybirdLock.Enter();
+            
+            if (readStatus == 0)
+            {
+                // 没有读取状态，立马执行
+                action?.Invoke();
+            }
+            else
+            {
+                // 添加标记
+                queues.Enqueue(action);
+            }
+            hybirdLock.Leave();
+        }
+
+        
+        private int readStatus = 0;
+
+        /// <summary>
+        /// 指示该对象是否能被清除
+        /// </summary>
+        /// <returns></returns>
+        public bool CanClear()
+        {
+            bool result = false;
+            hybirdLock.Enter();
+            result = readStatus == 0 && queues.Count == 0;
+            hybirdLock.Leave();
+            return result;
+        }
+
+        /// <summary>
+        /// 进入文件的读取状态
+        /// </summary>
+        public void EnterReadOperator()
+        {
+            hybirdLock.Enter();
+            readStatus++;
+            hybirdLock.Leave();
+        }
+
+        /// <summary>
+        /// 离开本次的文件读取状态
+        /// </summary>
+        public void LeaveReadOperator()
+        {
+            // 检查文件标记状态
+            hybirdLock.Enter();
+            readStatus--;
+            if (readStatus == 0)
+            {
+                while (queues.Count > 0)
+                {
+                    try
+                    {
+                        queues.Dequeue()?.Invoke();
+                    }
+                    catch(Exception ex)
+                    {
+                        LogNet?.WriteException("File Action Failed:", ex);
+                    }
+                }
+            }
+            hybirdLock.Leave();
+        }
+    }
+
+
+    #endregion
+}
