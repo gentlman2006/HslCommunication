@@ -28,20 +28,39 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.userButton1 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
+            // 
+            // userButton1
+            // 
+            this.userButton1.BackColor = System.Drawing.Color.Transparent;
+            this.userButton1.CustomerInformation = "";
+            this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton1.Location = new System.Drawing.Point(12, 13);
+            this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton1.Name = "userButton1";
+            this.userButton1.Size = new System.Drawing.Size(143, 33);
+            this.userButton1.TabIndex = 0;
+            this.userButton1.UIText = "PLC网络测试";
+            this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(791, 554);
+            this.Controls.Add(this.userButton1);
             this.Name = "FormMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private HslCommunication.Controls.UserButton userButton1;
     }
 }
 

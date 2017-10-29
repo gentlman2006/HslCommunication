@@ -16,5 +16,13 @@ namespace TestTool
         {
             InitializeComponent();
         }
+
+        private void userButton1_Click(object sender, EventArgs e)
+        {
+            using (TestTool.TestForm.FormPlcTest form = new TestForm.FormPlcTest())
+            {
+                form.ShowDialog();
+            }
+        }
     }
 }
