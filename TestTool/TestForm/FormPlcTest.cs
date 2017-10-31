@@ -159,14 +159,15 @@ namespace TestTool.TestForm
         #region 西门子篇二S7通讯协议读取
 
 
-        private SiemensTcpNet siemensTcp = new SiemensTcpNet(SiemensPLCS.S1200)
+        private SiemensTcpNet siemensTcpNet = new SiemensTcpNet(SiemensPLCS.S1200)
         {
             PLCIpAddress = System.Net.IPAddress.Parse("192.168.1.195")
         };
 
+
         private void userButton9_Click(object sender, EventArgs e)
         {
-            OperateResultBytes read = siemensTcp.ReadFromPLC("M100", 5);
+            OperateResultBytes read = siemensTcpNet.ReadFromPLC("M100", 5);
             if (read.IsSuccess)
             {
                 TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content));
@@ -177,9 +178,29 @@ namespace TestTool.TestForm
             }
         }
 
+        private void userButton11_Click(object sender, EventArgs e)
+        {
+            // 1500PLC测试代码
+
+            int type = 2;
+            while (type < 256)
+            {
+                siemensTcpNet.SetPlcType((byte)type);
+                OperateResultBytes read = siemensTcpNet.ReadFromPLC("M100", 5);
+                if (read.IsSuccess)
+                {
+                    MessageBox.Show("访问成功！1500PLC TYPE:" + type);
+                    break;
+                }
+                type++;
+            }
+
+        }
+
+
         private void userButton7_Click(object sender, EventArgs e)
         {
-            OperateResult write = siemensTcp.WriteIntoPLC("M100", new byte[] { 0xFF, 0x3C, 0x0F });
+            OperateResult write = siemensTcpNet.WriteIntoPLC("M100", new byte[] { 0xFF, 0x3C, 0x0F });
             if(write.IsSuccess)
             {
                 TextBoxAppendStringLine("写入成功");
@@ -190,17 +211,35 @@ namespace TestTool.TestForm
             }
         }
 
+        private void userButton6_Click(object sender, EventArgs e)
+        {
+            // 位写入测试
+            OperateResult write = siemensTcpNet.WriteIntoPLC("M100.7", false);
+            if (write.IsSuccess)
+
+            {
+                TextBoxAppendStringLine("写入成功");
+            }
+            else
+            {
+                MessageBox.Show(write.ToMessageShowString());
+
+            }
+        }
+
+
+
         private void userButton10_Click(object sender, EventArgs e)
         {
-            OperateResultBytes read = siemensTcp.ReadFromPLC(
+            OperateResultBytes read = siemensTcpNet.ReadFromPLC(
                 new string[] { "M100", "M150", "M200", "I300" },
                 new ushort[] { 4, 4, 2, 1});
             
             if(read.IsSuccess)
             {
-                int value1 = siemensTcp.GetIntFromBytes(read.Content, 0);
-                float value2 = siemensTcp.GetFloatFromBytes(read.Content, 4);
-                short value3 = siemensTcp.GetShortFromBytes(read.Content, 8);
+                int value1 = siemensTcpNet.GetIntFromBytes(read.Content, 0);
+                float value2 = siemensTcpNet.GetFloatFromBytes(read.Content, 4);
+                short value3 = siemensTcpNet.GetShortFromBytes(read.Content, 8);
                 byte value4 = read.Content[10];
 
                 TextBoxAppendStringLine($"[{value1},{value2}, {value3}, {value4}]");
@@ -212,8 +251,9 @@ namespace TestTool.TestForm
         }
 
 
-        #endregion
 
+
+        #endregion
 
     }
 }
