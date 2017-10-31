@@ -143,7 +143,73 @@ namespace TestTool.TestForm
                 MessageBox.Show(write.ToMessageShowString());
             }
         }
-        
+
+
+
+
+        #endregion
+
+
+
+
+
+
+
+
+        #region 西门子篇二S7通讯协议读取
+
+
+        private SiemensTcpNet siemensTcp = new SiemensTcpNet(SiemensPLCS.S1200)
+        {
+            PLCIpAddress = System.Net.IPAddress.Parse("192.168.1.195")
+        };
+
+        private void userButton9_Click(object sender, EventArgs e)
+        {
+            OperateResultBytes read = siemensTcp.ReadFromPLC("M100", 5);
+            if (read.IsSuccess)
+            {
+                TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content));
+            }
+            else
+            {
+                MessageBox.Show(read.ToMessageShowString());
+            }
+        }
+
+        private void userButton7_Click(object sender, EventArgs e)
+        {
+            OperateResult write = siemensTcp.WriteIntoPLC("M100", new byte[] { 0xFF, 0x3C, 0x0F });
+            if(write.IsSuccess)
+            {
+                TextBoxAppendStringLine("写入成功");
+            }
+            else
+            {
+                MessageBox.Show(write.ToMessageShowString());
+            }
+        }
+
+        private void userButton10_Click(object sender, EventArgs e)
+        {
+            OperateResultBytes read = siemensTcp.ReadFromPLC(
+                new string[] { "M100", "M150", "M200", "I300" },
+                new ushort[] { 4, 4, 2, 1});
+            
+            if(read.IsSuccess)
+            {
+                int value1 = siemensTcp.GetIntFromBytes(read.Content, 0);
+                float value2 = siemensTcp.GetFloatFromBytes(read.Content, 4);
+                short value3 = siemensTcp.GetShortFromBytes(read.Content, 8);
+                byte value4 = read.Content[10];
+
+                TextBoxAppendStringLine($"[{value1},{value2}, {value3}, {value4}]");
+            }
+            else
+            {
+                MessageBox.Show(read.ToMessageShowString());
+            }
+        }
 
 
         #endregion
