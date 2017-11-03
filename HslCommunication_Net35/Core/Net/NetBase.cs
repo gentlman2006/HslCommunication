@@ -25,7 +25,7 @@ namespace HslCommunication
     /// <summary>
     /// 静态的方法支持类，提供一些网络的静态支持
     /// </summary>
-    internal static class NetSupport
+    public static class NetSupport
     {
         /// <summary>
         /// Socket传输中的缓冲池大小
@@ -139,7 +139,7 @@ namespace HslCommunication
         /// <exception cref="SocketException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="System.Security.SecurityException"></exception>
-        internal static byte[] ReadBytesFromSocket(Socket socket, int receive)
+        public static byte[] ReadBytesFromSocket(Socket socket, int receive)
         {
             return ReadBytesFromSocket(socket, receive, null, false, false);
         }
@@ -158,7 +158,7 @@ namespace HslCommunication
         /// <exception cref="SocketException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="System.Security.SecurityException"></exception>
-        internal static byte[] ReadBytesFromSocket(Socket socket, int receive, Action<long, long> report, bool reportByPercent, bool response)
+        public static byte[] ReadBytesFromSocket(Socket socket, int receive, Action<long, long> report, bool reportByPercent, bool response)
         {
             byte[] bytes_receive = new byte[receive];
             int count_receive = 0;
@@ -292,6 +292,7 @@ namespace HslCommunication
             buffer = null;
         }
 
+
         /// <summary>
         /// 检查数据是否接收完成并报告进度
         /// </summary>
@@ -336,7 +337,7 @@ namespace HslCommunication
         /// <param name="token">令牌</param>
         /// <param name="data">字节数据</param>
         /// <returns></returns>
-        internal static byte[] CommandBytes(int command, int customer, Guid token, byte[] data)
+        public static byte[] CommandBytes(int command, int customer, Guid token, byte[] data)
         {
             byte[] _temp = null;
             int _zipped = HslCommunicationCode.Hsl_Protocol_NoZipped;
@@ -394,8 +395,7 @@ namespace HslCommunication
                 return null;
             }
         }
-
-
+        
 
         /// <summary>
         /// 获取发送字节数据的实际数据，带指令头
@@ -408,6 +408,8 @@ namespace HslCommunication
         {
             return CommandBytes(HslCommunicationCode.Hsl_Protocol_User_Bytes, customer, token, data);
         }
+
+
         /// <summary>
         /// 获取发送字节数据的实际数据，带指令头
         /// </summary>
@@ -420,6 +422,8 @@ namespace HslCommunication
             if (data == null) return CommandBytes(HslCommunicationCode.Hsl_Protocol_User_String, customer, token, null);
             else return CommandBytes(HslCommunicationCode.Hsl_Protocol_User_String, customer, token, Encoding.Unicode.GetBytes(data));
         }
+
+
 
         /// <summary>
         /// 根据字符串及指令头返回数据信息
@@ -439,6 +443,8 @@ namespace HslCommunication
             }
             return result;
         }
+
+
     }
 
     #endregion
