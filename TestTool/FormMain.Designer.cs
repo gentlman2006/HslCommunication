@@ -31,6 +31,7 @@
             this.userButton1 = new HslCommunication.Controls.UserButton();
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.userButton3 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // userButton1
@@ -69,11 +70,26 @@
             this.textBox1.Size = new System.Drawing.Size(767, 30);
             this.textBox1.TabIndex = 2;
             // 
+            // userButton3
+            // 
+            this.userButton3.BackColor = System.Drawing.Color.Transparent;
+            this.userButton3.CustomerInformation = "";
+            this.userButton3.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton3.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton3.Location = new System.Drawing.Point(161, 13);
+            this.userButton3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton3.Name = "userButton3";
+            this.userButton3.Size = new System.Drawing.Size(143, 33);
+            this.userButton3.TabIndex = 3;
+            this.userButton3.UIText = "ModBus Tcp";
+            this.userButton3.Click += new System.EventHandler(this.userButton3_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(791, 554);
+            this.Controls.Add(this.userButton3);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.userButton2);
             this.Controls.Add(this.userButton1);
@@ -90,6 +106,7 @@
         private HslCommunication.Controls.UserButton userButton1;
         private HslCommunication.Controls.UserButton userButton2;
         private System.Windows.Forms.TextBox textBox1;
+        private HslCommunication.Controls.UserButton userButton3;
     }
 }
 
