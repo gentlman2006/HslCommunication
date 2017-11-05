@@ -32,6 +32,8 @@
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.userButton3 = new HslCommunication.Controls.UserButton();
+            this.userButton4 = new HslCommunication.Controls.UserButton();
+            this.userButton5 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // userButton1
@@ -84,11 +86,41 @@
             this.userButton3.UIText = "ModBus Tcp";
             this.userButton3.Click += new System.EventHandler(this.userButton3_Click);
             // 
+            // userButton4
+            // 
+            this.userButton4.BackColor = System.Drawing.Color.Transparent;
+            this.userButton4.CustomerInformation = "";
+            this.userButton4.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton4.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton4.Location = new System.Drawing.Point(161, 472);
+            this.userButton4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton4.Name = "userButton4";
+            this.userButton4.Size = new System.Drawing.Size(143, 33);
+            this.userButton4.TabIndex = 4;
+            this.userButton4.UIText = "时间测试";
+            this.userButton4.Click += new System.EventHandler(this.userButton4_Click);
+            // 
+            // userButton5
+            // 
+            this.userButton5.BackColor = System.Drawing.Color.Transparent;
+            this.userButton5.CustomerInformation = "";
+            this.userButton5.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton5.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton5.Location = new System.Drawing.Point(310, 13);
+            this.userButton5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton5.Name = "userButton5";
+            this.userButton5.Size = new System.Drawing.Size(143, 33);
+            this.userButton5.TabIndex = 5;
+            this.userButton5.UIText = "JSON测试";
+            this.userButton5.Click += new System.EventHandler(this.userButton5_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(791, 554);
+            this.Controls.Add(this.userButton5);
+            this.Controls.Add(this.userButton4);
             this.Controls.Add(this.userButton3);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.userButton2);
@@ -107,6 +139,8 @@
         private HslCommunication.Controls.UserButton userButton2;
         private System.Windows.Forms.TextBox textBox1;
         private HslCommunication.Controls.UserButton userButton3;
+        private HslCommunication.Controls.UserButton userButton4;
+        private HslCommunication.Controls.UserButton userButton5;
     }
 }
 

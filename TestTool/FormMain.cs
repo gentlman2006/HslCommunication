@@ -38,5 +38,18 @@ namespace TestTool
                 form.ShowDialog();
             }
         }
+
+        private void userButton4_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = DateTime.Now.Ticks.ToString() ;
+        }
+
+        private void userButton5_Click(object sender, EventArgs e)
+        {
+            using (TestTool.TestForm.FormJsonTest form = new TestForm.FormJsonTest())
+            {
+                form.ShowDialog();
+            }
+        }
     }
 }
