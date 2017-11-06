@@ -175,6 +175,7 @@ namespace TestTool.TestForm
             else
             {
                 MessageBox.Show(read.ToMessageShowString());
+                if(read.Content!=null)textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content);
             }
         }
 
