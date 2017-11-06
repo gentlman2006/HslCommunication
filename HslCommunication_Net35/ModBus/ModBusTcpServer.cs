@@ -23,16 +23,10 @@ namespace HslCommunication.ModBus
 
 
     /// <summary>
-    /// ModBus Tcp协议的服务器端，支持所有发送到此端口的数据，并对所有的数据提供一个中心处理方法
+    /// ModBus Tcp协议的服务器端，支持所有发送到此端口的数据，并对所有的数据提供一个中心处理方法，读取该服务器数据将返回无效数据
     /// </summary>
     public class ModBusTcpServer : NetServerBase
     {
-
-        /***************************************************************************************
-         * 
-         *    配置文件的信息应该包含信息号，地址数据解析器
-         * 
-         ****************************************************************************************/
 
 
 
@@ -52,14 +46,14 @@ namespace HslCommunication.ModBus
                 {
                     WorkSocket = socket,
                 };
-
+                
                 try
                 {
-                    state.WorkSocket.BeginReceive(state.HeadByte, state.HeadByteReceivedLength, state.HeadByte.Length, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
+                    state.WorkSocket.BeginReceive(state.HeadByte, 0, 6, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException("头子节接收失败！", ex);
+                    if(IsStarted) LogNet?.WriteException("头子节接收失败！", ex);
                 }
             }
         }
@@ -70,11 +64,12 @@ namespace HslCommunication.ModBus
 
         private void HeadReveiveCallBack(IAsyncResult ar)
         {
-            if (ar is ModBusState state)
+            if (ar.AsyncState is ModBusState state)
             {
                 try
                 {
                     int count = state.WorkSocket.EndReceive(ar);
+
                     state.HeadByteReceivedLength += count;
                     if (state.HeadByteReceivedLength < state.HeadByte.Length)
                     {
@@ -98,7 +93,7 @@ namespace HslCommunication.ModBus
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close();
                     state = null;
-                    LogNet?.WriteException("头子节接收失败！", ex);
+                    if(IsStarted) LogNet?.WriteException("头子节接收失败！", ex);
                 }
             }
         }
@@ -106,11 +101,12 @@ namespace HslCommunication.ModBus
 
         private void ContentReveiveCallBack(IAsyncResult ar)
         {
-            if (ar is ModBusState state)
+            if (ar.AsyncState is ModBusState state)
             {
                 try
                 {
                     int count = state.WorkSocket.EndReceive(ar);
+
                     state.ContentReceivedLength += count;
                     if (state.ContentReceivedLength < state.Content.Length)
                     {
@@ -134,7 +130,7 @@ namespace HslCommunication.ModBus
                         byte[] copy = null;
                         if (data[7] < 0x05)
                         {
-                            // 读取数据的情况
+                            // 读取数据的情况，返回的数据长度为0
                             copy = new byte[9];
                             Array.Copy(data, 0, copy, 0, 8);
                             copy[4] = 0x00;
@@ -142,6 +138,7 @@ namespace HslCommunication.ModBus
                         }
                         else
                         {
+                            // 数据写入情况，返回写入指令，去掉数据值
                             copy = new byte[12];
                             Array.Copy(data, 0, copy, 0, 12);
                             copy[4] = 0x00;
@@ -150,9 +147,9 @@ namespace HslCommunication.ModBus
 
                         // 回发数据
                         state.WorkSocket.BeginSend(copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback(DataSendCallBack), state: state);
-
+                        
                         // 通知处理消息
-                        OnDataReceived?.Invoke(data);
+                        if(IsStarted) OnDataReceived?.Invoke(data);
                     }
                 }
                 catch (Exception ex)
@@ -160,7 +157,7 @@ namespace HslCommunication.ModBus
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close();
                     state = null;
-                    LogNet?.WriteException("头子节接收失败！", ex);
+                    if(IsStarted) LogNet?.WriteException("头子节接收失败！", ex);
                 }
             }
         }
@@ -178,7 +175,7 @@ namespace HslCommunication.ModBus
                 {
                     state.WorkSocket?.Close();
                     state = null;
-                    LogNet?.WriteException("头子节接收失败！", ex);
+                    if(IsStarted) LogNet?.WriteException("头子节接收失败！", ex);
                 }
             }
         }

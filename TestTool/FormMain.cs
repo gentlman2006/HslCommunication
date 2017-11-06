@@ -35,7 +35,9 @@ namespace TestTool
         {
             using (TestTool.TestForm.FormModBusTcp form = new TestForm.FormModBusTcp())
             {
+                Hide();
                 form.ShowDialog();
+                Show();
             }
         }
 
