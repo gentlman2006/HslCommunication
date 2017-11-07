@@ -256,5 +256,20 @@ namespace TestTool.TestForm
 
         #endregion
 
+        private void userButton12_Click(object sender, EventArgs e)
+        {
+            // 条码写入测试
+            OperateResult write = siemensTcpNet.WriteAsciiStringIntoPLC("M110", "AKDQWDNADC", 10);
+            if (write.IsSuccess)
+
+            {
+                TextBoxAppendStringLine("写入成功");
+            }
+            else
+            {
+                MessageBox.Show(write.ToMessageShowString());
+
+            }
+        }
     }
 }
