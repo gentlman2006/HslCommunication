@@ -167,7 +167,7 @@ namespace TestTool.TestForm
 
         private void userButton9_Click(object sender, EventArgs e)
         {
-            OperateResultBytes read = siemensTcpNet.ReadFromPLC("M100", 5);
+            OperateResultBytes read = siemensTcpNet.ReadFromPLC("M100", 6);
             if (read.IsSuccess)
             {
                 TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content));
@@ -234,14 +234,14 @@ namespace TestTool.TestForm
         {
             OperateResultBytes read = siemensTcpNet.ReadFromPLC(
                 new string[] { "M100", "M150", "M200", "I300" },
-                new ushort[] { 4, 4, 2, 1});
+                new ushort[] { 1, 4, 3, 1});
             
             if(read.IsSuccess)
             {
-                int value1 = siemensTcpNet.GetIntFromBytes(read.Content, 0);
-                float value2 = siemensTcpNet.GetFloatFromBytes(read.Content, 4);
-                short value3 = siemensTcpNet.GetShortFromBytes(read.Content, 8);
-                byte value4 = read.Content[10];
+                byte value1 = read.Content[0];
+                int value2 = siemensTcpNet.GetIntFromBytes(read.Content, 1);
+                short value3 = siemensTcpNet.GetShortFromBytes(read.Content, 5);
+                byte value4 = read.Content[8];
 
                 TextBoxAppendStringLine($"[{value1},{value2}, {value3}, {value4}]");
             }
