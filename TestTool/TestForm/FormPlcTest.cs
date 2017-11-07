@@ -271,5 +271,19 @@ namespace TestTool.TestForm
 
             }
         }
+
+        private void userButton13_Click(object sender, EventArgs e)
+        {
+            OperateResultBytes read = siemensTcpNet.ReadFromPLC("M116", 10);
+            if (read.IsSuccess)
+            {
+                TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content));
+            }
+            else
+            {
+                MessageBox.Show(read.ToMessageShowString());
+                if(read.Content!=null)textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content);
+            }
+        }
     }
 }

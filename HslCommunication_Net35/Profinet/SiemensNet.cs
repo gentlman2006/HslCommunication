@@ -646,7 +646,7 @@ namespace HslCommunication.Profinet
                     return result;
                 }
 
-                if (content[20] != readCount)
+                if (content.Length < 21 || content[20] != readCount)
                 {
                     socket?.Close();
                     result.Message = "数据块长度校验失败";
