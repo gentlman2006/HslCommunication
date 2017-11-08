@@ -27,9 +27,6 @@ namespace HslCommunication.ModBus
     /// </summary>
     public class ModBusTcpServer : NetServerBase
     {
-
-
-
         #region NetServer Override
             
 
@@ -60,6 +57,19 @@ namespace HslCommunication.ModBus
 
 
         #endregion
+        
+        #region Public Members
+
+        
+        /// <summary>
+        /// 接收到数据的时候就行触发
+        /// </summary>
+        public event IEDelegate<byte[]> OnDataReceived;
+
+
+        #endregion
+
+        #region Private Method
 
 
         private void HeadReveiveCallBack(IAsyncResult ar)
@@ -79,13 +89,25 @@ namespace HslCommunication.ModBus
                     }
                     else
                     {
-                        // 头子节接收完成
-                        int ContentLength = state.HeadByte[4] * 256 + state.HeadByte[5];
-                        state.Content = new byte[ContentLength];
-
-                        // 开始接收内容
-                        state.WorkSocket.BeginReceive(state.Content, state.ContentReceivedLength, state.Content.Length - state.ContentReceivedLength,
-                            SocketFlags.None, new AsyncCallback(ContentReveiveCallBack), state);
+                        // 第一次过滤，过滤掉不是Modbus Tcp协议的
+                        if (state.HeadByte[2] == 0x00 &&
+                            state.HeadByte[3] == 0x00)
+                        {
+                            // 头子节接收完成
+                            int ContentLength = state.HeadByte[4] * 256 + state.HeadByte[5];
+                            state.Content = new byte[ContentLength];
+                            
+                            // 开始接收内容
+                            state.WorkSocket.BeginReceive(state.Content, state.ContentReceivedLength, state.Content.Length - state.ContentReceivedLength,
+                                SocketFlags.None, new AsyncCallback(ContentReveiveCallBack), state);
+                        }
+                        else
+                        {
+                            // 关闭连接，记录日志
+                            state.WorkSocket?.Close();
+                            state = null;
+                            if (IsStarted) LogNet?.WriteDebug("Received Bytes, but is was not modbus tcp");
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -149,6 +171,7 @@ namespace HslCommunication.ModBus
                         state.WorkSocket.BeginSend(copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback(DataSendCallBack), state: state);
                         
                         // 通知处理消息
+                        
                         if(IsStarted) OnDataReceived?.Invoke(data);
                     }
                 }
@@ -179,13 +202,14 @@ namespace HslCommunication.ModBus
                 }
             }
         }
+        
+        #endregion
+
+        #region Private Feilds
+        
 
 
-        /// <summary>
-        /// 接收到数据的时候就行触发
-        /// </summary>
-        public event IEDelegate<byte[]> OnDataReceived;
-
+        #endregion
 
     }
 

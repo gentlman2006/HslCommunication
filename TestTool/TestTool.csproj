@@ -76,6 +76,12 @@
     <Compile Include="TestForm\FormPlcTest.Designer.cs">
       <DependentUpon>FormPlcTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestForm\FormThreadTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm\FormThreadTest.Designer.cs">
+      <DependentUpon>FormThreadTest.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -96,6 +102,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormPlcTest.resx">
       <DependentUpon>FormPlcTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestForm\FormThreadTest.resx">
+      <DependentUpon>FormThreadTest.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
