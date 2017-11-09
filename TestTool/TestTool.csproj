@@ -76,6 +76,12 @@
     <Compile Include="TestForm\FormPlcTest.Designer.cs">
       <DependentUpon>FormPlcTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestForm\FormSeqTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm\FormSeqTest.Designer.cs">
+      <DependentUpon>FormSeqTest.cs</DependentUpon>
+    </Compile>
     <Compile Include="TestForm\FormThreadTest.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +108,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormPlcTest.resx">
       <DependentUpon>FormPlcTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestForm\FormSeqTest.resx">
+      <DependentUpon>FormSeqTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormThreadTest.resx">
       <DependentUpon>FormThreadTest.cs</DependentUpon>

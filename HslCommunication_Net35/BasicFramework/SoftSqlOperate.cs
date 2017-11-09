@@ -189,5 +189,16 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="sdr"></param>
         void LoadBySqlDataReader(SqlDataReader sdr);
+        /// <summary>
+        /// 更新数据到SQL SERVER，此处的更新可能为新增，也可以为更新，取决于数据
+        /// </summary>
+        /// <returns>是否成功的更新或新增</returns>
+        bool Update();
+        /// <summary>
+        /// 从SQL SERVER数据库删除数据对象
+        /// </summary>
+        /// <returns>是否成功的删除</returns>
+        bool Delete();
+
     }
 }

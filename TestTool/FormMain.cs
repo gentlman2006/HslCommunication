@@ -53,5 +53,13 @@ namespace TestTool
                 form.ShowDialog();
             }
         }
+
+        private void userButton6_Click(object sender, EventArgs e)
+        {
+            using (TestTool.TestForm.FormSeqTest fst = new TestForm.FormSeqTest())
+            {
+                fst.ShowDialog();
+            }
+        }
     }
 }
