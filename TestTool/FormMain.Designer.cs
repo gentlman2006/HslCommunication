@@ -35,6 +35,7 @@
             this.userButton4 = new HslCommunication.Controls.UserButton();
             this.userButton5 = new HslCommunication.Controls.UserButton();
             this.userButton6 = new HslCommunication.Controls.UserButton();
+            this.userButton7 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // userButton1
@@ -129,11 +130,26 @@
             this.userButton6.UIText = "流水号生成器";
             this.userButton6.Click += new System.EventHandler(this.userButton6_Click);
             // 
+            // userButton7
+            // 
+            this.userButton7.BackColor = System.Drawing.Color.Transparent;
+            this.userButton7.CustomerInformation = "";
+            this.userButton7.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton7.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton7.Location = new System.Drawing.Point(161, 178);
+            this.userButton7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton7.Name = "userButton7";
+            this.userButton7.Size = new System.Drawing.Size(143, 33);
+            this.userButton7.TabIndex = 7;
+            this.userButton7.UIText = "CRC校验";
+            this.userButton7.Click += new System.EventHandler(this.userButton7_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(791, 554);
+            this.Controls.Add(this.userButton7);
             this.Controls.Add(this.userButton6);
             this.Controls.Add(this.userButton5);
             this.Controls.Add(this.userButton4);
@@ -158,6 +174,7 @@
         private HslCommunication.Controls.UserButton userButton4;
         private HslCommunication.Controls.UserButton userButton5;
         private HslCommunication.Controls.UserButton userButton6;
+        private HslCommunication.Controls.UserButton userButton7;
     }
 }
 

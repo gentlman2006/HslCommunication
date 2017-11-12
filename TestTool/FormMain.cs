@@ -61,5 +61,13 @@ namespace TestTool
                 fst.ShowDialog();
             }
         }
+
+        private void userButton7_Click(object sender, EventArgs e)
+        {
+            using (TestTool.TestForm.FormCRCTest fst = new TestForm.FormCRCTest())
+            {
+                fst.ShowDialog();
+            }
+        }
     }
 }
