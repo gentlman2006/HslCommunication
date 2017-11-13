@@ -861,6 +861,29 @@ namespace HslCommunication.Profinet
             return WriteIntoPLC(address, temp);
         }
 
+
+        /// <summary>
+        /// 向PLC中写入bool数组，返回值说明，比如你写入M100,那么data[0]对应M100.0
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, bool[] data)
+        {
+            int length = data.Length % 8 == 0 ? data.Length / 8 : data.Length / 8 + 1;
+            byte[] buffer = new byte[length];
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                int index = i / 8;
+                int offect = i % 8;
+
+                if (data[i]) buffer[index] += (byte)(Math.Pow(2, offect));
+            }
+
+            return WriteIntoPLC(address, buffer);
+        }
+
         /// <summary>
         /// 向PLC中写入short数据，返回值说明
         /// </summary>

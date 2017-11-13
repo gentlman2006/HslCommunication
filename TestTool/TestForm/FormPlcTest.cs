@@ -285,5 +285,34 @@ namespace TestTool.TestForm
                 if(read.Content!=null)textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content);
             }
         }
+
+        private void userButton14_Click(object sender, EventArgs e)
+        {
+            bool[] data = new bool[10]
+            {
+                false,    // M200.0 = false
+                false,    // M200.1 = false
+                false,    // M200.2 = false
+                true,     // M200.3 = true
+                true,     // M200.4 = true
+                false,    // M200.5 = false
+                true,     // M200.6 = true
+                false,    // M200.7 = false
+                true,     // M201.0 = true
+                false     // M201.1 = false
+            };
+            data[6] = true;
+            OperateResult write = siemensTcpNet.WriteIntoPLC("M200", data);
+            if (write.IsSuccess)
+
+            {
+                TextBoxAppendStringLine("写入成功");
+            }
+            else
+            {
+                MessageBox.Show(write.ToMessageShowString());
+
+            }
+        }
     }
 }
