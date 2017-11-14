@@ -69,5 +69,13 @@ namespace TestTool
                 fst.ShowDialog();
             }
         }
+
+        private void userButton8_Click(object sender, EventArgs e)
+        {
+            using (TestTool.TestForm.FormRegisterTest form = new TestForm.FormRegisterTest())
+            {
+                form.ShowDialog();
+            }
+        }
     }
 }

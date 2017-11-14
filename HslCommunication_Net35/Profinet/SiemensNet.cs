@@ -525,6 +525,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">起始地址数组</param>
         /// <param name="count">数据长度数组</param>
         /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
         public OperateResultBytes ReadFromPLC(string[] address, ushort[] count)
         {
             if (address == null) throw new NullReferenceException("address");
@@ -533,9 +534,8 @@ namespace HslCommunication.Profinet
 
             OperateResultBytes result = new OperateResultBytes();
 
-            if (!CreateSocketAndConnect(out Socket socket, new IPEndPoint(PLCIpAddress, GetPort()), result))
+            if (!CreateSocketAndConnect(out Socket socket, new IPEndPoint(PLCIpAddress, PortRead), result))
             {
-                ChangePort();
                 return result;
             }
 
@@ -696,7 +696,7 @@ namespace HslCommunication.Profinet
             }
             result.IsSuccess = true;
             socket?.Close();
-            //所有的数据接收完成，进行返回
+            // 所有的数据接收完成，进行返回
             return result;
         }
 
