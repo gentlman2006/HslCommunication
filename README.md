@@ -22,7 +22,20 @@ Install-Package HslCommunication
 本项目的目标在于开发一个.Net下大多数软件系统都会包含了基础类库功能，实现一些常用的数据通信，日志记录等等类，以及版本类。
 
 ## 项目介绍
-[http://www.cnblogs.com/dathlin/p/7703805.html](http://www.cnblogs.com/dathlin/p/7703805.html)
+完整的项目介绍地址： [http://www.cnblogs.com/dathlin/p/7703805.html](http://www.cnblogs.com/dathlin/p/7703805.html)
+
+* [日志记录功能](http://www.cnblogs.com/dathlin/p/7691693.html)
+* [同步网络通讯功能](http://www.cnblogs.com/dathlin/p/7697782.html)
+* 文件管理引擎
+* 异步网络通讯功能
+* [三菱及西门子PLC访问](http://www.cnblogs.com/dathlin/p/7469679.html)
+* 邮件功能使用
+* [流水号生成器](http://www.cnblogs.com/dathlin/p/7811489.html)
+* [软件注册码功能](http://www.cnblogs.com/dathlin/p/7832315.html)
+* [ModBus Tcp服务器开发](http://www.cnblogs.com/dathlin/p/7782315.html)
+* 多线程任务功能
+* [CRC16校验](http://www.cnblogs.com/dathlin/p/7821808.html)
+
 
 ## 二次扩展
 基于本组件开发的一个CS架构的项目模版，该模版采用本组件进行开发，完成了账户管理，角色管理，个人文件管理，头像机制，自动升级，完善的日志等等功能。项目地址为：[https://github.com/dathlin/ClientServerProject](https://github.com/dathlin/ClientServerProject)

@@ -104,6 +104,7 @@ namespace HslCommunication.Profinet
                 }
                 result.Content = NetSupport.ReadBytesFromSocket(socket, lengh);
                 result.IsSuccess = true;
+                result.Message = "读取成功";
             }
             catch (Exception ex)
             {
@@ -695,6 +696,7 @@ namespace HslCommunication.Profinet
                 arrays_bytes.Clear();
             }
             result.IsSuccess = true;
+            result.Message = "读取成功";
             socket?.Close();
             // 所有的数据接收完成，进行返回
             return result;
