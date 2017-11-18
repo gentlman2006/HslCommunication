@@ -190,7 +190,83 @@ namespace HslCommunication.BasicFramework
         }
 
 
+        /// <summary>
+        /// 将bool数组转换到byte数组
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public static byte[] BoolArrayToByte(bool[] array)
+        {
+            if (array == null) return null;
 
+            int length = array.Length % 8 == 0 ? array.Length / 8 : array.Length / 8 + 1;
+            byte[] buffer = new byte[length];
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                int index = i / 8;
+                int offect = i % 8;
+
+                byte temp = 0;
+                switch (offect)
+                {
+                    case 0: temp = 0x01; break;
+                    case 1: temp = 0x02; break;
+                    case 2: temp = 0x04; break;
+                    case 3: temp = 0x08; break;
+                    case 4: temp = 0x10; break;
+                    case 5: temp = 0x20; break;
+                    case 6: temp = 0x40; break;
+                    case 7: temp = 0x80; break;
+                    default: break;
+                }
+
+                if (array[i]) buffer[index] += temp;
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// 从Byte数组中提取位数组
+        /// </summary>
+        /// <param name="InBytes">原先的字节数组</param>
+        /// <param name="length">想要转换的长度，如果超出自动会缩小到数组最大长度</param>
+        /// <returns></returns>
+        public static bool[] ByteToBoolArray(byte[] InBytes, int length)
+        {
+            if (InBytes == null) return null;
+
+            if (length > InBytes.Length * 8) length = InBytes.Length * 8;
+            bool[] buffer = new bool[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                int index = i / 8;
+                int offect = i % 8;
+
+                byte temp = 0;
+                switch (offect)
+                {
+                    case 0: temp = 0x01; break;
+                    case 1: temp = 0x02; break;
+                    case 2: temp = 0x04; break;
+                    case 3: temp = 0x08; break;
+                    case 4: temp = 0x10; break;
+                    case 5: temp = 0x20; break;
+                    case 6: temp = 0x40; break;
+                    case 7: temp = 0x80; break;
+                    default: break;
+                }
+
+                if ((InBytes[index] & temp) == temp)
+                {
+                    buffer[i] = true;
+                }
+            }
+
+            return buffer;
+        }
 
 
 

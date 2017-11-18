@@ -872,18 +872,7 @@ namespace HslCommunication.Profinet
         /// <returns>返回写入结果</returns>
         public OperateResult WriteIntoPLC(string address, bool[] data)
         {
-            int length = data.Length % 8 == 0 ? data.Length / 8 : data.Length / 8 + 1;
-            byte[] buffer = new byte[length];
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                int index = i / 8;
-                int offect = i % 8;
-
-                if (data[i]) buffer[index] += (byte)(Math.Pow(2, offect));
-            }
-
-            return WriteIntoPLC(address, buffer);
+            return WriteIntoPLC(address, BasicFramework.SoftBasic.BoolArrayToByte(data));
         }
 
         /// <summary>
