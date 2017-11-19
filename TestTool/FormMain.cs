@@ -77,5 +77,13 @@ namespace TestTool
                 form.ShowDialog();
             }
         }
+
+        private void userButton9_Click(object sender, EventArgs e)
+        {
+            using (TestTool.TestForm.FormFileTest form = new TestForm.FormFileTest())
+            {
+                form.ShowDialog();
+            }
+        }
     }
 }

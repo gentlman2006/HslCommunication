@@ -64,6 +64,12 @@
     <Compile Include="TestForm\FormCRCTest.Designer.cs">
       <DependentUpon>FormCRCTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestForm\FormFileTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm\FormFileTest.Designer.cs">
+      <DependentUpon>FormFileTest.cs</DependentUpon>
+    </Compile>
     <Compile Include="TestForm\FormJsonTest.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,6 +120,9 @@
     </Compile>
     <EmbeddedResource Include="TestForm\FormCRCTest.resx">
       <DependentUpon>FormCRCTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestForm\FormFileTest.resx">
+      <DependentUpon>FormFileTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormJsonTest.resx">
       <DependentUpon>FormJsonTest.cs</DependentUpon>
