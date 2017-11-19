@@ -16,6 +16,8 @@ namespace HslCommunication.BasicFramework
     /// </summary>
     public class SoftBasic
     {
+        #region MD5码计算块
+
 
         /// <summary>
         /// 获取文件的md5码
@@ -59,7 +61,11 @@ namespace HslCommunication.BasicFramework
             return BitConverter.ToString(bytes_md5).Replace("-", "");
         }
 
+        #endregion
 
+        #region 数据大小相关
+
+        
         /// <summary>
         /// 从一个字节大小返回带单位的描述
         /// </summary>
@@ -88,6 +94,12 @@ namespace HslCommunication.BasicFramework
             }
         }
 
+
+        #endregion
+
+        #region 枚举相关块
+
+
         /// <summary>
         /// 获取一个枚举类型的所有枚举值，可直接应用于组合框数据
         /// </summary>
@@ -98,7 +110,9 @@ namespace HslCommunication.BasicFramework
             return (TEnum[])Enum.GetValues(typeof(TEnum));
         }
 
+        #endregion
 
+        #region JSON数据提取相关块
 
         /// <summary>
         /// 一个泛型方法，提供json对象的数据读取
@@ -141,6 +155,11 @@ namespace HslCommunication.BasicFramework
             }
         }
 
+
+        #endregion
+
+        #region 异常错误信息格式化
+        
         /// <summary>
         /// 显示一个完整的错误信息
         /// </summary>
@@ -163,6 +182,11 @@ namespace HslCommunication.BasicFramework
                 StringResources.ExceptopnTargetSite + ex.TargetSite;
         }
 
+        #endregion
+
+        #region Hex字符串和Byte[]相互转化块
+
+
         /// <summary>
         /// 字节数据转化成16进制表示的字符串
         /// </summary>
@@ -171,13 +195,34 @@ namespace HslCommunication.BasicFramework
         /// <exception cref="NullReferenceException"></exception>
         public static string ByteToHexString(byte[] InBytes)
         {
+            return ByteToHexString(InBytes, (char)0);
+        }
+
+        /// <summary>
+        /// 字节数据转化成16进制表示的字符串
+        /// </summary>
+        /// <param name="InBytes">字节数组</param>
+        /// <param name="segment">分割符</param>
+        /// <returns>返回的字符串</returns>
+        /// <exception cref="NullReferenceException"></exception>
+        public static string ByteToHexString(byte[] InBytes, char segment)
+        {
             StringBuilder sb = new StringBuilder();
             foreach (byte InByte in InBytes)
             {
-                sb.Append(string.Format("{0:X2}", InByte));
+                if (segment == 0) sb.Append(string.Format("{0:X2}", InByte));
+                else sb.Append(string.Format("{0:X2}{1}", InByte, segment));
+            }
+
+            if (segment != 0 && sb.Length > 1 && sb[sb.Length - 1] == segment)
+            {
+                sb.Remove(sb.Length - 1, 1);
             }
             return sb.ToString();
         }
+
+
+
         /// <summary>
         /// 字符串数据转化成16进制表示的字符串
         /// </summary>
@@ -188,6 +233,40 @@ namespace HslCommunication.BasicFramework
         {
             return ByteToHexString(Encoding.Unicode.GetBytes(InString));
         }
+
+        /// <summary>
+        /// 将16进制的字符串转化成Byte数据，将检测每2个字符转化，也就是说，中间可以是任意字符
+        /// </summary>
+        /// <param name="hex"></param>
+        /// <returns></returns>
+        public static byte[] HexStringToBytes(string hex)
+        {
+            hex = hex.ToUpper();
+            List<char> data = new List<char>()
+            {
+                '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+            };
+            
+            MemoryStream ms = new MemoryStream();
+
+            for (int i = 0; i < hex.Length; i++)
+            {
+                if (data.Contains(hex[i]) && data.Contains(hex[i + 1]))
+                {
+                    // 这是一个合格的字节数据
+                    ms.WriteByte((byte)(data.IndexOf(hex[i]) * 16 + data.IndexOf(hex[i + 1])));
+                    i++;
+                }
+            }
+
+            byte[] result = ms.ToArray();
+            ms.Dispose();
+            return result;
+        }
+
+        #endregion
+
+        #region Bool[]数组和byte[]相互转化块
 
 
         /// <summary>
@@ -269,12 +348,20 @@ namespace HslCommunication.BasicFramework
         }
 
 
+        #endregion
 
+        #region 基础框架块
+        
         /// <summary>
         /// 设置或获取系统框架的版本号
         /// </summary>
         public static SystemVersion FrameworkVersion { get; set; } = new SystemVersion("1.0.2");
 
+
+        #endregion
+
+        #region 深度克隆对象
+        
         /// <summary>
         /// 使用序列化反序列化深度克隆一个对象
         /// </summary>
@@ -294,6 +381,9 @@ namespace HslCommunication.BasicFramework
                 return formatter.Deserialize(stream);
             }
         }
+
+
+        #endregion
     }
 
 }

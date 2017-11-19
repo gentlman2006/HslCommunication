@@ -116,33 +116,33 @@ namespace HslCommunication.ModBus
         private byte[] BuildReadCommand(ModBusFunctionMask mask, ushort address, ushort length)
         {
             ushort messageId = GetMessageId();
-            byte[] data = new byte[12];
-            data[0] = (byte)(messageId / 256);
-            data[1] = (byte)(messageId % 256);
-            data[5] = 0x06;
-            data[6] = station;
-            data[7] = (byte)mask;
-            data[8] = (byte)(address / 256);
-            data[9] = (byte)(address % 256);
-            data[10] = (byte)(length / 256);
-            data[11] = (byte)(length % 256);
-            return data;
+            byte[] buffer = new byte[12];
+            buffer[0] = (byte)(messageId / 256);
+            buffer[1] = (byte)(messageId % 256);
+            buffer[5] = 0x06;
+            buffer[6] = station;
+            buffer[7] = (byte)mask;
+            buffer[8] = (byte)(address / 256);
+            buffer[9] = (byte)(address % 256);
+            buffer[10] = (byte)(length / 256);
+            buffer[11] = (byte)(length % 256);
+            return buffer;
         }
 
 
         private byte[] BuildWriteOneCoil(ushort address, bool value)
         {
             ushort messageId = GetMessageId();
-            byte[] data = new byte[12];
-            data[0] = (byte)(messageId / 256);
-            data[1] = (byte)(messageId % 256);
-            data[5] = 0x06;
-            data[6] = station;
-            data[7] = (byte)ModBusFunctionMask.WriteOneCoil;
-            data[8] = (byte)(address / 256);
-            data[9] = (byte)(address % 256);
-            if (value) data[10] = 0xFF;
-            return data;
+            byte[] buffer = new byte[12];
+            buffer[0] = (byte)(messageId / 256);
+            buffer[1] = (byte)(messageId % 256);
+            buffer[5] = 0x06;
+            buffer[6] = station;
+            buffer[7] = (byte)ModBusFunctionMask.WriteOneCoil;
+            buffer[8] = (byte)(address / 256);
+            buffer[9] = (byte)(address % 256);
+            if (value) buffer[10] = 0xFF;
+            return buffer;
         }
 
         private byte[] BuildWriteOneRegister(ushort address, byte[] data)
@@ -165,41 +165,50 @@ namespace HslCommunication.ModBus
 
         private byte[] BuildWriteCoil(ushort address, bool[] value)
         {
-            byte[] buffer = BasicFramework.SoftBasic.BoolArrayToByte(value);
-            if (buffer == null) buffer = new byte[0];
+            byte[] data = BasicFramework.SoftBasic.BoolArrayToByte(value);
+            if (data == null) data = new byte[0];
 
             ushort messageId = GetMessageId();
-            byte[] data = new byte[13 + buffer.Length];
-            data[0] = (byte)(messageId / 256);
-            data[1] = (byte)(messageId % 256);
-            data[4] = (byte)((data.Length - 6) % 256);
-            data[5] = (byte)((data.Length - 6) % 256);
-            data[6] = station;
-            data[7] = (byte)ModBusFunctionMask.WriteCoil;
-            data[8] = (byte)(address / 256);
-            data[9] = (byte)(address % 256);
-            data[10] = (byte)(value.Length / 256);
-            data[11] = (byte)(value.Length % 256);
+            byte[] buffer = new byte[13 + data.Length];
+            buffer[0] = (byte)(messageId / 256);
+            buffer[1] = (byte)(messageId % 256);
+            buffer[4] = (byte)((buffer.Length - 6) % 256);
+            buffer[5] = (byte)((buffer.Length - 6) % 256);
+            buffer[6] = station;
+            buffer[7] = (byte)ModBusFunctionMask.WriteCoil;
+            buffer[8] = (byte)(address / 256);
+            buffer[9] = (byte)(address % 256);
+            buffer[10] = (byte)(value.Length / 256);
+            buffer[11] = (byte)(value.Length % 256);
 
-            data[12] = (byte)(buffer.Length);
+            buffer[12] = (byte)(data.Length);
 
-            buffer.CopyTo(data, 13);
-            return data;
+            data.CopyTo(buffer, 13);
+            return buffer;
         }
 
         private byte[] BuildWriteRegister(ushort address, byte[] data)
         {
+            if (data == null) data = new byte[0];
+
+
             ushort messageId = GetMessageId();
-            byte[] buffer = new byte[12];
+            byte[] buffer = new byte[13 + data.Length];
             buffer[0] = (byte)(messageId / 256);
             buffer[1] = (byte)(messageId % 256);
-            buffer[5] = 0x06;
+            data[4] = (byte)((data.Length - 6) % 256);
+            data[5] = (byte)((data.Length - 6) % 256);
             buffer[6] = station;
-            buffer[7] = (byte)ModBusFunctionMask.WriteOneCoil;
+            buffer[7] = (byte)ModBusFunctionMask.WriteRegister;
             buffer[8] = (byte)(address / 256);
             buffer[9] = (byte)(address % 256);
-            buffer[10] = data[1];
-            buffer[11] = data[0];
+            buffer[10] = (byte)(data.Length / 2 / 256);
+            buffer[11] = (byte)(data.Length / 2 % 256);
+
+            buffer[12] = (byte)(data.Length);
+
+            data.CopyTo(buffer, 13);
+
             return buffer;
         }
 
@@ -378,9 +387,60 @@ namespace HslCommunication.ModBus
             return ReadFromModBusServer(BuildWriteCoil(address, value));
         }
 
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">字节数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, byte[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 255) throw new ArgumentOutOfRangeException("value", "长度不能大于255。");
+            return ReadFromModBusServer(BuildWriteRegister(address, value));
+        }
 
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">short数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, short[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 128) throw new ArgumentOutOfRangeException("value", "长度不能大于128。");
 
+            byte[] buffer = new byte[value.Length * 2];
+            for (int i = 0; i < value.Length; i++)
+            {
+                buffer[2 * i + 0] = BitConverter.GetBytes(value[i])[1];
+                buffer[2 * i + 1] = BitConverter.GetBytes(value[i])[0];
+            }
 
+            return ReadFromModBusServer(BuildWriteRegister(address, buffer));
+        }
+
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ushort数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, ushort[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 128) throw new ArgumentOutOfRangeException("value", "长度不能大于128。");
+
+            byte[] buffer = new byte[value.Length * 2];
+            for (int i = 0; i < value.Length; i++)
+            {
+                buffer[2 * i + 0] = BitConverter.GetBytes(value[i])[1];
+                buffer[2 * i + 1] = BitConverter.GetBytes(value[i])[0];
+            }
+
+            return ReadFromModBusServer(BuildWriteRegister(address, buffer));
+        }
 
         #endregion
 

@@ -77,8 +77,14 @@ namespace TestTool.TestForm
         {
             tcpServer?.ServerClose();
         }
+
         #endregion
 
+        private void userButton2_Click(object sender, EventArgs e)
+        {
+            byte[] data = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(textBox3.Text);
 
+            textBox2.AppendText(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(data,'_') + Environment.NewLine);
+        }
     }
 }
