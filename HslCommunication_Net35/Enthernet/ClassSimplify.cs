@@ -44,14 +44,14 @@ namespace HslCommunication.Enthernet
         /// <param name="sendStatus">发送数据时的进度报告</param>
         /// <param name="receiveStatus">接收数据时的进度报告</param>
         /// <returns></returns>
-        public OperateResultString ReadFromServer(
+        public OperateResult<string> ReadFromServer(
             NetHandle customer,
             string send = null,
             Action<long, long> sendStatus = null,
             Action<long, long> receiveStatus = null
             )
         {
-            var result = new OperateResultString();
+            var result = new OperateResult<string>();
             var data = string.IsNullOrEmpty(send) ? new byte[0] : Encoding.Unicode.GetBytes(send);
             var temp = ReadFromServerBase(HslCommunicationCode.Hsl_Protocol_User_String, customer, data, sendStatus, receiveStatus);
             result.IsSuccess = temp.IsSuccess;
@@ -74,7 +74,7 @@ namespace HslCommunication.Enthernet
         /// <param name="sendStatus">发送数据的进度报告</param>
         /// <param name="receiveStatus">接收数据的进度报告</param>
         /// <returns></returns>
-        public OperateResultBytes ReadFromServer(
+        public OperateResult<byte[]> ReadFromServer(
             NetHandle customer,
             byte[] send,
             Action<long, long> sendStatus = null,
@@ -93,14 +93,14 @@ namespace HslCommunication.Enthernet
         /// <param name="sendStatus">发送状态的进度报告，用于显示上传进度</param>
         /// <param name="receiveStatus">接收状态的进度报告，用于显示下载进度</param>
         /// <returns></returns>
-        private OperateResultBytes ReadFromServerBase(
+        private OperateResult<byte[]> ReadFromServerBase(
             int headcode,
             int customer,
             byte[] send,
             Action<long, long> sendStatus = null,
             Action<long, long> receiveStatus = null)
         {
-            var result = new OperateResultBytes();
+            var result = new OperateResult<byte[]>();
 
             // 创建并连接套接字
             if (!CreateSocketAndConnect(out Socket socket, IP_END_POINT, result))
@@ -277,7 +277,7 @@ namespace HslCommunication.Enthernet
         {
             if (socket != null)
             {
-                OperateResultBytes result = new OperateResultBytes();
+                OperateResult result = new OperateResult();
                 if (!ReceiveAndCheckBytes(socket, out byte[] head, out byte[] content, result, null, "接收数据异常"))
                 {
                     result = null;

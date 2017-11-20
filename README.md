@@ -15,7 +15,7 @@
 Install-Package HslCommunication
 
 ## 联系作者
-* 技术支持QQ群：[592132877](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8) <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=3536325779a12224f6ceb60c6fd47ab9a69164ecb20d2384af2480b4004ebbb8"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="工业智能软件讨论区" title="工业智能软件讨论区"></a>
+* 技术支持QQ群：[592132877](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8)
 * 邮箱地址：hsl200909@163.com
 
 ## 项目目标

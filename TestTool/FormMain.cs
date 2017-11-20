@@ -85,5 +85,44 @@ namespace TestTool
                 form.ShowDialog();
             }
         }
+
+        private void userButton10_Click(object sender, EventArgs e)
+        {
+            HslCommunication.OperateResult<string> result = GetInformation("D:\\123.txt");
+            if(result.IsSuccess)
+            {
+                MessageBox.Show(result.Content);
+            }
+            else
+            {
+                MessageBox.Show("读取失败：" + result.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// 输入一个文件名，输出文件名的内容
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private HslCommunication.OperateResult<string> GetInformation(string fileName)
+        {
+            HslCommunication.OperateResult<string> result = new HslCommunication.OperateResult<string>();
+
+            try
+            {
+                using (System.IO.StreamReader sr = new System.IO.StreamReader(fileName, Encoding.UTF8))
+                {
+                    result.Content = sr.ReadToEnd();
+                    result.IsSuccess = true;
+                }
+            }
+            catch(Exception ex)
+            {
+                result.Message = ex.Message;
+            }
+
+            return result;
+        }
     }
 }

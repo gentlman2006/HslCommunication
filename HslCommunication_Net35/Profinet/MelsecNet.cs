@@ -185,9 +185,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">读取数据的起始地址</param>
         /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
         /// <returns>带数据头的字节数组</returns>
-        public OperateResultBytes ReadFromPLC(MelsecDataType type, ushort address, ushort length)
+        public OperateResult<byte[]> ReadFromPLC(MelsecDataType type, ushort address, ushort length)
         {
-            OperateResultBytes result = new OperateResultBytes();
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
             //获取指令
             byte[] _PLCCommand = GetReadCommand(type, address, length);
 
@@ -248,7 +248,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">初始地址</param>
         /// <param name="data">字符串数据信息</param>
         /// <returns>结果</returns>
-        public OperateResultBytes WriteAsciiStringIntoPLC(MelsecDataType type, ushort address, string data)
+        public OperateResult WriteAsciiStringIntoPLC(MelsecDataType type, ushort address, string data)
         {
             byte[] temp = Encoding.ASCII.GetBytes(data);
             temp = SingularTurnEven(temp);
@@ -262,7 +262,7 @@ namespace HslCommunication.Profinet
         /// <param name="data">字符串数据信息</param>
         /// <param name="length">指定写入长度，必须为偶数</param>
         /// <returns>结果</returns>
-        public OperateResultBytes WriteAsciiStringIntoPLC(MelsecDataType type, ushort address, string data, int length)
+        public OperateResult WriteAsciiStringIntoPLC(MelsecDataType type, ushort address, string data, int length)
         {
             byte[] temp = Encoding.ASCII.GetBytes(data);
             //补位到指定长度
@@ -279,7 +279,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">初始地址</param>
         /// <param name="data">字符串数据信息</param>
         /// <returns>结果</returns>
-        public OperateResultBytes WriteUnicodeStringIntoPLC(MelsecDataType type, ushort address, string data)
+        public OperateResult WriteUnicodeStringIntoPLC(MelsecDataType type, ushort address, string data)
         {
             byte[] temp = Encoding.Unicode.GetBytes(data);
             return WriteIntoPLC(type, address, temp);
@@ -293,7 +293,7 @@ namespace HslCommunication.Profinet
         /// <param name="data">字符串数据信息</param>
         /// <param name="length">指定字符串的长度</param>
         /// <returns>结果</returns>
-        public OperateResultBytes WriteUnicodeStringIntoPLC(MelsecDataType type, ushort address, string data, int length)
+        public OperateResult WriteUnicodeStringIntoPLC(MelsecDataType type, ushort address, string data, int length)
         {
             byte[] temp = Encoding.Unicode.GetBytes(data);
             //扩充指定长度的数据
@@ -311,7 +311,7 @@ namespace HslCommunication.Profinet
         /// <param name="data">通断信号的数组</param>
         /// <exception cref="Exception"></exception>
         /// <returns>结果</returns>
-        public OperateResultBytes WriteIntoPLC(MelsecDataType type, ushort address, bool[] data)
+        public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, bool[] data)
         {
             if (data.Length % 2 == 1)
             {
@@ -328,7 +328,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">初始地址</param>
         /// <param name="data">无符号的ushort数组</param>
         /// <returns>结果</returns>
-        public OperateResultBytes WriteIntoPLC(MelsecDataType type, ushort address, ushort[] data)
+        public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, ushort[] data)
         {
             byte[] temp = GetBytesFromArray(data,false);
             return WriteIntoPLC(type, address, temp);
@@ -340,7 +340,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">初始地址</param>
         /// <param name="data">有符号的short数组</param>
         /// <returns>结果</returns>
-        public OperateResultBytes WriteIntoPLC(MelsecDataType type, ushort address, short[] data)
+        public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, short[] data)
         {
             byte[] temp = GetBytesFromArray(data,false);
             return WriteIntoPLC(type, address, temp);
@@ -353,9 +353,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">初始地址</param>
         /// <param name="data">原始的字节数据</param>
         /// <returns>结果</returns>
-        public OperateResultBytes WriteIntoPLC(MelsecDataType type, ushort address, byte[] data)
+        public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, byte[] data)
         {
-            OperateResultBytes result = new OperateResultBytes();
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
             byte[] _PLCCommand = GetWriteCommand(type, address, data);
 
             Array.Copy(data, 0, _PLCCommand, 21, data.Length);

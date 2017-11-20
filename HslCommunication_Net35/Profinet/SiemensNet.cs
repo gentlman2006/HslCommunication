@@ -40,9 +40,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">读取数据的起始地址</param>
         /// <param name="lengh">读取的数据长度</param>
         /// <returns>返回读取结果</returns>
-        public OperateResultBytes ReadFromPLC(SiemensDataType type, ushort address, ushort lengh)
+        public OperateResult<byte[]> ReadFromPLC(SiemensDataType type, ushort address, ushort lengh)
         {
-            OperateResultBytes result = new OperateResultBytes();
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
 
             byte[] _PLCCommand = new byte[16];
             _PLCCommand[0] = 0x53;
@@ -126,7 +126,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回读取结果</returns>
-        public OperateResultBytes WriteAsciiStringIntoPLC(SiemensDataType type, ushort address, string data)
+        public OperateResult<byte[]> WriteAsciiStringIntoPLC(SiemensDataType type, ushort address, string data)
         {
             byte[] temp = Encoding.ASCII.GetBytes(data);
             return WriteIntoPLC(type, address, temp);
@@ -140,7 +140,7 @@ namespace HslCommunication.Profinet
         /// <param name="data">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
         /// <returns>返回读取结果</returns>
-        public OperateResultBytes WriteAsciiStringIntoPLC(SiemensDataType type, ushort address, string data, int length)
+        public OperateResult<byte[]> WriteAsciiStringIntoPLC(SiemensDataType type, ushort address, string data, int length)
         {
             byte[] temp = Encoding.ASCII.GetBytes(data);
             temp = ManageBytesLength(temp, length);
@@ -154,7 +154,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回读取结果</returns>
-        public OperateResultBytes WriteUnicodeStringIntoPLC(SiemensDataType type, ushort address, string data)
+        public OperateResult<byte[]> WriteUnicodeStringIntoPLC(SiemensDataType type, ushort address, string data)
         {
             byte[] temp = Encoding.Unicode.GetBytes(data);
             return WriteIntoPLC(type, address, temp);
@@ -168,7 +168,7 @@ namespace HslCommunication.Profinet
         /// <param name="data">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
         /// <returns>返回读取结果</returns>
-        public OperateResultBytes WriteUnicodeStringIntoPLC(SiemensDataType type, ushort address, string data, int length)
+        public OperateResult<byte[]> WriteUnicodeStringIntoPLC(SiemensDataType type, ushort address, string data, int length)
         {
             byte[] temp = Encoding.Unicode.GetBytes(data);
             temp = ManageBytesLength(temp, length * 2);
@@ -183,7 +183,7 @@ namespace HslCommunication.Profinet
         /// <param name="data">要写入的实际数据</param>
         /// <exception cref="ArgumentNullException">写入的数据不能为空</exception>
         /// <returns>返回写入结果</returns>
-        public OperateResultBytes WriteIntoPLC(SiemensDataType type, ushort address, short[] data)
+        public OperateResult<byte[]> WriteIntoPLC(SiemensDataType type, ushort address, short[] data)
         {
             return WriteIntoPLC(type, address, GetBytesFromArray(data,false));
         }
@@ -196,9 +196,9 @@ namespace HslCommunication.Profinet
         /// <param name="data">要写入的实际数据</param>
         /// <exception cref="ArgumentNullException">写入的数据不能为空</exception>
         /// <returns>返回写入结果</returns>
-        public OperateResultBytes WriteIntoPLC(SiemensDataType type, ushort address, byte[] data)
+        public OperateResult<byte[]> WriteIntoPLC(SiemensDataType type, ushort address, byte[] data)
         {
-            var result = new OperateResultBytes();
+            var result = new OperateResult<byte[]>();
             byte[] _PLCCommand = new byte[16 + data.Length];
             _PLCCommand[0] = 0x53;
             _PLCCommand[1] = 0x35;
@@ -514,7 +514,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <param name="count">读取的数量，以字节为单位</param>
         /// <returns></returns>
-        public OperateResultBytes ReadFromPLC(string address, ushort count)
+        public OperateResult<byte[]> ReadFromPLC(string address, ushort count)
         {
             return ReadFromPLC(new string[] { address }, new ushort[] { count });
         }
@@ -527,13 +527,13 @@ namespace HslCommunication.Profinet
         /// <param name="count">数据长度数组</param>
         /// <returns></returns>
         /// <exception cref="NullReferenceException"></exception>
-        public OperateResultBytes ReadFromPLC(string[] address, ushort[] count)
+        public OperateResult<byte[]> ReadFromPLC(string[] address, ushort[] count)
         {
             if (address == null) throw new NullReferenceException("address");
             if (count == null) throw new NullReferenceException("count");
             if (address.Length != count.Length) throw new Exception("两个参数的个数不统一");
 
-            OperateResultBytes result = new OperateResultBytes();
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
 
             if (!CreateSocketAndConnect(out Socket socket, new IPEndPoint(PLCIpAddress, PortRead), result))
             {

@@ -83,8 +83,7 @@ namespace HslCommunication.ModBus
 
 
         #endregion
-
-
+        
         #region Private Field
 
         private System.Net.IPEndPoint iPEndPoint;           // 服务器端的地址，包含了IP地址和端口号
@@ -93,8 +92,8 @@ namespace HslCommunication.ModBus
         private SimpleHybirdLock simpleHybird;              // 消息头递增的同步锁
 
         #endregion
-
-        #region Public Method
+        
+        #region Private Method
 
         private ushort GetMessageId()
         {
@@ -212,15 +211,21 @@ namespace HslCommunication.ModBus
             return buffer;
         }
 
+        #endregion
+
+        #region Public Method
+
+       
+
 
         /// <summary>
         /// 读写ModBus服务器的基础方法，支持任意的数据操作
         /// </summary>
         /// <param name="send">发送的字节数据</param>
         /// <returns></returns>
-        public OperateResultBytes ReadFromModBusServer(byte[] send)
+        public OperateResult<byte[]> ReadFromModBusServer(byte[] send)
         {
-            OperateResultBytes result = new OperateResultBytes();
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
             if (!CreateSocketAndConnect(out System.Net.Sockets.Socket socket, iPEndPoint, result))
             {
                 socket = null;
@@ -270,9 +275,9 @@ namespace HslCommunication.ModBus
         /// <param name="address"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        private OperateResultBytes ReadModBusBase(ModBusFunctionMask function, ushort address, ushort length)
+        private OperateResult<byte[]> ReadModBusBase(ModBusFunctionMask function, ushort address, ushort length)
         {
-            OperateResultBytes resultBytes = ReadFromModBusServer(BuildReadCommand(function, address, length));
+            OperateResult<byte[]> resultBytes = ReadFromModBusServer(BuildReadCommand(function, address, length));
             if (resultBytes.IsSuccess)
             {
                 // 二次数据处理
@@ -298,7 +303,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">读取的起始地址</param>
         /// <param name="length">读取的数据长度</param>
         /// <returns></returns>
-        public OperateResultBytes ReadCoil(ushort address, ushort length)
+        public OperateResult<byte[]> ReadCoil(ushort address, ushort length)
         {
             return ReadModBusBase(ModBusFunctionMask.ReadCoil, address, length);
         }
@@ -309,7 +314,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">读取的起始地址</param>
         /// <param name="length">读取的数据长度</param>
         /// <returns></returns>
-        public OperateResultBytes ReadDiscrete(ushort address, ushort length)
+        public OperateResult<byte[]> ReadDiscrete(ushort address, ushort length)
         {
             return ReadModBusBase(ModBusFunctionMask.ReadDiscrete, address, length);
         }
@@ -320,7 +325,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">读取的起始地址</param>
         /// <param name="length">读取的数据长度</param>
         /// <returns></returns>
-        public OperateResultBytes ReadRegister(ushort address, ushort length)
+        public OperateResult<byte[]> ReadRegister(ushort address, ushort length)
         {
             return ReadModBusBase(ModBusFunctionMask.ReadRegister, address, length);
         }

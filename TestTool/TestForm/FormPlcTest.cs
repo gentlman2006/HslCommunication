@@ -60,7 +60,7 @@ namespace TestTool.TestForm
         private void userButton1_Click(object sender, EventArgs e)
         {
             // M100-M104读取显示
-            OperateResultBytes read = melsec_net.ReadFromPLC(MelsecDataType.M, 100, 5);
+            OperateResult<byte[]> read = melsec_net.ReadFromPLC(MelsecDataType.M, 100, 5);
             if (read.IsSuccess)
             {
                 //成功读取，True代表通，False代表不通
@@ -82,7 +82,7 @@ namespace TestTool.TestForm
         {
             // M100-M104 写入测试 此处写入后M100:通 M101:断 M102:断 M103:通 M104:通
             bool[] values = new bool[] { true, false, false, true, true };
-            OperateResultBytes write = melsec_net.WriteIntoPLC(MelsecDataType.M, 200, values);
+            OperateResult write = melsec_net.WriteIntoPLC(MelsecDataType.M, 200, values);
             if (write.IsSuccess)
             {
                 TextBoxAppendStringLine("写入成功");
@@ -97,7 +97,7 @@ namespace TestTool.TestForm
         private void userButton2_Click(object sender, EventArgs e)
         {
             // D100-D104读取
-            OperateResultBytes read = melsec_net.ReadFromPLC(MelsecDataType.D, 100, 5);
+            OperateResult<byte[]> read = melsec_net.ReadFromPLC(MelsecDataType.D, 100, 5);
             if (read.IsSuccess)
             {
                 // 成功读取，提取各自的值，此处的值有个前提假设，假设PLC上的数据是有符号的数据，表示-32768-32767
@@ -132,7 +132,7 @@ namespace TestTool.TestForm
 
             short[] values = new short[5] { 1335, 8765, 1234, 4567,-2563 };
             // D100为1234,D101为8765,D102为1234,D103为4567,D104为-2563
-            OperateResultBytes write = melsec_net.WriteIntoPLC(MelsecDataType.D, 6000, values);
+            OperateResult write = melsec_net.WriteIntoPLC(MelsecDataType.D, 6000, values);
             if (write.IsSuccess)
             {
                 //成功写入
@@ -167,7 +167,7 @@ namespace TestTool.TestForm
 
         private void userButton9_Click(object sender, EventArgs e)
         {
-            OperateResultBytes read = siemensTcpNet.ReadFromPLC("M100", 6);
+            OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC("M100", 6);
             if (read.IsSuccess)
             {
                 TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content));
@@ -187,7 +187,7 @@ namespace TestTool.TestForm
             while (type < 256)
             {
                 siemensTcpNet.SetPlcType((byte)type);
-                OperateResultBytes read = siemensTcpNet.ReadFromPLC("M100", 5);
+                OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC("M100", 5);
                 if (read.IsSuccess)
                 {
                     MessageBox.Show("访问成功！1500PLC TYPE:" + type);
@@ -232,7 +232,7 @@ namespace TestTool.TestForm
 
         private void userButton10_Click(object sender, EventArgs e)
         {
-            OperateResultBytes read = siemensTcpNet.ReadFromPLC(
+            OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC(
                 new string[] { "M100", "M150", "M200", "I300" },
                 new ushort[] { 1, 4, 3, 1});
             
@@ -274,7 +274,7 @@ namespace TestTool.TestForm
 
         private void userButton13_Click(object sender, EventArgs e)
         {
-            OperateResultBytes read = siemensTcpNet.ReadFromPLC("M116", 10);
+            OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC("M116", 10);
             if (read.IsSuccess)
             {
                 TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content));
