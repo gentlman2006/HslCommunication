@@ -70,7 +70,7 @@ namespace TestTool.TestForm
 
         private void FormModBusTcp_Load(object sender, EventArgs e)
         {
-
+            comboBox1.DataSource = HslCommunication.BasicFramework.SoftBasic.GetEnumValues<HslCommunication.ModBus.ModBusFunctionMask>();
         }
         
         private void FormModBusTcp_FormClosing(object sender, FormClosingEventArgs e)
@@ -84,7 +84,31 @@ namespace TestTool.TestForm
         {
             byte[] data = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(textBox3.Text);
 
-            textBox2.AppendText(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(data,'_') + Environment.NewLine);
+            HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadFromModBusServer(data);
+            if(read.IsSuccess)
+            {
+                textBox1.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " :" +
+                HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content, ' ') + Environment.NewLine);
+            }
+            else
+            {
+                MessageBox.Show(read.ToMessageShowString());
+            }
         }
+
+
+
+
+
+        #region ModBus Tcp 客户端块
+
+
+        private ModBusTcpClient busTcpClient = new ModBusTcpClient("127.0.0.1", 502, 0xFF);   // 站号255
+
+
+
+        #endregion
+
+
     }
 }
