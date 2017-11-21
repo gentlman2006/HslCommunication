@@ -27,7 +27,7 @@ namespace TestTool
 
         private void userButton2_Click(object sender, EventArgs e)
         {
-            textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(HslCommunication.NetSupport.CommandBytes(1001,
+            textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(HslCommunication.Core.NetSupport.CommandBytes(1001,
                 new HslCommunication.NetHandle(1, 1, 21), new Guid("1275BB9A-14B2-4A96-9673-B0AF0463D474"), null));
         }
 

@@ -20,7 +20,7 @@ namespace TestTool.TestForm
         private void userButton1_Click(object sender, EventArgs e)
         {
             string[] files = System.IO.Directory.GetFiles("D:\\files", "*.txt");
-            HslCommunication.SoftMultiTask<string> softMultiTask = new HslCommunication.SoftMultiTask<string>(files, DealWithFile, 10);
+            HslCommunication.Core.SoftMultiTask<string> softMultiTask = new HslCommunication.Core.SoftMultiTask<string>(files, DealWithFile, 10);
             softMultiTask.OnExceptionOccur += SoftMultiTask_OnExceptionOccur; // 如果DealWithFile捕获了异常，就注释掉本行代码
             softMultiTask.OnReportProgress += SoftMultiTask_OnReportProgress;
         }

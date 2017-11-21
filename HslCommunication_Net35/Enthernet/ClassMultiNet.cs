@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
+using HslCommunication.Core;
 
 namespace HslCommunication.Enthernet
 {
@@ -151,7 +152,6 @@ namespace HslCommunication.Enthernet
         protected override void CloseAction()
         {
             Thread_heart_check?.Abort();
-            MessageAlerts = null;
             ClientOffline = null;
             ClientOnline = null;
             AcceptString = null;
@@ -212,11 +212,7 @@ namespace HslCommunication.Enthernet
 
         #region 事件委托块
 
-
-        /// <summary>
-        /// 服务器的异常，启动，等等一般消息产生的时候，出发此事件
-        /// </summary>
-        public event IEDelegate<string> MessageAlerts;
+        
         /// <summary>
         /// 客户端的上下限状态变更时触发，仅作为在线客户端识别
         /// </summary>

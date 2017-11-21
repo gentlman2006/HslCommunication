@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using HslCommunication.Core;
 
 namespace HslCommunication.Enthernet
 {
