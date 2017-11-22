@@ -80,11 +80,12 @@ namespace HslCommunication.ModBus
         {
             iPEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(ipAddress), port);
             simpleHybird = new SimpleHybirdLock();
+            this.station = station;
         }
 
 
         #endregion
-        
+
         #region Private Field
 
         private System.Net.IPEndPoint iPEndPoint;           // 服务器端的地址，包含了IP地址和端口号
@@ -93,7 +94,7 @@ namespace HslCommunication.ModBus
         private SimpleHybirdLock simpleHybird;              // 消息头递增的同步锁
 
         #endregion
-        
+
         #region Private Method
 
         private ushort GetMessageId()
@@ -153,7 +154,7 @@ namespace HslCommunication.ModBus
             buffer[1] = (byte)(messageId % 256);
             buffer[5] = 0x06;
             buffer[6] = station;
-            buffer[7] = (byte)ModBusFunctionMask.WriteOneCoil;
+            buffer[7] = (byte)ModBusFunctionMask.WriteOneRegister;
             buffer[8] = (byte)(address / 256);
             buffer[9] = (byte)(address % 256);
             buffer[10] = data[1];
@@ -216,8 +217,6 @@ namespace HslCommunication.ModBus
 
         #region Public Method
 
-       
-
 
         /// <summary>
         /// 读写ModBus服务器的基础方法，支持任意的数据操作
@@ -241,7 +240,7 @@ namespace HslCommunication.ModBus
 
             HslTimeOut hslTimeOut = new HslTimeOut();
             hslTimeOut.WorkSocket = socket;
-            hslTimeOut.DelayTime = 2000;
+            hslTimeOut.DelayTime = 2000;                       // 2秒内接收到数据
             try
             {
                 System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(
@@ -264,6 +263,7 @@ namespace HslCommunication.ModBus
                 return result;
             }
 
+            socket?.Close();
             result.IsSuccess = true;
             return result;
         }

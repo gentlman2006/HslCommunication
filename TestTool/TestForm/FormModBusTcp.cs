@@ -87,7 +87,7 @@ namespace TestTool.TestForm
             HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadFromModBusServer(data);
             if(read.IsSuccess)
             {
-                textBox1.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " :" +
+                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " :" +
                 HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content, ' ') + Environment.NewLine);
             }
             else
@@ -96,19 +96,93 @@ namespace TestTool.TestForm
             }
         }
 
+        private void userButton3_Click(object sender, EventArgs e)
+        {
+            // 00 00 00 00 00 06 FF 03 00 00 00 10
 
+            HslCommunication.OperateResult<byte[]> read = null;
+
+            ModBusFunctionMask mask = (ModBusFunctionMask)comboBox1.SelectedItem;
+
+            switch(mask)
+            {
+                case ModBusFunctionMask.ReadCoil:
+                    {
+                        // 读线圈
+                        read = busTcpClient.ReadCoil(ushort.Parse(textBox4.Text), ushort.Parse(textBox5.Text));
+                        break;
+                    }
+                case ModBusFunctionMask.ReadDiscrete:
+                    {
+                        // 读离散值
+                        read = busTcpClient.ReadDiscrete(ushort.Parse(textBox4.Text), ushort.Parse(textBox5.Text));
+                        break;
+                    }
+                case ModBusFunctionMask.ReadRegister:
+                    {
+                        // 读寄存器
+                        read = busTcpClient.ReadRegister(ushort.Parse(textBox4.Text), ushort.Parse(textBox5.Text));
+                        break;
+                    }
+                default:break;
+            }
+
+            if (read != null)
+            {
+                if (read.IsSuccess)
+                {
+                    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " :" +
+                    HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content, ' ') + Environment.NewLine);
+                }
+                else
+                {
+                    MessageBox.Show(read.ToMessageShowString());
+                }
+            }
+        }
 
 
 
         #region ModBus Tcp 客户端块
 
 
-        private ModBusTcpClient busTcpClient = new ModBusTcpClient("127.0.0.1", 502, 0xFF);   // 站号255
+        private ModBusTcpClient busTcpClient = new ModBusTcpClient("192.168.1.195", 502, 0xFF);   // 站号255
 
 
 
         #endregion
 
 
+
+        private void userButton4_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(textBox6.Text))
+            {
+                HslCommunication.OperateResult result = busTcpClient.WriteOneRegister(0, short.Parse(textBox6.Text));
+                MessageBox.Show(result.IsSuccess ? "写入成功！" : "写入失败");
+            }
+        }
+
+        private void userButton5_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(textBox6.Text))
+            {
+                short value = short.Parse(textBox6.Text);
+                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
+                HslCommunication.OperateResult result = busTcpClient.WriteOneRegister(0, value);
+
+
+                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
+                HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadRegister(30, 1);
+
+                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
+
+                if ((read.Content[0] * 256 + read.Content[1]) == value)
+                {
+                    busTcpClient.WriteOneRegister(0, 0);
+                    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
+                }
+            }
+        }
     }
 }

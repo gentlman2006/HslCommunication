@@ -23,20 +23,28 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 根据格式化字符串的版本号初始化
         /// </summary>
-        /// <param name="VersionString">格式化的字符串，例如：1.0.0或1.0.0.0503</param>
+        /// <param name="VersionString">格式化的字符串，例如：1.0或1.0.0或1.0.0.0503</param>
         public SystemVersion(string VersionString)
         {
             string[] temp = VersionString.Split('.');
-            if (temp.Length >= 3)
+
+            if (temp.Length >= 2)
             {
                 m_MainVersion = Convert.ToInt32(temp[0]);
                 m_SecondaryVersion = Convert.ToInt32(temp[1]);
+            }
+
+
+            if (temp.Length >= 3)
+            {
                 m_EditVersion = Convert.ToInt32(temp[2]);
 
-                if (temp.Length >= 4)
-                {
-                    m_InnerVersion = Convert.ToInt32(temp[3]);
-                }
+            }
+
+
+            if (temp.Length >= 4)
+            {
+                m_InnerVersion = Convert.ToInt32(temp[3]);
             }
         }
         /// <summary>
@@ -118,17 +126,17 @@ namespace HslCommunication.BasicFramework
         /// <returns></returns>
         public string ToString(string format)
         {
-            if(format == "C")
+            if (format == "C")
             {
                 return $"{MainVersion}.{SecondaryVersion}.{EditVersion}.{InnerVersion}";
             }
 
-            if(format == "N")
+            if (format == "N")
             {
                 return $"{MainVersion}.{SecondaryVersion}.{EditVersion}";
             }
 
-            if(format == "S")
+            if (format == "S")
             {
                 return $"{MainVersion}.{SecondaryVersion}";
             }
@@ -142,7 +150,7 @@ namespace HslCommunication.BasicFramework
         /// <returns></returns>
         public override string ToString()
         {
-            if(InnerVersion == 0)
+            if (InnerVersion == 0)
             {
                 return $"{MainVersion}.{SecondaryVersion}.{EditVersion}";
             }
@@ -157,7 +165,7 @@ namespace HslCommunication.BasicFramework
         /// <param name="SV1">第一个版本</param>
         /// <param name="SV2">第二个版本</param>
         /// <returns></returns>
-        public static bool operator ==(SystemVersion SV1, SystemVersion SV2)
+        public static bool operator == (SystemVersion SV1, SystemVersion SV2)
         {
             if (SV1.MainVersion != SV2.MainVersion)
             {
@@ -174,7 +182,7 @@ namespace HslCommunication.BasicFramework
                 return false;
             }
 
-            if(SV1.InnerVersion != SV2.InnerVersion)
+            if (SV1.InnerVersion != SV2.InnerVersion)
             {
                 return false;
             }
@@ -203,8 +211,8 @@ namespace HslCommunication.BasicFramework
             {
                 return true;
             }
-            
-            if(SV1.InnerVersion != SV2.InnerVersion)
+
+            if (SV1.InnerVersion != SV2.InnerVersion)
             {
                 return true;
             }
@@ -250,7 +258,7 @@ namespace HslCommunication.BasicFramework
                 return false;
             }
 
-            if(SV1.InnerVersion > SV2.InnerVersion)
+            if (SV1.InnerVersion > SV2.InnerVersion)
             {
                 return true;
             }
@@ -267,7 +275,7 @@ namespace HslCommunication.BasicFramework
         /// <param name="SV1"></param>
         /// <param name="SV2"></param>
         /// <returns></returns>
-        public static bool operator <(SystemVersion SV1, SystemVersion SV2)
+        public static bool operator < (SystemVersion SV1, SystemVersion SV2)
         {
             if (SV1.MainVersion < SV2.MainVersion)
             {

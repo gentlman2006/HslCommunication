@@ -41,6 +41,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.userButton3 = new HslCommunication.Controls.UserButton();
+            this.userButton4 = new HslCommunication.Controls.UserButton();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.userButton5 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
@@ -84,7 +87,7 @@
             this.textBox3.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.textBox3.Location = new System.Drawing.Point(12, 257);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(742, 26);
+            this.textBox3.Size = new System.Drawing.Size(638, 26);
             this.textBox3.TabIndex = 4;
             // 
             // userButton2
@@ -93,7 +96,7 @@
             this.userButton2.CustomerInformation = "";
             this.userButton2.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton2.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton2.Location = new System.Drawing.Point(776, 257);
+            this.userButton2.Location = new System.Drawing.Point(656, 257);
             this.userButton2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton2.Name = "userButton2";
             this.userButton2.Size = new System.Drawing.Size(107, 25);
@@ -174,18 +177,58 @@
             this.userButton3.CustomerInformation = "";
             this.userButton3.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton3.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton3.Location = new System.Drawing.Point(634, 294);
+            this.userButton3.Location = new System.Drawing.Point(617, 295);
             this.userButton3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton3.Name = "userButton3";
             this.userButton3.Size = new System.Drawing.Size(107, 25);
             this.userButton3.TabIndex = 12;
-            this.userButton3.UIText = "测试2";
+            this.userButton3.UIText = "读取";
+            this.userButton3.Click += new System.EventHandler(this.userButton3_Click);
+            // 
+            // userButton4
+            // 
+            this.userButton4.BackColor = System.Drawing.Color.Transparent;
+            this.userButton4.CustomerInformation = "";
+            this.userButton4.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton4.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton4.Location = new System.Drawing.Point(785, 240);
+            this.userButton4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton4.Name = "userButton4";
+            this.userButton4.Size = new System.Drawing.Size(107, 25);
+            this.userButton4.TabIndex = 13;
+            this.userButton4.UIText = "单寄存器写入";
+            this.userButton4.Click += new System.EventHandler(this.userButton4_Click);
+            // 
+            // textBox6
+            // 
+            this.textBox6.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBox6.Location = new System.Drawing.Point(898, 239);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(117, 26);
+            this.textBox6.TabIndex = 14;
+            // 
+            // userButton5
+            // 
+            this.userButton5.BackColor = System.Drawing.Color.Transparent;
+            this.userButton5.CustomerInformation = "";
+            this.userButton5.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton5.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton5.Location = new System.Drawing.Point(908, 272);
+            this.userButton5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton5.Name = "userButton5";
+            this.userButton5.Size = new System.Drawing.Size(107, 25);
+            this.userButton5.TabIndex = 15;
+            this.userButton5.UIText = "测试";
+            this.userButton5.Click += new System.EventHandler(this.userButton5_Click);
             // 
             // FormModBusTcp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1027, 619);
+            this.Controls.Add(this.userButton5);
+            this.Controls.Add(this.textBox6);
+            this.Controls.Add(this.userButton4);
             this.Controls.Add(this.userButton3);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.label4);
@@ -223,5 +266,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBox1;
         private HslCommunication.Controls.UserButton userButton3;
+        private HslCommunication.Controls.UserButton userButton4;
+        private System.Windows.Forms.TextBox textBox6;
+        private HslCommunication.Controls.UserButton userButton5;
     }
 }

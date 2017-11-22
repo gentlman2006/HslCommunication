@@ -251,11 +251,14 @@ namespace HslCommunication.BasicFramework
 
             for (int i = 0; i < hex.Length; i++)
             {
-                if (data.Contains(hex[i]) && data.Contains(hex[i + 1]))
+                if ((i + 1) < hex.Length)
                 {
-                    // 这是一个合格的字节数据
-                    ms.WriteByte((byte)(data.IndexOf(hex[i]) * 16 + data.IndexOf(hex[i + 1])));
-                    i++;
+                    if (data.Contains(hex[i]) && data.Contains(hex[i + 1]))
+                    {
+                        // 这是一个合格的字节数据
+                        ms.WriteByte((byte)(data.IndexOf(hex[i]) * 16 + data.IndexOf(hex[i + 1])));
+                        i++;
+                    }
                 }
             }
 
