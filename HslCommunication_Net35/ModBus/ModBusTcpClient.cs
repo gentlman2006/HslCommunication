@@ -80,6 +80,7 @@ namespace HslCommunication.ModBus
         {
             iPEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(ipAddress), port);
             simpleHybird = new SimpleHybirdLock();
+            readModbusLock = new SimpleHybirdLock();
             this.station = station;
         }
 
@@ -92,6 +93,8 @@ namespace HslCommunication.ModBus
         private ushort messageId = 1;                       // 消息头
         private byte station = 0;                           // ModBus的客户端站号
         private SimpleHybirdLock simpleHybird;              // 消息头递增的同步锁
+        private int receiveTimeOut = 5000;                  // 接收Modbus数据的超时时间
+        private SimpleHybirdLock readModbusLock;          // 读取服务器数据时候的同步锁
 
         #endregion
 
@@ -215,6 +218,25 @@ namespace HslCommunication.ModBus
 
         #endregion
 
+        #region Public 
+
+        /// <summary>
+        /// 接收数据的延时时间
+        /// </summary>
+        public int ReceiveTimeOut
+        {
+            get
+            {
+                return receiveTimeOut;
+            }
+            set
+            {
+                receiveTimeOut = value;
+            }
+        }
+
+        #endregion
+
         #region Public Method
 
 
@@ -226,18 +248,73 @@ namespace HslCommunication.ModBus
         public OperateResult<byte[]> ReadFromModBusServer(byte[] send)
         {
             OperateResult<byte[]> result = new OperateResult<byte[]>();
+
+            readModbusLock.Enter();
+
             if (!CreateSocketAndConnect(out System.Net.Sockets.Socket socket, iPEndPoint, result))
             {
+                readModbusLock.Leave();
                 socket = null;
                 return result;
             }
 
             if (!SendBytesToSocket(socket, send, result, "发送数据到服务器失败"))
             {
+                readModbusLock.Leave();
                 return result;
             }
 
 
+            HslTimeOut hslTimeOut = new HslTimeOut();
+            hslTimeOut.WorkSocket = socket;
+            hslTimeOut.DelayTime = 5000;                       // 2秒内接收到数据
+            try
+            {
+                System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(
+                    ThreadPoolCheckConnect), hslTimeOut);
+                byte[] head = NetSupport.ReadBytesFromSocket(socket, 6);
+
+                int length = head[4] * 256 + head[5];
+                byte[] data = NetSupport.ReadBytesFromSocket(socket, length);
+
+                byte[] buffer = new byte[6 + length];
+                head.CopyTo(buffer, 0);
+                data.CopyTo(buffer, 6);
+                hslTimeOut.IsSuccessful = true;
+                result.Content = buffer;
+            }
+            catch (Exception ex)
+            {
+                readModbusLock.Leave();
+                socket?.Close();
+                result.Message = "从服务器接收结果数据的时候发生错误：" + ex.Message;
+                return result;
+            }
+
+            socket?.Close();
+
+            readModbusLock.Leave();
+
+            result.IsSuccess = true;
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// 读写ModBus服务器的基础方法，支持任意的数据操作
+        /// </summary>
+        /// <param name="socket">网络服务数据</param>
+        /// <param name="send">发送的字节数据</param>
+        /// <param name="result">结果对象</param>
+        /// <returns></returns>
+        private bool ReadFromModBusSocket(System.Net.Sockets.Socket socket,byte[] send,OperateResult<byte[]> result)
+        {
+            if (!SendBytesToSocket(socket, send, result, "发送数据到服务器失败"))
+            {
+                return false;
+            }
+            
             HslTimeOut hslTimeOut = new HslTimeOut();
             hslTimeOut.WorkSocket = socket;
             hslTimeOut.DelayTime = 2000;                       // 2秒内接收到数据
@@ -260,13 +337,17 @@ namespace HslCommunication.ModBus
             {
                 socket?.Close();
                 result.Message = "从服务器接收结果数据的时候发生错误：" + ex.Message;
-                return result;
+                return false;
             }
-
-            socket?.Close();
-            result.IsSuccess = true;
-            return result;
+            
+            return true;
         }
+
+
+
+
+
+
 
 
         /// <summary>

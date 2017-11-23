@@ -33,12 +33,17 @@ Install-Package HslCommunication
 * [流水号生成器](http://www.cnblogs.com/dathlin/p/7811489.html)
 * [软件注册码功能](http://www.cnblogs.com/dathlin/p/7832315.html)
 * [ModBus Tcp服务器开发](http://www.cnblogs.com/dathlin/p/7782315.html)
+* [ModBus Tcp客户端开发](http://www.cnblogs.com/dathlin/p/7885368.html)
 * 多线程任务功能
 * [CRC16校验](http://www.cnblogs.com/dathlin/p/7821808.html)
 
 
 ## 二次扩展
-基于本组件开发的一个CS架构的项目模版，该模版采用本组件进行开发，完成了账户管理，角色管理，个人文件管理，头像机制，自动升级，完善的日志等等功能。项目地址为：[https://github.com/dathlin/ClientServerProject](https://github.com/dathlin/ClientServerProject)
+* 基于本组件开发的一个CS架构的项目模版，该模版采用本组件进行开发，完成了账户管理，角色管理，个人文件管理，头像机制，自动升级，完善的日志等等功能。项目地址为：[https://github.com/dathlin/ClientServerProject](https://github.com/dathlin/ClientServerProject)
+
+* 基于本组件开发的一个Modbus Tcp测试工具，可以方便的测试客户端和服务端功能。[https://github.com/dathlin/ModBusTcpTools](https://github.com/dathlin/ModBusTcpTools)
+
+* 基本本组件开发的一个西门子PLC后台读取显示数据，并推送给在线客户端显示实时曲线的示例项目。[https://github.com/dathlin/RemoteMonitor](https://github.com/dathlin/RemoteMonitor)
 
 ## 代码贡献
 热烈欢迎对本项目的代码提出改进意见，可以发起Pull Request，对于代码量贡献较多的小伙伴，会有额外的组件使用权，并在特别感谢里写明。

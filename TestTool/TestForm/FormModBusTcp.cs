@@ -82,13 +82,13 @@ namespace TestTool.TestForm
 
         private void userButton2_Click(object sender, EventArgs e)
         {
-            byte[] data = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(textBox3.Text);
+            byte[] data = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes("00 00 00 00 00 06 00 03 00 00 00 03");
 
             HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadFromModBusServer(data);
             if(read.IsSuccess)
             {
-                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " :" +
-                HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content, ' ') + Environment.NewLine);
+                // 获取结果，并转化为Hex字符串，方便显示
+                string result = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content, ' ');
             }
             else
             {
@@ -144,15 +144,145 @@ namespace TestTool.TestForm
 
 
         #region ModBus Tcp 客户端块
-
-
+        private void userButton11_Click(object sender, EventArgs e)
+        {
+            HslCommunication.OperateResult write = busTcpClient.WriteOneCoil(0, true);
+            if (write.IsSuccess)
+            {
+                // 写入成功
+                textBox1.Text = "写入成功";
+            }
+            else
+            {
+                MessageBox.Show(write.ToMessageShowString());
+            }
+        }
+        private void userButton12_Click(object sender, EventArgs e)
+        {
+            // 0x00为高位，0x10为低位
+            HslCommunication.OperateResult write = busTcpClient.WriteOneRegister(0, 0x00, 0x10);
+            if (write.IsSuccess)
+            {
+                // 写入成功
+                textBox1.Text = "写入成功";
+            }
+            else
+            {
+                MessageBox.Show(write.ToMessageShowString());
+            }
+        }
+        private void userButton13_Click(object sender, EventArgs e)
+        {
+            // 0x00为高位，0x10为低位
+            HslCommunication.OperateResult write = busTcpClient.WriteCoil(0, 0x00, 0x10);
+            if (read.IsSuccess)
+            {
+                // 写入成功
+                textBox1.Text = "写入成功";
+            }
+            else
+            {
+                MessageBox.Show(read.ToMessageShowString());
+            }
+        }
         private ModBusTcpClient busTcpClient = new ModBusTcpClient("192.168.1.195", 502, 0xFF);   // 站号255
 
 
 
         #endregion
 
+        private void userButton8_Click(object sender,EventArgs e)
+        {
+            HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadDiscrete(0, 10);
+            if(read.IsSuccess)
+            {
+                // 共返回2个字节，以下展示手动处理位，分别获取10和线圈的通断情况
+                bool coil_0 = (read.Content[0] & 0x01) == 0x01;
+                bool coil_1 = (read.Content[0] & 0x02) == 0x02;
+                bool coil_2 = (read.Content[0] & 0x04) == 0x04;
+                bool coil_3 = (read.Content[0] & 0x08) == 0x08;
+                bool coil_4 = (read.Content[0] & 0x10) == 0x10;
+                bool coil_5 = (read.Content[0] & 0x20) == 0x20;
+                bool coil_6 = (read.Content[0] & 0x40) == 0x40;
+                bool coil_7 = (read.Content[0] & 0x80) == 0x80;
+                bool coil_8 = (read.Content[1] & 0x01) == 0x01;
+                bool coil_9 = (read.Content[1] & 0x02) == 0x02;
+            }
+            else
+            {
+                MessageBox.Show(read.ToMessageShowString());
+            }
+        }
 
+        private void userButton9_Click(object sender, EventArgs e)
+        {
+            HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadDiscrete(0, 10);
+            if (read.IsSuccess)
+            {
+                // 共返回2个字节，一次性获取所有节点的通断
+                bool[] result = HslCommunication.BasicFramework.SoftBasic.ByteToBoolArray(read.Content, 10);
+                bool coil_0 = result[0];
+                bool coil_1 = result[1];
+                bool coil_2 = result[2];
+                bool coil_3 = result[3];
+                bool coil_4 = result[4];
+                bool coil_5 = result[5];
+                bool coil_6 = result[6];
+                bool coil_7 = result[7];
+                bool coil_8 = result[8];
+                bool coil_9 = result[9];
+            }
+            else
+            {
+                MessageBox.Show(read.ToMessageShowString());
+            }
+        }
+
+        private void userButton10_Click(object sender, EventArgs e)
+        {
+            HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadRegister(0, 10);
+            if (read.IsSuccess)
+            {
+                // 共返回20个字节，每个数据2个字节，高位在前，低位在后
+                // 在数据解析前需要知道里面到底存了什么类型的数据，所以需要进行一些假设：
+                // 前两个字节是short数据类型
+                byte[] buffer = new byte[2];
+                buffer[0] = read.Content[1];
+                buffer[1] = read.Content[0];
+
+                short value1 = BitConverter.ToInt16(buffer, 0);
+                // 接下来的2个字节是ushort类型
+                buffer = new byte[2];
+                buffer[0] = read.Content[3];
+                buffer[1] = read.Content[2];
+
+                ushort value2 = BitConverter.ToUInt16(buffer, 0);
+                // 接下来的4个字节是int类型
+                buffer = new byte[4];
+                buffer[0] = read.Content[7];
+                buffer[1] = read.Content[6];
+                buffer[2] = read.Content[5];
+                buffer[3] = read.Content[4];
+
+                int value3 = BitConverter.ToInt32(buffer, 0);
+                // 接下来的4个字节是float类型
+                buffer = new byte[4];
+                buffer[0] = read.Content[11];
+                buffer[1] = read.Content[10];
+                buffer[2] = read.Content[9];
+                buffer[3] = read.Content[8];
+
+                float value4 = BitConverter.ToSingle(buffer, 0);
+                // 接下来的全部字节，共8个字节是规格信息
+                string speci = Encoding.ASCII.GetString(read.Content, 12, 8);
+
+                // 已经提取完所有的数据
+            }
+            else
+            {
+                MessageBox.Show(read.ToMessageShowString());
+            }
+        }
 
         private void userButton4_Click(object sender, EventArgs e)
         {
