@@ -285,9 +285,9 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                readModbusLock.Leave();
                 socket?.Close();
                 result.Message = "从服务器接收结果数据的时候发生错误：" + ex.Message;
+                readModbusLock.Leave();
                 return result;
             }
 

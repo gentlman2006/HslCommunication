@@ -178,6 +178,94 @@ namespace HslCommunication.Profinet
     /// </summary>
     public sealed class MelsecNet : MelsecNetBase
     {
+
+
+
+        /// <summary>
+        /// 解析数据地址
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <param name="type">类型</param>
+        /// <param name="startAddress">其实地址</param>
+        /// <param name="result">结果数据对象</param>
+        /// <returns></returns>
+        private bool AnalysisAddress(string address, out MelsecDataType type, out ushort startAddress, OperateResult result)
+        {
+            try
+            {
+                switch(address[0])
+                {
+                    case 'M':
+                    case 'm':
+                        {
+                            type = MelsecDataType.M;
+                            break;
+                        }
+                    case 'X':
+                    case 'x':
+                        {
+                            type = MelsecDataType.X;
+                            break;
+                        }
+                    case 'Y':
+                    case 'y':
+                        {
+                            type = MelsecDataType.Y;
+                            break;
+                        }
+                    case 'D':
+                    case 'd':
+                        {
+                            type = MelsecDataType.D;
+                            break;
+                        }
+                    case 'W':
+                    case 'w':
+                        {
+                            type = MelsecDataType.W;
+                            break;
+                        }
+                    case 'L':
+                    case 'l':
+                        {
+                            type = MelsecDataType.L;
+                            break;
+                        }
+                    default:throw new Exception("输入的类型不支持，请重新输入");
+                }
+                startAddress = Convert.ToUInt16(address.Substring(1));
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                type = null;
+                startAddress = 0;
+                return false;
+            }
+            return true;
+        }
+
+
+        /// <summary>
+        /// 从三菱PLC中读取想要的数据，返回读取结果
+        /// </summary>
+        /// <param name="address">字符串表示形式，X100，Y100，M100，D100，W100，L100</param>
+        /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> ReadFromPLC(string address, ushort length)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return ReadFromPLC(type, startAddress, length);
+        }
+
+
+
+
+
         /// <summary>
         /// 从三菱PLC中读取想要的数据，返回读取结果
         /// </summary>

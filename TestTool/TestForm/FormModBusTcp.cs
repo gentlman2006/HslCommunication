@@ -173,18 +173,53 @@ namespace TestTool.TestForm
         }
         private void userButton13_Click(object sender, EventArgs e)
         {
-            // 0x00为高位，0x10为低位
-            HslCommunication.OperateResult write = busTcpClient.WriteCoil(0, 0x00, 0x10);
-            if (read.IsSuccess)
+            // 线圈0为True，线圈1为false，线圈2为true.....等等，以此类推，数组长度多少，就写入多少线圈
+            bool[] value = new bool[] { true, false, true, true, false, false };
+            HslCommunication.OperateResult write = busTcpClient.WriteCoil(0, value);
+            if (write.IsSuccess)
             {
                 // 写入成功
                 textBox1.Text = "写入成功";
             }
             else
             {
-                MessageBox.Show(read.ToMessageShowString());
+                MessageBox.Show(write.ToMessageShowString());
             }
         }
+        private void userButton14_Click(object sender, EventArgs e)
+        {
+            ushort[] value = new ushort[] { 46789, 467, 12345 };
+            HslCommunication.OperateResult write = busTcpClient.WriteRegister(0, value);
+            if (write.IsSuccess)
+            {
+                // 写入成功
+                textBox1.Text = "写入成功";
+            }
+            else
+            {
+                MessageBox.Show(write.ToMessageShowString());
+            }
+        }
+
+        private void userButton15_Click(object sender, EventArgs e)
+        {
+            int value = 12345678;// 等待写入的一个数据
+            byte[] buffer = BitConverter.GetBytes(value);
+            Array.Reverse(buffer);  // 这个是必须的
+
+            HslCommunication.OperateResult write = busTcpClient.WriteRegister(0, buffer);
+            if (write.IsSuccess)
+            {
+                // 写入成功
+                textBox1.Text = "写入成功";
+            }
+            else
+            {
+                MessageBox.Show(write.ToMessageShowString());
+            }
+        }
+
+
         private ModBusTcpClient busTcpClient = new ModBusTcpClient("192.168.1.195", 502, 0xFF);   // 站号255
 
 
