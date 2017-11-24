@@ -357,5 +357,14 @@ namespace TestTool.TestForm
                 }
             }
         }
+
+        private void userButton6_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                HslCommunication.OperateResult result = busTcpClient.WriteRegister(0, new short[] { 0, 0, 0, 0 });
+                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + result.IsSuccess + Environment.NewLine);
+            }
+        }
     }
 }

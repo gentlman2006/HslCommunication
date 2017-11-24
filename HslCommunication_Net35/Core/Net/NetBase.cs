@@ -2418,9 +2418,19 @@ namespace HslCommunication.Core
         /// 获取主要工作的网络服务
         /// </summary>
         /// <returns></returns>
-        protected Socket GetWorkSocket()
+        protected Socket GetWorkSocket(out OperateResult connect)
         {
-            if (WorkSocket == null || !WorkSocket.Connected) ConnectServer();
+            if (WorkSocket == null || !WorkSocket.Connected)
+            {
+                connect = ConnectServer();
+            }
+            else
+            {
+                connect = new OperateResult()
+                {
+                    IsSuccess = true,
+                };
+            }
             return WorkSocket;
         }
 

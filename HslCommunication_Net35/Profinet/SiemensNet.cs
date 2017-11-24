@@ -575,7 +575,12 @@ namespace HslCommunication.Profinet
             }
             else
             {
-                socket = GetWorkSocket();
+                socket = GetWorkSocket(out OperateResult connect);
+                if(!connect.IsSuccess)
+                {
+                    result.Message = connect.Message;
+                    return result;
+                }
             }
 
 
@@ -769,7 +774,12 @@ namespace HslCommunication.Profinet
             }
             else
             {
-                socket = GetWorkSocket();
+                socket = GetWorkSocket(out OperateResult connect);
+                if(!connect.IsSuccess)
+                {
+                    result.Message = connect.Message;
+                    return result;
+                }
             }
 
 
@@ -1002,7 +1012,12 @@ namespace HslCommunication.Profinet
             }
             else
             {
-                socket = GetWorkSocket();
+                socket = GetWorkSocket(out OperateResult connect);
+                if(!connect.IsSuccess)
+                {
+                    result.Message = connect.Message;
+                    return result;
+                }
             }
 
             serverInterfaceLock.Enter();

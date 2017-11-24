@@ -173,7 +173,7 @@ namespace HslCommunication.ModBus
             byte[] buffer = new byte[13 + data.Length];
             buffer[0] = (byte)(messageId / 256);
             buffer[1] = (byte)(messageId % 256);
-            buffer[4] = (byte)((buffer.Length - 6) % 256);
+            buffer[4] = (byte)((buffer.Length - 6) / 256);
             buffer[5] = (byte)((buffer.Length - 6) % 256);
             buffer[6] = station;
             buffer[7] = (byte)ModBusFunctionMask.WriteCoil;
@@ -197,8 +197,8 @@ namespace HslCommunication.ModBus
             byte[] buffer = new byte[13 + data.Length];
             buffer[0] = (byte)(messageId / 256);
             buffer[1] = (byte)(messageId % 256);
-            data[4] = (byte)((data.Length - 6) % 256);
-            data[5] = (byte)((data.Length - 6) % 256);
+            buffer[4] = (byte)((buffer.Length - 6) / 256);
+            buffer[5] = (byte)((buffer.Length - 6) % 256);
             buffer[6] = station;
             buffer[7] = (byte)ModBusFunctionMask.WriteRegister;
             buffer[8] = (byte)(address / 256);
@@ -257,8 +257,14 @@ namespace HslCommunication.ModBus
             }
             else
             {
-                socket = GetWorkSocket();
+                socket = GetWorkSocket(out OperateResult connect);
+                if(!connect.IsSuccess)
+                {
+                    result.Message = connect.Message;
+                    return result;
+                }
             }
+            
 
             serverInterfaceLock.Enter();
 
