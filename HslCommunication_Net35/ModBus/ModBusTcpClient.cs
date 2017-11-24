@@ -249,6 +249,7 @@ namespace HslCommunication.ModBus
             System.Net.Sockets.Socket socket = null;
             if (!isSocketInitialization)
             {
+                // 短连接模式，重新创建网络连接
                 if (!CreateSocketAndConnect(out socket, GetIPEndPoint(), result))
                 {
                     socket = null;
@@ -257,6 +258,7 @@ namespace HslCommunication.ModBus
             }
             else
             {
+                // 长连接模式，重新利用原先的套接字，如果这个套接字被Close了，会重新连接
                 socket = GetWorkSocket(out OperateResult connect);
                 if(!connect.IsSuccess)
                 {

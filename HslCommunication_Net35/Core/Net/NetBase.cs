@@ -2292,7 +2292,7 @@ namespace HslCommunication.Core
     #region 双模式客户端基类
 
     /// <summary>
-    /// 双模式客户端基类，允许实现两种模式，单请求模式和共享请求模式
+    /// 双模式客户端基类，允许实现两种模式，短连接和长连接的机制
     /// </summary>
     public abstract class DoubleModeNetBase : NetBase
     {
@@ -2325,12 +2325,12 @@ namespace HslCommunication.Core
 
         #endregion
 
-        #region 启动和关闭服务
+        #region Connect And Close
 
         /// <summary>
-        /// 连接到服务器
+        /// 切换短连接模式到长连接模式，后面的每次请求都共享一个通道
         /// </summary>
-        /// <returns>返回连接结果</returns>
+        /// <returns>返回连接结果，如果失败的话，包含失败信息</returns>
         public OperateResult ConnectServer()
         {
             isSocketInitialization = true;
@@ -2354,6 +2354,7 @@ namespace HslCommunication.Core
                 }
                 else
                 {
+                    // 初始化成功
                     result.IsSuccess = true;
                 }
             }
@@ -2365,7 +2366,7 @@ namespace HslCommunication.Core
 
 
         /// <summary>
-        /// 在共享模式下，断开服务器的连接
+        /// 在长连接模式下，断开服务器的连接，并切换到短连接模式
         /// </summary>
         public OperateResult ConnectClose()
         {
@@ -2373,22 +2374,24 @@ namespace HslCommunication.Core
             isSocketInitialization = false;
 
             // 额外操作
-            ExtraOnDisconnect(WorkSocket, result);
+            result.IsSuccess = ExtraOnDisconnect(WorkSocket, result);
             // 关闭信息
             WorkSocket?.Close();
-
+            WorkSocket = null;
             return result;
         }
 
-        
+
         #endregion
 
-        #region 初始化及清理操作
+        #region Virtual Method
 
 
         /// <summary>
         /// 连接上服务器后需要进行的初始化操作
         /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="result">结果数据对象</param>
         /// <returns></returns>
         protected virtual bool InitilizationOnConnect(Socket socket, OperateResult result)
         {
@@ -2398,11 +2401,19 @@ namespace HslCommunication.Core
         /// <summary>
         /// 在将要和服务器进行断开的情况下额外的操作
         /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="result">结果对象</param>
         /// <returns></returns>
         protected virtual bool ExtraOnDisconnect(Socket socket, OperateResult result)
         {
             return true;
         }
+
+
+
+        #endregion
+
+        #region Protect Method
 
         /// <summary>
         /// 获取最终连接的网络点

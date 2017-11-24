@@ -14,6 +14,8 @@ namespace HslCommunication.Profinet
     /// </summary>
     public class MelsecNetBase : PlcNetBase
     {
+        #region Public Members
+        
         /// <summary>
         /// 获取或设置PLC所在的网络号，一般都为0
         /// </summary>
@@ -22,6 +24,12 @@ namespace HslCommunication.Profinet
         /// 获取或设置PLC所在网络的站号，一般都为0
         /// </summary>
         public byte NetworkStationNumber { get; set; } = 0x00;
+
+
+        #endregion
+
+        #region Protect Method
+
         /// <summary>
         /// 当读取位数据时，进行相对的转化
         /// </summary>
@@ -97,30 +105,31 @@ namespace HslCommunication.Profinet
         protected byte[] GetReadCommand(MelsecDataType type, ushort address, ushort length)
         {
             byte[] _PLCCommand = new byte[21];
-            //默认信息----注意：高低字节交错
-            _PLCCommand[0] = 0x50;//副标题
+            // 默认信息----注意：高低字节交错
+            _PLCCommand[0] = 0x50;// 副标题
             _PLCCommand[1] = 0x00;
-            _PLCCommand[2] = NetworkNumber;//网络号
-            _PLCCommand[3] = 0xFF;//PLC编号
-            _PLCCommand[4] = 0xFF;//目标模块IO编号
+            _PLCCommand[2] = NetworkNumber;// 网络号
+            _PLCCommand[3] = 0xFF;// PLC编号
+            _PLCCommand[4] = 0xFF;// 目标模块IO编号
             _PLCCommand[5] = 0x03;
-            _PLCCommand[6] = NetworkStationNumber;//目标模块站号
-            _PLCCommand[7] = 0x0C;//请求数据长度
+            _PLCCommand[6] = NetworkStationNumber;// 目标模块站号
+            _PLCCommand[7] = 0x0C;// 请求数据长度
             _PLCCommand[8] = 0x00;
-            _PLCCommand[9] = 0x0A;//CPU监视定时器
+            _PLCCommand[9] = 0x0A;// CPU监视定时器
             _PLCCommand[10] = 0x00;
-            _PLCCommand[11] = 0x01;//批量读取数据命令
+            _PLCCommand[11] = 0x01;// 批量读取数据命令
             _PLCCommand[12] = 0x04;
-            _PLCCommand[13] = type.DataType;//一点为单位成批读取
+            _PLCCommand[13] = type.DataType;// 一点为单位成批读取
             _PLCCommand[14] = 0x00;
-            _PLCCommand[15] = (byte)(address % 256); ;//起始地址的地位
+            _PLCCommand[15] = (byte)(address % 256);// 起始地址的地位
             _PLCCommand[16] = (byte)(address / 256);
             _PLCCommand[17] = 0x00;
-            _PLCCommand[18] = type.DataCode;//指明读取的数据
-            _PLCCommand[19] = (byte)(length % 256);//软元件长度的地位
+            _PLCCommand[18] = type.DataCode;// 指明读取的数据
+            _PLCCommand[19] = (byte)(length % 256);// 软元件长度的地位
             _PLCCommand[20] = (byte)(length / 256);
             return _PLCCommand;
         }
+
         /// <summary>
         /// 根据类型地址以及需要写入的数据来生成指令头
         /// </summary>
@@ -132,42 +141,46 @@ namespace HslCommunication.Profinet
         {
             byte[] _PLCCommand = new byte[21 + data.Length];
 
-            //默认信息----注意：高低字节交错
-            _PLCCommand[0] = 0x50;//副标题
+            // 默认信息----注意：高低字节交错
+            _PLCCommand[0] = 0x50;// 副标题
             _PLCCommand[1] = 0x00;
-            _PLCCommand[2] = NetworkNumber;//网络号
-            _PLCCommand[3] = 0xFF;//PLC编号
-            _PLCCommand[4] = 0xFF;//目标模块IO编号
+            _PLCCommand[2] = NetworkNumber;// 网络号
+            _PLCCommand[3] = 0xFF;// PLC编号
+            _PLCCommand[4] = 0xFF;// 目标模块IO编号
             _PLCCommand[5] = 0x03;
-            _PLCCommand[6] = NetworkStationNumber;//目标模块站号
+            _PLCCommand[6] = NetworkStationNumber;// 目标模块站号
 
-            _PLCCommand[7] = (byte)((_PLCCommand.Length - 9) % 256);//请求数据长度
+            _PLCCommand[7] = (byte)((_PLCCommand.Length - 9) % 256);// 请求数据长度
             _PLCCommand[8] = (byte)((_PLCCommand.Length - 9) / 256); ;
-            _PLCCommand[9] = 0x0A;//CPU监视定时器
+            _PLCCommand[9] = 0x0A;// CPU监视定时器
             _PLCCommand[10] = 0x00;
-            _PLCCommand[11] = 0x01;//批量读取数据命令
+            _PLCCommand[11] = 0x01;// 批量读取数据命令
             _PLCCommand[12] = 0x14;
-            _PLCCommand[13] = type.DataType;//一点为单位成批读取
+            _PLCCommand[13] = type.DataType;// 一点为单位成批读取
             _PLCCommand[14] = 0x00;
-            _PLCCommand[15] = (byte)(address % 256); ;//起始地址的地位
+            _PLCCommand[15] = (byte)(address % 256); ;// 起始地址的地位
             _PLCCommand[16] = (byte)(address / 256);
             _PLCCommand[17] = 0x00;
-            _PLCCommand[18] = type.DataCode;//指明写入的数据
+            _PLCCommand[18] = type.DataCode;// 指明写入的数据
 
             if (type.DataType == 1)
             {
-                _PLCCommand[19] = (byte)(data.Length * 2 % 256);//软元件长度的地位
+                _PLCCommand[19] = (byte)(data.Length * 2 % 256);// 软元件长度的地位
                 _PLCCommand[20] = (byte)(data.Length * 2 / 256);
             }
             else
             {
-                _PLCCommand[19] = (byte)(data.Length / 2 % 256);//软元件长度的地位
+                _PLCCommand[19] = (byte)(data.Length / 2 % 256);// 软元件长度的地位
                 _PLCCommand[20] = (byte)(data.Length / 2 / 256);
             }
 
             Array.Copy(data, 0, _PLCCommand, 21, data.Length);
             return _PLCCommand;
         }
+
+
+        #endregion
+
     }
 
 
@@ -178,7 +191,17 @@ namespace HslCommunication.Profinet
     /// </summary>
     public sealed class MelsecNet : MelsecNetBase
     {
+        #region Constructor
 
+        /// <summary>
+        /// 实例化一个连接对象
+        /// </summary>
+        public MelsecNet()
+        {
+
+        }
+
+        #endregion
 
 
         /// <summary>
