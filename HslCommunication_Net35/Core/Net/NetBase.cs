@@ -550,10 +550,7 @@ namespace HslCommunication.Core
          ****************************************************************************/
 
 
-
-
-
-
+        
 
         /// <summary>
         /// 创建socket对象并尝试连接终结点，如果异常，则结束通信
@@ -583,10 +580,10 @@ namespace HslCommunication.Core
                 timeout.IsSuccessful = true;
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
-                result.Message = StringResources.ConnectedFailed;
-                LogNet?.WriteError(StringResources.ConnectedFailed);
+                result.Message = CombineExceptionString(StringResources.ConnectedFailed, ex.Message);
+                LogNet?.WriteError(CombineExceptionString(StringResources.ConnectedFailed, ex.Message));
                 socket?.Close();
                 socket = null;
                 return false;
@@ -2291,5 +2288,146 @@ namespace HslCommunication.Core
     }
 
     #endregion
-    
+
+    #region 双模式客户端基类
+
+    /// <summary>
+    /// 双模式客户端基类，允许实现两种模式，单请求模式和共享请求模式
+    /// </summary>
+    public abstract class DoubleModeNetBase : NetBase
+    {
+        #region Constructor
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        public DoubleModeNetBase()
+        {
+            serverInterfaceLock = new SimpleHybirdLock();
+        }
+
+        #endregion
+
+        #region Protect Members
+
+        /// <summary>
+        /// 与服务器交互时候的网络锁
+        /// </summary>
+        protected SimpleHybirdLock serverInterfaceLock;
+        /// <summary>
+        /// 指示连接模式，false为单请求，true为共享请求
+        /// </summary>
+        protected bool isSocketInitialization = false;
+        /// <summary>
+        /// 服务器的连接端口
+        /// </summary>
+        protected IPEndPoint serverEndPoint = null;
+
+        #endregion
+
+        #region 启动和关闭服务
+
+        /// <summary>
+        /// 连接到服务器
+        /// </summary>
+        /// <returns>返回连接结果</returns>
+        public OperateResult ConnectServer()
+        {
+            isSocketInitialization = true;
+            OperateResult result = new OperateResult();
+
+            if (!CreateSocketAndConnect(out Socket socket, GetIPEndPoint(), result))
+            {
+                // 创建失败
+                socket = null;
+            }
+            else
+            {
+                // 创建成功
+                WorkSocket?.Close();
+                WorkSocket = socket;
+                // 发送初始化数据
+                if (!InitilizationOnConnect(socket, result))
+                {
+                    // 初始化失败，重新标记连接失败
+                    WorkSocket?.Close();
+                }
+                else
+                {
+                    result.IsSuccess = true;
+                }
+            }
+
+            return result;
+        }
+
+
+
+
+        /// <summary>
+        /// 在共享模式下，断开服务器的连接
+        /// </summary>
+        public OperateResult ConnectClose()
+        {
+            OperateResult result = new OperateResult();
+            isSocketInitialization = false;
+
+            // 额外操作
+            ExtraOnDisconnect(WorkSocket, result);
+            // 关闭信息
+            WorkSocket?.Close();
+
+            return result;
+        }
+
+        
+        #endregion
+
+        #region 初始化及清理操作
+
+
+        /// <summary>
+        /// 连接上服务器后需要进行的初始化操作
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool InitilizationOnConnect(Socket socket, OperateResult result)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// 在将要和服务器进行断开的情况下额外的操作
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool ExtraOnDisconnect(Socket socket, OperateResult result)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// 获取最终连接的网络点
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IPEndPoint GetIPEndPoint()
+        {
+            return serverEndPoint;
+        }
+
+
+        /// <summary>
+        /// 获取主要工作的网络服务
+        /// </summary>
+        /// <returns></returns>
+        protected Socket GetWorkSocket()
+        {
+            if (WorkSocket == null || !WorkSocket.Connected) ConnectServer();
+            return WorkSocket;
+        }
+
+        #endregion
+
+    }
+
+    #endregion
+
 }

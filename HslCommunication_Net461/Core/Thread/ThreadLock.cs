@@ -986,12 +986,12 @@ namespace HslCommunication.Core
             if (threadId == m_owningThreadId)
             {
                 m_recursion++;
-                return;//如果调用线程已经拥有锁，就返回
+                return;// 如果调用线程已经拥有锁，就返回
             }
-            //SpinWait spinwait
+            // SpinWait spinwait
 
-            if (Interlocked.Increment(ref m_waiters) == 1) return;//用户锁可以使用的时候，直接返回，第一次调用时发生
-            //当发生锁竞争时，使用内核同步构造锁
+            if (Interlocked.Increment(ref m_waiters) == 1) return;// 用户锁可以使用的时候，直接返回，第一次调用时发生
+            // 当发生锁竞争时，使用内核同步构造锁
             m_waiterLock.WaitOne();
         }
 
@@ -1000,7 +1000,7 @@ namespace HslCommunication.Core
         /// </summary>
         public void Leave()
         {
-            if (Interlocked.Decrement(ref m_waiters) == 0) return;//没有可用的锁的时候
+            if (Interlocked.Decrement(ref m_waiters) == 0) return;// 没有可用的锁的时候
             m_waiterLock.Set();
         }
 

@@ -278,13 +278,17 @@ namespace HslCommunication.Profinet
             OperateResult<byte[]> result = new OperateResult<byte[]>();
             //获取指令
             byte[] _PLCCommand = GetReadCommand(type, address, length);
-
+            
 
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             HslTimeOut timeout = new HslTimeOut()
             {
                 WorkSocket = socket
             };
+
+
+
+
             try
             {
                 ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckConnect), timeout);

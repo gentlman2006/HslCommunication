@@ -71,11 +71,14 @@ namespace TestTool.TestForm
         private void FormModBusTcp_Load(object sender, EventArgs e)
         {
             comboBox1.DataSource = HslCommunication.BasicFramework.SoftBasic.GetEnumValues<HslCommunication.ModBus.ModBusFunctionMask>();
+
+            busTcpClient.ConnectServer();
         }
         
         private void FormModBusTcp_FormClosing(object sender, FormClosingEventArgs e)
         {
             tcpServer?.ServerClose();
+            busTcpClient?.ConnectClose();
         }
 
         #endregion
@@ -334,18 +337,23 @@ namespace TestTool.TestForm
             {
                 short value = short.Parse(textBox6.Text);
                 textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
-                HslCommunication.OperateResult result = busTcpClient.WriteOneRegister(0, value);
-
+                if(!busTcpClient.WriteOneRegister(0, value).IsSuccess)
+                    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "失败" + Environment.NewLine);
 
                 textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
                 HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadRegister(30, 1);
 
                 textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
 
+                System.Threading.Thread.Sleep(10);
                 if ((read.Content[0] * 256 + read.Content[1]) == value)
                 {
                     busTcpClient.WriteOneRegister(0, 0);
                     textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
+                }
+                else
+                {
+                    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "失败" + Environment.NewLine);
                 }
             }
         }

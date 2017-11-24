@@ -333,6 +333,9 @@ namespace HslCommunication.Profinet
     /// </summary>
     public sealed class SiemensTcpNet : PlcNetBase
     {
+        #region Constructor
+
+
         /// <summary>
         /// 实例化一个数据通信的对象，需要指定访问哪种Plc
         /// </summary>
@@ -351,6 +354,25 @@ namespace HslCommunication.Profinet
             }
         }
 
+        #endregion
+
+        #region Override
+        
+        /// <summary>
+        /// 连接操作
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected override bool InitilizationOnConnect(Socket socket, OperateResult result)
+        {
+            return InitilizationConnect(socket, result);
+        }
+
+
+
+
+        #endregion
 
         /// <summary>
         /// 可以手动设置PLC类型，用来测试原本不支持的数据访问功能
@@ -360,6 +382,7 @@ namespace HslCommunication.Profinet
         {
             plcHead1[18] = type;
         }
+
 
 
 
@@ -536,15 +559,27 @@ namespace HslCommunication.Profinet
 
             OperateResult<byte[]> result = new OperateResult<byte[]>();
 
-            if (!CreateSocketAndConnect(out Socket socket, new IPEndPoint(PLCIpAddress, PortRead), result))
+
+            Socket socket = null;
+            if (!isSocketInitialization)
             {
-                return result;
+                if (!CreateSocketAndConnect(out socket, new IPEndPoint(PLCIpAddress, PortRead), result))
+                {
+                    return result;
+                }
+
+                if (!InitilizationConnect(socket, result))
+                {
+                    return result;
+                }
+            }
+            else
+            {
+                socket = GetWorkSocket();
             }
 
-            if (!InitilizationConnect(socket, result))
-            {
-                return result;
-            }
+
+            serverInterfaceLock.Enter();
 
 
             // 分批次进行读取，计算总批次
@@ -609,6 +644,7 @@ namespace HslCommunication.Profinet
                     // 填充数据
                     if (!AnalysisAddress(address[ii + 255 * jj], out byte type, out int startAddress, out ushort dbAddress, result))
                     {
+                        serverInterfaceLock.Leave();
                         socket?.Close();
                         return result;
                     }
@@ -639,12 +675,14 @@ namespace HslCommunication.Profinet
                 if (!SendBytesToSocket(socket, _PLCCommand))
                 {
                     result.Message = "发送读取信息失败";
+                    serverInterfaceLock.Leave();
                     return result;
                 }
 
                 if (!ReceiveBytesFromSocket(socket, out byte[] content))
                 {
                     result.Message = "接收信息失败";
+                    serverInterfaceLock.Leave();
                     return result;
                 }
 
@@ -652,6 +690,7 @@ namespace HslCommunication.Profinet
                 {
                     socket?.Close();
                     result.Message = "数据块长度校验失败";
+                    serverInterfaceLock.Leave();
                     result.Content = content;
                     return result;
                 }
@@ -698,7 +737,8 @@ namespace HslCommunication.Profinet
             }
             result.IsSuccess = true;
             result.Message = "读取成功";
-            socket?.Close();
+            if(!isSocketInitialization) socket?.Close();
+            serverInterfaceLock.Leave();
             // 所有的数据接收完成，进行返回
             return result;
         }
@@ -712,23 +752,36 @@ namespace HslCommunication.Profinet
         public OperateResult WriteIntoPLC(string address, byte[] data)
         {
             OperateResult result = new OperateResult();
-            if (!CreateSocketAndConnect(out Socket socket, new IPEndPoint(PLCIpAddress, GetPort()), result))
+
+
+            Socket socket = null;
+            if (!isSocketInitialization)
             {
-                ChangePort();
-                return result;
+                if (!CreateSocketAndConnect(out socket, new IPEndPoint(PLCIpAddress, PortRead), result))
+                {
+                    return result;
+                }
+
+                if (!InitilizationConnect(socket, result))
+                {
+                    return result;
+                }
+            }
+            else
+            {
+                socket = GetWorkSocket();
             }
 
-            // 发送初始化信息
-            if (!InitilizationConnect(socket, result))
-            {
-                return result;
-            }
+
+            serverInterfaceLock.Enter();
+            
 
             if (data == null) data = new byte[0];
 
             if (!AnalysisAddress(address, out byte type, out int startAddress, out ushort dbAddress, result))
             {
                 socket?.Close();
+                serverInterfaceLock.Leave();
                 return result;
             }
 
@@ -790,12 +843,14 @@ namespace HslCommunication.Profinet
             if(!SendBytesToSocket(socket,_PLCCommand))
             {
                 result.Message = "发送写入信息失败";
+                serverInterfaceLock.Leave();
                 return result;
             }
 
             if(!ReceiveBytesFromSocket(socket,out byte[] content))
             {
                 result.Message = "接收信息失败";
+                serverInterfaceLock.Leave();
                 return result;
             }
 
@@ -804,10 +859,12 @@ namespace HslCommunication.Profinet
                 // 写入异常
                 socket?.Close();
                 result.Message = "写入数据异常";
+                serverInterfaceLock.Leave();
                 return result;
             }
 
-            socket?.Close();
+            if(!isSocketInitialization) socket?.Close();
+            serverInterfaceLock.Leave();
             result.IsSuccess = true;
             return result;
         }
@@ -929,18 +986,26 @@ namespace HslCommunication.Profinet
         public OperateResult WriteIntoPLC(string address, bool data)
         {
             OperateResult result = new OperateResult();
-            if (!CreateSocketAndConnect(out Socket socket, new IPEndPoint(PLCIpAddress, GetPort()), result))
+            
+            Socket socket = null;
+            if (!isSocketInitialization)
             {
-                ChangePort();
-                return result;
+                if (!CreateSocketAndConnect(out socket, new IPEndPoint(PLCIpAddress, PortRead), result))
+                {
+                    return result;
+                }
+
+                if (!InitilizationConnect(socket, result))
+                {
+                    return result;
+                }
+            }
+            else
+            {
+                socket = GetWorkSocket();
             }
 
-            // 发送初始化信息
-            if (!InitilizationConnect(socket, result))
-            {
-                return result;
-            }
-            
+            serverInterfaceLock.Enter();
 
             byte[] buffer = new byte[1];
             buffer[0] = data ? (byte)0x01 : (byte)0x00;
@@ -949,6 +1014,7 @@ namespace HslCommunication.Profinet
             if(!AnalysisAddress(address,out byte type,out int startAddress,out ushort dbAddress,result))
             {
                 socket?.Close();
+                serverInterfaceLock.Leave();
                 return result;
             }
 
@@ -1009,12 +1075,14 @@ namespace HslCommunication.Profinet
             if(!SendBytesToSocket(socket,_PLCCommand))
             {
                 result.Message = "发送写入信息失败";
+                serverInterfaceLock.Leave();
                 return result;
             }
 
             if(!ReceiveBytesFromSocket(socket,out byte[] content))
             {
                 result.Message = "接收信息失败";
+                serverInterfaceLock.Leave();
                 return result;
             }
 
@@ -1023,10 +1091,13 @@ namespace HslCommunication.Profinet
                 // 写入异常
                 socket?.Close();
                 result.Message = "写入数据异常";
+                serverInterfaceLock.Leave();
                 return result;
             }
 
-            socket?.Close();
+            if(!isSocketInitialization) socket?.Close();
+
+            serverInterfaceLock.Leave();
             result.IsSuccess = true;
             return result;
         }

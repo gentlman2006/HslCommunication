@@ -93,11 +93,42 @@ namespace HslCommunication.Profinet
     /// <summary>
     /// 以太网模块访问的基类
     /// </summary>
-    public class PlcNetBase : NetBase
+    public class PlcNetBase : DoubleModeNetBase
     {
-        private int m_PortRead = 1000;
-        private int m_PortReadBackup = -1;
-        private bool m_IsPortNormal = true;
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个对象
+        /// </summary>
+        public PlcNetBase()
+        {
+        }
+
+        #endregion
+
+        #region Private Members
+        
+        private int m_PortRead = 1000;                                // 读取的端口号
+        private int m_PortReadBackup = -1;                            // 备用的端口号
+        private bool m_IsPortNormal = true;                           // 端口号切换使用
+
+        #endregion
+
+        #region DoubleModeNetBase Override
+        
+        /// <summary>
+        /// 获取服务器的连接
+        /// </summary>
+        /// <returns></returns>
+        protected override IPEndPoint GetIPEndPoint()
+        {
+            return new IPEndPoint(PLCIpAddress, GetPort());
+        }
+        
+
+        #endregion
+
+
 
         /// <summary>
         /// 获取访问的端口号
@@ -147,6 +178,8 @@ namespace HslCommunication.Profinet
             get { return m_PlcIpAddress; }
             set { m_PlcIpAddress = value; }
         }
+
+
         /// <summary>
         /// 追加字节数据的头部空字节
         /// </summary>
@@ -166,6 +199,8 @@ namespace HslCommunication.Profinet
                 return result;
             }
         }
+
+
         /// <summary>
         /// 控制字节长度，超出选择截断，不够补零
         /// </summary>
@@ -186,6 +221,8 @@ namespace HslCommunication.Profinet
             }
             return temp;
         }
+
+
         /// <summary>
         /// 根据数据的数组返回真实的数据字节
         /// </summary>

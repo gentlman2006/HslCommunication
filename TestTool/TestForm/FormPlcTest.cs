@@ -24,6 +24,7 @@ namespace TestTool.TestForm
             // 窗口的载入方法
             MelsecNetInitialization();
 
+
         }
 
         /// <summary>
@@ -167,15 +168,20 @@ namespace TestTool.TestForm
 
         private void userButton9_Click(object sender, EventArgs e)
         {
-            OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC("M100", 6);
-            if (read.IsSuccess)
+            for (int i = 0; i < 10; i++)
             {
-                TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content));
-            }
-            else
-            {
-                MessageBox.Show(read.ToMessageShowString());
-                if(read.Content!=null)textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content);
+
+
+                OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC("M100", 6);
+                if (read.IsSuccess)
+                {
+                    TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content));
+                }
+                else
+                {
+                    MessageBox.Show(read.ToMessageShowString());
+                    if (read.Content != null) textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content);
+                }
             }
         }
 
@@ -215,16 +221,20 @@ namespace TestTool.TestForm
         private void userButton6_Click(object sender, EventArgs e)
         {
             // 位写入测试
-            OperateResult write = siemensTcpNet.WriteIntoPLC("M100.7", false);
-            if (write.IsSuccess)
-
+            for (int i = 0; i < 10; i++)
             {
-                TextBoxAppendStringLine("写入成功");
-            }
-            else
-            {
-                MessageBox.Show(write.ToMessageShowString());
 
+                OperateResult write = siemensTcpNet.WriteIntoPLC("M100.7", false);
+                if (write.IsSuccess)
+
+                {
+                    TextBoxAppendStringLine("写入成功");
+                }
+                else
+                {
+                    MessageBox.Show(write.ToMessageShowString());
+
+                }
             }
         }
 
@@ -313,6 +323,36 @@ namespace TestTool.TestForm
                 MessageBox.Show(write.ToMessageShowString());
 
             }
+        }
+
+        private void userButton15_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC(
+                    new string[] { "M100", "M150", "M200", "I300" },
+                    new ushort[] { 1, 4, 3, 1 });
+
+                if (read.IsSuccess)
+                {
+                    byte value1 = read.Content[0];
+                    int value2 = siemensTcpNet.GetIntFromBytes(read.Content, 1);
+                    short value3 = siemensTcpNet.GetShortFromBytes(read.Content, 5);
+                    byte value4 = read.Content[8];
+
+                    TextBoxAppendStringLine($"[{value1},{value2}, {value3}, {value4}]");
+                }
+                else
+                {
+                    MessageBox.Show(read.ToMessageShowString());
+                }
+
+            }
+        }
+
+        private void userButton16_Click(object sender, EventArgs e)
+        {
+            siemensTcpNet.ConnectServer();
         }
     }
 }

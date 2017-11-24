@@ -66,7 +66,7 @@ namespace HslCommunication.ModBus
     /// <summary>
     /// ModBusTcp的客户端，可以方便的实现指定地点的数据读取和写入
     /// </summary>
-    public class ModBusTcpClient : NetBase
+    public class ModBusTcpClient : DoubleModeNetBase
     {
         #region Constructor
 
@@ -78,9 +78,8 @@ namespace HslCommunication.ModBus
         /// <param name="station">客户端的站号，可以用来标识不同的客户端，默认255</param>
         public ModBusTcpClient(string ipAddress, int port = 502, byte station = 0xFF)
         {
-            iPEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(ipAddress), port);
+            serverEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(ipAddress), port);
             simpleHybird = new SimpleHybirdLock();
-            readModbusLock = new SimpleHybirdLock();
             this.station = station;
         }
 
@@ -88,13 +87,11 @@ namespace HslCommunication.ModBus
         #endregion
 
         #region Private Field
-
-        private System.Net.IPEndPoint iPEndPoint;           // 服务器端的地址，包含了IP地址和端口号
+        
         private ushort messageId = 1;                       // 消息头
         private byte station = 0;                           // ModBus的客户端站号
         private SimpleHybirdLock simpleHybird;              // 消息头递增的同步锁
         private int receiveTimeOut = 5000;                  // 接收Modbus数据的超时时间
-        private SimpleHybirdLock readModbusLock;          // 读取服务器数据时候的同步锁
 
         #endregion
 
@@ -238,8 +235,8 @@ namespace HslCommunication.ModBus
         #endregion
 
         #region Public Method
-
-
+        
+     
         /// <summary>
         /// 读写ModBus服务器的基础方法，支持任意的数据操作
         /// </summary>
@@ -249,25 +246,32 @@ namespace HslCommunication.ModBus
         {
             OperateResult<byte[]> result = new OperateResult<byte[]>();
 
-            readModbusLock.Enter();
-
-            if (!CreateSocketAndConnect(out System.Net.Sockets.Socket socket, iPEndPoint, result))
+            System.Net.Sockets.Socket socket = null;
+            if (!isSocketInitialization)
             {
-                readModbusLock.Leave();
-                socket = null;
-                return result;
+                if (!CreateSocketAndConnect(out socket, GetIPEndPoint(), result))
+                {
+                    socket = null;
+                    return result;
+                }
             }
+            else
+            {
+                socket = GetWorkSocket();
+            }
+
+            serverInterfaceLock.Enter();
 
             if (!SendBytesToSocket(socket, send, result, "发送数据到服务器失败"))
             {
-                readModbusLock.Leave();
+                serverInterfaceLock.Leave();
                 return result;
             }
 
 
             HslTimeOut hslTimeOut = new HslTimeOut();
             hslTimeOut.WorkSocket = socket;
-            hslTimeOut.DelayTime = 5000;                       // 2秒内接收到数据
+            hslTimeOut.DelayTime = 5000;                       // 5秒内必须接收到数据
             try
             {
                 System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(
@@ -287,67 +291,20 @@ namespace HslCommunication.ModBus
             {
                 socket?.Close();
                 result.Message = "从服务器接收结果数据的时候发生错误：" + ex.Message;
-                readModbusLock.Leave();
+                serverInterfaceLock.Leave();
                 return result;
             }
 
-            socket?.Close();
+            if (!isSocketInitialization) socket?.Close();
 
-            readModbusLock.Leave();
+            serverInterfaceLock.Leave();
 
             result.IsSuccess = true;
             return result;
         }
 
 
-
-        /// <summary>
-        /// 读写ModBus服务器的基础方法，支持任意的数据操作
-        /// </summary>
-        /// <param name="socket">网络服务数据</param>
-        /// <param name="send">发送的字节数据</param>
-        /// <param name="result">结果对象</param>
-        /// <returns></returns>
-        private bool ReadFromModBusSocket(System.Net.Sockets.Socket socket,byte[] send,OperateResult<byte[]> result)
-        {
-            if (!SendBytesToSocket(socket, send, result, "发送数据到服务器失败"))
-            {
-                return false;
-            }
-            
-            HslTimeOut hslTimeOut = new HslTimeOut();
-            hslTimeOut.WorkSocket = socket;
-            hslTimeOut.DelayTime = 2000;                       // 2秒内接收到数据
-            try
-            {
-                System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(
-                    ThreadPoolCheckConnect), hslTimeOut);
-                byte[] head = NetSupport.ReadBytesFromSocket(socket, 6);
-
-                int length = head[4] * 256 + head[5];
-                byte[] data = NetSupport.ReadBytesFromSocket(socket, length);
-
-                byte[] buffer = new byte[6 + length];
-                head.CopyTo(buffer, 0);
-                data.CopyTo(buffer, 6);
-                hslTimeOut.IsSuccessful = true;
-                result.Content = buffer;
-            }
-            catch (Exception ex)
-            {
-                socket?.Close();
-                result.Message = "从服务器接收结果数据的时候发生错误：" + ex.Message;
-                return false;
-            }
-            
-            return true;
-        }
-
-
-
-
-
-
+        
 
 
         /// <summary>
@@ -558,7 +515,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public override string ToString()
         {
-            return $"ModBusTcpClient[{iPEndPoint}]";
+            return $"ModBusTcpClient[{serverEndPoint}]";
         }
 
         #endregion
