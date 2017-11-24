@@ -30,8 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,8 +46,245 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicFramework\FormAuthorAdvertisement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BasicFramework\FormAuthorAdvertisement.designer.cs">
+      <DependentUpon>FormAuthorAdvertisement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicFramework\FormAuthorize.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BasicFramework\FormAuthorize.designer.cs">
+      <DependentUpon>FormAuthorize.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicFramework\FormPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BasicFramework\FormPopup.designer.cs">
+      <DependentUpon>FormPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicFramework\FormPortraitSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BasicFramework\FormPortraitSelect.Designer.cs">
+      <DependentUpon>FormPortraitSelect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BasicFramework\SoftAnimation.cs" />
+    <Compile Include="BasicFramework\SoftAuthorize.cs" />
+    <Compile Include="BasicFramework\SoftBaseClass.cs" />
+    <Compile Include="BasicFramework\SoftBasic.cs" />
+    <Compile Include="BasicFramework\SoftCache.cs" />
+    <Compile Include="BasicFramework\SoftException.cs" />
+    <Compile Include="BasicFramework\SoftMail.cs" />
+    <Compile Include="BasicFramework\SoftMsgQueue.cs" />
+    <Compile Include="BasicFramework\SoftNumerical.cs" />
+    <Compile Include="BasicFramework\SoftPainting.cs" />
+    <Compile Include="BasicFramework\SoftSecurity.cs" />
+    <Compile Include="BasicFramework\SoftSqlOperate.cs" />
+    <Compile Include="BasicFramework\SoftVersion.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="Controls\UserButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UserButton.designer.cs">
+      <DependentUpon>UserButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UserClock.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UserClock.designer.cs">
+      <DependentUpon>UserClock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Net\ClassNetHandle.cs" />
+    <Compile Include="Core\Net\CommunicationCode.cs" />
+    <Compile Include="Core\Net\NetBase.cs" />
+    <Compile Include="Core\Security\Security.cs" />
+    <Compile Include="Core\Security\zipped.cs" />
+    <Compile Include="Core\Thread\ThreadLock.cs" />
+    <Compile Include="Core\Types\HslTimeOut.cs" />
+    <Compile Include="Core\Types\OperateResult.cs" />
+    <Compile Include="Enthernet\ClassFileNet.cs" />
+    <Compile Include="Enthernet\ClassMultiNet.cs" />
+    <Compile Include="Enthernet\ClassSimplify.cs" />
+    <Compile Include="Enthernet\ClassSoftUpdate.cs" />
+    <Compile Include="Enthernet\ClassUdpNet.cs" />
+    <Compile Include="Enthernet\SocketState.cs" />
+    <Compile Include="LogNet\Core\ILogNet.cs" />
+    <Compile Include="LogNet\Core\LogBase.cs" />
+    <Compile Include="LogNet\Core\Types.cs" />
+    <Compile Include="LogNet\LogNetManagment.cs" />
+    <Compile Include="LogNet\Logs\LogNetDateTime.cs" />
+    <Compile Include="LogNet\Logs\LogNetFileSize.cs" />
+    <Compile Include="LogNet\Logs\LogNetSingle.cs" />
+    <Compile Include="LogNet\View\FormLogNetView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogNet\View\FormLogNetView.Designer.cs">
+      <DependentUpon>FormLogNetView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LogNet\View\LogNetAnalysisControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LogNet\View\LogNetAnalysisControl.Designer.cs">
+      <DependentUpon>LogNetAnalysisControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModBus\ModBusTcpClient.cs" />
+    <Compile Include="ModBus\ModBusTcpServer.cs" />
+    <Compile Include="Profinet\MelsecNet.cs" />
+    <Compile Include="Profinet\PlcNetBase.cs" />
+    <Compile Include="Profinet\SiemensNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Serial\CRCSupport.cs" />
+    <Compile Include="Serial\SerialCommunicationBase.cs" />
+    <Compile Include="StringResources.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BasicFramework\FormAuthorAdvertisement.resx">
+      <DependentUpon>FormAuthorAdvertisement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BasicFramework\FormAuthorize.resx">
+      <DependentUpon>FormAuthorize.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BasicFramework\FormPopup.resx">
+      <DependentUpon>FormPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BasicFramework\FormPortraitSelect.resx">
+      <DependentUpon>FormPortraitSelect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserButton.resx">
+      <DependentUpon>UserButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserClock.resx">
+      <DependentUpon>UserClock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogNet\View\FormLogNetView.resx">
+      <DependentUpon>FormLogNetView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogNet\View\LogNetAnalysisControl.resx">
+      <DependentUpon>LogNetAnalysisControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\abstr1.png" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\abstr11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Activity_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\AddressViewer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\asset_progressBar_24x24_on.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\AudioRecording.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\brackets_Square_16xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Class_489.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\ClassIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Cloud_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Copy_6524.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Delegate_8339.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\docview_xaml_on_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Enum_582.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Event_594.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Event_594_exp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\glasses_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\grid_Data_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\lightningBolt_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\ListView_687.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Method_636.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Module_648.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\PropertyIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Soundfile_461.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Structure_507.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\TabControl_707.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Table_748.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Tag_7213.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\Textfile_818_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\TreeView_713.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\usbcontroller.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\UseCaseDiagramFile_usecasediagram_13447_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\VirtualMachine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\WebForm%28ASPX%29_815_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\WebFormTemplate_11274_16x_color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgaes\WindowsForm_817_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\qrcode_for_gh_319218678954_258.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
