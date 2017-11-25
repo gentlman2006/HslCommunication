@@ -56,12 +56,17 @@ namespace TestTool.TestForm
             melsec_net.NetworkNumber = 0;                                         // 网络号
             melsec_net.NetworkStationNumber = 0;                                  // 网络站号
             melsec_net.ConnectTimeout = 500;                                      // 连接超时时间
+
+            // 如果需要长连接，就取消下面这行代码的注释，对于数据读写的代码，没有影响
+            // melsec_net.ConnectServer();                                        // 切换长连接，这行代码可以放在其他任何地方
+            // melsec_net.ConnectClose();                                         // 关闭长连接，并切换为短连接，在系统退出时可以调用
         }
 
         private void userButton1_Click(object sender, EventArgs e)
         {
             // M100-M104读取显示
             OperateResult<byte[]> read = melsec_net.ReadFromPLC(MelsecDataType.M, 100, 5);
+
             if (read.IsSuccess)
             {
                 //成功读取，True代表通，False代表不通
@@ -93,7 +98,20 @@ namespace TestTool.TestForm
                 MessageBox.Show(write.ToMessageShowString());
             }
         }
-        
+        private void userButton17_Click(object sender, EventArgs e)
+        {
+            bool[] values = new bool[] { true,false ,true};
+            OperateResult write = melsec_net.WriteIntoPLC("M100", values);
+            if (write.IsSuccess)
+            {
+                TextBoxAppendStringLine("写入成功");
+            }
+            else
+            {
+                MessageBox.Show(write.ToMessageShowString());
+            }
+
+        }
 
         private void userButton2_Click(object sender, EventArgs e)
         {
@@ -354,5 +372,7 @@ namespace TestTool.TestForm
         {
             siemensTcpNet.ConnectServer();
         }
+
+
     }
 }

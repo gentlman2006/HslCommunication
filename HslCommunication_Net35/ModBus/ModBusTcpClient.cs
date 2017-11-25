@@ -91,7 +91,7 @@ namespace HslCommunication.ModBus
         private ushort messageId = 1;                       // 消息头
         private byte station = 0;                           // ModBus的客户端站号
         private SimpleHybirdLock simpleHybird;              // 消息头递增的同步锁
-        private int receiveTimeOut = 5000;                  // 接收Modbus数据的超时时间
+        private int receiveTimeOut = 4000;                  // 接收Modbus数据的超时时间
 
         #endregion
 
@@ -218,7 +218,7 @@ namespace HslCommunication.ModBus
         #region Public 
 
         /// <summary>
-        /// 接收数据的延时时间
+        /// 接收数据的延时时间，默认4000毫秒
         /// </summary>
         public int ReceiveTimeOut
         {
@@ -279,7 +279,7 @@ namespace HslCommunication.ModBus
 
             HslTimeOut hslTimeOut = new HslTimeOut();
             hslTimeOut.WorkSocket = socket;
-            hslTimeOut.DelayTime = 5000;                       // 5秒内必须接收到数据
+            hslTimeOut.DelayTime = receiveTimeOut;                       // 5秒内必须接收到数据
             try
             {
                 System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(
