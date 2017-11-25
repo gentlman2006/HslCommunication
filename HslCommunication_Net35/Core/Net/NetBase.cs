@@ -2384,6 +2384,160 @@ namespace HslCommunication.Core
 
         #endregion
 
+        #region Read Data From Server
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<short> GetInt16ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        {
+            if (read == null) return null;
+            OperateResult<short> result = new OperateResult<short>();
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse(read.Content);
+                result.Content = BitConverter.ToInt16(read.Content, 0);
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<ushort> GetUInt16ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        {
+            OperateResult<ushort> result = new OperateResult<ushort>();
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse(read.Content);
+                result.Content = BitConverter.ToUInt16(read.Content, 0);
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<int> GetInt32ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        {
+            OperateResult<int> result = new OperateResult<int>();
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse(read.Content);
+                result.Content = BitConverter.ToInt32(read.Content, 0);
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<long> GetInt64ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        {
+            OperateResult<long> result = new OperateResult<long>();
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse(read.Content);
+                result.Content = BitConverter.ToInt64(read.Content, 0);
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<float> GetFloatResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        {
+            OperateResult<float> result = new OperateResult<float>();
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse(read.Content);
+                result.Content = BitConverter.ToSingle(read.Content, 0);
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<double> GetDoubleResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        {
+            OperateResult<double> result = new OperateResult<double>();
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse(read.Content);
+                result.Content = BitConverter.ToDouble(read.Content, 0);
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <returns></returns>
+        protected OperateResult<string> GetStringResultFromBytes(OperateResult<byte[]> read)
+        {
+            OperateResult<string> result = new OperateResult<string>();
+            if (read.IsSuccess)
+            {
+                result.Content = Encoding.ASCII.GetString(read.Content);
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+        #endregion
+
         #region Virtual Method
 
 

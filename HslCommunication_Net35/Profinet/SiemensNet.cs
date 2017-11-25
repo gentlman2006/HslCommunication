@@ -374,6 +374,8 @@ namespace HslCommunication.Profinet
 
         #endregion
 
+        #region Public Method
+        
         /// <summary>
         /// 可以手动设置PLC类型，用来测试原本不支持的数据访问功能
         /// </summary>
@@ -383,7 +385,9 @@ namespace HslCommunication.Profinet
             plcHead1[18] = type;
         }
 
+        #endregion
 
+        #region Private Method
 
 
         private bool ReceiveBytesFromSocket(Socket socket, out byte[] data)
@@ -532,6 +536,11 @@ namespace HslCommunication.Profinet
         }
 
 
+
+        #endregion
+
+        #region Read Support
+
         /// <summary>
         /// 从PLC读取数据，地址格式为I100，Q100，DB20.100，M100，以字节为单位
         /// </summary>
@@ -541,6 +550,81 @@ namespace HslCommunication.Profinet
         public OperateResult<byte[]> ReadFromPLC(string address, ushort count)
         {
             return ReadFromPLC(new string[] { address }, new ushort[] { count });
+        }
+
+
+        /// <summary>
+        /// 读取指定地址的short数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        public OperateResult<short> ReadShortFromPLC(string address)
+        {
+            return GetInt16ResultFromBytes(ReadFromPLC(address, 2), true);
+        }
+
+
+        /// <summary>
+        /// 读取指定地址的ushort数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        public OperateResult<ushort> ReadUShortFromPLC(string address)
+        {
+            return GetUInt16ResultFromBytes(ReadFromPLC(address, 2), true);
+        }
+
+        /// <summary>
+        /// 读取指定地址的int数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        public OperateResult<int> ReadIntFromPLC(string address)
+        {
+            return GetInt32ResultFromBytes(ReadFromPLC(address, 4), true);
+        }
+
+
+        /// <summary>
+        /// 读取指定地址的float数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        public OperateResult<float> ReadFloatFromPLC(string address)
+        {
+            return GetFloatResultFromBytes(ReadFromPLC(address, 4), true);
+        }
+
+        /// <summary>
+        /// 读取指定地址的long数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        public OperateResult<long> ReadLongFromPLC(string address)
+        {
+            return GetInt64ResultFromBytes(ReadFromPLC(address, 8), true);
+        }
+
+
+        /// <summary>
+        /// 读取指定地址的double数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        public OperateResult<double> ReadDoubleFromPLC(string address)
+        {
+            return GetDoubleResultFromBytes(ReadFromPLC(address, 8), true);
+        }
+
+        /// <summary>
+        /// 读取地址地址的String数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <param name="length">字符串长度</param>
+        /// <returns></returns>
+        public OperateResult<string> ReadStringFromPLC(string address,ushort length)
+        {
+            return GetStringResultFromBytes(ReadFromPLC(address, length));
         }
 
 
@@ -747,6 +831,10 @@ namespace HslCommunication.Profinet
             // 所有的数据接收完成，进行返回
             return result;
         }
+
+
+        #endregion
+
 
         /// <summary>
         /// 将数据写入到PLC数据，地址格式为I100，Q100，DB20.100，M100，以字节为单位

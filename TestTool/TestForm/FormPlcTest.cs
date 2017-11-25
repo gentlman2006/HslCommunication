@@ -148,10 +148,28 @@ namespace TestTool.TestForm
 
         private void userButton4_Click(object sender, EventArgs e)
         {
+            float[] values = new float[] { 123.456f };
+            byte[] buffer = new byte[values.Length * 4];
+            for (int i = 0; i < values.Length; i++)
+            {
+                BitConverter.GetBytes(values[i]).CopyTo(buffer, i * 4);
+            }
+            OperateResult write = melsec_net.WriteIntoPLC("D1000", buffer);
+            if(write.IsSuccess)
+            {
+                MessageBox.Show("写入成功！");
+            }
+            else
+            {
+                MessageBox.Show("写入失败！" + write.ToMessageShowString());
+            }
 
-            short[] values = new short[5] { 1335, 8765, 1234, 4567,-2563 };
+
+
+
+            // short[] values = new short[5] { 1335, 8765, 1234, 4567,-2563 };
             // D100为1234,D101为8765,D102为1234,D103为4567,D104为-2563
-            OperateResult write = melsec_net.WriteIntoPLC(MelsecDataType.D, 6000, values);
+            write = melsec_net.WriteIntoPLC(MelsecDataType.D, 6000, values);
             if (write.IsSuccess)
             {
                 //成功写入

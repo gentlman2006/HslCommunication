@@ -318,28 +318,7 @@ namespace HslCommunication.Profinet
 
         #region Read Support
 
-
-
-        /// <summary>
-        /// 从三菱PLC中读取想要的数据，返回读取结果
-        /// </summary>
-        /// <param name="address">字符串表示形式，X100，Y100，M100，D100，W100，L100</param>
-        /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
-        /// <returns></returns>
-        public OperateResult<byte[]> ReadFromPLC(string address, ushort length)
-        {
-            OperateResult<byte[]> result = new OperateResult<byte[]>();
-            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
-            {
-                return result;
-            }
-            return ReadFromPLC(type, startAddress, length);
-        }
-
-
-
-
-
+        
         /// <summary>
         /// 从三菱PLC中读取想要的数据，返回读取结果
         /// </summary>
@@ -423,6 +402,96 @@ namespace HslCommunication.Profinet
             return result;
         }
 
+        /// <summary>
+        /// 从三菱PLC中读取想要的数据，返回读取结果
+        /// </summary>
+        /// <param name="address">字符串表示形式，X100，Y100，M100，D100，W100，L100</param>
+        /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> ReadFromPLC(string address, ushort length)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return ReadFromPLC(type, startAddress, length);
+        }
+
+
+
+        /// <summary>
+        /// 读取指定地址的short数据，针对数据类型W，D，R
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public OperateResult<short> ReadShortFromPLC(string address)
+        {
+            return GetInt16ResultFromBytes(ReadFromPLC(address, 1), false);
+        }
+
+        /// <summary>
+        /// 读取指定地址的short数据，针对数据类型W，D，R
+        /// </summary>
+        /// <param name="address">起始地址的字符串形式</param>
+        /// <returns></returns>
+        public OperateResult<ushort> ReadUShortFromPLC(string address)
+        {
+            return GetUInt16ResultFromBytes(ReadFromPLC(address, 1), false);
+        }
+
+
+        /// <summary>
+        /// 读取指定地址的int数据，针对数据类型W，D，R
+        /// </summary>
+        /// <param name="address">起始地址的字符串形式</param>
+        /// <returns></returns>
+        public OperateResult<int> ReadIntFromPLC(string address)
+        {
+            return GetInt32ResultFromBytes(ReadFromPLC(address, 2), false);
+        }
+
+        /// <summary>
+        /// 读取指定地址的float数据，针对数据类型W，D，R
+        /// </summary>
+        /// <param name="address">起始地址的字符串形式</param>
+        /// <returns></returns>
+        public OperateResult<float> ReadFloatFromPLC(string address)
+        {
+            return GetFloatResultFromBytes(ReadFromPLC(address, 2));
+        }
+
+        /// <summary>
+        /// 读取指定地址的long数据，针对数据类型W，D，R
+        /// </summary>
+        /// <param name="address">起始地址的字符串形式</param>
+        /// <returns></returns>
+        public OperateResult<long> ReadLongFromPLC(string address)
+        {
+            return GetInt64ResultFromBytes(ReadFromPLC(address, 4), false);
+        }
+
+
+        /// <summary>
+        /// 读取指定地址的double数据，针对数据类型W，D，R
+        /// </summary>
+        /// <param name="address">起始地址的字符串形式</param>
+        /// <returns></returns>
+        public OperateResult<double> ReadDoubleFromPLC(string address)
+        {
+            return GetDoubleResultFromBytes(ReadFromPLC(address, 4));
+        }
+
+        /// <summary>
+        /// 读取指定地址的String数据，编码为ASCII，针对数据类型W，D，R
+        /// </summary>
+        /// <param name="address">起始地址的字符串形式</param>
+        /// <param name="length">字符串长度，返回字符串为2倍长度</param>
+        /// <returns></returns>
+        public OperateResult<string> ReadStringFromPLC(string address,ushort length)
+        {
+            return GetStringResultFromBytes(ReadFromPLC(address, length));
+        }
 
         #endregion
 
@@ -709,6 +778,46 @@ namespace HslCommunication.Profinet
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns>结果</returns>
         public OperateResult WriteIntoPLC(string address, float[] data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, data);
+        }
+
+
+        #endregion
+
+        #region Write double[]
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为double数组
+        /// </summary>
+        /// <param name="type">写入的数据类型</param>
+        /// <param name="address">初始地址</param>
+        /// <param name="data">double数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, double[] data)
+        {
+            byte[] temp = new byte[data.Length * 8];
+            for (int i = 0; i < data.Length; i++)
+            {
+                BitConverter.GetBytes(data[i]).CopyTo(temp, i * 8);
+            }
+            return WriteIntoPLC(type, address, temp);
+        }
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为double数组
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">double数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, double[] data)
         {
             OperateResult<byte[]> result = new OperateResult<byte[]>();
             if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
