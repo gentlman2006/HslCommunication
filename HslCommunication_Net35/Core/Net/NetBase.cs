@@ -2315,7 +2315,7 @@ namespace HslCommunication.Core
         /// </summary>
         protected SimpleHybirdLock serverInterfaceLock;
         /// <summary>
-        /// 指示连接模式，false为单请求，true为共享请求
+        /// 指示连接模式，false为短连接请求，true为长连接请求
         /// </summary>
         protected bool isSocketInitialization = false;
         /// <summary>
@@ -2598,6 +2598,38 @@ namespace HslCommunication.Core
             }
             return WorkSocket;
         }
+
+        /// <summary>
+        /// 根据模式创建新的网络连接，或者时利用旧的网络服务
+        /// </summary>
+        /// <param name="socket">新生成的网络请求</param>
+        /// <param name="result">结果信息</param>
+        /// <returns></returns>
+        protected bool CreateSocketByDoubleMode(out Socket socket, OperateResult result)
+        {
+            if (!isSocketInitialization)
+            {
+                // 短连接模式，重新创建网络连接
+                if (!CreateSocketAndConnect(out socket, GetIPEndPoint(), result))
+                {
+                    socket = null;
+                    return false;
+                }
+                return true;
+            }
+            else
+            {
+                // 长连接模式，重新利用原先的套接字，如果这个套接字被Close了，会重新连接，如果仍是失败，下次调用重新连接
+                socket = GetWorkSocket(out OperateResult connect);
+                if (!connect.IsSuccess)
+                {
+                    result.Message = connect.Message;
+                    return false;
+                }
+                return true;
+            }
+        }
+
 
         #endregion
 

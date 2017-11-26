@@ -87,7 +87,7 @@ namespace HslCommunication.ModBus
         #endregion
 
         #region Private Field
-        
+
         private ushort messageId = 1;                       // 消息头
         private byte station = 0;                           // ModBus的客户端站号
         private SimpleHybirdLock simpleHybird;              // 消息头递增的同步锁
@@ -215,7 +215,7 @@ namespace HslCommunication.ModBus
 
         #endregion
 
-        #region Public 
+        #region Public Member
 
         /// <summary>
         /// 接收数据的延时时间，默认4000毫秒
@@ -235,8 +235,8 @@ namespace HslCommunication.ModBus
         #endregion
 
         #region Public Method
-        
-     
+
+
         /// <summary>
         /// 读写ModBus服务器的基础方法，支持任意的数据操作
         /// </summary>
@@ -260,13 +260,13 @@ namespace HslCommunication.ModBus
             {
                 // 长连接模式，重新利用原先的套接字，如果这个套接字被Close了，会重新连接
                 socket = GetWorkSocket(out OperateResult connect);
-                if(!connect.IsSuccess)
+                if (!connect.IsSuccess)
                 {
                     result.Message = connect.Message;
                     return result;
                 }
             }
-            
+
 
             serverInterfaceLock.Enter();
 
@@ -312,7 +312,7 @@ namespace HslCommunication.ModBus
         }
 
 
-        
+
 
 
         /// <summary>
@@ -492,6 +492,84 @@ namespace HslCommunication.ModBus
             }
 
             return ReadFromModBusServer(BuildWriteRegister(address, buffer));
+        }
+
+        #endregion
+
+        #region Read Data
+
+
+        /// <summary>
+        /// 读取指定地址的寄存器，并转化成short
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns></returns>
+        public OperateResult<short> ReadShortRegister(ushort address)
+        {
+            return GetInt16ResultFromBytes(ReadRegister(address, 1), true);
+        }
+
+        /// <summary>
+        /// 读取指定地址的寄存器，并转化成ushort
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns></returns>
+        public OperateResult<ushort> ReadUShortRegister(ushort address)
+        {
+            return GetUInt16ResultFromBytes(ReadRegister(address, 1), true);
+        }
+
+
+        /// <summary>
+        /// 读取指定地址的寄存器，并转化成int
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns></returns>
+        public OperateResult<int> ReadIntRegister(ushort address)
+        {
+            return GetInt32ResultFromBytes(ReadRegister(address, 2), true);
+        }
+
+        /// <summary>
+        /// 读取指定地址的寄存器，并转化成float
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns></returns>
+        public OperateResult<float> ReadFloatRegister(ushort address)
+        {
+            return GetFloatResultFromBytes(ReadRegister(address, 2), true);
+        }
+
+        /// <summary>
+        /// 读取指定地址的寄存器，并转化成long
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns></returns>
+        public OperateResult<long> ReadLongRegister(ushort address)
+        {
+            return GetInt64ResultFromBytes(ReadRegister(address, 4), true);
+        }
+
+
+        /// <summary>
+        /// 读取指定地址的寄存器，并转化成double
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns></returns>
+        public OperateResult<double> ReadDoubleRegister(ushort address)
+        {
+            return GetDoubleResultFromBytes(ReadRegister(address, 4));
+        }
+
+        /// <summary>
+        /// 读取指定地址的String数据，编码为ASCII
+        /// </summary>
+        /// <param name="address">起始地址的字符串形式</param>
+        /// <param name="length">字符串长度，返回字符串为2倍长度</param>
+        /// <returns></returns>
+        public OperateResult<string> ReadStringRegister(ushort address, ushort length)
+        {
+            return GetStringResultFromBytes(ReadRegister(address, length));
         }
 
         #endregion

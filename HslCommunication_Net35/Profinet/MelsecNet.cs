@@ -169,6 +169,7 @@ namespace HslCommunication.Profinet
             _PLCCommand[17] = 0x00;
             _PLCCommand[18] = type.DataCode;// 指明写入的数据
 
+            // 判断是否进行位操作
             if (type.DataType == 1)
             {
                 if (length > 0)
@@ -237,71 +238,81 @@ namespace HslCommunication.Profinet
                     case 'm':
                         {
                             type = MelsecDataType.M;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 10);
                             break;
                         }
                     case 'X':
                     case 'x':
                         {
                             type = MelsecDataType.X;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 16);
                             break;
                         }
                     case 'Y':
                     case 'y':
                         {
                             type = MelsecDataType.Y;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 16);
                             break;
                         }
                     case 'D':
                     case 'd':
                         {
                             type = MelsecDataType.D;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 10);
                             break;
                         }
                     case 'W':
                     case 'w':
                         {
                             type = MelsecDataType.W;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 16);
                             break;
                         }
                     case 'L':
                     case 'l':
                         {
                             type = MelsecDataType.L;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 10);
                             break;
                         }
                     case 'F':
                     case 'f':
                         {
                             type = MelsecDataType.F;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 10);
                             break;
                         }
                     case 'V':
                     case 'v':
                         {
                             type = MelsecDataType.V;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 10);
                             break;
                         }
                     case 'B':
                     case 'b':
                         {
                             type = MelsecDataType.B;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 16);
                             break;
                         }
                     case 'R':
                     case 'r':
                         {
                             type = MelsecDataType.R;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 10);
                             break;
                         }
                     case 'S':
                     case 's':
                         {
                             type = MelsecDataType.S;
+                            startAddress = Convert.ToUInt16(address.Substring(1), 10);
                             break;
                         }
                     default: throw new Exception("输入的类型不支持，请重新输入");
                 }
-                startAddress = Convert.ToUInt16(address.Substring(1));
             }
             catch (Exception ex)
             {
@@ -318,7 +329,7 @@ namespace HslCommunication.Profinet
 
         #region Read Support
 
-        
+
         /// <summary>
         /// 从三菱PLC中读取想要的数据，返回读取结果
         /// </summary>
@@ -359,7 +370,7 @@ namespace HslCommunication.Profinet
             // 进入通讯锁
             serverInterfaceLock.Enter();
 
-            
+
 
             // 发送指令到PLC
             if (!SendBytesToSocket(socket, _PLCCommand, result, "发送数据到服务器失败"))
@@ -458,7 +469,7 @@ namespace HslCommunication.Profinet
         /// <returns></returns>
         public OperateResult<float> ReadFloatFromPLC(string address)
         {
-            return GetFloatResultFromBytes(ReadFromPLC(address, 2));
+            return GetFloatResultFromBytes(ReadFromPLC(address, 2), false);
         }
 
         /// <summary>
@@ -479,7 +490,7 @@ namespace HslCommunication.Profinet
         /// <returns></returns>
         public OperateResult<double> ReadDoubleFromPLC(string address)
         {
-            return GetDoubleResultFromBytes(ReadFromPLC(address, 4));
+            return GetDoubleResultFromBytes(ReadFromPLC(address, 4), false);
         }
 
         /// <summary>
@@ -488,7 +499,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">起始地址的字符串形式</param>
         /// <param name="length">字符串长度，返回字符串为2倍长度</param>
         /// <returns></returns>
-        public OperateResult<string> ReadStringFromPLC(string address,ushort length)
+        public OperateResult<string> ReadStringFromPLC(string address, ushort length)
         {
             return GetStringResultFromBytes(ReadFromPLC(address, length));
         }
@@ -640,7 +651,7 @@ namespace HslCommunication.Profinet
 
 
         /// <summary>
-        /// 向PLC写入数据，针对X,Y,M,L的方式，数据为通断的信号
+        /// 向PLC写入数据，针对X,Y,M,L,B的方式，数据为通断的信号
         /// </summary>
         /// <param name="type">写入的数据类型</param>
         /// <param name="address">初始地址</param>
@@ -656,7 +667,7 @@ namespace HslCommunication.Profinet
         }
 
         /// <summary>
-        /// 向PLC写入数据，针对X,Y,M,L的方式，数据为通断的信号
+        /// 向PLC写入数据，针对X,Y,M,L,B的方式，数据为通断的信号
         /// </summary>
         /// <param name="address">初始地址的字符串表示形式</param>
         /// <param name="data">通断信号的数组</param>
@@ -689,7 +700,7 @@ namespace HslCommunication.Profinet
         /// <returns>结果</returns>
         public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, ushort[] data)
         {
-            byte[] temp = GetBytesFromArray(data,false);
+            byte[] temp = GetBytesFromArray(data, false);
             return WriteIntoPLC(type, address, temp);
         }
 
@@ -726,7 +737,7 @@ namespace HslCommunication.Profinet
         /// <returns>结果</returns>
         public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, short[] data)
         {
-            byte[] temp = GetBytesFromArray(data,false);
+            byte[] temp = GetBytesFromArray(data, false);
             return WriteIntoPLC(type, address, temp);
         }
 
@@ -751,7 +762,7 @@ namespace HslCommunication.Profinet
         #endregion
 
         #region Write Float[]
-        
+
         /// <summary>
         /// 向PLC写入数据，针对D和W的方式，数据格式为float数组
         /// </summary>

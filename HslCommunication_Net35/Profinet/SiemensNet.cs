@@ -86,7 +86,7 @@ namespace HslCommunication.Profinet
             catch
             {
                 ChangePort();
-                result.Message= StringResources.ConnectedFailed;
+                result.Message = StringResources.ConnectedFailed;
                 Thread.Sleep(10);
                 socket?.Close();
                 return result;
@@ -186,7 +186,7 @@ namespace HslCommunication.Profinet
         /// <returns>返回写入结果</returns>
         public OperateResult<byte[]> WriteIntoPLC(SiemensDataType type, ushort address, short[] data)
         {
-            return WriteIntoPLC(type, address, GetBytesFromArray(data,false));
+            return WriteIntoPLC(type, address, GetBytesFromArray(data, false));
         }
 
         /// <summary>
@@ -345,7 +345,7 @@ namespace HslCommunication.Profinet
             PortRead = 102;
             PortWrite = 102;
             CurrentPlc = siemens;
-            
+
             switch (siemens)
             {
                 case SiemensPLCS.S1200: plcHead1[18] = 1; break;
@@ -357,7 +357,7 @@ namespace HslCommunication.Profinet
         #endregion
 
         #region Override
-        
+
         /// <summary>
         /// 连接操作
         /// </summary>
@@ -375,7 +375,7 @@ namespace HslCommunication.Profinet
         #endregion
 
         #region Public Method
-        
+
         /// <summary>
         /// 可以手动设置PLC类型，用来测试原本不支持的数据访问功能
         /// </summary>
@@ -505,28 +505,28 @@ namespace HslCommunication.Profinet
             return true;
         }
 
-        private bool InitilizationConnect(Socket socket,OperateResult result)
+        private bool InitilizationConnect(Socket socket, OperateResult result)
         {
             // 发送初始化信息
-            if(!SendBytesToSocket(socket,plcHead1))
+            if (!SendBytesToSocket(socket, plcHead1))
             {
                 result.Message = "初始化信息发送失败";
                 return false;
             }
 
-            if(!ReceiveBytesFromSocket(socket,out byte[] head1))
+            if (!ReceiveBytesFromSocket(socket, out byte[] head1))
             {
                 result.Message = "初始化信息接收失败";
                 return false;
             }
 
-            if(!SendBytesToSocket(socket,plcHead2))
+            if (!SendBytesToSocket(socket, plcHead2))
             {
                 result.Message = "初始化信息发送失败";
                 return false;
             }
 
-            if(!ReceiveBytesFromSocket(socket,out byte[] head2))
+            if (!ReceiveBytesFromSocket(socket, out byte[] head2))
             {
                 result.Message = "初始化信息接收失败";
                 return false;
@@ -622,7 +622,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <param name="length">字符串长度</param>
         /// <returns></returns>
-        public OperateResult<string> ReadStringFromPLC(string address,ushort length)
+        public OperateResult<string> ReadStringFromPLC(string address, ushort length)
         {
             return GetStringResultFromBytes(ReadFromPLC(address, length));
         }
@@ -660,7 +660,7 @@ namespace HslCommunication.Profinet
             else
             {
                 socket = GetWorkSocket(out OperateResult connect);
-                if(!connect.IsSuccess)
+                if (!connect.IsSuccess)
                 {
                     result.Message = connect.Message;
                     return result;
@@ -802,7 +802,7 @@ namespace HslCommunication.Profinet
                 }
                 arrays_bytes.Add(buffer);
             }
-            
+
             if (arrays_bytes.Count == 1)
             {
                 result.Content = arrays_bytes[0];
@@ -826,7 +826,7 @@ namespace HslCommunication.Profinet
             }
             result.IsSuccess = true;
             result.Message = "读取成功";
-            if(!isSocketInitialization) socket?.Close();
+            if (!isSocketInitialization) socket?.Close();
             serverInterfaceLock.Leave();
             // 所有的数据接收完成，进行返回
             return result;
@@ -863,7 +863,7 @@ namespace HslCommunication.Profinet
             else
             {
                 socket = GetWorkSocket(out OperateResult connect);
-                if(!connect.IsSuccess)
+                if (!connect.IsSuccess)
                 {
                     result.Message = connect.Message;
                     return result;
@@ -872,7 +872,7 @@ namespace HslCommunication.Profinet
 
 
             serverInterfaceLock.Enter();
-            
+
 
             if (data == null) data = new byte[0];
 
@@ -926,7 +926,7 @@ namespace HslCommunication.Profinet
             // 写入数据的类型
             _PLCCommand[27] = type;
             // 偏移位置
-            _PLCCommand[28] = (byte)(startAddress / 256 / 256);;
+            _PLCCommand[28] = (byte)(startAddress / 256 / 256); ;
             _PLCCommand[29] = (byte)(startAddress / 256);
             _PLCCommand[30] = (byte)(startAddress % 256);
             // 按字写入
@@ -938,14 +938,14 @@ namespace HslCommunication.Profinet
 
             data.CopyTo(_PLCCommand, 35);
 
-            if(!SendBytesToSocket(socket,_PLCCommand))
+            if (!SendBytesToSocket(socket, _PLCCommand))
             {
                 result.Message = "发送写入信息失败";
                 serverInterfaceLock.Leave();
                 return result;
             }
 
-            if(!ReceiveBytesFromSocket(socket,out byte[] content))
+            if (!ReceiveBytesFromSocket(socket, out byte[] content))
             {
                 result.Message = "接收信息失败";
                 serverInterfaceLock.Leave();
@@ -961,7 +961,7 @@ namespace HslCommunication.Profinet
                 return result;
             }
 
-            if(!isSocketInitialization) socket?.Close();
+            if (!isSocketInitialization) socket?.Close();
             serverInterfaceLock.Leave();
             result.IsSuccess = true;
             return result;
@@ -1039,7 +1039,7 @@ namespace HslCommunication.Profinet
         /// <returns>返回写入结果</returns>
         public OperateResult WriteIntoPLC(string address, short[] data)
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data,true));
+            return WriteIntoPLC(address, GetBytesFromArray(data, true));
         }
 
         /// <summary>
@@ -1050,8 +1050,8 @@ namespace HslCommunication.Profinet
         /// <returns>返回写入结果</returns>
         public OperateResult WriteIntoPLC(string address, ushort[] data)
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data,true));
-        }        
+            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+        }
 
         /// <summary>
         /// 向PLC中写入int数据，返回值说明
@@ -1061,7 +1061,7 @@ namespace HslCommunication.Profinet
         /// <returns>返回写入结果</returns>
         public OperateResult WriteIntoPLC(string address, int[] data)
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data,true));
+            return WriteIntoPLC(address, GetBytesFromArray(data, true));
         }
 
         /// <summary>
@@ -1072,7 +1072,7 @@ namespace HslCommunication.Profinet
         /// <returns>返回写入结果</returns>
         public OperateResult WriteIntoPLC(string address, uint[] data)
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data,true));
+            return WriteIntoPLC(address, GetBytesFromArray(data, true));
         }
 
         /// <summary>
@@ -1084,7 +1084,7 @@ namespace HslCommunication.Profinet
         public OperateResult WriteIntoPLC(string address, bool data)
         {
             OperateResult result = new OperateResult();
-            
+
             Socket socket = null;
             if (!isSocketInitialization)
             {
@@ -1101,7 +1101,7 @@ namespace HslCommunication.Profinet
             else
             {
                 socket = GetWorkSocket(out OperateResult connect);
-                if(!connect.IsSuccess)
+                if (!connect.IsSuccess)
                 {
                     result.Message = connect.Message;
                     return result;
@@ -1112,9 +1112,9 @@ namespace HslCommunication.Profinet
 
             byte[] buffer = new byte[1];
             buffer[0] = data ? (byte)0x01 : (byte)0x00;
-            
 
-            if(!AnalysisAddress(address,out byte type,out int startAddress,out ushort dbAddress,result))
+
+            if (!AnalysisAddress(address, out byte type, out int startAddress, out ushort dbAddress, result))
             {
                 socket?.Close();
                 serverInterfaceLock.Leave();
@@ -1175,14 +1175,14 @@ namespace HslCommunication.Profinet
 
             buffer.CopyTo(_PLCCommand, 35);
 
-            if(!SendBytesToSocket(socket,_PLCCommand))
+            if (!SendBytesToSocket(socket, _PLCCommand))
             {
                 result.Message = "发送写入信息失败";
                 serverInterfaceLock.Leave();
                 return result;
             }
 
-            if(!ReceiveBytesFromSocket(socket,out byte[] content))
+            if (!ReceiveBytesFromSocket(socket, out byte[] content))
             {
                 result.Message = "接收信息失败";
                 serverInterfaceLock.Leave();
@@ -1198,7 +1198,7 @@ namespace HslCommunication.Profinet
                 return result;
             }
 
-            if(!isSocketInitialization) socket?.Close();
+            if (!isSocketInitialization) socket?.Close();
 
             serverInterfaceLock.Leave();
             result.IsSuccess = true;
@@ -1292,7 +1292,7 @@ namespace HslCommunication.Profinet
         private byte[] plcHead1 = new byte[22]
         {
                 0x03,  // 报文头
-                0x00,  
+                0x00,
                 0x00,  // 数据长度
                 0x16,
                 0x11,
