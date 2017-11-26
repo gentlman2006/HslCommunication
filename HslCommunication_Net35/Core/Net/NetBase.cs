@@ -2615,6 +2615,13 @@ namespace HslCommunication.Core
                     socket = null;
                     return false;
                 }
+
+                // 连接后初始化操作，如有需要，在派生类中要重写
+                if(!InitilizationOnConnect(socket, result))
+                {
+                    return false;
+                }
+
                 return true;
             }
             else
@@ -2628,6 +2635,54 @@ namespace HslCommunication.Core
                 }
                 return true;
             }
+        }
+
+
+        /// <summary>
+        /// 接收来自服务器的响应数据，该方法需要在派生类中重写
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        protected virtual bool ReceiveResponse(Socket socket,out byte[] response)
+        {
+            response = null;
+            return true;
+        }
+
+
+
+        protected bool SendCommandAndReceiveResponse(byte[] send, out byte[] receive, OperateResult result)
+        {
+            serverInterfaceLock.Enter();
+
+            if (!CreateSocketByDoubleMode(out Socket socket,result))
+            {
+                serverInterfaceLock.Leave();
+                receive = null;
+                return false;
+            }
+            
+            if (!SendBytesToSocket(socket, send, result))
+            {
+                serverInterfaceLock.Leave();
+                receive = null;
+                return false;
+            }
+
+            if (!ReceiveResponse(socket, out byte[] response))
+            {
+                serverInterfaceLock.Leave();
+                receive = null;
+                return false;
+            }
+
+            receive = response;                                 // 接收到数据
+            if (!isSocketInitialization) socket?.Close();       // 如果是短连接就关闭连接
+
+            serverInterfaceLock.Leave();
+
+            return true;
         }
 
 

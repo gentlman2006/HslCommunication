@@ -1198,6 +1198,7 @@ namespace HslCommunication.Profinet
                 return result;
             }
 
+            // 短连接模式就关闭连接
             if (!isSocketInitialization) socket?.Close();
 
             serverInterfaceLock.Leave();
