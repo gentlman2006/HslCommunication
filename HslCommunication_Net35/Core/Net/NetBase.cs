@@ -2704,6 +2704,8 @@ namespace HslCommunication.Core
         /// <returns></returns>
         protected bool SendCommandAndReceiveResponse(byte[] send, out byte[] receive, OperateResult result)
         {
+            // string str = SoftBasic.ByteToHexString(send, ' ');
+
             serverInterfaceLock.Enter();                        // 进入读取的锁
 
             // 创建或重复利用一个网络接收器
@@ -2741,7 +2743,7 @@ namespace HslCommunication.Core
             if (!isSocketInitialization) socket?.Close();       // 如果是短连接就关闭连接
 
             serverInterfaceLock.Leave();                        // 离开读取的锁
-
+            
             return true;
         }
 

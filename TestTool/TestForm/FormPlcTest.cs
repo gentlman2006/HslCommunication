@@ -65,7 +65,7 @@ namespace TestTool.TestForm
         private void userButton1_Click(object sender, EventArgs e)
         {
             // M100-M104读取显示
-            OperateResult<byte[]> read = melsec_net.ReadFromPLC(MelsecDataType.M, 100, 5);
+            OperateResult<byte[]> read = melsec_net.ReadFromPLC("M100", 5);
 
             if (read.IsSuccess)
             {
@@ -83,7 +83,136 @@ namespace TestTool.TestForm
                 //失败读取，显示失败信息
                 MessageBox.Show(read.ToMessageShowString());
             }
+            
         }
+
+
+        private void userButton20_Click(object sender, EventArgs e)
+        {
+            // M200-M209读取显示
+            OperateResult<byte[]> read = melsec_net.ReadFromPLC("M200", 10);
+            if (read.IsSuccess)
+            {
+                // 成功读取，True代表通，False代表不通
+                bool M200 = read.Content[0] == 1;
+                bool M201 = read.Content[1] == 1;
+                bool M202 = read.Content[2] == 1;
+                bool M203 = read.Content[3] == 1;
+                bool M204 = read.Content[4] == 1;
+                bool M205 = read.Content[5] == 1;
+                bool M206 = read.Content[6] == 1;
+                bool M207 = read.Content[7] == 1;
+                bool M208 = read.Content[8] == 1;
+                bool M209 = read.Content[9] == 1;
+                // 显示
+            }
+            else
+            {
+                //失败读取，显示失败信息
+                MessageBox.Show(read.ToMessageShowString());
+            }
+        }
+
+        private void userButton21_Click(object sender, EventArgs e)
+        {
+            // X100-X10F读取显示
+            OperateResult<byte[]> read = melsec_net.ReadFromPLC("X200", 16);
+            if (read.IsSuccess)
+            {
+                // 成功读取，True代表通，False代表不通
+                bool X200 = read.Content[0] == 1;
+                bool X201 = read.Content[1] == 1;
+                bool X202 = read.Content[2] == 1;
+                bool X203 = read.Content[3] == 1;
+                bool X204 = read.Content[4] == 1;
+                bool X205 = read.Content[5] == 1;
+                bool X206 = read.Content[6] == 1;
+                bool X207 = read.Content[7] == 1;
+                bool X208 = read.Content[8] == 1;
+                bool X209 = read.Content[9] == 1;
+                bool X20A = read.Content[10] == 1;
+                bool X20B = read.Content[11] == 1;
+                bool X20C = read.Content[12] == 1;
+                bool X20D = read.Content[13] == 1;
+                bool X20E = read.Content[14] == 1;
+                bool X20F = read.Content[15] == 1;
+                // 显示
+            }
+            else
+            {
+                //失败读取，显示失败信息
+                MessageBox.Show(read.ToMessageShowString());
+            }
+        }
+        private void userButton22_Click(object sender, EventArgs e)
+        {
+            // 读取M100是否通，十进制地址
+            bool M100 = melsec_net.ReadBoolFromPLC("M100").Content;
+            // 读取X1A0是否通，十六进制地址
+            bool X1A0 = melsec_net.ReadBoolFromPLC("X1A0").Content;
+            // 读取Y1A0是否通，十六进制地址
+            bool Y1A0 = melsec_net.ReadBoolFromPLC("Y1A0").Content;
+            // 读取B1A0是否通，十六进制地址
+            bool B1A0 = melsec_net.ReadBoolFromPLC("B1A0").Content;
+            // 读取D1000的short值  ,W3C0,R3C0 效果是一样的
+            short short_D1000 = melsec_net.ReadShortFromPLC("D1000").Content;
+            // 读取D1000的ushort值
+            ushort ushort_D1000 = melsec_net.ReadUShortFromPLC("D1000").Content;
+            // 读取D1000-D1001组成的int数据
+            int int_D100 = melsec_net.ReadIntFromPLC("D1000").Content;
+            // 读取D1000-D1001组成的float数据
+            float float_D1000 = melsec_net.ReadFloatFromPLC("D1000").Content;
+            // 读取D1000-D1003组成的long数据
+            long long_D1000 = melsec_net.ReadLongFromPLC("D1000").Content;
+            // 读取D1000-D1003组成的double数据
+            double double_D1000 = melsec_net.ReadDoubleFromPLC("D1000").Content;
+            // 读取D1000-D1009组成的条码数据
+            string str_D1000 = melsec_net.ReadStringFromPLC("D1000", 10).Content;
+
+
+            // 写入M100为通
+            melsec_net.WriteIntoPLC("M100", true);
+            // 写入Y1A0为通
+            melsec_net.WriteIntoPLC("Y1A0", true);
+            // 写入X1A0为通
+            melsec_net.WriteIntoPLC("X1A0", true);
+            // 写入B1A0为通
+            melsec_net.WriteIntoPLC("B1A0", true);
+            // 写入D1000  short值  ,W3C0,R3C0 效果是一样的
+            melsec_net.WriteIntoPLC("D1000", (short)1234);
+            // 写入D1000  ushort值
+            melsec_net.WriteIntoPLC("D1000", (ushort)45678);
+            // 写入D1000  int值
+            melsec_net.WriteIntoPLC("D1000", 1234566);
+            // 写入D1000  uint值
+            melsec_net.WriteIntoPLC("D1000", (uint)1234566);
+            // 写入D1000  float值
+            melsec_net.WriteIntoPLC("D1000", 123.456f);
+            // 写入D1000  double值
+            melsec_net.WriteIntoPLC("D1000", 123.456d);
+            // 写入D1000  long值
+            melsec_net.WriteIntoPLC("D1000", 123456661235123534L);
+            // 写入D1000  string值
+            melsec_net.WriteAsciiStringIntoPLC("D1000", "K123456789");
+        }
+
+        private void userButton23_Click(object sender, EventArgs e)
+        {
+            byte[] buffer = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes("50 00 00 FF FF 03 00 0D 00 0A 00 01 14 01 00 64 00 00 90 01 00 10");
+            // 直接使用报文进行
+            OperateResult<byte[]> operate = melsec_net.ReadFromServerCore(buffer);
+            if(operate.IsSuccess)
+            {
+                // 返回PLC的报文反馈，需要自己对报文进行结果分析
+                MessageBox.Show(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(operate.Content));
+            }
+            else
+            {
+                // 网络原因导致的失败
+                MessageBox.Show(operate.ToMessageShowString());
+            }
+        }
+
         private void userButton3_Click(object sender, EventArgs e)
         {
             // M100-M104 写入测试 此处写入后M100:通 M101:断 M102:断 M103:通 M104:通
@@ -115,7 +244,7 @@ namespace TestTool.TestForm
 
         private void userButton19_Click(object sender, EventArgs e)
         {
-            OperateResult write = melsec_net.WriteIntoPLC("M100", false);
+            OperateResult write = melsec_net.WriteIntoPLC("M100", true);
             if (write.IsSuccess)
             {
                 TextBoxAppendStringLine("写入成功");
