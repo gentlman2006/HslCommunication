@@ -71,19 +71,17 @@ namespace HslCommunication.Profinet
         /// <returns>可写入PLC的字节数据</returns>
         protected byte[] BoolTranslateBytes(bool[] data)
         {
-            int length = data.Length % 2 == 0 ? data.Length / 2 : data.Length / 2 + 1;
-            byte[] temp = new byte[length];
-
-            for (int i = 0; i < length; i++)
+            if (data == null) return null;
+            byte[] buffer = new byte[data.Length];
+            for (int i = 0; i < data.Length; i++)
             {
-                if (data[i * 2 + 0]) temp[i] += 0x10;
-                if ((i * 2 + 1) < data.Length)
-                {
-                    if (data[i * 2 + 1]) temp[i] += 0x01;
-                }
+                if (data[i]) buffer[i] = 0x01;
             }
-            return temp;
+            return buffer;
+
         }
+
+
         /// <summary>
         /// 根据字节数据进行补齐偶数位
         /// </summary>
@@ -188,7 +186,6 @@ namespace HslCommunication.Profinet
                 _PLCCommand[19] = (byte)(data.Length / 2 % 256);// 软元件长度的地位
                 _PLCCommand[20] = (byte)(data.Length / 2 / 256);
             }
-
             Array.Copy(data, 0, _PLCCommand, 21, data.Length);
             return _PLCCommand;
         }
@@ -327,9 +324,42 @@ namespace HslCommunication.Profinet
 
         #endregion
 
-        #region Read Support
+        #region DoubleModeNetBase Override
 
+        /// <summary>
+        /// 接收来自服务器的响应
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="response"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected override bool ReceiveResponse(Socket socket, out byte[] response, OperateResult result)
+        {
+            try
+            {
+                //先接收满9个数据
+                byte[] DataHead = NetSupport.ReadBytesFromSocket(socket, 9);
+                byte[] Content = NetSupport.ReadBytesFromSocket(socket, BitConverter.ToUInt16(DataHead, 7));
 
+                response = new byte[9 + Content.Length];
+                DataHead.CopyTo(response, 0);
+                Content.CopyTo(response, 9);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                response = null;
+                result.Message = ex.Message;
+                socket?.Close();
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region Read Write Core
+        
+        
         /// <summary>
         /// 从三菱PLC中读取想要的数据，返回读取结果
         /// </summary>
@@ -342,74 +372,42 @@ namespace HslCommunication.Profinet
             OperateResult<byte[]> result = new OperateResult<byte[]>();
             //获取指令
             byte[] _PLCCommand = GetReadCommand(type, address, length);
-
-
-            Socket socket = null;
-            if (!isSocketInitialization)
+            OperateResult<byte[]> read = ReadFromServerCore(_PLCCommand);
+            if(read.IsSuccess)
             {
-                // 短连接模式，重新创建网络连接
-                if (!CreateSocketAndConnect(out socket, GetIPEndPoint(), result))
+                result.ErrorCode = BitConverter.ToUInt16(read.Content, 9);
+                if(result.ErrorCode == 0)
                 {
-                    socket = null;
-                    ChangePort();
-                    return result;
+                    if (type.DataType == 0x01)
+                    {
+                        result.Content = new byte[(read.Content.Length - 11) * 2];
+                        for (int i = 11; i < read.Content.Length; i++)
+                        {
+                            if ((read.Content[i] & 0x10) == 0x10)
+                            {
+                                result.Content[(i - 11) * 2 + 0] = 0x01;
+                            }
+
+                            if ((read.Content[i] & 0x01) == 0x01)
+                            {
+                                result.Content[(i - 11) * 2 + 1] = 0x01;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        result.Content = new byte[read.Content.Length - 11];
+                        Array.Copy(read.Content, 11, result.Content, 0, result.Content.Length);
+                    }
+                    result.IsSuccess = true;
                 }
             }
             else
             {
-                // 长连接模式，重新利用原先的套接字，如果这个套接字被Close了，会重新连接
-                socket = GetWorkSocket(out OperateResult connect);
-                if (!connect.IsSuccess)
-                {
-                    result.Message = connect.Message;
-                    ChangePort();
-                    return result;
-                }
+                result.ErrorCode = read.ErrorCode;
+                result.Message = read.Message;
             }
 
-            // 进入通讯锁
-            serverInterfaceLock.Enter();
-
-
-
-            // 发送指令到PLC
-            if (!SendBytesToSocket(socket, _PLCCommand, result, "发送数据到服务器失败"))
-            {
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-
-
-            try
-            {
-                //先接收满9个数据
-                int NeedReceived = 9;
-                byte[] DataHead = NetSupport.ReadBytesFromSocket(socket, NeedReceived);
-                NeedReceived = BitConverter.ToUInt16(DataHead, 7);
-                DataHead = NetSupport.ReadBytesFromSocket(socket, NeedReceived);
-                //获取读取代码
-                result.ErrorCode = BitConverter.ToUInt16(DataHead, 0);
-                if (result.ErrorCode == 0)
-                {
-                    result.Content = new byte[DataHead.Length - 2];
-                    Array.Copy(DataHead, 2, result.Content, 0, DataHead.Length - 2);
-                    if (type.DataType == 1) result.Content = ReceiveBytesTranslate(result.Content);
-                    result.IsSuccess = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                serverInterfaceLock.Leave();
-                result.Message = StringResources.SocketIOException + ex.Message;
-                socket.Close();
-                return result;
-            }
-
-
-            if (!isSocketInitialization) socket.Close();
-            if (result.ErrorCode > 0) result.IsSuccess = false;
-            serverInterfaceLock.Leave();
             return result;
         }
 
@@ -429,6 +427,93 @@ namespace HslCommunication.Profinet
             return ReadFromPLC(type, startAddress, length);
         }
 
+
+        /// <summary>
+        /// 向PLC写入数据，数据格式为原始的字节类型
+        /// </summary>
+        /// <param name="type">写入的数据类型</param>
+        /// <param name="address">初始地址</param>
+        /// <param name="data">原始的字节数据</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, byte[] data)
+        {
+            OperateResult result = new OperateResult();
+            // 预处理指令
+            byte[] _PLCCommand = null;
+
+            if (type.DataType == 0x01)
+            {
+                int length = data.Length % 2 == 0 ? data.Length / 2 : data.Length / 2 + 1;
+                byte[] buffer = new byte[length];
+
+                for (int i = 0; i < length; i++)
+                {
+                    if (data[i * 2 + 0] != 0x00) buffer[i] += 0x10;
+                    if ((i * 2 + 1) < data.Length)
+                    {
+                        if (data[i * 2 + 1] != 0x00) buffer[i] += 0x01;
+                    }
+                }
+
+                _PLCCommand = GetWriteCommand(type, address, buffer, data.Length);
+            }
+            else
+            {
+                _PLCCommand = GetWriteCommand(type, address, data);
+            }
+
+            OperateResult<byte[]> read = ReadFromServerCore(_PLCCommand);
+            if(read.IsSuccess)
+            {
+                result.ErrorCode = BitConverter.ToUInt16(read.Content, 9);
+                if(result.ErrorCode == 0)
+                {
+                    result.IsSuccess = true;
+                }
+            }
+            else
+            {
+                result.ErrorCode = read.ErrorCode;
+                result.Message = read.Message;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 向PLC写入数据，数据格式为原始的字节类型
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">原始的字节数据</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, byte[] data)
+        {
+            OperateResult result = new OperateResult();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, data);
+        }
+        
+
+        #endregion
+
+        #region Read Support
+        
+
+        /// <summary>
+        /// 读取指定地址的bool数据，针对数据类型X,Y,M,L,B
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
+        public OperateResult<bool> ReadBoolFromPLC(string address)
+        {
+            return GetBoolResultFromBytes(ReadFromPLC(address, 1));
+        }
 
 
         /// <summary>
@@ -663,7 +748,7 @@ namespace HslCommunication.Profinet
             if (type == null) throw new ArgumentNullException("type不能为空");
             if (data == null) throw new ArgumentNullException("data不能为空");
             byte[] temp = BoolTranslateBytes(data);
-            return WriteIntoPLC(type, address, temp, data.Length);
+            return WriteIntoPLC(type, address, temp);
         }
 
         /// <summary>
@@ -683,6 +768,22 @@ namespace HslCommunication.Profinet
             return WriteIntoPLC(type, startAddress, data);
         }
 
+        /// <summary>
+        /// 向PLC写入数据，针对X,Y,M,L,B的方式，数据为通断的信号
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">通断信号的数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, bool data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, new bool[] { data });
+        }
 
 
         #endregion
@@ -722,6 +823,23 @@ namespace HslCommunication.Profinet
         }
 
 
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为无符号的ushort数据
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">无符号的ushort数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, ushort data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, new ushort[] { data });
+        }
+
         #endregion
 
         #region Write short[]
@@ -758,6 +876,126 @@ namespace HslCommunication.Profinet
             return WriteIntoPLC(type, startAddress, data);
         }
 
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为有符号的short数据
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">有符号的short数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, short data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, new short[] { data });
+        }
+
+        #endregion
+
+        #region Write Int[]
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为int数组
+        /// </summary>
+        /// <param name="type">写入的数据类型</param>
+        /// <param name="address">初始地址</param>
+        /// <param name="data">float数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, int[] data)
+        {
+            byte[] temp = GetBytesFromArray(data, false);
+            return WriteIntoPLC(type, address, temp);
+        }
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为int数组
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">float数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, int[] data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, data);
+        }
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为int数据
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">float数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, int data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, new int[] { data });
+        }
+
+        #endregion
+
+        #region Write UInt[]
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为uint数组
+        /// </summary>
+        /// <param name="type">写入的数据类型</param>
+        /// <param name="address">初始地址</param>
+        /// <param name="data">float数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, uint[] data)
+        {
+            byte[] temp = GetBytesFromArray(data, false);
+            return WriteIntoPLC(type, address, temp);
+        }
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为uint数组
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">float数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, uint[] data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, data);
+        }
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为uint数据
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">float数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, uint data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, new uint[] { data });
+        }
 
         #endregion
 
@@ -773,11 +1011,7 @@ namespace HslCommunication.Profinet
         /// <returns>结果</returns>
         public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, float[] data)
         {
-            byte[] temp = new byte[data.Length * 4];
-            for (int i = 0; i < data.Length; i++)
-            {
-                BitConverter.GetBytes(data[i]).CopyTo(temp, i * 4);
-            }
+            byte[] temp = GetBytesFromArray(data, false);
             return WriteIntoPLC(type, address, temp);
         }
 
@@ -798,6 +1032,75 @@ namespace HslCommunication.Profinet
             return WriteIntoPLC(type, startAddress, data);
         }
 
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为float数据
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">float数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, float data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, new float[] { data });
+        }
+
+
+        #endregion
+
+        #region Write Long[]
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为long数组
+        /// </summary>
+        /// <param name="type">写入的数据类型</param>
+        /// <param name="address">初始地址</param>
+        /// <param name="data">double数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, long[] data)
+        {
+            byte[] temp = GetBytesFromArray(data, false);
+            return WriteIntoPLC(type, address, temp);
+        }
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为long数组
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">double数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, long[] data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, data);
+        }
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为long数据
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">double数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC(string address, long data)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
+            {
+                return result;
+            }
+            return WriteIntoPLC(type, startAddress, new long[] { data });
+        }
 
         #endregion
 
@@ -813,11 +1116,7 @@ namespace HslCommunication.Profinet
         /// <returns>结果</returns>
         public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, double[] data)
         {
-            byte[] temp = new byte[data.Length * 8];
-            for (int i = 0; i < data.Length; i++)
-            {
-                BitConverter.GetBytes(data[i]).CopyTo(temp, i * 8);
-            }
+            byte[] temp = GetBytesFromArray(data, false);
             return WriteIntoPLC(type, address, temp);
         }
 
@@ -838,125 +1137,25 @@ namespace HslCommunication.Profinet
             return WriteIntoPLC(type, startAddress, data);
         }
 
-        #endregion
-
-        #region Write byte[]
-
-
         /// <summary>
-        /// 向PLC写入数据，数据格式为原始的字节类型
-        /// </summary>
-        /// <param name="type">写入的数据类型</param>
-        /// <param name="address">初始地址</param>
-        /// <param name="data">原始的字节数据</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns>结果</returns>
-        public OperateResult WriteIntoPLC(MelsecDataType type, ushort address, byte[] data)
-        {
-            return WriteIntoPLC(type, address, data, -1);
-        }
-
-
-        /// <summary>
-        /// 向PLC写入数据，数据格式为原始的字节类型
+        /// 向PLC写入数据，针对D和W的方式，数据格式为double数据
         /// </summary>
         /// <param name="address">初始地址的字符串表示形式</param>
-        /// <param name="data">原始的字节数据</param>
+        /// <param name="data">double数组</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns>结果</returns>
-        public OperateResult WriteIntoPLC(string address, byte[] data)
+        public OperateResult WriteIntoPLC(string address, double data)
         {
             OperateResult<byte[]> result = new OperateResult<byte[]>();
             if (!AnalysisAddress(address, out MelsecDataType type, out ushort startAddress, result))
             {
                 return result;
             }
-            return WriteIntoPLC(type, startAddress, data);
-        }
-
-
-        #endregion
-
-        #region Write Base
-
-
-        /// <summary>
-        /// 向PLC写入数据，数据格式为原始的字节类型
-        /// </summary>
-        /// <param name="type">写入的数据类型</param>
-        /// <param name="address">初始地址</param>
-        /// <param name="data">原始的字节数据</param>
-        /// <param name="length">长度</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <returns>结果</returns>
-        private OperateResult WriteIntoPLC(MelsecDataType type, ushort address, byte[] data, int length)
-        {
-            OperateResult<byte[]> result = new OperateResult<byte[]>();
-            byte[] _PLCCommand = GetWriteCommand(type, address, data, length);
-
-            // 报文的缓冲显示
-            // string temp = BasicFramework.SoftBasic.ByteToHexString(_PLCCommand, ' ');
-
-            Array.Copy(data, 0, _PLCCommand, 21, data.Length);
-
-            Socket socket = null;
-            if (!isSocketInitialization)
-            {
-                // 短连接模式，重新创建网络连接
-                if (!CreateSocketAndConnect(out socket, GetIPEndPoint(), result))
-                {
-                    socket = null;
-                    ChangePort();
-                    return result;
-                }
-            }
-            else
-            {
-                // 长连接模式，重新利用原先的套接字，如果这个套接字被Close了，会重新连接
-                socket = GetWorkSocket(out OperateResult connect);
-                if (!connect.IsSuccess)
-                {
-                    result.Message = connect.Message;
-                    return result;
-                }
-            }
-
-            // 进入通讯锁
-            serverInterfaceLock.Enter();
-
-            // 发送指令到PLC
-            if (!SendBytesToSocket(socket, _PLCCommand, result, "发送数据到服务器失败"))
-            {
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-
-            try
-            {
-                //先接收满9个数据
-                int NeedReceived = 9;
-                byte[] DataHead = NetSupport.ReadBytesFromSocket(socket, NeedReceived);
-                NeedReceived = BitConverter.ToUInt16(DataHead, 7);
-                DataHead = NetSupport.ReadBytesFromSocket(socket, NeedReceived);
-                result.ErrorCode = BitConverter.ToUInt16(DataHead, 0);
-                result.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                result.Message = StringResources.SocketIOException + ex.Message;
-                serverInterfaceLock.Leave();
-                socket?.Close();
-                return result;
-            }
-
-            if (!isSocketInitialization) socket?.Close();
-            serverInterfaceLock.Leave();
-            if (result.ErrorCode > 0) result.IsSuccess = false;
-            return result;
+            return WriteIntoPLC(type, startAddress, new double[] { data });
         }
 
         #endregion
+        
 
     }
 

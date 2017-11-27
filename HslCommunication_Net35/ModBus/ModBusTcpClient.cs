@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net.Sockets;
 
 
 
@@ -91,7 +92,6 @@ namespace HslCommunication.ModBus
         private ushort messageId = 1;                       // 消息头
         private byte station = 0;                           // ModBus的客户端站号
         private SimpleHybirdLock simpleHybird;              // 消息头递增的同步锁
-        private int receiveTimeOut = 4000;                  // 接收Modbus数据的超时时间
 
         #endregion
 
@@ -215,108 +215,224 @@ namespace HslCommunication.ModBus
 
         #endregion
 
-        #region Public Member
+        #region DoubleModeNetBase Override
 
         /// <summary>
-        /// 接收数据的延时时间，默认4000毫秒
+        /// 接收服务器的反馈数据的规则
         /// </summary>
-        public int ReceiveTimeOut
-        {
-            get
-            {
-                return receiveTimeOut;
-            }
-            set
-            {
-                receiveTimeOut = value;
-            }
-        }
-
-        #endregion
-
-        #region Public Method
-
-
-        /// <summary>
-        /// 读写ModBus服务器的基础方法，支持任意的数据操作
-        /// </summary>
-        /// <param name="send">发送的字节数据</param>
+        /// <param name="socket"></param>
+        /// <param name="response"></param>
+        /// <param name="result"></param>
         /// <returns></returns>
-        public OperateResult<byte[]> ReadFromModBusServer(byte[] send)
+        protected override bool ReceiveResponse(Socket socket, out byte[] response, OperateResult result)
         {
-            OperateResult<byte[]> result = new OperateResult<byte[]>();
-
-            System.Net.Sockets.Socket socket = null;
-            if (!isSocketInitialization)
-            {
-                // 短连接模式，重新创建网络连接
-                if (!CreateSocketAndConnect(out socket, GetIPEndPoint(), result))
-                {
-                    socket = null;
-                    return result;
-                }
-            }
-            else
-            {
-                // 长连接模式，重新利用原先的套接字，如果这个套接字被Close了，会重新连接
-                socket = GetWorkSocket(out OperateResult connect);
-                if (!connect.IsSuccess)
-                {
-                    result.Message = connect.Message;
-                    return result;
-                }
-            }
-
-
-            serverInterfaceLock.Enter();
-
-            if (!SendBytesToSocket(socket, send, result, "发送数据到服务器失败"))
-            {
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-
-            HslTimeOut hslTimeOut = new HslTimeOut();
-            hslTimeOut.WorkSocket = socket;
-            hslTimeOut.DelayTime = receiveTimeOut;                       // 5秒内必须接收到数据
             try
             {
-                System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(
-                    ThreadPoolCheckConnect), hslTimeOut);
                 byte[] head = NetSupport.ReadBytesFromSocket(socket, 6);
-
                 int length = head[4] * 256 + head[5];
                 byte[] data = NetSupport.ReadBytesFromSocket(socket, length);
 
                 byte[] buffer = new byte[6 + length];
                 head.CopyTo(buffer, 0);
                 data.CopyTo(buffer, 6);
-                hslTimeOut.IsSuccessful = true;
-                result.Content = buffer;
+                response = buffer;
+                return true;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 socket?.Close();
-                result.Message = "从服务器接收结果数据的时候发生错误：" + ex.Message;
-                serverInterfaceLock.Leave();
-                return result;
+                response = null;
+                result.Message = ex.Message;
+                return false;
             }
-
-            if (!isSocketInitialization) socket?.Close();
-
-            serverInterfaceLock.Leave();
-
-            result.IsSuccess = true;
-            return result;
         }
 
 
+        #endregion
 
+        #region Write Support
+
+        /// <summary>
+        /// 写单个线圈，对应的功能码0x05
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">False还是True，代表线圈断和通</param>
+        /// <returns></returns>
+        public OperateResult WriteOneCoil(ushort address, bool value)
+        {
+            return ReadFromServerCore(BuildWriteOneCoil(address, value));
+        }
+
+        /// <summary>
+        /// 写入一个寄存器的数据，对应的功能码0x06
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">有符号的数据值</param>
+        /// <returns></returns>
+        public OperateResult WriteOneRegister(ushort address, short value)
+        {
+            return ReadFromServerCore(BuildWriteOneRegister(address, BitConverter.GetBytes(value)));
+        }
+
+        /// <summary>
+        /// 写入一个寄存器的数据，对应的功能码0x06
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">无符号的数据值</param>
+        /// <returns></returns>
+        public OperateResult WriteOneRegister(ushort address, ushort value)
+        {
+            return ReadFromServerCore(BuildWriteOneRegister(address, BitConverter.GetBytes(value)));
+        }
+
+        /// <summary>
+        /// 写入一个寄存器的数据，对应的功能码0x06
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="High">高位的数据</param>
+        /// <param name="Low">地位的数据</param>
+        /// <returns></returns>
+        public OperateResult WriteOneRegister(ushort address, byte High, byte Low)
+        {
+            return ReadFromServerCore(BuildWriteOneRegister(address, new byte[] { Low, High }));
+        }
 
 
         /// <summary>
-        /// 读取服务器的线圈，对应功能码0x01
+        /// 写线圈数组，线圈数组不能大于2040个，对应的功能码0x0F
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">线圈的数组</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        public OperateResult WriteCoil(ushort address, bool[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 2040) throw new ArgumentOutOfRangeException("value", "长度不能大于2040。");
+            return ReadFromServerCore(BuildWriteCoil(address, value));
+        }
+
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">字节数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, byte[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 255) throw new ArgumentOutOfRangeException("value", "长度不能大于255。");
+            return ReadFromServerCore(BuildWriteRegister(address, value));
+        }
+
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">short数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, short[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 128) throw new ArgumentOutOfRangeException("value", "长度不能大于128。");
+
+
+            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+        }
+
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ushort数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, ushort[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 128) throw new ArgumentOutOfRangeException("value", "长度不能大于128。");
+            
+            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+        }
+
+
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ushort数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, int[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于64。");
+            
+            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+        }
+
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ushort数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, uint[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于64。");
+            
+            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+        }
+
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ushort数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, float[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于64。");
+            
+            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+        }
+
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ushort数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, double[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 32) throw new ArgumentOutOfRangeException("value", "长度不能大于32。");
+            
+            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+        }
+
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ushort数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, long[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 32) throw new ArgumentOutOfRangeException("value", "长度不能大于32。");
+            
+            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+        }
+
+        #endregion
+
+        #region Read Support
+
+
+        /// <summary>
+        /// 读取服务器的数据，需要指定不同的功能码
         /// </summary>
         /// <param name="function"></param>
         /// <param name="address"></param>
@@ -324,7 +440,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         private OperateResult<byte[]> ReadModBusBase(ModBusFunctionMask function, ushort address, ushort length)
         {
-            OperateResult<byte[]> resultBytes = ReadFromModBusServer(BuildReadCommand(function, address, length));
+            OperateResult<byte[]> resultBytes = ReadFromServerCore(BuildReadCommand(function, address, length));
             if (resultBytes.IsSuccess)
             {
                 // 二次数据处理
@@ -377,127 +493,17 @@ namespace HslCommunication.ModBus
             return ReadModBusBase(ModBusFunctionMask.ReadRegister, address, length);
         }
 
-
+        
+        
         /// <summary>
-        /// 写单个线圈，对应的功能码0x05
+        /// 读取指定地址的线圈值，并转化成bool
         /// </summary>
-        /// <param name="address">写入的起始地址</param>
-        /// <param name="value">False还是True，代表线圈断和通</param>
+        /// <param name="address">起始地址</param>
         /// <returns></returns>
-        public OperateResult WriteOneCoil(ushort address, bool value)
+        public OperateResult<bool> ReadBoolCoil(ushort address)
         {
-            return ReadFromModBusServer(BuildWriteOneCoil(address, value));
+            return GetBoolResultFromBytes(ReadCoil(address, 1));
         }
-
-        /// <summary>
-        /// 写入一个寄存器的数据，对应的功能码0x06
-        /// </summary>
-        /// <param name="address">写入的起始地址</param>
-        /// <param name="value">有符号的数据值</param>
-        /// <returns></returns>
-        public OperateResult WriteOneRegister(ushort address, short value)
-        {
-            return ReadFromModBusServer(BuildWriteOneRegister(address, BitConverter.GetBytes(value)));
-        }
-
-        /// <summary>
-        /// 写入一个寄存器的数据，对应的功能码0x06
-        /// </summary>
-        /// <param name="address">写入的起始地址</param>
-        /// <param name="value">无符号的数据值</param>
-        /// <returns></returns>
-        public OperateResult WriteOneRegister(ushort address, ushort value)
-        {
-            return ReadFromModBusServer(BuildWriteOneRegister(address, BitConverter.GetBytes(value)));
-        }
-
-        /// <summary>
-        /// 写入一个寄存器的数据，对应的功能码0x06
-        /// </summary>
-        /// <param name="address">写入的起始地址</param>
-        /// <param name="High">高位的数据</param>
-        /// <param name="Low">地位的数据</param>
-        /// <returns></returns>
-        public OperateResult WriteOneRegister(ushort address, byte High, byte Low)
-        {
-            return ReadFromModBusServer(BuildWriteOneRegister(address, new byte[] { Low, High }));
-        }
-
-
-        /// <summary>
-        /// 写线圈数组，线圈数组不能大于2040个，对应的功能码0x0F
-        /// </summary>
-        /// <param name="address">写入的起始地址</param>
-        /// <param name="value">线圈的数组</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
-        public OperateResult WriteCoil(ushort address, bool[] value)
-        {
-            if (value == null) throw new ArgumentNullException("value");
-            if (value.Length > 2040) throw new ArgumentOutOfRangeException("value", "长度不能大于2040。");
-            return ReadFromModBusServer(BuildWriteCoil(address, value));
-        }
-
-        /// <summary>
-        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
-        /// </summary>
-        /// <param name="address">写入的起始地址</param>
-        /// <param name="value">字节数组</param>
-        /// <returns></returns>
-        public OperateResult WriteRegister(ushort address, byte[] value)
-        {
-            if (value == null) throw new ArgumentNullException("value");
-            if (value.Length > 255) throw new ArgumentOutOfRangeException("value", "长度不能大于255。");
-            return ReadFromModBusServer(BuildWriteRegister(address, value));
-        }
-
-        /// <summary>
-        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
-        /// </summary>
-        /// <param name="address">写入的起始地址</param>
-        /// <param name="value">short数组</param>
-        /// <returns></returns>
-        public OperateResult WriteRegister(ushort address, short[] value)
-        {
-            if (value == null) throw new ArgumentNullException("value");
-            if (value.Length > 128) throw new ArgumentOutOfRangeException("value", "长度不能大于128。");
-
-            byte[] buffer = new byte[value.Length * 2];
-            for (int i = 0; i < value.Length; i++)
-            {
-                buffer[2 * i + 0] = BitConverter.GetBytes(value[i])[1];
-                buffer[2 * i + 1] = BitConverter.GetBytes(value[i])[0];
-            }
-
-            return ReadFromModBusServer(BuildWriteRegister(address, buffer));
-        }
-
-        /// <summary>
-        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
-        /// </summary>
-        /// <param name="address">写入的起始地址</param>
-        /// <param name="value">ushort数组</param>
-        /// <returns></returns>
-        public OperateResult WriteRegister(ushort address, ushort[] value)
-        {
-            if (value == null) throw new ArgumentNullException("value");
-            if (value.Length > 128) throw new ArgumentOutOfRangeException("value", "长度不能大于128。");
-
-            byte[] buffer = new byte[value.Length * 2];
-            for (int i = 0; i < value.Length; i++)
-            {
-                buffer[2 * i + 0] = BitConverter.GetBytes(value[i])[1];
-                buffer[2 * i + 1] = BitConverter.GetBytes(value[i])[0];
-            }
-
-            return ReadFromModBusServer(BuildWriteRegister(address, buffer));
-        }
-
-        #endregion
-
-        #region Read Data
-
 
         /// <summary>
         /// 读取指定地址的寄存器，并转化成short

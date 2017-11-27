@@ -47,6 +47,7 @@ namespace HslCommunication.Core
                     if (!timeout.IsSuccessful) timeout.WorkSocket?.Close();
                     break;
                 }
+                Thread.Sleep(100);
             }
         }
 
@@ -2386,6 +2387,27 @@ namespace HslCommunication.Core
 
         #region Read Data From Server
 
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <returns></returns>
+        protected OperateResult<bool> GetBoolResultFromBytes(OperateResult<byte[]> read)
+        {
+            if (read == null) return null;
+            OperateResult<bool> result = new OperateResult<bool>();
+            if (read.IsSuccess)
+            {
+                result.Content = read.Content[0] != 0x00;
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+            return result;
+        }
+
+
         /// <summary>
         /// 将指定的OperateResult类型转化
         /// </summary>
@@ -2466,6 +2488,27 @@ namespace HslCommunication.Core
             {
                 if (reverse) Array.Reverse(read.Content);
                 result.Content = BitConverter.ToInt64(read.Content, 0);
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<ulong> GetUInt64ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        {
+            OperateResult<ulong> result = new OperateResult<ulong>();
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse(read.Content);
+                result.Content = BitConverter.ToUInt64(read.Content, 0);
             }
             result.IsSuccess = read.IsSuccess;
             result.Message = read.Message;
@@ -2567,7 +2610,7 @@ namespace HslCommunication.Core
 
         #endregion
 
-        #region Protect Method
+        #region Core Connect
 
         /// <summary>
         /// 获取最终连接的网络点
@@ -2643,26 +2686,35 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="socket"></param>
         /// <param name="response"></param>
+        /// <param name="result"></param>
         /// <returns></returns>
-        protected virtual bool ReceiveResponse(Socket socket,out byte[] response)
+        protected virtual bool ReceiveResponse(Socket socket, out byte[] response, OperateResult result)
         {
             response = null;
             return true;
         }
 
 
-
+        /// <summary>
+        /// 发送网数据到网络上去，并接收来自网络的反馈，接收反馈超时时间，5秒钟
+        /// </summary>
+        /// <param name="send"></param>
+        /// <param name="receive"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         protected bool SendCommandAndReceiveResponse(byte[] send, out byte[] receive, OperateResult result)
         {
-            serverInterfaceLock.Enter();
+            serverInterfaceLock.Enter();                        // 进入读取的锁
 
-            if (!CreateSocketByDoubleMode(out Socket socket,result))
+            // 创建或重复利用一个网络接收器
+            if (!CreateSocketByDoubleMode(out Socket socket, result))
             {
                 serverInterfaceLock.Leave();
                 receive = null;
                 return false;
             }
             
+            // 发送数据到网络服务
             if (!SendBytesToSocket(socket, send, result))
             {
                 serverInterfaceLock.Leave();
@@ -2670,17 +2722,25 @@ namespace HslCommunication.Core
                 return false;
             }
 
-            if (!ReceiveResponse(socket, out byte[] response))
+            // 进行10秒接收超时的机制
+            HslTimeOut hslTimeOut = new HslTimeOut();
+            hslTimeOut.WorkSocket = socket;
+            hslTimeOut.DelayTime = 10000;                       // 10秒内必须接收到数据
+            ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckConnect), hslTimeOut);
+
+            if (!ReceiveResponse(socket, out byte[] response, result))
             {
                 serverInterfaceLock.Leave();
                 receive = null;
+                hslTimeOut.IsSuccessful = true;
                 return false;
             }
+            hslTimeOut.IsSuccessful = true;                     // 退出超时的算法
 
             receive = response;                                 // 接收到数据
             if (!isSocketInitialization) socket?.Close();       // 如果是短连接就关闭连接
 
-            serverInterfaceLock.Leave();
+            serverInterfaceLock.Leave();                        // 离开读取的锁
 
             return true;
         }
@@ -2688,6 +2748,319 @@ namespace HslCommunication.Core
 
         #endregion
 
+        #region Read Server Core
+
+        /// <summary>
+        /// 读写服务器的核心方法，直接发送基础报文，接收服务器的报文返回，可用于测试报文是否正确及二次扩展成自己的API
+        /// </summary>
+        /// <param name="send">发送的原始字节数据</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> ReadFromServerCore(byte[] send)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+
+            if (!SendCommandAndReceiveResponse(send, out byte[] response, result))
+            {
+                // 失败
+                return result;
+            }
+            else
+            {
+                // 成功
+                result.Content = response;
+                result.IsSuccess = true;
+                return result;
+            }
+        }
+
+
+        #endregion
+
+        #region Data Transfer
+
+        /// <summary>
+        /// 根据short[]进行转换到byte[]数组
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        protected byte[] GetBytesFromArray(short[] data, bool reverse)
+        {
+            if (data == null) return null;
+
+            byte[] buffer = new byte[data.Length * 2];
+            for (int i = 0; i < data.Length; i++)
+            {
+                byte[] temp = BitConverter.GetBytes(data[i]);
+                if(reverse)
+                {
+                    buffer[2 * i + 1] = temp[0];
+                    buffer[2 * i + 0] = temp[1];
+                }
+                else
+                {
+                    buffer[2 * i + 0] = temp[0];
+                    buffer[2 * i + 1] = temp[1];
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// 根据ushort[]进行转换到byte[]数组
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        protected byte[] GetBytesFromArray(ushort[] data, bool reverse)
+        {
+            if (data == null) return null;
+
+            byte[] buffer = new byte[data.Length * 2];
+            for (int i = 0; i < data.Length; i++)
+            {
+                byte[] temp = BitConverter.GetBytes(data[i]);
+                if(reverse)
+                {
+                    buffer[2 * i + 1] = temp[0];
+                    buffer[2 * i + 0] = temp[1];
+                }
+                else
+                {
+                    buffer[2 * i + 0] = temp[0];
+                    buffer[2 * i + 1] = temp[1];
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// int[]进行转换到byte[]数组
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        protected byte[] GetBytesFromArray(int[] data, bool reverse)
+        {
+            if (data == null) return null;
+
+            byte[] buffer = new byte[data.Length * 4];
+            for (int i = 0; i < data.Length; i++)
+            {
+                byte[] temp = BitConverter.GetBytes(data[i]);
+                if(reverse)
+                {
+                    buffer[4 * i + 3] = temp[0];
+                    buffer[4 * i + 2] = temp[1];
+                    buffer[4 * i + 1] = temp[2];
+                    buffer[4 * i + 0] = temp[3];
+                }
+                else
+                {
+                    buffer[4 * i + 0] = temp[0];
+                    buffer[4 * i + 1] = temp[1];
+                    buffer[4 * i + 2] = temp[2];
+                    buffer[4 * i + 3] = temp[3];
+                }
+            }
+
+            return buffer;
+        }
+
+
+        /// <summary>
+        /// uint[]进行转换到byte[]数组
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        protected byte[] GetBytesFromArray(uint[] data, bool reverse)
+        {
+            if (data == null) return null;
+
+            byte[] buffer = new byte[data.Length * 4];
+            for (int i = 0; i < data.Length; i++)
+            {
+                byte[] temp = BitConverter.GetBytes(data[i]);
+                if(reverse)
+                {
+                    buffer[4 * i + 3] = temp[0];
+                    buffer[4 * i + 2] = temp[1];
+                    buffer[4 * i + 1] = temp[2];
+                    buffer[4 * i + 0] = temp[3];
+                }
+                else
+                {
+                    buffer[4 * i + 0] = temp[0];
+                    buffer[4 * i + 1] = temp[1];
+                    buffer[4 * i + 2] = temp[2];
+                    buffer[4 * i + 3] = temp[3];
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// float[]进行转换到byte[]数组
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        protected byte[] GetBytesFromArray(float[] data, bool reverse)
+        {
+            if (data == null) return null;
+
+            byte[] buffer = new byte[data.Length * 4];
+            for (int i = 0; i < data.Length; i++)
+            {
+                byte[] temp = BitConverter.GetBytes(data[i]);
+                if(reverse)
+                {
+                    buffer[4 * i + 3] = temp[0];
+                    buffer[4 * i + 2] = temp[1];
+                    buffer[4 * i + 1] = temp[2];
+                    buffer[4 * i + 0] = temp[3];
+                }
+                else
+                {
+                    buffer[4 * i + 0] = temp[0];
+                    buffer[4 * i + 1] = temp[1];
+                    buffer[4 * i + 2] = temp[2];
+                    buffer[4 * i + 3] = temp[3];
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// long[]进行转换到byte[]数组
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        protected byte[] GetBytesFromArray(long[] data, bool reverse)
+        {
+            if (data == null) return null;
+
+            byte[] buffer = new byte[data.Length * 8];
+            for (int i = 0; i < data.Length; i++)
+            {
+                byte[] temp = BitConverter.GetBytes(data[i]);
+                if(reverse)
+                {
+                    buffer[8 * i + 7] = temp[0];
+                    buffer[8 * i + 6] = temp[1];
+                    buffer[8 * i + 5] = temp[2];
+                    buffer[8 * i + 4] = temp[3];
+                    buffer[8 * i + 3] = temp[4];
+                    buffer[8 * i + 2] = temp[5];
+                    buffer[8 * i + 1] = temp[6];
+                    buffer[8 * i + 0] = temp[7];
+                }
+                else
+                {
+                    buffer[8 * i + 0] = temp[0];
+                    buffer[8 * i + 1] = temp[1];
+                    buffer[8 * i + 2] = temp[2];
+                    buffer[8 * i + 3] = temp[3];
+                    buffer[8 * i + 4] = temp[4];
+                    buffer[8 * i + 5] = temp[5];
+                    buffer[8 * i + 6] = temp[6];
+                    buffer[8 * i + 7] = temp[7];
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// long[]进行转换到byte[]数组
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        protected byte[] GetBytesFromArray(ulong[] data, bool reverse)
+        {
+            if (data == null) return null;
+
+            byte[] buffer = new byte[data.Length * 8];
+            for (int i = 0; i < data.Length; i++)
+            {
+                byte[] temp = BitConverter.GetBytes(data[i]);
+                if(reverse)
+                {
+                    buffer[8 * i + 7] = temp[0];
+                    buffer[8 * i + 6] = temp[1];
+                    buffer[8 * i + 5] = temp[2];
+                    buffer[8 * i + 4] = temp[3];
+                    buffer[8 * i + 3] = temp[4];
+                    buffer[8 * i + 2] = temp[5];
+                    buffer[8 * i + 1] = temp[6];
+                    buffer[8 * i + 0] = temp[7];
+                }
+                else
+                {
+                    buffer[8 * i + 0] = temp[0];
+                    buffer[8 * i + 1] = temp[1];
+                    buffer[8 * i + 2] = temp[2];
+                    buffer[8 * i + 3] = temp[3];
+                    buffer[8 * i + 4] = temp[4];
+                    buffer[8 * i + 5] = temp[5];
+                    buffer[8 * i + 6] = temp[6];
+                    buffer[8 * i + 7] = temp[7];
+                }
+            }
+
+            return buffer;
+        }
+
+        /// <summary>
+        /// long[]进行转换到byte[]数组
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        protected byte[] GetBytesFromArray(double[] data, bool reverse)
+        {
+            if (data == null) return null;
+
+            byte[] buffer = new byte[data.Length * 8];
+            for (int i = 0; i < data.Length; i++)
+            {
+                byte[] temp = BitConverter.GetBytes(data[i]);
+                if(reverse)
+                {
+                    buffer[8 * i + 7] = temp[0];
+                    buffer[8 * i + 6] = temp[1];
+                    buffer[8 * i + 5] = temp[2];
+                    buffer[8 * i + 4] = temp[3];
+                    buffer[8 * i + 3] = temp[4];
+                    buffer[8 * i + 2] = temp[5];
+                    buffer[8 * i + 1] = temp[6];
+                    buffer[8 * i + 0] = temp[7];
+                }
+                else
+                {
+                    buffer[8 * i + 0] = temp[0];
+                    buffer[8 * i + 1] = temp[1];
+                    buffer[8 * i + 2] = temp[2];
+                    buffer[8 * i + 3] = temp[3];
+                    buffer[8 * i + 4] = temp[4];
+                    buffer[8 * i + 5] = temp[5];
+                    buffer[8 * i + 6] = temp[6];
+                    buffer[8 * i + 7] = temp[7];
+                }
+            }
+
+            return buffer;
+        }
+
+
+        #endregion
     }
 
     #endregion

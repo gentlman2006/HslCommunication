@@ -87,7 +87,7 @@ namespace TestTool.TestForm
         {
             byte[] data = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes("00 00 00 00 00 06 00 03 00 00 00 03");
 
-            HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadFromModBusServer(data);
+            HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadFromServerCore(data);
             if(read.IsSuccess)
             {
                 // 获取结果，并转化为Hex字符串，方便显示
@@ -341,12 +341,12 @@ namespace TestTool.TestForm
                     textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "失败" + Environment.NewLine);
 
                 textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
-                HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadRegister(30, 1);
+                HslCommunication.OperateResult<short> read = busTcpClient.ReadShortRegister(30);
 
                 textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
 
                 System.Threading.Thread.Sleep(10);
-                if ((read.Content[0] * 256 + read.Content[1]) == value)
+                if (read.Content == value)
                 {
                     busTcpClient.WriteOneRegister(0, 0);
                     textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
@@ -355,6 +355,8 @@ namespace TestTool.TestForm
                 {
                     textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "失败" + Environment.NewLine);
                 }
+
+                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + busTcpClient.ReadBoolCoil(0).Content + Environment.NewLine);
             }
         }
 

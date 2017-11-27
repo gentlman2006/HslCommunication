@@ -39,7 +39,7 @@ namespace TestTool.TestForm
                 return;
             }
 
-            textBox1.AppendText($"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] {str}{Environment.NewLine}");
+            textBox1.AppendText($"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}] {str}{Environment.NewLine}");
         }
 
 
@@ -113,6 +113,21 @@ namespace TestTool.TestForm
 
         }
 
+        private void userButton19_Click(object sender, EventArgs e)
+        {
+            OperateResult write = melsec_net.WriteIntoPLC("M100", false);
+            if (write.IsSuccess)
+            {
+                TextBoxAppendStringLine("写入成功");
+            }
+            else
+            {
+                MessageBox.Show(write.ToMessageShowString());
+            }
+        }
+
+
+
         private void userButton2_Click(object sender, EventArgs e)
         {
             // D100-D104读取
@@ -183,7 +198,6 @@ namespace TestTool.TestForm
 
 
 
-
         #endregion
 
 
@@ -243,14 +257,17 @@ namespace TestTool.TestForm
 
         private void userButton7_Click(object sender, EventArgs e)
         {
-            OperateResult write = siemensTcpNet.WriteIntoPLC("M100", new byte[] { 0xFF, 0x3C, 0x0F });
-            if(write.IsSuccess)
+            for (int i = 0; i < 10; i++)
             {
-                TextBoxAppendStringLine("写入成功");
-            }
-            else
-            {
-                MessageBox.Show(write.ToMessageShowString());
+                OperateResult write = siemensTcpNet.WriteIntoPLC("M100", new byte[] { 0xFF, 0x3C, 0x0F });
+                if (write.IsSuccess)
+                {
+                    TextBoxAppendStringLine("写入成功");
+                }
+                else
+                {
+                    MessageBox.Show(write.ToMessageShowString());
+                }
             }
         }
 
@@ -389,6 +406,15 @@ namespace TestTool.TestForm
         private void userButton16_Click(object sender, EventArgs e)
         {
             siemensTcpNet.ConnectServer();
+        }
+
+        private void userButton18_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                TextBoxAppendStringLine(siemensTcpNet.ReadShortFromPLC("M200").Content.ToString()); 
+
+            }
         }
 
 

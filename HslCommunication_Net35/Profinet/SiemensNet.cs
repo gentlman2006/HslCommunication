@@ -356,7 +356,7 @@ namespace HslCommunication.Profinet
 
         #endregion
 
-        #region Override
+        #region DoubleModeNetBase Override
 
         /// <summary>
         /// 连接操作
@@ -369,6 +369,262 @@ namespace HslCommunication.Profinet
             return InitilizationConnect(socket, result);
         }
 
+        /// <summary>
+        /// 接收服务器的时候的数据反馈
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="response"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        protected override bool ReceiveResponse(Socket socket, out byte[] response, OperateResult result)
+        {
+            try
+            {
+                // 先接收4个字节的数据
+                byte[] head = NetSupport.ReadBytesFromSocket(socket, 4);
+                int receive = head[2] * 256 + head[3];
+                response = new byte[receive];
+                head.CopyTo(response, 0);
+                NetSupport.ReadBytesFromSocket(socket, receive - 4).CopyTo(response, 4);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                socket?.Close();
+                response = null;
+                result.Message = ex.Message;
+                return false;
+            }
+        }
+
+        
+        #endregion
+
+        #region Build Command
+
+        /// <summary>
+        /// 生成一个读取数据指令头的通用方法
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="count"></param>
+        /// <param name="command"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        private bool BuildReadCommand(string[] address, ushort[] count, out byte[] command, OperateResult result)
+        {
+            if (address == null) throw new NullReferenceException("address");
+            if (count == null) throw new NullReferenceException("count");
+            if (address.Length != count.Length) throw new Exception("两个参数的个数不统一");
+            if (count.Length > 255) throw new Exception("读取的数组数量不允许大于255");
+
+            int readCount = count.Length;
+
+            byte[] _PLCCommand = new byte[19 + readCount * 12];
+            // 报文头
+            _PLCCommand[0] = 0x03;
+            _PLCCommand[1] = 0x00;
+            // 长度
+            _PLCCommand[2] = (byte)(_PLCCommand.Length / 256);
+            _PLCCommand[3] = (byte)(_PLCCommand.Length % 256);
+            // 固定
+            _PLCCommand[4] = 0x02;
+            _PLCCommand[5] = 0xF0;
+            _PLCCommand[6] = 0x80;
+            _PLCCommand[7] = 0x32;
+            // 命令：发
+            _PLCCommand[8] = 0x01;
+            // 标识序列号
+            _PLCCommand[9] = 0x00;
+            _PLCCommand[10] = 0x00;
+            _PLCCommand[11] = 0x00;
+            _PLCCommand[12] = 0x01;
+            // 命令数据总长度
+            _PLCCommand[13] = (byte)((_PLCCommand.Length - 17) / 256);
+            _PLCCommand[14] = (byte)((_PLCCommand.Length - 17) % 256);
+
+            _PLCCommand[15] = 0x00;
+            _PLCCommand[16] = 0x00;
+
+            // 命令起始符
+            _PLCCommand[17] = 0x04;
+            // 读取数据块个数
+            _PLCCommand[18] = (byte)readCount;
+
+
+            for (int ii = 0; ii < readCount; ii++)
+            {
+                // 填充数据
+                if (!AnalysisAddress(address[ii], out byte type, out int startAddress, out ushort dbAddress, result))
+                {
+                    command = null;
+                    return false;
+                }
+                
+                //===========================================================================================
+                // 读取地址的前缀
+                _PLCCommand[19 + ii * 12] = 0x12;
+                _PLCCommand[20 + ii * 12] = 0x0A;
+                _PLCCommand[21 + ii * 12] = 0x10;
+                _PLCCommand[22 + ii * 12] = 0x02;
+                // 访问数据的个数
+                _PLCCommand[23 + ii * 12] = (byte)(count[ii] / 256);
+                _PLCCommand[24 + ii * 12] = (byte)(count[ii] % 256);
+                // DB块编号，如果访问的是DB块的话
+                _PLCCommand[25 + ii * 12] = (byte)(dbAddress / 256);
+                _PLCCommand[26 + ii * 12] = (byte)(dbAddress % 256);
+                // 访问数据类型
+                _PLCCommand[27 + ii * 12] = type;
+                // 偏移位置
+                _PLCCommand[28 + ii * 12] = (byte)(startAddress / 256 / 256);
+                _PLCCommand[29 + ii * 12] = (byte)(startAddress / 256);
+                _PLCCommand[30 + ii * 12] = (byte)(startAddress % 256);
+            }
+            command = _PLCCommand;
+
+            return true;
+        }
+
+
+        private bool BuildWriteByteCommand(string address, byte[] data,out byte[] command, OperateResult result)
+        {
+            if (data == null) data = new byte[0];
+
+            if (!AnalysisAddress(address, out byte type, out int startAddress, out ushort dbAddress, result))
+            {
+                command = null;
+                return false;
+            }
+
+            byte[] _PLCCommand = new byte[35 + data.Length];
+            _PLCCommand[0] = 0x03;
+            _PLCCommand[1] = 0x00;
+            // 长度
+            _PLCCommand[2] = (byte)((35 + data.Length) / 256);
+            _PLCCommand[3] = (byte)((35 + data.Length) % 256);
+            // 固定
+            _PLCCommand[4] = 0x02;
+            _PLCCommand[5] = 0xF0;
+            _PLCCommand[6] = 0x80;
+            _PLCCommand[7] = 0x32;
+            // 命令 发
+            _PLCCommand[8] = 0x01;
+            // 标识序列号
+            _PLCCommand[9] = 0x00;
+            _PLCCommand[10] = 0x00;
+            _PLCCommand[11] = 0x00;
+            _PLCCommand[12] = 0x01;
+            // 固定
+            _PLCCommand[13] = 0x00;
+            _PLCCommand[14] = 0x0E;
+            // 写入长度+4
+            _PLCCommand[15] = (byte)((4 + data.Length) / 256);
+            _PLCCommand[16] = (byte)((4 + data.Length) % 256);
+            // 命令起始符
+            _PLCCommand[17] = 0x05;
+            // 写入数据块个数
+            _PLCCommand[18] = 0x01;
+            // 固定，返回数据长度
+            _PLCCommand[19] = 0x12;
+            _PLCCommand[20] = 0x0A;
+            _PLCCommand[21] = 0x10;
+            // 写入方式，1是按位，2是按字
+            _PLCCommand[22] = 0x02;
+            // 写入数据的个数
+            _PLCCommand[23] = (byte)(data.Length / 256);
+            _PLCCommand[24] = (byte)(data.Length % 256);
+            // DB块编号，如果访问的是DB块的话
+            _PLCCommand[25] = (byte)(dbAddress / 256);
+            _PLCCommand[26] = (byte)(dbAddress % 256);
+            // 写入数据的类型
+            _PLCCommand[27] = type;
+            // 偏移位置
+            _PLCCommand[28] = (byte)(startAddress / 256 / 256); ;
+            _PLCCommand[29] = (byte)(startAddress / 256);
+            _PLCCommand[30] = (byte)(startAddress % 256);
+            // 按字写入
+            _PLCCommand[31] = 0x00;
+            _PLCCommand[32] = 0x04;
+            // 按位计算的长度
+            _PLCCommand[33] = (byte)(data.Length * 8 / 256);
+            _PLCCommand[34] = (byte)(data.Length * 8 % 256);
+
+            data.CopyTo(_PLCCommand, 35);
+
+            command = _PLCCommand;
+
+            return true;
+        }
+        
+
+        private bool BuildWriteBitCommand(string address, bool data,out byte[] command, OperateResult result)
+        {
+            if (!AnalysisAddress(address, out byte type, out int startAddress, out ushort dbAddress, result))
+            {
+                command = null;
+                return false;
+            }
+
+            byte[] buffer = new byte[1];
+            buffer[0] = data ? (byte)0x01 : (byte)0x00;
+
+            byte[] _PLCCommand = new byte[35 + buffer.Length];
+            _PLCCommand[0] = 0x03;
+            _PLCCommand[1] = 0x00;
+            // 长度
+            _PLCCommand[2] = (byte)((35 + buffer.Length) / 256);
+            _PLCCommand[3] = (byte)((35 + buffer.Length) % 256);
+            // 固定
+            _PLCCommand[4] = 0x02;
+            _PLCCommand[5] = 0xF0;
+            _PLCCommand[6] = 0x80;
+            _PLCCommand[7] = 0x32;
+            // 命令 发
+            _PLCCommand[8] = 0x01;
+            // 标识序列号
+            _PLCCommand[9] = 0x00;
+            _PLCCommand[10] = 0x00;
+            _PLCCommand[11] = 0x00;
+            _PLCCommand[12] = 0x01;
+            // 固定
+            _PLCCommand[13] = 0x00;
+            _PLCCommand[14] = 0x0E;
+            // 写入长度+4
+            _PLCCommand[15] = (byte)((4 + buffer.Length) / 256);
+            _PLCCommand[16] = (byte)((4 + buffer.Length) % 256);
+            // 命令起始符
+            _PLCCommand[17] = 0x05;
+            // 写入数据块个数
+            _PLCCommand[18] = 0x01;
+            _PLCCommand[19] = 0x12;
+            _PLCCommand[20] = 0x0A;
+            _PLCCommand[21] = 0x10;
+            // 写入方式，1是按位，2是按字
+            _PLCCommand[22] = 0x01;
+            // 写入数据的个数
+            _PLCCommand[23] = (byte)(buffer.Length / 256);
+            _PLCCommand[24] = (byte)(buffer.Length % 256);
+            // DB块编号，如果访问的是DB块的话
+            _PLCCommand[25] = (byte)(dbAddress / 256);
+            _PLCCommand[26] = (byte)(dbAddress % 256);
+            // 写入数据的类型
+            _PLCCommand[27] = type;
+            // 偏移位置
+            _PLCCommand[28] = (byte)(startAddress / 256 / 256);
+            _PLCCommand[29] = (byte)(startAddress / 256);
+            _PLCCommand[30] = (byte)(startAddress % 256);
+            // 按位写入
+            _PLCCommand[31] = 0x00;
+            _PLCCommand[32] = 0x03;
+            // 按位计算的长度
+            _PLCCommand[33] = (byte)(buffer.Length / 256);
+            _PLCCommand[34] = (byte)(buffer.Length % 256);
+
+            buffer.CopyTo(_PLCCommand, 35);
+
+            command = _PLCCommand;
+
+            return true;
+        }
 
 
 
@@ -390,7 +646,7 @@ namespace HslCommunication.Profinet
         #region Private Method
 
 
-        private bool ReceiveBytesFromSocket(Socket socket, out byte[] data)
+        private bool ReceiveBytesFromSocket(Socket socket, out byte[] data, OperateResult result)
         {
             try
             {
@@ -402,15 +658,17 @@ namespace HslCommunication.Profinet
                 NetSupport.ReadBytesFromSocket(socket, receive - 4).CopyTo(data, 4);
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
                 socket?.Close();
                 data = null;
+                LogNet?.WriteException("Receive Data Failed: ", ex);
+                result.Message = "初始化信息接收失败：" + ex.Message;
                 return false;
             }
         }
 
-        private bool SendBytesToSocket(Socket socket, byte[] data)
+        private bool SendBytesToSocket(Socket socket, byte[] data, OperateResult result)
         {
             try
             {
@@ -420,8 +678,10 @@ namespace HslCommunication.Profinet
                 }
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                result.Message = "初始化信息发送失败：" + ex.Message;
+                LogNet?.WriteException("Send Data Failed: ", ex);
                 socket?.Close();
                 return false;
             }
@@ -508,27 +768,23 @@ namespace HslCommunication.Profinet
         private bool InitilizationConnect(Socket socket, OperateResult result)
         {
             // 发送初始化信息
-            if (!SendBytesToSocket(socket, plcHead1))
+            if (!SendBytesToSocket(socket, plcHead1, result))
             {
-                result.Message = "初始化信息发送失败";
                 return false;
             }
 
-            if (!ReceiveBytesFromSocket(socket, out byte[] head1))
+            if (!ReceiveBytesFromSocket(socket, out byte[] head1, result))
             {
-                result.Message = "初始化信息接收失败";
                 return false;
             }
 
-            if (!SendBytesToSocket(socket, plcHead2))
+            if (!SendBytesToSocket(socket, plcHead2, result))
             {
-                result.Message = "初始化信息发送失败";
                 return false;
             }
 
-            if (!ReceiveBytesFromSocket(socket, out byte[] head2))
+            if (!ReceiveBytesFromSocket(socket, out byte[] head2, result))
             {
-                result.Message = "初始化信息接收失败";
                 return false;
             }
 
@@ -550,6 +806,70 @@ namespace HslCommunication.Profinet
         public OperateResult<byte[]> ReadFromPLC(string address, ushort count)
         {
             return ReadFromPLC(new string[] { address }, new ushort[] { count });
+        }
+
+        /// <summary>
+        /// 一次性从PLC获取所有的数据，按照先后顺序返回一个统一的Buffer，需要按照顺序处理，两个数组长度必须一致
+        /// </summary>
+        /// <param name="address">起始地址数组</param>
+        /// <param name="count">数据长度数组</param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
+        public OperateResult<byte[]> ReadFromPLC(string[] address, ushort[] count)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!BuildReadCommand(address, count, out byte[] command, result))
+            {
+                return result;
+            }
+
+            OperateResult<byte[]> read = ReadFromServerCore(command);
+            if(read.IsSuccess)
+            {
+                int receiveCount = 0;
+                for (int i = 0; i < count.Length; i++)
+                {
+                    receiveCount += count[i];
+                }
+
+                if (read.Content.Length >= 21 && read.Content[20] == count.Length)
+                {
+                    // 分析结果
+                    byte[] buffer = new byte[receiveCount];
+                    int kk = 0;
+                    int ll = 0;
+                    for (int ii = 21; ii < read.Content.Length; ii++)
+                    {
+                        if ((ii + 1) < read.Content.Length)
+                        {
+                            if (read.Content[ii] == 0xFF &&
+                                read.Content[ii + 1] == 0x04)
+                            {
+                                // 有数据
+                                Array.Copy(read.Content, ii + 4, buffer, ll, count[kk]);
+                                ii += count[kk] + 3;
+                                ll += count[kk];
+                                kk++;
+                            }
+                        }
+                    }
+
+                    result.Content = buffer;
+                    result.IsSuccess = true;
+                }
+                else
+                {
+                    result.ErrorCode = read.ErrorCode;
+                    result.Message = "数据块长度校验失败";
+                }
+            }
+            else
+            {
+                result.ErrorCode = read.ErrorCode;
+                result.Message = read.Message;
+            }
+
+            return result;
         }
 
 
@@ -605,6 +925,15 @@ namespace HslCommunication.Profinet
             return GetInt64ResultFromBytes(ReadFromPLC(address, 8), true);
         }
 
+        /// <summary>
+        /// 读取指定地址的ulong数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        public OperateResult<ulong> ReadULongFromPLC(string address)
+        {
+            return GetUInt64ResultFromBytes(ReadFromPLC(address, 8), true);
+        }
 
         /// <summary>
         /// 读取指定地址的double数据
@@ -628,213 +957,12 @@ namespace HslCommunication.Profinet
         }
 
 
-        /// <summary>
-        /// 一次性从PLC获取所有的数据，按照先后顺序返回一个统一的Buffer，需要按照顺序处理，两个数组长度必须一致
-        /// </summary>
-        /// <param name="address">起始地址数组</param>
-        /// <param name="count">数据长度数组</param>
-        /// <returns></returns>
-        /// <exception cref="NullReferenceException"></exception>
-        public OperateResult<byte[]> ReadFromPLC(string[] address, ushort[] count)
-        {
-            if (address == null) throw new NullReferenceException("address");
-            if (count == null) throw new NullReferenceException("count");
-            if (address.Length != count.Length) throw new Exception("两个参数的个数不统一");
-
-            OperateResult<byte[]> result = new OperateResult<byte[]>();
-
-
-            Socket socket = null;
-            if (!isSocketInitialization)
-            {
-                if (!CreateSocketAndConnect(out socket, new IPEndPoint(PLCIpAddress, PortRead), result))
-                {
-                    return result;
-                }
-
-                if (!InitilizationConnect(socket, result))
-                {
-                    return result;
-                }
-            }
-            else
-            {
-                socket = GetWorkSocket(out OperateResult connect);
-                if (!connect.IsSuccess)
-                {
-                    result.Message = connect.Message;
-                    return result;
-                }
-            }
-
-
-            serverInterfaceLock.Enter();
-
-
-            // 分批次进行读取，计算总批次
-            int times = address.Length / 255;
-            if (address.Length % 255 > 0)
-            {
-                times++;
-            }
-
-            // 缓存所有批次的结果
-            List<byte[]> arrays_bytes = new List<byte[]>();
-
-            for (int jj = 0; jj < times; jj++)
-            {
-                // 计算本批次需要读取的数据
-                int startIndex = jj * 255;
-                int readCount = address.Length - startIndex;
-                if (readCount > 255)
-                {
-                    readCount = 255;
-                }
-
-                byte[] _PLCCommand = new byte[19 + readCount * 12];
-                // 报文头
-                _PLCCommand[0] = 0x03;
-                _PLCCommand[1] = 0x00;
-                // 长度
-                _PLCCommand[2] = (byte)(_PLCCommand.Length / 256);
-                _PLCCommand[3] = (byte)(_PLCCommand.Length % 256);
-                // 固定
-                _PLCCommand[4] = 0x02;
-                _PLCCommand[5] = 0xF0;
-                _PLCCommand[6] = 0x80;
-                _PLCCommand[7] = 0x32;
-                // 命令：发
-                _PLCCommand[8] = 0x01;
-                // 标识序列号
-                _PLCCommand[9] = 0x00;
-                _PLCCommand[10] = 0x00;
-                _PLCCommand[11] = 0x00;
-                _PLCCommand[12] = 0x01;
-                // 命令数据总长度
-                _PLCCommand[13] = (byte)((_PLCCommand.Length - 17) / 256);
-                _PLCCommand[14] = (byte)((_PLCCommand.Length - 17) % 256);
-
-                _PLCCommand[15] = 0x00;
-                _PLCCommand[16] = 0x00;
-
-                // 命令起始符
-                _PLCCommand[17] = 0x04;
-                // 读取数据块个数
-                _PLCCommand[18] = (byte)readCount;
-
-                int receiveCount = 0;
-
-                for (int ii = 0; ii < readCount; ii++)
-                {
-                    //==============================================================================================
-                    // 实际应该接收多少数据
-                    receiveCount += count[ii + 255 * jj];
-
-                    // 填充数据
-                    if (!AnalysisAddress(address[ii + 255 * jj], out byte type, out int startAddress, out ushort dbAddress, result))
-                    {
-                        serverInterfaceLock.Leave();
-                        socket?.Close();
-                        return result;
-                    }
-
-
-
-                    //===========================================================================================
-                    // 读取地址的前缀
-                    _PLCCommand[19 + ii * 12] = 0x12;
-                    _PLCCommand[20 + ii * 12] = 0x0A;
-                    _PLCCommand[21 + ii * 12] = 0x10;
-                    _PLCCommand[22 + ii * 12] = 0x02;
-                    // 访问数据的个数
-                    _PLCCommand[23 + ii * 12] = (byte)(count[ii + 255 * jj] / 256);
-                    _PLCCommand[24 + ii * 12] = (byte)(count[ii + 255 * jj] % 256);
-                    // DB块编号，如果访问的是DB块的话
-                    _PLCCommand[25 + ii * 12] = (byte)(dbAddress / 256);
-                    _PLCCommand[26 + ii * 12] = (byte)(dbAddress % 256);
-                    // 访问数据类型
-                    _PLCCommand[27 + ii * 12] = type;
-                    // 偏移位置
-                    _PLCCommand[28 + ii * 12] = (byte)(startAddress / 256 / 256);
-                    _PLCCommand[29 + ii * 12] = (byte)(startAddress / 256);
-                    _PLCCommand[30 + ii * 12] = (byte)(startAddress % 256);
-                }
-
-
-                if (!SendBytesToSocket(socket, _PLCCommand))
-                {
-                    result.Message = "发送读取信息失败";
-                    serverInterfaceLock.Leave();
-                    return result;
-                }
-
-                if (!ReceiveBytesFromSocket(socket, out byte[] content))
-                {
-                    result.Message = "接收信息失败";
-                    serverInterfaceLock.Leave();
-                    return result;
-                }
-
-                if (content.Length < 21 || content[20] != readCount)
-                {
-                    socket?.Close();
-                    result.Message = "数据块长度校验失败";
-                    serverInterfaceLock.Leave();
-                    result.Content = content;
-                    return result;
-                }
-
-                // 分次读取成功
-                byte[] buffer = new byte[receiveCount];
-                int kk = 0;
-                int ll = 0;
-                for (int ii = 21; ii < content.Length; ii++)
-                {
-                    if (content[ii] == 0xFF &&
-                        content[ii + 1] == 0x04)
-                    {
-                        // 有数据
-                        Array.Copy(content, ii + 4, buffer, ll, count[kk + 255 * jj]);
-                        ii += count[kk + 255 * jj] + 3;
-                        ll += count[kk + 255 * jj];
-                        kk++;
-                    }
-                }
-                arrays_bytes.Add(buffer);
-            }
-
-            if (arrays_bytes.Count == 1)
-            {
-                result.Content = arrays_bytes[0];
-            }
-            else
-            {
-                int length = 0;
-                int offset = 0;
-
-                // 获取长度并生成缓冲数据
-                arrays_bytes.ForEach(m => length += m.Length);
-                result.Content = new byte[length];
-
-                // 复制数据操作
-                arrays_bytes.ForEach(m =>
-                {
-                    m.CopyTo(result.Content, offset);
-                    offset += m.Length;
-                });
-                arrays_bytes.Clear();
-            }
-            result.IsSuccess = true;
-            result.Message = "读取成功";
-            if (!isSocketInitialization) socket?.Close();
-            serverInterfaceLock.Leave();
-            // 所有的数据接收完成，进行返回
-            return result;
-        }
 
 
         #endregion
 
+        #region Write Base
+        
 
         /// <summary>
         /// 将数据写入到PLC数据，地址格式为I100，Q100，DB20.100，M100，以字节为单位
@@ -846,126 +974,77 @@ namespace HslCommunication.Profinet
         {
             OperateResult result = new OperateResult();
 
-
-            Socket socket = null;
-            if (!isSocketInitialization)
+            // 生成指令
+            if (!BuildWriteByteCommand(address, data, out byte[] command, result))
             {
-                if (!CreateSocketAndConnect(out socket, new IPEndPoint(PLCIpAddress, PortRead), result))
-                {
-                    return result;
-                }
+                return result;
+            }
 
-                if (!InitilizationConnect(socket, result))
+            OperateResult<byte[]> write = ReadFromServerCore(command);
+            if (write.IsSuccess)
+            {
+                if (write.Content[write.Content.Length - 1] != 0xFF)
                 {
-                    return result;
+                    // 写入异常
+                    result.Message = "写入数据异常，代号为：" + write.Content[write.Content.Length - 1].ToString();
+                }
+                else
+                {
+                    result.IsSuccess = true;  // 写入成功
                 }
             }
             else
             {
-                socket = GetWorkSocket(out OperateResult connect);
-                if (!connect.IsSuccess)
-                {
-                    result.Message = connect.Message;
-                    return result;
-                }
+                result.ErrorCode = write.ErrorCode;
+                result.Message = write.Message;
             }
-
-
-            serverInterfaceLock.Enter();
-
-
-            if (data == null) data = new byte[0];
-
-            if (!AnalysisAddress(address, out byte type, out int startAddress, out ushort dbAddress, result))
-            {
-                socket?.Close();
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-            byte[] _PLCCommand = new byte[35 + data.Length];
-            _PLCCommand[0] = 0x03;
-            _PLCCommand[1] = 0x00;
-            // 长度
-            _PLCCommand[2] = (byte)((35 + data.Length) / 256);
-            _PLCCommand[3] = (byte)((35 + data.Length) % 256);
-            // 固定
-            _PLCCommand[4] = 0x02;
-            _PLCCommand[5] = 0xF0;
-            _PLCCommand[6] = 0x80;
-            _PLCCommand[7] = 0x32;
-            // 命令 发
-            _PLCCommand[8] = 0x01;
-            // 标识序列号
-            _PLCCommand[9] = 0x00;
-            _PLCCommand[10] = 0x00;
-            _PLCCommand[11] = 0x00;
-            _PLCCommand[12] = 0x01;
-            // 固定
-            _PLCCommand[13] = 0x00;
-            _PLCCommand[14] = 0x0E;
-            // 写入长度+4
-            _PLCCommand[15] = (byte)((4 + data.Length) / 256);
-            _PLCCommand[16] = (byte)((4 + data.Length) % 256);
-            // 命令起始符
-            _PLCCommand[17] = 0x05;
-            // 写入数据块个数
-            _PLCCommand[18] = 0x01;
-            // 固定，返回数据长度
-            _PLCCommand[19] = 0x12;
-            _PLCCommand[20] = 0x0A;
-            _PLCCommand[21] = 0x10;
-            // 写入方式，1是按位，2是按字
-            _PLCCommand[22] = 0x02;
-            // 写入数据的个数
-            _PLCCommand[23] = (byte)(data.Length / 256);
-            _PLCCommand[24] = (byte)(data.Length % 256);
-            // DB块编号，如果访问的是DB块的话
-            _PLCCommand[25] = (byte)(dbAddress / 256);
-            _PLCCommand[26] = (byte)(dbAddress % 256);
-            // 写入数据的类型
-            _PLCCommand[27] = type;
-            // 偏移位置
-            _PLCCommand[28] = (byte)(startAddress / 256 / 256); ;
-            _PLCCommand[29] = (byte)(startAddress / 256);
-            _PLCCommand[30] = (byte)(startAddress % 256);
-            // 按字写入
-            _PLCCommand[31] = 0x00;
-            _PLCCommand[32] = 0x04;
-            // 按位计算的长度
-            _PLCCommand[33] = (byte)(data.Length * 8 / 256);
-            _PLCCommand[34] = (byte)(data.Length * 8 % 256);
-
-            data.CopyTo(_PLCCommand, 35);
-
-            if (!SendBytesToSocket(socket, _PLCCommand))
-            {
-                result.Message = "发送写入信息失败";
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-            if (!ReceiveBytesFromSocket(socket, out byte[] content))
-            {
-                result.Message = "接收信息失败";
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-            if (content[content.Length - 1] != 0xFF)
-            {
-                // 写入异常
-                socket?.Close();
-                result.Message = "写入数据异常";
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-            if (!isSocketInitialization) socket?.Close();
-            serverInterfaceLock.Leave();
-            result.IsSuccess = true;
             return result;
         }
+        
+
+        /// <summary>
+        /// 写入PLC的一个位，例如"M100.6"，"I100.7"，"Q100.0"，"DB20.100.0"，如果只写了"M100"默认为"M100.0
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public OperateResult WriteIntoPLC(string address, bool data)
+        {
+            OperateResult result = new OperateResult();
+
+            // 生成指令
+            if (!BuildWriteBitCommand(address, data, out byte[] command, result))
+            {
+                return result;
+            }
+
+            OperateResult<byte[]> write = ReadFromServerCore(command);
+            if (write.IsSuccess)
+            {
+                if (write.Content[write.Content.Length - 1] != 0xFF)
+                {
+                    // 写入异常
+                    result.Message = "写入数据异常，代号为：" + write.Content[write.Content.Length - 1].ToString();
+                }
+                else
+                {
+                    result.IsSuccess = true;  // 写入成功
+                }
+            }
+            else
+            {
+                result.ErrorCode = write.ErrorCode;
+                result.Message = write.Message;
+            }
+            return result;
+        }
+
+
+        #endregion
+
+        #region Write String
+
+
 
         /// <summary>
         /// 向PLC中写入字符串，编码格式为ASCII
@@ -1019,20 +1098,28 @@ namespace HslCommunication.Profinet
             return WriteIntoPLC(address, temp);
         }
 
+        #endregion
 
+        #region Write bool[]
+        
         /// <summary>
         /// 向PLC中写入bool数组，返回值说明，比如你写入M100,那么data[0]对应M100.0
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="data">要写入的实际数据，长度为8的倍数</param>
         /// <returns>返回写入结果</returns>
         public OperateResult WriteIntoPLC(string address, bool[] data)
         {
             return WriteIntoPLC(address, BasicFramework.SoftBasic.BoolArrayToByte(data));
         }
+        
 
+        #endregion
+
+        #region Write Short
+        
         /// <summary>
-        /// 向PLC中写入short数据，返回值说明
+        /// 向PLC中写入short数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
@@ -1043,7 +1130,23 @@ namespace HslCommunication.Profinet
         }
 
         /// <summary>
-        /// 向PLC中写入ushort数据，返回值说明
+        /// 向PLC中写入short数据，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, short data)
+        {
+            return WriteIntoPLC(address, new short[] { data });
+        }
+
+        #endregion
+
+        #region Write UShort
+
+
+        /// <summary>
+        /// 向PLC中写入ushort数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
@@ -1053,8 +1156,25 @@ namespace HslCommunication.Profinet
             return WriteIntoPLC(address, GetBytesFromArray(data, true));
         }
 
+
         /// <summary>
-        /// 向PLC中写入int数据，返回值说明
+        /// 向PLC中写入ushort数据，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, ushort data)
+        {
+            return WriteIntoPLC(address, new ushort[] { data });
+        }
+
+
+        #endregion
+
+        #region Write Int
+        
+        /// <summary>
+        /// 向PLC中写入int数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
@@ -1065,7 +1185,22 @@ namespace HslCommunication.Profinet
         }
 
         /// <summary>
-        /// 向PLC中写入uint数据，返回值说明
+        /// 向PLC中写入int数据，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, int data)
+        {
+            return WriteIntoPLC(address, new int[] { data });
+        }
+
+        #endregion
+
+        #region Write UInt
+        
+        /// <summary>
+        /// 向PLC中写入uint数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
@@ -1076,135 +1211,125 @@ namespace HslCommunication.Profinet
         }
 
         /// <summary>
-        /// 写入PLC的一个位，例如"M100.6"，"I100.7"，"Q100.0"，"DB20.100.0"，如果只写了"M100"默认为"M100.0
+        /// 向PLC中写入uint数据，返回值说明
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public OperateResult WriteIntoPLC(string address, bool data)
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, uint data)
         {
-            OperateResult result = new OperateResult();
-
-            Socket socket = null;
-            if (!isSocketInitialization)
-            {
-                if (!CreateSocketAndConnect(out socket, new IPEndPoint(PLCIpAddress, PortRead), result))
-                {
-                    return result;
-                }
-
-                if (!InitilizationConnect(socket, result))
-                {
-                    return result;
-                }
-            }
-            else
-            {
-                socket = GetWorkSocket(out OperateResult connect);
-                if (!connect.IsSuccess)
-                {
-                    result.Message = connect.Message;
-                    return result;
-                }
-            }
-
-            serverInterfaceLock.Enter();
-
-            byte[] buffer = new byte[1];
-            buffer[0] = data ? (byte)0x01 : (byte)0x00;
-
-
-            if (!AnalysisAddress(address, out byte type, out int startAddress, out ushort dbAddress, result))
-            {
-                socket?.Close();
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-            byte[] _PLCCommand = new byte[35 + buffer.Length];
-            _PLCCommand[0] = 0x03;
-            _PLCCommand[1] = 0x00;
-            // 长度
-            _PLCCommand[2] = (byte)((35 + buffer.Length) / 256);
-            _PLCCommand[3] = (byte)((35 + buffer.Length) % 256);
-            // 固定
-            _PLCCommand[4] = 0x02;
-            _PLCCommand[5] = 0xF0;
-            _PLCCommand[6] = 0x80;
-            _PLCCommand[7] = 0x32;
-            // 命令 发
-            _PLCCommand[8] = 0x01;
-            // 标识序列号
-            _PLCCommand[9] = 0x00;
-            _PLCCommand[10] = 0x00;
-            _PLCCommand[11] = 0x00;
-            _PLCCommand[12] = 0x01;
-            // 固定
-            _PLCCommand[13] = 0x00;
-            _PLCCommand[14] = 0x0E;
-            // 写入长度+4
-            _PLCCommand[15] = (byte)((4 + buffer.Length) / 256);
-            _PLCCommand[16] = (byte)((4 + buffer.Length) % 256);
-            // 命令起始符
-            _PLCCommand[17] = 0x05;
-            // 写入数据块个数
-            _PLCCommand[18] = 0x01;
-            _PLCCommand[19] = 0x12;
-            _PLCCommand[20] = 0x0A;
-            _PLCCommand[21] = 0x10;
-            // 写入方式，1是按位，2是按字
-            _PLCCommand[22] = 0x01;
-            // 写入数据的个数
-            _PLCCommand[23] = (byte)(buffer.Length / 256);
-            _PLCCommand[24] = (byte)(buffer.Length % 256);
-            // DB块编号，如果访问的是DB块的话
-            _PLCCommand[25] = (byte)(dbAddress / 256);
-            _PLCCommand[26] = (byte)(dbAddress % 256);
-            // 写入数据的类型
-            _PLCCommand[27] = type;
-            // 偏移位置
-            _PLCCommand[28] = (byte)(startAddress / 256 / 256);
-            _PLCCommand[29] = (byte)(startAddress / 256);
-            _PLCCommand[30] = (byte)(startAddress % 256);
-            // 按位写入
-            _PLCCommand[31] = 0x00;
-            _PLCCommand[32] = 0x03;
-            // 按位计算的长度
-            _PLCCommand[33] = (byte)(buffer.Length / 256);
-            _PLCCommand[34] = (byte)(buffer.Length % 256);
-
-            buffer.CopyTo(_PLCCommand, 35);
-
-            if (!SendBytesToSocket(socket, _PLCCommand))
-            {
-                result.Message = "发送写入信息失败";
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-            if (!ReceiveBytesFromSocket(socket, out byte[] content))
-            {
-                result.Message = "接收信息失败";
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-            if (content[content.Length - 1] != 0xFF)
-            {
-                // 写入异常
-                socket?.Close();
-                result.Message = "写入数据异常";
-                serverInterfaceLock.Leave();
-                return result;
-            }
-
-            // 短连接模式就关闭连接
-            if (!isSocketInitialization) socket?.Close();
-
-            serverInterfaceLock.Leave();
-            result.IsSuccess = true;
-            return result;
+            return WriteIntoPLC(address, new uint[] { data });
         }
+
+        #endregion
+
+        #region Write Float
+        
+        /// <summary>
+        /// 向PLC中写入float数组，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, float[] data)
+        {
+            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+        }
+
+        /// <summary>
+        /// 向PLC中写入float数据，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, float data)
+        {
+            return WriteIntoPLC(address, new float[] { data });
+        }
+
+
+        #endregion
+
+        #region Write Long
+        
+        /// <summary>
+        /// 向PLC中写入long数组，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, long[] data)
+        {
+            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+        }
+
+        /// <summary>
+        /// 向PLC中写入long数据，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, long data)
+        {
+            return WriteIntoPLC(address, new long[] { data });
+        }
+        
+        #endregion
+
+        #region Write ULong
+        
+        /// <summary>
+        /// 向PLC中写入ulong数组，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, ulong[] data)
+        {
+            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+        }
+
+        /// <summary>
+        /// 向PLC中写入ulong数据，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, ulong data)
+        {
+            return WriteIntoPLC(address, new ulong[] { data });
+        }
+        
+        #endregion
+
+        #region Write Double
+        
+        /// <summary>
+        /// 向PLC中写入double数组，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, double[] data)
+        {
+            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+        }
+
+        /// <summary>
+        /// 向PLC中写入double数据，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteIntoPLC(string address, double data)
+        {
+            return WriteIntoPLC(address, new double[] { data });
+        }
+        
+        #endregion
+
+        #region PLC Net Base Override
+
 
         /// <summary>
         /// 从返回的西门子数组中获取short数组数据，已经内置高地位转换
@@ -1258,6 +1383,12 @@ namespace HslCommunication.Profinet
             return BitConverter.ToInt16(buffer, 0);
         }
 
+
+        #endregion
+
+        #region Public Method
+
+
         /// <summary>
         /// 根据索引位转换获取float数据
         /// </summary>
@@ -1290,6 +1421,11 @@ namespace HslCommunication.Profinet
             return BitConverter.ToInt32(buffer, 0);
         }
 
+        #endregion
+
+        #region Private Members
+
+
         private byte[] plcHead1 = new byte[22]
         {
                 0x03,  // 报文头
@@ -1315,33 +1451,6 @@ namespace HslCommunication.Profinet
                 0x01,
                 0x0A
         };
-
-        //private byte[] plcHead1 = new byte[22]
-        //{
-        //        0x03,  // 报文头
-        //        0x00,  
-        //        0x00,  // 数据长度
-        //        0x16,
-        //        0x11,
-        //        0xE0,
-        //        0x00,
-        //        0x00,
-        //        0x00,
-        //        0x01,
-        //        0x00,
-        //        0xC1,
-        //        0x02,
-        //        0x01,
-        //        0x00,
-        //        0xC2,
-        //        0x02,
-        //        0x01,
-        //        0x01,  // 指示cpu
-        //        0xC0,
-        //        0x01,
-        //        0x09
-        //};
-
         private byte[] plcHead2 = new byte[25]
         {
                 0x03,
@@ -1370,37 +1479,10 @@ namespace HslCommunication.Profinet
                 0x03,
                 0xC0
         };
-
-        //private byte[] plcHead2 = new byte[25]
-        //{
-        //        0x03,
-        //        0x00,
-        //        0x00,
-        //        0x19,
-        //        0x02,
-        //        0xF0,
-        //        0x80,
-        //        0x32,
-        //        0x01,
-        //        0x00,
-        //        0x00,
-        //        0xFF,
-        //        0xFF,
-        //        0x00,
-        //        0x08,
-        //        0x00,
-        //        0x00,
-        //        0xF0,
-        //        0x00,
-        //        0x00,
-        //        0x01,
-        //        0x00,
-        //        0x01,
-        //        0x07,
-        //        0x80
-        //};
-
+        
         private SiemensPLCS CurrentPlc = SiemensPLCS.S1200;
+        
+        #endregion
     }
 
 
