@@ -128,6 +128,7 @@
     <Compile Include="Core\Types\OperateResult.cs" />
     <Compile Include="ModBus\ModBusTcpClient.cs" />
     <Compile Include="ModBus\ModBusTcpServer.cs" />
+    <Compile Include="Core\Types\IDataTransfer.cs" />
     <Compile Include="Profinet\MelsecNet.cs" />
     <Compile Include="Profinet\PlcNetBase.cs" />
     <Compile Include="Profinet\SiemensNet.cs" />

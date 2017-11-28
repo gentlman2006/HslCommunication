@@ -452,6 +452,69 @@ namespace TestTool.TestForm
         }
 
 
+        class MachineInfo
+        {
+            public float 温度一 { get; set; }
+            public float 温度二 { get; set; }
+            public float 转速一 { get; set; }
+            public float 转速二 { get; set; }
+        }
+
+        private OperateResult<MachineInfo> GetMachineByAddress(string address)
+        {
+            OperateResult<MachineInfo> result = new OperateResult<MachineInfo>();
+
+            OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC(address, 16);
+            if(read.IsSuccess)
+            {
+                result.Content = new MachineInfo();
+                result.IsSuccess = true;
+
+                result.Content.温度一 = siemensTcpNet.GetFloatFromBytes(read.Content, 0);
+                result.Content.温度二 = siemensTcpNet.GetFloatFromBytes(read.Content, 4);
+                result.Content.转速一 = siemensTcpNet.GetFloatFromBytes(read.Content, 8);
+                result.Content.转速二 = siemensTcpNet.GetFloatFromBytes(read.Content, 12);
+            }
+            else
+            {
+                result.Message = read.Message;
+                result.ErrorCode = read.ErrorCode;
+            }
+
+            return result;
+        }
+
+
+        private void userButton41_Click(object sender, EventArgs e)
+        {
+            // 读取操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
+            bool M100_7 = siemensTcpNet.ReadBoolFromPLC("M100.7").Content;  // 读取M100.7是否通断
+            byte byte_M100 = siemensTcpNet.ReadByteFromPLC("M100").Content; // 读取M100的值
+            short short_M100 = siemensTcpNet.ReadShortFromPLC("M100").Content; // 读取M100-M101组成的字
+            ushort ushort_M100 = siemensTcpNet.ReadUShortFromPLC("M100").Content; // 读取M100-M101组成的无符号的值
+            int int_M100 = siemensTcpNet.ReadIntFromPLC("M100").Content;         // 读取M100-M103组成的有符号的数据
+            uint uint_M100 = siemensTcpNet.ReadUIntFromPLC("M100").Content;      // 读取M100-M103组成的无符号的值
+            float float_M100 = siemensTcpNet.ReadFloatFromPLC("M100").Content;   // 读取M100-M103组成的单精度值
+            long long_M100 = siemensTcpNet.ReadLongFromPLC("M100").Content;      // 读取M100-M107组成的大数据值
+            ulong ulong_M100 = siemensTcpNet.ReadULongFromPLC("M100").Content;   // 读取M100-M107组成的无符号大数据
+            double double_M100 = siemensTcpNet.ReadDoubleFromPLC("M100").Content; // 读取M100-M107组成的双精度值
+            string str_M100 = siemensTcpNet.ReadStringFromPLC("M100", 10).Content;// 读取M100-M109组成的ASCII字符串数据
+
+            // 写入操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
+            siemensTcpNet.WriteIntoPLC("M100.7", true);                // 写位
+            siemensTcpNet.WriteIntoPLC("M100", (byte)0x33);            // 写单个字节
+            siemensTcpNet.WriteIntoPLC("M100", (short)12345);          // 写双字节有符号
+            siemensTcpNet.WriteIntoPLC("M100", (ushort)45678);         // 写双字节无符号
+            siemensTcpNet.WriteIntoPLC("M100", 123456789);             // 写双字有符号
+            siemensTcpNet.WriteIntoPLC("M100", (uint)3456789123);      // 写双字无符号
+            siemensTcpNet.WriteIntoPLC("M100", 123.456f);              // 写单精度
+            siemensTcpNet.WriteIntoPLC("M100", 1234556434534545L);     // 写大整数有符号
+            siemensTcpNet.WriteIntoPLC("M100", 523434234234343UL);     // 写大整数无符号
+            siemensTcpNet.WriteIntoPLC("M100", 123.456d);              // 写双精度
+            siemensTcpNet.WriteAsciiStringIntoPLC("M100", "K123456789");// 写ASCII字符串
+        }
+
+
         #endregion
 
         private void userButton12_Click(object sender, EventArgs e)

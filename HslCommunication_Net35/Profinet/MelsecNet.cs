@@ -502,6 +502,48 @@ namespace HslCommunication.Profinet
 
         #endregion
 
+        #region Customer Support
+
+        /// <summary>
+        /// 读取自定义的数据类型，只要规定了写入和解析规则
+        /// </summary>
+        /// <typeparam name="T">类型名称</typeparam>
+        /// <param name="address">起始地址</param>
+        /// <returns></returns>
+        public OperateResult<T> ReadFromPLC<T>(string address) where T : IDataTransfer, new()
+        {
+            OperateResult<T> result = new OperateResult<T>();
+            T Content = new T();
+            OperateResult<byte[]> read = ReadFromPLC(address, Content.ReadCount);
+            if(read.IsSuccess)
+            {
+                Content.ParseSource(read.Content);
+                result.Content = Content;
+                result.IsSuccess = true;
+            }
+            else
+            {
+                result.ErrorCode = read.ErrorCode;
+                result.Message = read.Message;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 写入自定义的数据类型到PLC去，只要规定了生成字节的方法即可
+        /// </summary>
+        /// <typeparam name="T">类型名称</typeparam>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">实例对象</param>
+        /// <returns></returns>
+        public OperateResult WriteIntoPLC<T>(string address , T data) where T : IDataTransfer, new()
+        {
+            return WriteIntoPLC(address, data.ToSource());
+        }
+
+
+        #endregion
+
         #region Read Support
         
 
