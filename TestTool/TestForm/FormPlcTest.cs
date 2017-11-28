@@ -485,6 +485,74 @@ namespace TestTool.TestForm
         }
 
 
+        class MachineInfoTwo : HslCommunication.IDataTransfer
+        {
+            public float 温度一 { get; set; }
+            public float 温度二 { get; set; }
+            public float 转速一 { get; set; }
+            public float 转速二 { get; set; }
+
+            #region IDataTransfer Interface
+
+
+            public ushort ReadCount
+            {
+                get { return 16; }
+            }
+
+            public void ParseSource(byte[] Content)
+            {
+                // 提取数据
+                byte[] buffer = new byte[4];
+                Array.Copy(Content, 0, buffer, 0, 4);
+                Array.Reverse(buffer);
+                温度一 = BitConverter.ToSingle(buffer, 0);
+
+                Array.Copy(Content, 4, buffer, 0, 4);
+                Array.Reverse(buffer);
+                温度二 = BitConverter.ToSingle(buffer, 0);
+
+                Array.Copy(Content, 8, buffer, 0, 4);
+                Array.Reverse(buffer);
+                转速一 = BitConverter.ToSingle(buffer, 0);
+
+                Array.Copy(Content, 12, buffer, 0, 4);
+                Array.Reverse(buffer);
+                转速二 = BitConverter.ToSingle(buffer, 0);
+                
+            }
+
+            public byte[] ToSource()
+            {
+                // 生成数据
+                byte[] Content = new byte[16];
+
+                byte[] buffer = new byte[4];
+
+                buffer = BitConverter.GetBytes(温度一);
+                Array.Reverse(buffer);
+                buffer.CopyTo(Content, 0);
+
+                buffer = BitConverter.GetBytes(温度二);
+                Array.Reverse(buffer);
+                buffer.CopyTo(Content, 4);
+
+                buffer = BitConverter.GetBytes(转速一);
+                Array.Reverse(buffer);
+                buffer.CopyTo(Content, 8);
+
+                buffer = BitConverter.GetBytes(转速二);
+                Array.Reverse(buffer);
+                buffer.CopyTo(Content, 12);
+
+                return Content;
+            }
+
+            
+            #endregion
+        }
+
+
         private void userButton41_Click(object sender, EventArgs e)
         {
             // 读取操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
@@ -499,6 +567,8 @@ namespace TestTool.TestForm
             ulong ulong_M100 = siemensTcpNet.ReadULongFromPLC("M100").Content;   // 读取M100-M107组成的无符号大数据
             double double_M100 = siemensTcpNet.ReadDoubleFromPLC("M100").Content; // 读取M100-M107组成的双精度值
             string str_M100 = siemensTcpNet.ReadStringFromPLC("M100", 10).Content;// 读取M100-M109组成的ASCII字符串数据
+            MachineInfoTwo machine100 = siemensTcpNet.ReadFromPLC<MachineInfoTwo>("D100").Content; // 读取自定义的对象
+
 
             // 写入操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
             siemensTcpNet.WriteIntoPLC("M100.7", true);                // 写位
@@ -512,6 +582,7 @@ namespace TestTool.TestForm
             siemensTcpNet.WriteIntoPLC("M100", 523434234234343UL);     // 写大整数无符号
             siemensTcpNet.WriteIntoPLC("M100", 123.456d);              // 写双精度
             siemensTcpNet.WriteAsciiStringIntoPLC("M100", "K123456789");// 写ASCII字符串
+            siemensTcpNet.WriteIntoPLC<MachineInfoTwo>("M100", machine100);// 写入自定义的对象
         }
 
 
