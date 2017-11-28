@@ -368,5 +368,32 @@ namespace TestTool.TestForm
                 textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + result.IsSuccess + Environment.NewLine);
             }
         }
+        private void userButton30_Click(object sender, EventArgs e)
+        {
+            // 读取操作
+            bool coil100 = busTcpClient.ReadBoolCoil(100).Content;   // 读取线圈100的通断
+            short short100 = busTcpClient.ReadShortRegister(100).Content; // 读取寄存器100的short值
+            ushort ushort100 = busTcpClient.ReadUShortRegister(100).Content; // 读取寄存器100的ushort值
+            int int100 = busTcpClient.ReadIntRegister(100).Content;      // 读取寄存器100-101的int值
+            uint uint100 = busTcpClient.ReadUIntRegister(100).Content;   // 读取寄存器100-101的uint值
+            float float100 = busTcpClient.ReadFloatRegister(100).Content; // 读取寄存器100-101的float值
+            long long100 = busTcpClient.ReadLongRegister(100).Content;    // 读取寄存器100-103的long值
+            ulong ulong100 = busTcpClient.ReadULongRegister(100).Content; // 读取寄存器100-103的ulong值
+            double double100 = busTcpClient.ReadDoubleRegister(100).Content; // 读取寄存器100-103的double值
+            string str100 = busTcpClient.ReadStringRegister(100, 5).Content;// 读取100到104共10个字符的字符串
+
+            // 写入操作
+            busTcpClient.WriteOneCoil(100, true);// 写入线圈100为通
+            busTcpClient.WriteRegister(100, (short)12345);// 写入寄存器100为12345
+            busTcpClient.WriteRegister(100, (ushort)45678);// 写入寄存器100为45678
+            busTcpClient.WriteRegister(100, 123456789);// 写入寄存器100-101为123456789
+            busTcpClient.WriteRegister(100, (uint)123456778);// 写入寄存器100-101为123456778
+            busTcpClient.WriteRegister(100, 123.456);// 写入寄存器100-101为123.456
+            busTcpClient.WriteRegister(100, 12312312312414L);//写入寄存器100-103为一个大数据
+            busTcpClient.WriteRegister(100, 12634534534543656UL);// 写入寄存器100-103为一个大数据
+            busTcpClient.WriteRegister(100, 123.456d);// 写入寄存器100-103为一个双精度的数据
+            busTcpClient.WriteRegister(100, "K123456789");
+            
+        }
     }
 }

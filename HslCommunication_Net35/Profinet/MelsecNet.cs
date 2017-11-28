@@ -547,6 +547,17 @@ namespace HslCommunication.Profinet
             return GetInt32ResultFromBytes(ReadFromPLC(address, 2), false);
         }
 
+
+        /// <summary>
+        /// 读取指定地址的uint数据，针对数据类型W，D，R
+        /// </summary>
+        /// <param name="address">起始地址的字符串形式</param>
+        /// <returns></returns>
+        public OperateResult<uint> ReadUIntFromPLC(string address)
+        {
+            return GetUInt32ResultFromBytes(ReadFromPLC(address, 2), false);
+        }
+
         /// <summary>
         /// 读取指定地址的float数据，针对数据类型W，D，R
         /// </summary>

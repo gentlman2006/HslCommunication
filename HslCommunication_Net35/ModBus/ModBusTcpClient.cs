@@ -326,6 +326,21 @@ namespace HslCommunication.ModBus
             return ReadFromServerCore(BuildWriteRegister(address, value));
         }
 
+
+        /// <summary>
+        /// 写ASCII字符串到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ASCII编码的字符串</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, string value)
+        {
+            return WriteRegister(address, Encoding.ASCII.GetBytes(value));
+        }
+
+
+
+
         /// <summary>
         /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
         /// </summary>
@@ -339,6 +354,17 @@ namespace HslCommunication.ModBus
 
 
             return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+        }
+
+        /// <summary>
+        /// 写short到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">short数据</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, short value)
+        {
+            return WriteRegister(address, new short[] { value });
         }
 
         /// <summary>
@@ -357,10 +383,22 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
+        /// 写ushort到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ushort数据</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, ushort value)
+        {
+            return WriteRegister(address, new ushort[] { value });
+        }
+
+
+        /// <summary>
         /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
-        /// <param name="value">ushort数组</param>
+        /// <param name="value">int数组</param>
         /// <returns></returns>
         public OperateResult WriteRegister(ushort address, int[] value)
         {
@@ -370,11 +408,24 @@ namespace HslCommunication.ModBus
             return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
         }
 
+
+        /// <summary>
+        /// 写int到寄存器，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">int数据</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, int value)
+        {
+            return WriteRegister(address, new int[] { value });
+        }
+
+
         /// <summary>
         /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
-        /// <param name="value">ushort数组</param>
+        /// <param name="value">uint数组</param>
         /// <returns></returns>
         public OperateResult WriteRegister(ushort address, uint[] value)
         {
@@ -384,11 +435,24 @@ namespace HslCommunication.ModBus
             return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
         }
 
+
+        /// <summary>
+        /// 写uint到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">uint数据</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, uint value)
+        {
+            return WriteRegister(address, new uint[] { value });
+        }
+
+
         /// <summary>
         /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
-        /// <param name="value">ushort数组</param>
+        /// <param name="value">float数组</param>
         /// <returns></returns>
         public OperateResult WriteRegister(ushort address, float[] value)
         {
@@ -399,10 +463,22 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
+        /// 写float到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">float数据</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, float value)
+        {
+            return WriteRegister(address, new float[] { value });
+        }
+
+
+        /// <summary>
         /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
-        /// <param name="value">ushort数组</param>
+        /// <param name="value">double数组</param>
         /// <returns></returns>
         public OperateResult WriteRegister(ushort address, double[] value)
         {
@@ -413,10 +489,23 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
+        /// 写double到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">double数据</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, double value)
+        {
+            return WriteRegister(address, new double[] { value });
+        }
+
+
+
+        /// <summary>
         /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
-        /// <param name="value">ushort数组</param>
+        /// <param name="value">long数组</param>
         /// <returns></returns>
         public OperateResult WriteRegister(ushort address, long[] value)
         {
@@ -425,6 +514,45 @@ namespace HslCommunication.ModBus
             
             return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
         }
+
+        /// <summary>
+        /// 写long到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">long数据</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, long value)
+        {
+            return WriteRegister(address, new long[] { value });
+        }
+
+        
+        /// <summary>
+        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ulong数组</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, ulong[] value)
+        {
+            if (value == null) throw new ArgumentNullException("value");
+            if (value.Length > 32) throw new ArgumentOutOfRangeException("value", "长度不能大于32。");
+            
+            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+        }
+
+        /// <summary>
+        /// 写ulong到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// </summary>
+        /// <param name="address">写入的起始地址</param>
+        /// <param name="value">ulong数据</param>
+        /// <returns></returns>
+        public OperateResult WriteRegister(ushort address, ulong value)
+        {
+            return WriteRegister(address, new ulong[] { value });
+        }
+
+
 
         #endregion
 
@@ -537,6 +665,16 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
+        /// 读取指定地址的寄存器，并转化成uint
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns></returns>
+        public OperateResult<uint> ReadUIntRegister(ushort address)
+        {
+            return GetUInt32ResultFromBytes(ReadRegister(address, 2), true);
+        }
+
+        /// <summary>
         /// 读取指定地址的寄存器，并转化成float
         /// </summary>
         /// <param name="address">起始地址</param>
@@ -556,6 +694,16 @@ namespace HslCommunication.ModBus
             return GetInt64ResultFromBytes(ReadRegister(address, 4), true);
         }
 
+
+        /// <summary>
+        /// 读取指定地址的寄存器，并转化成ulong
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns></returns>
+        public OperateResult<ulong> ReadULongRegister(ushort address)
+        {
+            return GetUInt64ResultFromBytes(ReadRegister(address, 4), true);
+        }
 
         /// <summary>
         /// 读取指定地址的寄存器，并转化成double

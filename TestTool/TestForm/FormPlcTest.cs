@@ -33,7 +33,7 @@ namespace TestTool.TestForm
         /// <param name="str"></param>
         private void TextBoxAppendStringLine(string str)
         {
-            if(InvokeRequired)
+            if (InvokeRequired)
             {
                 BeginInvoke(new Action<string>(TextBoxAppendStringLine), str);
                 return;
@@ -83,7 +83,7 @@ namespace TestTool.TestForm
                 //失败读取，显示失败信息
                 MessageBox.Show(read.ToMessageShowString());
             }
-            
+
         }
 
 
@@ -146,54 +146,33 @@ namespace TestTool.TestForm
         }
         private void userButton22_Click(object sender, EventArgs e)
         {
-            // 读取M100是否通，十进制地址
-            bool M100 = melsec_net.ReadBoolFromPLC("M100").Content;
-            // 读取X1A0是否通，十六进制地址
-            bool X1A0 = melsec_net.ReadBoolFromPLC("X1A0").Content;
-            // 读取Y1A0是否通，十六进制地址
-            bool Y1A0 = melsec_net.ReadBoolFromPLC("Y1A0").Content;
-            // 读取B1A0是否通，十六进制地址
-            bool B1A0 = melsec_net.ReadBoolFromPLC("B1A0").Content;
-            // 读取D1000的short值  ,W3C0,R3C0 效果是一样的
-            short short_D1000 = melsec_net.ReadShortFromPLC("D1000").Content;
-            // 读取D1000的ushort值
-            ushort ushort_D1000 = melsec_net.ReadUShortFromPLC("D1000").Content;
-            // 读取D1000-D1001组成的int数据
-            int int_D100 = melsec_net.ReadIntFromPLC("D1000").Content;
-            // 读取D1000-D1001组成的float数据
-            float float_D1000 = melsec_net.ReadFloatFromPLC("D1000").Content;
-            // 读取D1000-D1003组成的long数据
-            long long_D1000 = melsec_net.ReadLongFromPLC("D1000").Content;
-            // 读取D1000-D1003组成的double数据
-            double double_D1000 = melsec_net.ReadDoubleFromPLC("D1000").Content;
-            // 读取D1000-D1009组成的条码数据
-            string str_D1000 = melsec_net.ReadStringFromPLC("D1000", 10).Content;
+            bool M100 = melsec_net.ReadBoolFromPLC("M100").Content;            // 读取M100是否通，十进制地址
+            bool X1A0 = melsec_net.ReadBoolFromPLC("X1A0").Content;            // 读取X1A0是否通，十六进制地址
+            bool Y1A0 = melsec_net.ReadBoolFromPLC("Y1A0").Content;            // 读取Y1A0是否通，十六进制地址
+            bool B1A0 = melsec_net.ReadBoolFromPLC("B1A0").Content;            // 读取B1A0是否通，十六进制地址
+            short short_D1000 = melsec_net.ReadShortFromPLC("D1000").Content;   // 读取D1000的short值  ,W3C0,R3C0 效果是一样的
+            ushort ushort_D1000 = melsec_net.ReadUShortFromPLC("D1000").Content; // 读取D1000的ushort值
+            int int_D1000 = melsec_net.ReadIntFromPLC("D1000").Content;          // 读取D1000-D1001组成的int数据
+            uint uint_D1000 = melsec_net.ReadUIntFromPLC("D1000").Content;       // 读取D1000-D1001组成的uint数据
+            float float_D1000 = melsec_net.ReadFloatFromPLC("D1000").Content;    // 读取D1000-D1001组成的float数据
+            long long_D1000 = melsec_net.ReadLongFromPLC("D1000").Content;       // 读取D1000-D1003组成的long数据
+            double double_D1000 = melsec_net.ReadDoubleFromPLC("D1000").Content; // 读取D1000-D1003组成的double数据
+            string str_D1000 = melsec_net.ReadStringFromPLC("D1000", 10).Content; // 读取D1000-D1009组成的条码数据
 
 
-            // 写入M100为通
-            melsec_net.WriteIntoPLC("M100", true);
-            // 写入Y1A0为通
-            melsec_net.WriteIntoPLC("Y1A0", true);
-            // 写入X1A0为通
-            melsec_net.WriteIntoPLC("X1A0", true);
-            // 写入B1A0为通
-            melsec_net.WriteIntoPLC("B1A0", true);
-            // 写入D1000  short值  ,W3C0,R3C0 效果是一样的
-            melsec_net.WriteIntoPLC("D1000", (short)1234);
-            // 写入D1000  ushort值
-            melsec_net.WriteIntoPLC("D1000", (ushort)45678);
-            // 写入D1000  int值
-            melsec_net.WriteIntoPLC("D1000", 1234566);
-            // 写入D1000  uint值
-            melsec_net.WriteIntoPLC("D1000", (uint)1234566);
-            // 写入D1000  float值
-            melsec_net.WriteIntoPLC("D1000", 123.456f);
-            // 写入D1000  double值
-            melsec_net.WriteIntoPLC("D1000", 123.456d);
-            // 写入D1000  long值
-            melsec_net.WriteIntoPLC("D1000", 123456661235123534L);
-            // 写入D1000  string值
-            melsec_net.WriteAsciiStringIntoPLC("D1000", "K123456789");
+            
+            melsec_net.WriteIntoPLC("M100", true);                        // 写入M100为通
+            melsec_net.WriteIntoPLC("Y1A0", true);                        // 写入Y1A0为通
+            melsec_net.WriteIntoPLC("X1A0", true);                        // 写入X1A0为通
+            melsec_net.WriteIntoPLC("B1A0", true);                        // 写入B1A0为通
+            melsec_net.WriteIntoPLC("D1000", (short)1234);                // 写入D1000  short值  ,W3C0,R3C0 效果是一样的
+            melsec_net.WriteIntoPLC("D1000", (ushort)45678);              // 写入D1000  ushort值
+            melsec_net.WriteIntoPLC("D1000", 1234566);                    // 写入D1000  int值
+            melsec_net.WriteIntoPLC("D1000", (uint)1234566);               // 写入D1000  uint值
+            melsec_net.WriteIntoPLC("D1000", 123.456f);                    // 写入D1000  float值
+            melsec_net.WriteIntoPLC("D1000", 123.456d);                    // 写入D1000  double值
+            melsec_net.WriteIntoPLC("D1000", 123456661235123534L);          // 写入D1000  long值
+            melsec_net.WriteAsciiStringIntoPLC("D1000", "K123456789");      // 写入D1000  string值
         }
 
         private void userButton23_Click(object sender, EventArgs e)
@@ -201,7 +180,7 @@ namespace TestTool.TestForm
             byte[] buffer = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes("50 00 00 FF FF 03 00 0D 00 0A 00 01 14 01 00 64 00 00 90 01 00 10");
             // 直接使用报文进行
             OperateResult<byte[]> operate = melsec_net.ReadFromServerCore(buffer);
-            if(operate.IsSuccess)
+            if (operate.IsSuccess)
             {
                 // 返回PLC的报文反馈，需要自己对报文进行结果分析
                 MessageBox.Show(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(operate.Content));
@@ -229,7 +208,7 @@ namespace TestTool.TestForm
         }
         private void userButton17_Click(object sender, EventArgs e)
         {
-            bool[] values = new bool[] { true,false ,true};
+            bool[] values = new bool[] { true, false, true };
             OperateResult write = melsec_net.WriteIntoPLC("M100", values);
             if (write.IsSuccess)
             {
@@ -299,7 +278,7 @@ namespace TestTool.TestForm
                 BitConverter.GetBytes(values[i]).CopyTo(buffer, i * 4);
             }
             OperateResult write = melsec_net.WriteIntoPLC("D1000", buffer);
-            if(write.IsSuccess)
+            if (write.IsSuccess)
             {
                 MessageBox.Show("写入成功！");
             }
@@ -426,9 +405,9 @@ namespace TestTool.TestForm
         {
             OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC(
                 new string[] { "M100", "M150", "M200", "I300" },
-                new ushort[] { 1, 4, 3, 1});
-            
-            if(read.IsSuccess)
+                new ushort[] { 1, 4, 3, 1 });
+
+            if (read.IsSuccess)
             {
                 byte value1 = read.Content[0];
                 int value2 = siemensTcpNet.GetIntFromBytes(read.Content, 1);
@@ -443,7 +422,34 @@ namespace TestTool.TestForm
             }
         }
 
+        private void userButton40_Click(object sender, EventArgs e)
+        {
+            // 读取操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
+            bool M100_7 = siemensTcpNet.ReadBoolFromPLC("M100.7").Content;  // 读取M100.7是否通断
+            byte byte_M100 = siemensTcpNet.ReadByteFromPLC("M100").Content; // 读取M100的值
+            short short_M100 = siemensTcpNet.ReadShortFromPLC("M100").Content; // 读取M100-M101组成的字
+            ushort ushort_M100 = siemensTcpNet.ReadUShortFromPLC("M100").Content; // 读取M100-M101组成的无符号的值
+            int int_M100 = siemensTcpNet.ReadIntFromPLC("M100").Content;         // 读取M100-M103组成的有符号的数据
+            uint uint_M100 = siemensTcpNet.ReadUIntFromPLC("M100").Content;      // 读取M100-M103组成的无符号的值
+            float float_M100 = siemensTcpNet.ReadFloatFromPLC("M100").Content;   // 读取M100-M103组成的单精度值
+            long long_M100 = siemensTcpNet.ReadLongFromPLC("M100").Content;      // 读取M100-M107组成的大数据值
+            ulong ulong_M100 = siemensTcpNet.ReadULongFromPLC("M100").Content;   // 读取M100-M107组成的无符号大数据
+            double double_M100 = siemensTcpNet.ReadDoubleFromPLC("M100").Content; // 读取M100-M107组成的双精度值
+            string str_M100 = siemensTcpNet.ReadStringFromPLC("M100", 10).Content;// 读取M100-M109组成的ASCII字符串数据
 
+            // 写入操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
+            siemensTcpNet.WriteIntoPLC("M100.7", true);                // 写位
+            siemensTcpNet.WriteIntoPLC("M100", (byte)0x33);            // 写单个字节
+            siemensTcpNet.WriteIntoPLC("M100", (short)12345);          // 写双字节有符号
+            siemensTcpNet.WriteIntoPLC("M100", (ushort)45678);         // 写双字节无符号
+            siemensTcpNet.WriteIntoPLC("M100", 123456789);             // 写双字有符号
+            siemensTcpNet.WriteIntoPLC("M100", (uint)3456789123);      // 写双字无符号
+            siemensTcpNet.WriteIntoPLC("M100", 123.456f);              // 写单精度
+            siemensTcpNet.WriteIntoPLC("M100", 1234556434534545L);     // 写大整数有符号
+            siemensTcpNet.WriteIntoPLC("M100", 523434234234343UL);     // 写大整数无符号
+            siemensTcpNet.WriteIntoPLC("M100", 123.456d);              // 写双精度
+            siemensTcpNet.WriteAsciiStringIntoPLC("M100", "K123456789");// 写ASCII字符串
+        }
 
 
         #endregion
@@ -474,7 +480,7 @@ namespace TestTool.TestForm
             else
             {
                 MessageBox.Show(read.ToMessageShowString());
-                if(read.Content!=null)textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content);
+                if (read.Content != null) textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content);
             }
         }
 
@@ -541,11 +547,47 @@ namespace TestTool.TestForm
         {
             for (int i = 0; i < 10; i++)
             {
-                TextBoxAppendStringLine(siemensTcpNet.ReadShortFromPLC("M200").Content.ToString()); 
+                TextBoxAppendStringLine(siemensTcpNet.ReadShortFromPLC("M200").Content.ToString());
 
             }
         }
 
+        private void userButton21_Click_1(object sender, EventArgs e)
+        {
+           // M100写入
+           siemensTcpNet.WriteIntoPLC("M100", (byte)0x3B);
+        }
 
+        private void userButton22_Click_1(object sender, EventArgs e)
+        {
+            // M100读取
+            //TextBoxAppendStringLine(siemensTcpNet.ReadByteFromPLC("M100").Content.ToString());
+            TextBoxAppendStringLine(siemensTcpNet.ReadBoolFromPLC("M100.0").Content.ToString());
+            TextBoxAppendStringLine(siemensTcpNet.ReadBoolFromPLC("M100.1").Content.ToString());
+            TextBoxAppendStringLine(siemensTcpNet.ReadBoolFromPLC("M100.2").Content.ToString());
+            TextBoxAppendStringLine(siemensTcpNet.ReadBoolFromPLC("M100.3").Content.ToString());
+            TextBoxAppendStringLine(siemensTcpNet.ReadBoolFromPLC("M100.4").Content.ToString());
+            TextBoxAppendStringLine(siemensTcpNet.ReadBoolFromPLC("M100.5").Content.ToString());
+            TextBoxAppendStringLine(siemensTcpNet.ReadBoolFromPLC("M100.6").Content.ToString());
+            TextBoxAppendStringLine(siemensTcpNet.ReadBoolFromPLC("M100.7").Content.ToString());
+            
+        }
+
+        private void userButton23_Click_1(object sender, EventArgs e)
+        {
+            byte[] buffer = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(
+                "03 00 00 24 02 F0 80 32 01 00 00 00 01 00 0E 00 05 05 01 12 0A 10 02 00 01 00 00 83 00 03 20 00 04 00 08 3B");
+            OperateResult<byte[]> operate = siemensTcpNet.ReadFromServerCore(buffer);
+            if (operate.IsSuccess)
+            {
+                // 显示服务器返回的报文
+                TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(operate.Content));
+            }
+            else
+            {
+                // 显示网络错误
+                MessageBox.Show(operate.ToMessageShowString());
+            }
+        }
     }
 }

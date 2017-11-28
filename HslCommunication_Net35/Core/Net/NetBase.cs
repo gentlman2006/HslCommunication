@@ -2407,6 +2407,25 @@ namespace HslCommunication.Core
             return result;
         }
 
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <returns></returns>
+        protected OperateResult<byte> GetByteResultFromBytes(OperateResult<byte[]> read)
+        {
+            if (read == null) return null;
+            OperateResult<byte> result = new OperateResult<byte>();
+            if(read.IsSuccess)
+            {
+                result.Content = read.Content[0];
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+            return result;
+        }
+
 
         /// <summary>
         /// 将指定的OperateResult类型转化
@@ -2466,6 +2485,27 @@ namespace HslCommunication.Core
             {
                 if (reverse) Array.Reverse(read.Content);
                 result.Content = BitConverter.ToInt32(read.Content, 0);
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<uint> GetUInt32ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        {
+            OperateResult<uint> result = new OperateResult<uint>();
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse(read.Content);
+                result.Content = BitConverter.ToUInt32(read.Content, 0);
             }
             result.IsSuccess = read.IsSuccess;
             result.Message = read.Message;
@@ -2704,7 +2744,7 @@ namespace HslCommunication.Core
         /// <returns></returns>
         protected bool SendCommandAndReceiveResponse(byte[] send, out byte[] receive, OperateResult result)
         {
-            // string str = SoftBasic.ByteToHexString(send, ' ');
+            string str = SoftBasic.ByteToHexString(send, ' ');
 
             serverInterfaceLock.Enter();                        // 进入读取的锁
 

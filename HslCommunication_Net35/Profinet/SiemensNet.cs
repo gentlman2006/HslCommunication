@@ -403,7 +403,7 @@ namespace HslCommunication.Profinet
         #region Build Command
 
         /// <summary>
-        /// 生成一个读取数据指令头的通用方法
+        /// 生成一个读取字数据指令头的通用方法
         /// </summary>
         /// <param name="address"></param>
         /// <param name="count"></param>
@@ -475,14 +475,89 @@ namespace HslCommunication.Profinet
                 // 访问数据类型
                 _PLCCommand[27 + ii * 12] = type;
                 // 偏移位置
-                _PLCCommand[28 + ii * 12] = (byte)(startAddress / 256 / 256);
-                _PLCCommand[29 + ii * 12] = (byte)(startAddress / 256);
+                _PLCCommand[28 + ii * 12] = (byte)(startAddress / 256 / 256 % 256);
+                _PLCCommand[29 + ii * 12] = (byte)(startAddress / 256 % 256);
                 _PLCCommand[30 + ii * 12] = (byte)(startAddress % 256);
             }
             command = _PLCCommand;
 
             return true;
         }
+
+        /// <summary>
+        /// 生成一个位读取数据指令头的通用方法
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="count"></param>
+        /// <param name="command"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        private bool BuildBitReadCommand(string address, out byte[] command, OperateResult result)
+        {
+            byte[] _PLCCommand = new byte[31];
+            // 报文头
+            _PLCCommand[0] = 0x03;
+            _PLCCommand[1] = 0x00;
+            // 长度
+            _PLCCommand[2] = (byte)(_PLCCommand.Length / 256);
+            _PLCCommand[3] = (byte)(_PLCCommand.Length % 256);
+            // 固定
+            _PLCCommand[4] = 0x02;
+            _PLCCommand[5] = 0xF0;
+            _PLCCommand[6] = 0x80;
+            _PLCCommand[7] = 0x32;
+            // 命令：发
+            _PLCCommand[8] = 0x01;
+            // 标识序列号
+            _PLCCommand[9] = 0x00;
+            _PLCCommand[10] = 0x00;
+            _PLCCommand[11] = 0x00;
+            _PLCCommand[12] = 0x01;
+            // 命令数据总长度
+            _PLCCommand[13] = (byte)((_PLCCommand.Length - 17) / 256);
+            _PLCCommand[14] = (byte)((_PLCCommand.Length - 17) % 256);
+
+            _PLCCommand[15] = 0x00;
+            _PLCCommand[16] = 0x00;
+
+            // 命令起始符
+            _PLCCommand[17] = 0x04;
+            // 读取数据块个数
+            _PLCCommand[18] = 0x01;
+
+
+            // 填充数据
+            if (!AnalysisAddress(address, out byte type, out int startAddress, out ushort dbAddress, result))
+            {
+                command = null;
+                return false;
+            }
+
+            //===========================================================================================
+            // 读取地址的前缀
+            _PLCCommand[19] = 0x12;
+            _PLCCommand[20] = 0x0A;
+            _PLCCommand[21] = 0x10;
+            // 读取的数据时位
+            _PLCCommand[22] = 0x01;
+            // 访问数据的个数
+            _PLCCommand[23] = 0x00;
+            _PLCCommand[24] = 0x01;
+            // DB块编号，如果访问的是DB块的话
+            _PLCCommand[25] = (byte)(dbAddress / 256);
+            _PLCCommand[26] = (byte)(dbAddress % 256);
+            // 访问数据类型
+            _PLCCommand[27] = type;
+            // 偏移位置
+            _PLCCommand[28] = (byte)(startAddress / 256 / 256 % 256);
+            _PLCCommand[29] = (byte)(startAddress / 256 % 256);
+            _PLCCommand[30] = (byte)(startAddress % 256);
+
+            command = _PLCCommand;
+
+            return true;
+        }
+
 
 
         private bool BuildWriteByteCommand(string address, byte[] data,out byte[] command, OperateResult result)
@@ -538,8 +613,8 @@ namespace HslCommunication.Profinet
             // 写入数据的类型
             _PLCCommand[27] = type;
             // 偏移位置
-            _PLCCommand[28] = (byte)(startAddress / 256 / 256); ;
-            _PLCCommand[29] = (byte)(startAddress / 256);
+            _PLCCommand[28] = (byte)(startAddress / 256 / 256 % 256); ;
+            _PLCCommand[29] = (byte)(startAddress / 256 % 256);
             _PLCCommand[30] = (byte)(startAddress % 256);
             // 按字写入
             _PLCCommand[31] = 0x00;
@@ -797,6 +872,8 @@ namespace HslCommunication.Profinet
 
         #region Read Support
 
+        
+
         /// <summary>
         /// 从PLC读取数据，地址格式为I100，Q100，DB20.100，M100，以字节为单位
         /// </summary>
@@ -807,6 +884,58 @@ namespace HslCommunication.Profinet
         {
             return ReadFromPLC(new string[] { address }, new ushort[] { count });
         }
+
+        /// <summary>
+        /// 从PLC读取数据，地址格式为I100，Q100，DB20.100，M100，以位为单位
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        private OperateResult<byte[]> ReadBitFromPLC(string address)
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            if (!BuildBitReadCommand(address, out byte[] command, result))
+            {
+                return result;
+            }
+
+            OperateResult<byte[]> read = ReadFromServerCore(command);
+            if(read.IsSuccess)
+            {
+                int receiveCount = 1;
+
+                if (read.Content.Length >= 21 && read.Content[20] == 1)
+                {
+                    // 分析结果
+                    byte[] buffer = new byte[receiveCount];
+
+                    if (22 < read.Content.Length)
+                    {
+                        if (read.Content[21] == 0xFF &&
+                            read.Content[22] == 0x03)
+                        {
+                            // 有数据
+                            buffer[0] = read.Content[25];
+                        }
+                    }
+
+                    result.Content = buffer;
+                    result.IsSuccess = true;
+                }
+                else
+                {
+                    result.ErrorCode = read.ErrorCode;
+                    result.Message = "数据块长度校验失败";
+                }
+            }
+            else
+            {
+                result.ErrorCode = read.ErrorCode;
+                result.Message = read.Message;
+            }
+
+            return result;
+        }
+
 
         /// <summary>
         /// 一次性从PLC获取所有的数据，按照先后顺序返回一个统一的Buffer，需要按照顺序处理，两个数组长度必须一致
@@ -874,6 +1003,28 @@ namespace HslCommunication.Profinet
 
 
         /// <summary>
+        /// 读取指定地址的bool数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        public OperateResult<bool> ReadBoolFromPLC(string address)
+        {
+            return GetBoolResultFromBytes(ReadBitFromPLC(address));
+        }
+
+
+        /// <summary>
+        /// 读取指定地址的byte数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        public OperateResult<byte> ReadByteFromPLC(string address)
+        {
+            return GetByteResultFromBytes(ReadFromPLC(address, 1));
+        }
+
+
+        /// <summary>
         /// 读取指定地址的short数据
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
@@ -904,6 +1055,15 @@ namespace HslCommunication.Profinet
             return GetInt32ResultFromBytes(ReadFromPLC(address, 4), true);
         }
 
+        /// <summary>
+        /// 读取指定地址的uint数据
+        /// </summary>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <returns></returns>
+        public OperateResult<uint> ReadUIntFromPLC(string address)
+        {
+            return GetUInt32ResultFromBytes(ReadFromPLC(address, 4), true);
+        }
 
         /// <summary>
         /// 读取指定地址的float数据
@@ -1112,12 +1272,27 @@ namespace HslCommunication.Profinet
         {
             return WriteIntoPLC(address, BasicFramework.SoftBasic.BoolArrayToByte(data));
         }
-        
+
+
+        #endregion
+
+        #region Write Byte
+
+        /// <summary>
+        /// 向PLC中写入byte数据，返回值说明
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="data">要写入的实际数据</param>
+        /// <returns></returns>
+        public OperateResult WriteIntoPLC(string address,byte data)
+        {
+            return WriteIntoPLC(address, new byte[] { data });
+        }
 
         #endregion
 
         #region Write Short
-        
+
         /// <summary>
         /// 向PLC中写入short数组，返回值说明
         /// </summary>
