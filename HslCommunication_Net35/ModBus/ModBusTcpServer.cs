@@ -28,8 +28,23 @@ namespace HslCommunication.ModBus
     /// </summary>
     public class ModBusTcpServer : NetServerBase
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个Modbus Tcp的服务器，支持数据读写操作
+        /// </summary>
+        public ModBusTcpServer()
+        {
+            Coils = new bool[65536];
+            Register = new byte[65536 * 2];
+            hybirdLockCoil = new SimpleHybirdLock();
+            hybirdLockRegister = new SimpleHybirdLock();
+        }
+
+        #endregion
+
         #region NetServer Override
-            
+
 
         /// <summary>
         /// 当接收到了新的请求的时候执行的操作
@@ -67,6 +82,281 @@ namespace HslCommunication.ModBus
         /// </summary>
         public event IEDelegate<byte[]> OnDataReceived;
 
+
+        #endregion
+
+        #region Data Pool
+
+        // 数据池，用来模拟真实的Modbus数据区块
+        private bool[] Coils;                       // 线圈池
+        private SimpleHybirdLock hybirdLockCoil;    // 线圈池的同步锁
+        private byte[] Register;                    // 寄存器池
+        private SimpleHybirdLock hybirdLockRegister;// 寄存器池同步锁
+
+        #endregion
+
+        #region Coil Read Write
+
+        /// <summary>
+        /// 读取地址的线圈的通断情况
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns><c>True</c>或是<c>False</c></returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        public bool ReadCoil(ushort address)
+        {
+            bool result = false;
+            hybirdLockCoil.Enter();
+            result = Coils[address];
+            hybirdLockCoil.Leave();
+            return result;
+        }
+
+        /// <summary>
+        /// 批量读取地址的线圈的通断情况
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">读取长度</param>
+        /// <returns><c>True</c>或是<c>False</c></returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        public bool[] ReadCoil(ushort address, ushort length)
+        {
+            bool[] result = new bool[length];
+            hybirdLockCoil.Enter();
+            for (int i = address; i < address + length; i++)
+            {
+                if (i < ushort.MaxValue)
+                {
+                    result[i - address] = Coils[i];
+                }
+            }
+            hybirdLockCoil.Leave();
+            return result;
+        }
+
+        /// <summary>
+        /// 写入线圈的通断值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">是否通断</param>
+        /// <returns><c>True</c>或是<c>False</c></returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        public void WriteCoil(ushort address,bool data)
+        {
+            hybirdLockCoil.Enter();
+            Coils[address] = data;
+            hybirdLockCoil.Leave();
+        }
+
+        /// <summary>
+        /// 写入线圈数组的通断值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">是否通断</param>
+        /// <returns><c>True</c>或是<c>False</c></returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        public void WriteCoil(ushort address, bool[] data)
+        {
+            if (data == null) return;
+
+            hybirdLockCoil.Enter();
+            for (int i = address; i < address + data.Length; i++)
+            {
+                if (i < ushort.MaxValue)
+                {
+                    Coils[i] = data[i - address];
+                }
+            }
+            hybirdLockCoil.Leave();
+        }
+
+
+        #endregion
+
+        #region Register Read
+
+        /// <summary>
+        /// 读取一个寄存器的值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public short ReadShortRegister(ushort address)
+        {
+            byte[] buffer = new byte[2];
+            hybirdLockRegister.Enter();
+            buffer[0] = Register[address + 1];
+            buffer[1] = Register[address];
+            hybirdLockRegister.Leave();
+            return BitConverter.ToInt16(buffer, 0);
+        }
+
+        /// <summary>
+        /// 读取一个寄存器的值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public ushort ReadUShortRegister(ushort address)
+        {
+            byte[] buffer = new byte[2];
+            hybirdLockRegister.Enter();
+            buffer[0] = Register[address + 1];
+            buffer[1] = Register[address];
+            hybirdLockRegister.Leave();
+            return BitConverter.ToUInt16(buffer, 0);
+        }
+
+        /// <summary>
+        /// 读取两个寄存器组成的int值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public int ReadIntRegister(ushort address)
+        {
+            byte[] buffer = new byte[4];
+            hybirdLockRegister.Enter();
+            buffer[0] = Register[address + 3];
+            buffer[1] = Register[address + 2];
+            buffer[2] = Register[address + 1];
+            buffer[3] = Register[address + 0];
+            hybirdLockRegister.Leave();
+            return BitConverter.ToInt32(buffer, 0);
+        }
+
+        /// <summary>
+        /// 读取两个寄存器组成的uint值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public uint ReadUIntRegister(ushort address)
+        {
+            byte[] buffer = new byte[4];
+            hybirdLockRegister.Enter();
+            buffer[0] = Register[address + 3];
+            buffer[1] = Register[address + 2];
+            buffer[2] = Register[address + 1];
+            buffer[3] = Register[address + 0];
+            hybirdLockRegister.Leave();
+            return BitConverter.ToUInt32(buffer, 0);
+        }
+
+        /// <summary>
+        /// 读取两个寄存器组成的float值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public float ReadFloatRegister(ushort address)
+        {
+            byte[] buffer = new byte[4];
+            hybirdLockRegister.Enter();
+            buffer[0] = Register[address + 3];
+            buffer[1] = Register[address + 2];
+            buffer[2] = Register[address + 1];
+            buffer[3] = Register[address + 0];
+            hybirdLockRegister.Leave();
+            return BitConverter.ToSingle(buffer, 0);
+        }
+
+        /// <summary>
+        /// 读取四个寄存器组成的long值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public long ReadLongRegister(ushort address)
+        {
+            byte[] buffer = new byte[8];
+            hybirdLockRegister.Enter();
+            buffer[0] = Register[address + 7];
+            buffer[1] = Register[address + 6];
+            buffer[2] = Register[address + 5];
+            buffer[3] = Register[address + 4];
+            buffer[4] = Register[address + 3];
+            buffer[5] = Register[address + 2];
+            buffer[6] = Register[address + 1];
+            buffer[7] = Register[address + 0];
+            hybirdLockRegister.Leave();
+            return BitConverter.ToInt64(buffer, 0);
+        }
+
+        /// <summary>
+        /// 读取四个寄存器组成的ulong值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public ulong ReadULongRegister(ushort address)
+        {
+            byte[] buffer = new byte[8];
+            hybirdLockRegister.Enter();
+            buffer[0] = Register[address + 7];
+            buffer[1] = Register[address + 6];
+            buffer[2] = Register[address + 5];
+            buffer[3] = Register[address + 4];
+            buffer[4] = Register[address + 3];
+            buffer[5] = Register[address + 2];
+            buffer[6] = Register[address + 1];
+            buffer[7] = Register[address + 0];
+            hybirdLockRegister.Leave();
+            return BitConverter.ToUInt64(buffer, 0);
+        }
+
+        /// <summary>
+        /// 读取四个寄存器组成的double值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public double ReadDoubleRegister(ushort address)
+        {
+            byte[] buffer = new byte[8];
+            hybirdLockRegister.Enter();
+            buffer[0] = Register[address + 7];
+            buffer[1] = Register[address + 6];
+            buffer[2] = Register[address + 5];
+            buffer[3] = Register[address + 4];
+            buffer[4] = Register[address + 3];
+            buffer[5] = Register[address + 2];
+            buffer[6] = Register[address + 1];
+            buffer[7] = Register[address + 0];
+            hybirdLockRegister.Leave();
+            return BitConverter.ToDouble(buffer, 0);
+        }
+
+
+        /// <summary>
+        /// 读取ASCII字符串，长度为寄存器数量，最终的字符串长度为这个值的2倍
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">寄存器长度</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public string ReadStringRegister(ushort address, ushort length)
+        {
+            string str = string.Empty;
+            hybirdLockRegister.Enter();
+            str = Encoding.ASCII.GetString(Register, address, length * 2);
+            hybirdLockRegister.Leave();
+            return str;
+        }
+
+
+
+
+
+        #endregion
+
+        #region Register Write
+
+
+        public void WriteRegister(ushort address, short data)
+        {
+
+        }
 
         #endregion
 
