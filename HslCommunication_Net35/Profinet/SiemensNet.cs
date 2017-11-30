@@ -345,6 +345,7 @@ namespace HslCommunication.Profinet
             PortRead = 102;
             PortWrite = 102;
             CurrentPlc = siemens;
+            LogHeaderText = "SiemensTcpNet";
 
             switch (siemens)
             {

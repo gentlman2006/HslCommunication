@@ -33,6 +33,18 @@ namespace HslCommunication.Enthernet
         public NetSimplifyClient(IPEndPoint end_point)
         {
             IP_END_POINT = end_point;
+            LogHeaderText = "NetSimplifyClient";
+        }
+
+        /// <summary>
+        /// 实例化一个客户端的对象，用于和服务器通信
+        /// </summary>
+        /// <param name="ipAddress">服务器的Ip地址</param>
+        /// <param name="port">服务器的端口</param>
+        public NetSimplifyClient(string ipAddress,int port)
+        {
+            IP_END_POINT = new IPEndPoint(IPAddress.Parse(ipAddress), port);
+            LogHeaderText = "NetSimplifyClient";
         }
 
         private IPEndPoint IP_END_POINT { get; set; } = null;
@@ -138,7 +150,7 @@ namespace HslCommunication.Enthernet
         /// </summary>
         public NetSimplifyServer()
         {
-
+            LogHeaderText = "NetSimplifyServer";
         }
 
         #region 事件通知块
@@ -235,7 +247,7 @@ namespace HslCommunication.Enthernet
         internal override void SocketReceiveException(AsyncStateOne receive, Exception ex)
         {
             receive.WorkSocket?.Close();
-            LogNet?.WriteException(StringResources.SocketIOException, ex);
+            LogNet?.WriteException(LogHeaderText, StringResources.SocketIOException, ex);
         }
 
         /// <summary>
@@ -247,7 +259,7 @@ namespace HslCommunication.Enthernet
         /// <param name="content"></param>
         internal override void DataProcessingCenter(AsyncStateOne receive, int protocol, int customer, byte[] content)
         {
-            LogNet?.WriteDebug("Protocol:" + protocol + " customer:" + customer +" ip:"+receive.GetRemoteEndPoint().Address.ToString());
+            LogNet?.WriteDebug(LogHeaderText, "Protocol:" + protocol + " customer:" + customer + " ip:" + receive.GetRemoteEndPoint().Address.ToString());
             //接收数据完成，进行事件通知，优先进行解密操作
             if (protocol == HslCommunicationCode.Hsl_Protocol_User_Bytes)
             {

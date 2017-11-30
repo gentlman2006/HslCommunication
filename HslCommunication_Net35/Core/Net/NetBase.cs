@@ -459,6 +459,8 @@ namespace HslCommunication.Core
     public abstract class NetBase
     {
         #region 受保护的属性
+
+
         /// <summary>
         /// 用于通信工作的核心对象
         /// </summary>
@@ -479,6 +481,11 @@ namespace HslCommunication.Core
                 NetSupport.ThreadPoolCheckConnect(timeout, ConnectTimeout);
             }
         }
+
+        /// <summary>
+        /// 在日志保存时的标记当前调用类的信息
+        /// </summary>
+        protected string LogHeaderText { get; set; }
 
         #endregion
 
@@ -551,7 +558,7 @@ namespace HslCommunication.Core
          ****************************************************************************/
 
 
-        
+
 
         /// <summary>
         /// 创建socket对象并尝试连接终结点，如果异常，则结束通信
@@ -581,10 +588,10 @@ namespace HslCommunication.Core
                 timeout.IsSuccessful = true;
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result.Message = CombineExceptionString(StringResources.ConnectedFailed, ex.Message);
-                LogNet?.WriteError(CombineExceptionString(StringResources.ConnectedFailed, ex.Message));
+                LogNet?.WriteError(LogHeaderText, CombineExceptionString(StringResources.ConnectedFailed, ex.Message));
                 socket?.Close();
                 socket = null;
                 return false;
@@ -637,7 +644,7 @@ namespace HslCommunication.Core
             {
                 socket?.Close();
                 result.Message = CombineExceptionString(exceptionMessage, ex.Message);
-                LogNet?.WriteException(exceptionMessage, ex);
+                LogNet?.WriteException(LogHeaderText, exceptionMessage, ex);
                 bytes = null; // 这个内存清除的很重要
                 return false;
             }
@@ -666,7 +673,7 @@ namespace HslCommunication.Core
             catch (Exception ex)
             {
                 result.Message = CombineExceptionString(exceptionMessage, ex.Message);
-                LogNet?.WriteException(exceptionMessage, ex);
+                LogNet?.WriteException(LogHeaderText, exceptionMessage, ex);
                 socket?.Close();
                 send = null;
                 return false;
@@ -700,7 +707,7 @@ namespace HslCommunication.Core
             catch (Exception ex)
             {
                 result.Message = CombineExceptionString(exceptionMessage, ex.Message);
-                LogNet?.WriteException(exceptionMessage, ex);
+                LogNet?.WriteException(LogHeaderText, exceptionMessage, ex);
                 socket?.Close();
                 return false;
             }
@@ -729,7 +736,7 @@ namespace HslCommunication.Core
             else
             {
                 result.Message = StringResources.TokenCheckFailed;
-                LogNet?.WriteWarn(StringResources.TokenCheckFailed + " Ip:" + socket.RemoteEndPoint.AddressFamily.ToString());
+                LogNet?.WriteWarn(LogHeaderText, StringResources.TokenCheckFailed + " Ip:" + socket.RemoteEndPoint.AddressFamily.ToString());
                 socket?.Close();
                 head = null;
                 return false;
@@ -766,7 +773,7 @@ namespace HslCommunication.Core
             catch (Exception ex)
             {
                 socket?.Close();
-                LogNet?.WriteException(exceptionMessage, ex);
+                LogNet?.WriteException(LogHeaderText, exceptionMessage, ex);
                 result.Message = CombineExceptionString(exceptionMessage, ex.Message);
                 filelength = 0;
                 return false;
@@ -805,7 +812,7 @@ namespace HslCommunication.Core
             catch (Exception ex)
             {
                 result.Message = CombineExceptionString(exceptionMessage, ex.Message);
-                LogNet?.WriteException(exceptionMessage, ex);
+                LogNet?.WriteException(LogHeaderText, exceptionMessage, ex);
                 socket?.Close();
                 return false;
             }
@@ -882,7 +889,7 @@ namespace HslCommunication.Core
                 stateOne.HybirdLockSend.Leave();
                 if (!ex.Message.Contains(StringResources.SocketRemoteCloseException))
                 {
-                    LogNet?.WriteException(StringResources.SocketSendAsyncException, ex);
+                    LogNet?.WriteException(LogHeaderText, StringResources.SocketSendException, ex);
                 }
             }
         }
@@ -921,7 +928,7 @@ namespace HslCommunication.Core
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException(StringResources.SocketEndSendException, ex);
+                    LogNet?.WriteException(LogHeaderText, StringResources.SocketEndSendException, ex);
                     stateone.HybirdLockSend.Leave();
                     stateone = null;
                 }
@@ -958,7 +965,7 @@ namespace HslCommunication.Core
                 else
                 {
                     // 应该关闭网络通信
-                    LogNet?.WriteWarn(StringResources.TokenCheckFailed);
+                    LogNet?.WriteWarn(LogHeaderText, StringResources.TokenCheckFailed);
                 }
             }
         }
@@ -984,14 +991,14 @@ namespace HslCommunication.Core
                 {
                     // 已经断开连接了
                     SocketReceiveException(receive, ex);
-                    LogNet?.WriteException(StringResources.SocketIOException, ex);
+                    LogNet?.WriteException(LogHeaderText, ex);
                     return;
                 }
                 catch (Exception ex)
                 {
                     // 其他乱七八糟的异常重新启用接收数据
                     ReBeginReceiveHead(receive, false);
-                    LogNet?.WriteException(null, ex);
+                    LogNet?.WriteException(LogHeaderText, StringResources.SocketEndReceiveException, ex);
                     return;
                 }
 
@@ -1055,14 +1062,14 @@ namespace HslCommunication.Core
                 {
                     //已经断开连接了
                     SocketReceiveException(receive, ex);
-                    LogNet?.WriteException(StringResources.SocketIOException, ex);
+                    LogNet?.WriteException(LogHeaderText, ex);
                     return;
                 }
                 catch (Exception ex)
                 {
                     //其他乱七八糟的异常重新启用接收数据
                     ReBeginReceiveHead(receive, false);
-                    LogNet?.WriteException(null, ex);
+                    LogNet?.WriteException(LogHeaderText, StringResources.SocketEndReceiveException, ex);
                     return;
                 }
 
@@ -1175,7 +1182,7 @@ namespace HslCommunication.Core
             }
             else
             {
-                LogNet?.WriteError(failedString);
+                LogNet?.WriteError(LogHeaderText, failedString);
                 return false;
             }
         }
@@ -1323,7 +1330,7 @@ namespace HslCommunication.Core
             catch(Exception ex)
             {
                 socket?.Close();
-                LogNet?.WriteException(failedString, ex);
+                LogNet?.WriteException(LogHeaderText, failedString, ex);
                 result.Message = CombineExceptionString(failedString, ex.Message);
                 return false;
             }
@@ -1456,7 +1463,7 @@ namespace HslCommunication.Core
                 customer = 0;
                 receive = null;
                 result.Message = "数据头校验失败！";
-                LogNet?.WriteError("数据头校验失败！");
+                LogNet?.WriteError(LogHeaderText, "数据头校验失败！");
                 socket?.Close();
                 return false;
             }
@@ -1499,7 +1506,7 @@ namespace HslCommunication.Core
                 customer = 0;
                 data = null;
                 result.Message = "数据头校验失败！";
-                LogNet?.WriteError("数据头校验失败！");
+                LogNet?.WriteError(LogHeaderText, "数据头校验失败！");
                 socket?.Close();
                 return false;
             }
@@ -1546,7 +1553,7 @@ namespace HslCommunication.Core
             // 判断文件是否存在
             if (customer == 0)
             {
-                LogNet?.WriteWarn("对方文件不存在，无法接收！");
+                LogNet?.WriteWarn(LogHeaderText, "对方文件不存在，无法接收！");
                 result.Message = StringResources.FileNotExist;
                 filename = null;
                 size = 0;
@@ -1718,7 +1725,7 @@ namespace HslCommunication.Core
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException("delete file failed:" + filename, ex);
+                LogNet?.WriteException(LogHeaderText, "delete file failed:" + filename, ex);
                 return false;
             }
         }
@@ -1816,7 +1823,7 @@ namespace HslCommunication.Core
                 {
                     // 有可能刚连接上就断开了，那就不管
                     client?.Close();
-                    LogNet?.WriteException(StringResources.SocketAcceptCallbackException, ex);
+                    LogNet?.WriteException(LogHeaderText, StringResources.SocketAcceptCallbackException, ex);
                 }
 
                 // 如果失败，尝试启动三次
@@ -1831,14 +1838,14 @@ namespace HslCommunication.Core
                     catch (Exception ex)
                     {
                         Thread.Sleep(1000);
-                        LogNet?.WriteException(StringResources.SocketReAcceptCallbackException, ex);
+                        LogNet?.WriteException(LogHeaderText, StringResources.SocketReAcceptCallbackException, ex);
                         i++;
                     }
                 }
 
                 if (i >= 3)
                 {
-                    LogNet?.WriteError(StringResources.SocketReAcceptCallbackException);
+                    LogNet?.WriteError(LogHeaderText, StringResources.SocketReAcceptCallbackException);
                     // 抛出异常，终止应用程序
                     throw new Exception(StringResources.SocketReAcceptCallbackException);
                 }
@@ -1882,7 +1889,7 @@ namespace HslCommunication.Core
                 IsStarted = true;
 
                 LogNet?.WriteNewLine();
-                LogNet?.WriteInfo(StringResources.NetEngineStart);
+                LogNet?.WriteInfo(LogHeaderText, StringResources.NetEngineStart);
             }
         }
 
@@ -1905,7 +1912,7 @@ namespace HslCommunication.Core
                 CloseAction();
                 WorkSocket?.Close();
                 IsStarted = false;
-                LogNet?.WriteInfo(StringResources.NetEngineClose);
+                LogNet?.WriteInfo(LogHeaderText, StringResources.NetEngineClose);
             }
         }
 
@@ -2008,7 +2015,6 @@ namespace HslCommunication.Core
             }
 
             // 最后接收id
-
             if (!ReceiveStringFromSocket(socket, out int command3, out id, result, null, failedString))
             {
                 return false;
@@ -2134,7 +2140,7 @@ namespace HslCommunication.Core
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException("Move a file to new file failed:", ex);
+                LogNet?.WriteException(LogHeaderText, "Move a file to new file failed:", ex);
                 return false;
             }
         }
@@ -2337,6 +2343,8 @@ namespace HslCommunication.Core
             isSocketInitialization = true;
             OperateResult result = new OperateResult();
 
+            WorkSocket?.Close();
+
             if (!CreateSocketAndConnect(out Socket socket, GetIPEndPoint(), result))
             {
                 // 创建失败
@@ -2345,21 +2353,23 @@ namespace HslCommunication.Core
             else
             {
                 // 创建成功
-                WorkSocket?.Close();
                 WorkSocket = socket;
+
                 // 发送初始化数据
                 if (!InitilizationOnConnect(socket, result))
                 {
                     // 初始化失败，重新标记连接失败
                     WorkSocket?.Close();
+                    LogNet?.WriteDebug(LogHeaderText, "Initializate Connection Failed !");
                 }
                 else
                 {
                     // 初始化成功
                     result.IsSuccess = true;
+                    LogNet?.WriteDebug(LogHeaderText, StringResources.NetEngineStart);
                 }
             }
-
+            
             return result;
         }
 
@@ -2379,6 +2389,8 @@ namespace HslCommunication.Core
             // 关闭信息
             WorkSocket?.Close();
             WorkSocket = null;
+
+            LogNet?.WriteDebug(LogHeaderText, StringResources.NetEngineClose);
             return result;
         }
 

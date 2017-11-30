@@ -27,8 +27,14 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 写入一条调试日志
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">日志内容</param>
         void WriteDebug(string text);
+        /// <summary>
+        /// 写入一条调试日志
+        /// </summary>
+        /// <param name="header">标题</param>
+        /// <param name="text">日志内容</param>
+        void WriteDebug(string header, string text);
 
         /// <summary>
         /// 写入一条解释性的信息
@@ -39,27 +45,57 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 写入一条错误日志
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">日志内容</param>
         void WriteError(string text);
+
+        /// <summary>
+        /// 写入一条错误日志
+        /// </summary>
+        /// <param name="header">标题</param>
+        /// <param name="text">日志内容</param>
+        void WriteError(string header, string text);
 
         /// <summary>
         /// 写入一条异常信息
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="ex"></param>
-        void WriteException(string text, Exception ex);
+        /// <param name="header">标题</param>
+        /// <param name="ex">异常</param>
+        void WriteException(string header, Exception ex);
+
+        /// <summary>
+        /// 写入一条异常信息
+        /// </summary>
+        /// <param name="header">标题</param>
+        /// <param name="text">内容</param>
+        /// <param name="ex">异常</param>
+        void WriteException(string header, string text, Exception ex);
 
         /// <summary>
         /// 写入一条致命日志
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">日志内容</param>
         void WriteFatal(string text);
+
+        /// <summary>
+        /// 写入一条致命日志
+        /// </summary>
+        /// <param name="header">标题</param>
+        /// <param name="text">日志内容</param>
+        void WriteFatal(string header, string text);
+
 
         /// <summary>
         /// 写入一条信息日志
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">日志内容</param>
         void WriteInfo(string text);
+
+        /// <summary>
+        /// 写入一条信息日志
+        /// </summary>
+        /// <param name="header">标题</param>
+        /// <param name="text">日志内容</param>
+        void WriteInfo(string header, string text);
 
         /// <summary>
         /// 写入一行换行符
@@ -69,8 +105,15 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 写入一条警告日志
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">日志内容</param>
         void WriteWarn(string text);
+
+        /// <summary>
+        /// 写入一条警告日志
+        /// </summary>
+        /// <param name="header">标题</param>
+        /// <param name="text">日志内容</param>
+        void WriteWarn(string header, string text);
 
         /// <summary>
         /// 设置日志的存储等级，高于该等级的才会被存储

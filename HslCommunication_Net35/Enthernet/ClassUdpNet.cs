@@ -13,6 +13,22 @@ namespace HslCommunication.Enthernet
     /// </summary>
     public sealed class NetUdpServer : NetServerBase
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个对象
+        /// </summary>
+        public NetUdpServer()
+        {
+            LogHeaderText = "NetUdpServer";
+        }
+
+
+        #endregion
+
+
+
+
         /// <summary>
         /// 获取或设置一次接收时的数据长度，默认2KB数据长度
         /// </summary>
@@ -105,17 +121,17 @@ namespace HslCommunication.Enthernet
                             else
                             {
                                 //否则记录到日志
-                                LogNet?.WriteWarn($"接收到异常数据，应接收长度：{(BitConverter.ToInt32(state.BytesContent, 4) + 8)} 实际接收：{received}");
+                                LogNet?.WriteWarn(LogHeaderText,$"接收到异常数据，应接收长度：{(BitConverter.ToInt32(state.BytesContent, 4) + 8)} 实际接收：{received}");
                             }
                         }
                         else
                         {
-                            LogNet?.WriteWarn(StringResources.TokenCheckFailed);
+                            LogNet?.WriteWarn(LogHeaderText,StringResources.TokenCheckFailed);
                         }
                     }
                     else
                     {
-                        LogNet?.WriteWarn($"接收到异常数据，长度不符合要求，实际接收：{received}");
+                        LogNet?.WriteWarn(LogHeaderText,$"接收到异常数据，长度不符合要求，实际接收：{received}");
                     }
                 }
                 catch (ObjectDisposedException ex)
@@ -124,7 +140,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException(StringResources.SocketEndReceiveException, ex);
+                    LogNet?.WriteException(LogHeaderText,StringResources.SocketEndReceiveException, ex);
                     //重新接收，此处已经排除掉了对象释放的异常
                     RefreshReceive();
                 }
@@ -224,7 +240,7 @@ namespace HslCommunication.Enthernet
         /// <param name="content"></param>
         internal override void DataProcessingCenter(AsyncStateOne receive, int protocol, int customer, byte[] content)
         {
-            LogNet?.WriteDebug("Protocol:" + protocol + " customer:" + customer + " ip:" + receive.GetRemoteEndPoint().Address.ToString());
+            LogNet?.WriteDebug(LogHeaderText,"Protocol:" + protocol + " customer:" + customer + " ip:" + receive.GetRemoteEndPoint().Address.ToString());
             if (protocol == HslCommunicationCode.Hsl_Protocol_User_Bytes)
             {
                 AcceptByte?.Invoke(receive, customer, content);

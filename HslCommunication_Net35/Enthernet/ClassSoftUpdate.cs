@@ -17,6 +17,23 @@ namespace HslCommunication.Enthernet
     /// </summary>
     public sealed class NetSoftUpdateServer : NetServerBase
     {
+
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个对象
+        /// </summary>
+        public NetSoftUpdateServer()
+        {
+            LogHeaderText = "NetSoftUpdateServer";
+        }
+
+        #endregion
+
+
+
+
+
         private string m_FilePath = @"C:\HslCommunication";
 
         /// <summary>
@@ -74,11 +91,11 @@ namespace HslCommunication.Enthernet
                     // 安装系统和更新系统
                     if (Protocol == 0x1001)
                     {
-                        LogNet?.WriteInfo(StringResources.SystemInstallOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
+                        LogNet?.WriteInfo(LogHeaderText, StringResources.SystemInstallOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
                     }
                     else
                     {
-                        LogNet?.WriteInfo(StringResources.SystemUpdateOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
+                        LogNet?.WriteInfo(LogHeaderText, StringResources.SystemUpdateOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
                     }
                     if (Directory.Exists(FileUpdatePath))
                     {
@@ -155,7 +172,7 @@ namespace HslCommunication.Enthernet
                 Thread.Sleep(20);
                 socket?.Shutdown(SocketShutdown.Both);
                 socket?.Close();
-                LogNet?.WriteException(StringResources.FileSendClientFailed, ex);
+                LogNet?.WriteException(LogHeaderText, StringResources.FileSendClientFailed, ex);
             }
         }
         private void ReceiveCallBack(IAsyncResult ir)
@@ -168,7 +185,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch(Exception ex)
                 {
-                    LogNet?.WriteException(null, ex);
+                    LogNet?.WriteException(LogHeaderText, ex);
                 }
                 finally
                 {

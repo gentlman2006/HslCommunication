@@ -371,6 +371,16 @@ namespace HslCommunication.Enthernet
     /// </summary>
     public sealed class IntegrationFileClient : FileClientBase
     {
+        #region Constructor
+        /// <summary>
+        /// 实例化一个对象
+        /// </summary>
+        public IntegrationFileClient()
+        {
+            LogHeaderText = "IntegrationFileClient";
+        }
+
+        #endregion
 
         #region Delete File
 
@@ -752,6 +762,17 @@ namespace HslCommunication.Enthernet
     /// </summary>
     public sealed class AdvancedFileServer : FileServerBase
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个对象
+        /// </summary>
+        public AdvancedFileServer()
+        {
+            LogHeaderText = "AdvancedFileServer";
+        }
+
+        #endregion
 
         #region Override Method
 
@@ -1053,9 +1074,21 @@ namespace HslCommunication.Enthernet
     /// </summary>
     public sealed class UltimateFileServer : FileServerBase
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个对象
+        /// </summary>
+        public UltimateFileServer()
+        {
+            LogHeaderText = "UltimateFileServer";
+        }
+
+        #endregion
+
         #region 文件列表存储器
 
-         /// <summary>
+        /// <summary>
         /// 所有文件组操作的词典锁
         /// </summary>
         internal Dictionary<string, GroupFileContainer> m_dictionary_group_marks = new Dictionary<string, GroupFileContainer>();
@@ -1580,7 +1613,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch(Exception ex)
                 {
-                    LogNet?.WriteException("Load files txt failed,", ex);
+                    LogNet?.WriteException("GroupFileContainer", "Load files txt failed,", ex);
                 }
             }
 
@@ -1761,7 +1794,7 @@ namespace HslCommunication.Enthernet
                     }
                     catch(Exception ex)
                     {
-                        LogNet?.WriteException("File Action Failed:", ex);
+                        LogNet?.WriteException("FileMarkId", "File Action Failed:", ex);
                     }
                 }
             }

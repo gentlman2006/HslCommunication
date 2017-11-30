@@ -69,39 +69,91 @@ namespace HslCommunication.LogNet
         }
 
         /// <summary>
-        /// 写入一条信息
+        /// 写入一条调试信息
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="header">日志头标记</param>
+        /// <param name="text">文本内容</param>
+        public void WriteDebug(string header,string text)
+        {
+            WriteDebug(header + " : " + text);
+        }
+
+        /// <summary>
+        /// 写入一条普通信息
+        /// </summary>
+        /// <param name="text">文本内容</param>
         public void WriteInfo(string text)
         {
             RecordMessage(HslMessageDegree.INFO, text);
         }
 
         /// <summary>
+        /// 写入一条普通信息
+        /// </summary>
+        /// <param name="header">日志头标记</param>
+        /// <param name="text">文本内容</param>
+        public void WriteInfo(string header, string text)
+        {
+            WriteInfo(header + " : " + text);
+        }
+
+        /// <summary>
         /// 写入一条警告信息
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">文本内容</param>
         public void WriteWarn(string text)
         {
             RecordMessage(HslMessageDegree.WARN, text);
         }
 
         /// <summary>
+        /// 写入一条警告信息
+        /// </summary>
+        /// <param name="header">日志头标记</param>
+        /// <param name="text">文本内容</param>
+        public void WriteWarn(string header, string text)
+        {
+            WriteWarn(header + " : " + text);
+        }
+
+
+        /// <summary>
         /// 写入一条错误消息
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">文本内容</param>
         public void WriteError(string text)
         {
             RecordMessage(HslMessageDegree.ERROR, text);
         }
 
         /// <summary>
+        /// 写入一条错误消息
+        /// </summary>
+        /// <param name="header">日志头标记</param>
+        /// <param name="text">文本内容</param>
+        public void WriteError(string header, string text)
+        {
+            WriteError(header + " : " + text);
+        }
+
+        /// <summary>
         /// 写入一条致命错误信息
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">文本内容</param>
         public void WriteFatal(string text)
         {
             RecordMessage(HslMessageDegree.FATAL, text);
+        }
+
+
+        /// <summary>
+        /// 写入一条致命错误信息
+        /// </summary>
+        /// <param name="header">日志头标记</param>
+        /// <param name="text">文本内容</param>
+        public void WriteFatal(string header, string text)
+        {
+            WriteFatal(header + " : " + text);
         }
 
         /// <summary>
@@ -114,7 +166,16 @@ namespace HslCommunication.LogNet
             RecordMessage(HslMessageDegree.FATAL, LogNetManagment.GetSaveStringFromException(text, ex));
         }
 
-
+        /// <summary>
+        /// 写入一条异常信息
+        /// </summary>
+        /// <param name="header">标题</param>
+        /// <param name="text">内容</param>
+        /// <param name="ex">异常</param>
+        public void WriteException(string header, string text, Exception ex)
+        {
+            WriteException(header + " : " + text, ex);
+        }
 
         /// <summary>
         /// 记录一条自定义的消息

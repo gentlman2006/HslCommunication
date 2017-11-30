@@ -15,7 +15,7 @@ namespace HslCommunication.Profinet
     public class MelsecNetBase : PlcNetBase
     {
         #region Public Members
-        
+
         /// <summary>
         /// 获取或设置PLC所在的网络号，一般都为0
         /// </summary>
@@ -210,7 +210,7 @@ namespace HslCommunication.Profinet
         /// </summary>
         public MelsecNet()
         {
-
+            LogHeaderText = "MelsecNet";
         }
 
         #endregion
@@ -346,8 +346,9 @@ namespace HslCommunication.Profinet
                 Content.CopyTo(response, 9);
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
+                LogNet?.WriteException(LogHeaderText, ex);
                 response = null;
                 result.Message = ex.Message;
                 socket?.Close();
@@ -358,8 +359,8 @@ namespace HslCommunication.Profinet
         #endregion
 
         #region Read Write Core
-        
-        
+
+
         /// <summary>
         /// 从三菱PLC中读取想要的数据，返回读取结果
         /// </summary>
@@ -373,10 +374,10 @@ namespace HslCommunication.Profinet
             //获取指令
             byte[] _PLCCommand = GetReadCommand(type, address, length);
             OperateResult<byte[]> read = ReadFromServerCore(_PLCCommand);
-            if(read.IsSuccess)
+            if (read.IsSuccess)
             {
                 result.ErrorCode = BitConverter.ToUInt16(read.Content, 9);
-                if(result.ErrorCode == 0)
+                if (result.ErrorCode == 0)
                 {
                     if (type.DataType == 0x01)
                     {
@@ -464,10 +465,10 @@ namespace HslCommunication.Profinet
             }
 
             OperateResult<byte[]> read = ReadFromServerCore(_PLCCommand);
-            if(read.IsSuccess)
+            if (read.IsSuccess)
             {
                 result.ErrorCode = BitConverter.ToUInt16(read.Content, 9);
-                if(result.ErrorCode == 0)
+                if (result.ErrorCode == 0)
                 {
                     result.IsSuccess = true;
                 }
@@ -498,7 +499,7 @@ namespace HslCommunication.Profinet
             }
             return WriteIntoPLC(type, startAddress, data);
         }
-        
+
 
         #endregion
 
@@ -515,7 +516,7 @@ namespace HslCommunication.Profinet
             OperateResult<T> result = new OperateResult<T>();
             T Content = new T();
             OperateResult<byte[]> read = ReadFromPLC(address, Content.ReadCount);
-            if(read.IsSuccess)
+            if (read.IsSuccess)
             {
                 Content.ParseSource(read.Content);
                 result.Content = Content;
@@ -536,7 +537,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">起始地址</param>
         /// <param name="data">实例对象</param>
         /// <returns></returns>
-        public OperateResult WriteIntoPLC<T>(string address , T data) where T : IDataTransfer, new()
+        public OperateResult WriteIntoPLC<T>(string address, T data) where T : IDataTransfer, new()
         {
             return WriteIntoPLC(address, data.ToSource());
         }
@@ -545,7 +546,7 @@ namespace HslCommunication.Profinet
         #endregion
 
         #region Read Support
-        
+
 
         /// <summary>
         /// 读取指定地址的bool数据，针对数据类型X,Y,M,L,B
@@ -1208,7 +1209,7 @@ namespace HslCommunication.Profinet
         }
 
         #endregion
-        
+
 
     }
 
@@ -1232,8 +1233,8 @@ namespace HslCommunication.Profinet
         /// <param name="portMain">访问PLC时的主端口</param>
         /// <param name="portBackup">访问PLC时的备用端口</param>
         public MelsecNetMultiAsync(
-            byte networkNumber, 
-            byte networkStationNumber, 
+            byte networkNumber,
+            byte networkStationNumber,
             MelsecDataType type,
             ushort address,
             ushort length,
@@ -1286,7 +1287,7 @@ namespace HslCommunication.Profinet
          * 
          *********************************************************************************************/
 
-            
+
         private MelsecDataType MelsecType = MelsecDataType.D;
         private ushort Address = 0;
         private ushort Length = 0;
@@ -1321,9 +1322,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         private void ThreadDealWithTimeout()
         {
-            LogNet?.WriteInfo("waitting one second");
+            LogNet?.WriteInfo(LogHeaderText, "waitting one second");
             Thread.Sleep(1000);// 刚启动的时候进行休眠一小会
-            LogNet?.WriteInfo("begining recyle for reading plc");
+            LogNet?.WriteInfo(LogHeaderText, "begining recyle for reading plc");
             while (true)
             {
                 DateTime firstTime = DateTime.Now;// 连接时间
@@ -1372,7 +1373,7 @@ namespace HslCommunication.Profinet
 
         private void PlcConnectCallBack(IAsyncResult ar)
         {
-            if(ar.AsyncState is PlcStateOne stateone)
+            if (ar.AsyncState is PlcStateOne stateone)
             {
                 try
                 {
@@ -1386,9 +1387,9 @@ namespace HslCommunication.Profinet
                         stateone);
                     stateone.IsConnect = true;// 指示访问成功
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    LogNet?.WriteException("connect failed", ex);
+                    LogNet?.WriteException(LogHeaderText, "connect failed", ex);
                     // 访问失败
                     stateone.WorkSocket.Close();
                     // 初始化数据
@@ -1434,9 +1435,9 @@ namespace HslCommunication.Profinet
                         stateone);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    LogNet?.WriteException("Head receive", ex);
+                    LogNet?.WriteException(LogHeaderText, "Head receive", ex);
                     // 由于未知原因，数据接收失败
                     stateone.WorkSocket.Close();
                     // 初始化数据
@@ -1483,9 +1484,9 @@ namespace HslCommunication.Profinet
                         m_ac.JustEnded();
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    LogNet?.WriteException("Data receive", ex);
+                    LogNet?.WriteException(LogHeaderText, "Data receive", ex);
                     // 由于未知原因，数据接收失败
                     stateone.WorkSocket.Close();
                     // 初始化数据
@@ -1502,14 +1503,14 @@ namespace HslCommunication.Profinet
             if (status == CoordinationStatus.AllDone)
             {
                 Interlocked.Exchange(ref ConnectStatus, 0);
-                LogNet?.WriteDebug("All bytes read complete.");
+                LogNet?.WriteDebug(LogHeaderText, "All bytes read complete.");
                 OnReceivedData?.Invoke(BytesResult.ToArray());
             }
         }
 
         private AsyncCoordinator m_ac = new AsyncCoordinator();
     }
-    
+
 
 
 

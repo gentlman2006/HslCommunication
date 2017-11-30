@@ -39,6 +39,7 @@ namespace HslCommunication.ModBus
             Register = new byte[65536 * 2];
             hybirdLockCoil = new SimpleHybirdLock();
             hybirdLockRegister = new SimpleHybirdLock();
+            LogHeaderText = "ModBusTcpServer";
         }
 
         #endregion
@@ -59,24 +60,24 @@ namespace HslCommunication.ModBus
                 {
                     WorkSocket = socket,
                 };
-                
+
                 try
                 {
                     state.WorkSocket.BeginReceive(state.HeadByte, 0, 6, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
                 }
                 catch (Exception ex)
                 {
-                    if(IsStarted) LogNet?.WriteException("头子节接收失败！", ex);
+                    if (IsStarted) LogNet?.WriteException(LogHeaderText, "头子节接收失败！", ex);
                 }
             }
         }
 
 
         #endregion
-        
+
         #region Public Members
 
-        
+
         /// <summary>
         /// 接收到数据的时候就行触发
         /// </summary>
@@ -141,7 +142,7 @@ namespace HslCommunication.ModBus
         /// <param name="data">是否通断</param>
         /// <returns><c>True</c>或是<c>False</c></returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        public void WriteCoil(ushort address,bool data)
+        public void WriteCoil(ushort address, bool data)
         {
             hybirdLockCoil.Enter();
             Coils[address] = data;
@@ -182,7 +183,7 @@ namespace HslCommunication.ModBus
         /// <param name="length">数据长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public byte[] ReadRegister(ushort address,ushort length)
+        public byte[] ReadRegister(ushort address, ushort length)
         {
             byte[] buffer = new byte[length * 2];
             hybirdLockRegister.Enter();
@@ -287,7 +288,7 @@ namespace HslCommunication.ModBus
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public int[] ReadIntRegister(ushort address,ushort length)
+        public int[] ReadIntRegister(ushort address, ushort length)
         {
             int[] result = new int[length];
             for (int i = 0; i < length; i++)
@@ -324,7 +325,7 @@ namespace HslCommunication.ModBus
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public uint[] ReadUIntRegister(ushort address,ushort length)
+        public uint[] ReadUIntRegister(ushort address, ushort length)
         {
             uint[] result = new uint[length];
             for (int i = 0; i < length; i++)
@@ -359,7 +360,7 @@ namespace HslCommunication.ModBus
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public float[] ReadFloatRegister(ushort address,ushort length)
+        public float[] ReadFloatRegister(ushort address, ushort length)
         {
             float[] result = new float[length];
             for (int i = 0; i < length; i++)
@@ -400,7 +401,7 @@ namespace HslCommunication.ModBus
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public long[] ReadLongRegister(ushort address,ushort length)
+        public long[] ReadLongRegister(ushort address, ushort length)
         {
             long[] result = new long[length];
             for (int i = 0; i < length; i++)
@@ -440,7 +441,7 @@ namespace HslCommunication.ModBus
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public ulong[] ReadULongRegister(ushort address,ushort length)
+        public ulong[] ReadULongRegister(ushort address, ushort length)
         {
             ulong[] result = new ulong[length];
             for (int i = 0; i < length; i++)
@@ -479,7 +480,7 @@ namespace HslCommunication.ModBus
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public double[] ReadDoubleRegister(ushort address,ushort length)
+        public double[] ReadDoubleRegister(ushort address, ushort length)
         {
             double[] result = new double[length];
             for (int i = 0; i < length; i++)
@@ -816,7 +817,7 @@ namespace HslCommunication.ModBus
                             // 头子节接收完成
                             int ContentLength = state.HeadByte[4] * 256 + state.HeadByte[5];
                             state.Content = new byte[ContentLength];
-                            
+
                             // 开始接收内容
                             state.WorkSocket.BeginReceive(state.Content, state.ContentReceivedLength, state.Content.Length - state.ContentReceivedLength,
                                 SocketFlags.None, new AsyncCallback(ContentReveiveCallBack), state);
@@ -826,7 +827,7 @@ namespace HslCommunication.ModBus
                             // 关闭连接，记录日志
                             state.WorkSocket?.Close();
                             state = null;
-                            if (IsStarted) LogNet?.WriteDebug("Received Bytes, but is was not modbus tcp");
+                            if (IsStarted) LogNet?.WriteDebug(LogHeaderText, "Received Bytes, but is was not modbus tcp protocols");
                         }
                     }
                 }
@@ -835,7 +836,7 @@ namespace HslCommunication.ModBus
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close();
                     state = null;
-                    if(IsStarted) LogNet?.WriteException("头子节接收失败！", ex);
+                    if (IsStarted) LogNet?.WriteException(LogHeaderText, "头子节接收失败！", ex);
                 }
             }
         }
@@ -870,7 +871,7 @@ namespace HslCommunication.ModBus
 
                         // 需要回发消息
                         byte[] copy = null;
-                        switch(data[7])
+                        switch (data[7])
                         {
                             case 0x01:
                                 {
@@ -882,8 +883,8 @@ namespace HslCommunication.ModBus
                                     byte[] buffer = BasicFramework.SoftBasic.BoolArrayToByte(read);
                                     copy = new byte[9 + buffer.Length];
                                     Array.Copy(data, 0, copy, 0, 8);
-                                    copy[4] = (byte)((copy.Length-6) / 256);
-                                    copy[5] = (byte)((copy.Length-6) % 256);
+                                    copy[4] = (byte)((copy.Length - 6) / 256);
+                                    copy[5] = (byte)((copy.Length - 6) % 256);
                                     copy[8] = (byte)buffer.Length;
                                     Array.Copy(buffer, 0, copy, 9, buffer.Length);
                                     break;
@@ -906,8 +907,8 @@ namespace HslCommunication.ModBus
                                     byte[] buffer = ReadRegister((ushort)address, (ushort)length);
                                     copy = new byte[9 + buffer.Length];
                                     Array.Copy(data, 0, copy, 0, 8);
-                                    copy[4] = (byte)((copy.Length-6) / 256);
-                                    copy[5] = (byte)((copy.Length-6) % 256);
+                                    copy[4] = (byte)((copy.Length - 6) / 256);
+                                    copy[5] = (byte)((copy.Length - 6) % 256);
                                     copy[8] = (byte)buffer.Length;
                                     Array.Copy(buffer, 0, copy, 9, buffer.Length);
                                     break;
@@ -944,7 +945,7 @@ namespace HslCommunication.ModBus
                             case 0x0F:
                                 {
                                     // 写多个线圈
-                                    int address =  data[8] * 256 + data[9];
+                                    int address = data[8] * 256 + data[9];
                                     int length = data[10] * 256 + data[11];
                                     byte[] buffer = new byte[data.Length - 13];
                                     Array.Copy(data, 13, buffer, 0, buffer.Length);
@@ -959,7 +960,7 @@ namespace HslCommunication.ModBus
                             case 0x10:
                                 {
                                     // 写多个寄存器
-                                    int address =  data[8] * 256 + data[9];
+                                    int address = data[8] * 256 + data[9];
                                     int length = data[10] * 256 + data[11];
                                     byte[] buffer = new byte[data.Length - 13];
                                     for (int i = 0; i < length; i++)
@@ -977,6 +978,7 @@ namespace HslCommunication.ModBus
                                 }
                             default:
                                 {
+                                    if (IsStarted) LogNet?.WriteWarn(LogHeaderText, "Unknown Function Code:" + data[7]);
                                     copy = new byte[12];
                                     Array.Copy(data, 0, copy, 0, 12);
                                     copy[4] = 0x00;
@@ -984,13 +986,13 @@ namespace HslCommunication.ModBus
                                     break;
                                 }
                         }
-                        
+
                         // 回发数据
                         state.WorkSocket.BeginSend(copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback(DataSendCallBack), state: state);
 
                         // 通知处理消息
-                        
-                        if(IsStarted) OnDataReceived?.Invoke(data);
+
+                        if (IsStarted) OnDataReceived?.Invoke(data);
                     }
                 }
                 catch (Exception ex)
@@ -998,7 +1000,7 @@ namespace HslCommunication.ModBus
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close();
                     state = null;
-                    if(IsStarted) LogNet?.WriteException("内容数据接收失败！", ex);
+                    if (IsStarted) LogNet?.WriteException(LogHeaderText, "内容数据接收失败！", ex);
                 }
             }
         }
@@ -1006,25 +1008,25 @@ namespace HslCommunication.ModBus
 
         private void DataSendCallBack(IAsyncResult ar)
         {
-            if(ar is ModBusState state)
+            if (ar is ModBusState state)
             {
                 try
                 {
                     state.WorkSocket.EndSend(ar);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     state.WorkSocket?.Close();
                     state = null;
-                    if(IsStarted) LogNet?.WriteException("内容数据回发失败！", ex);
+                    if (IsStarted) LogNet?.WriteException(LogHeaderText, "内容数据回发失败！", ex);
                 }
             }
         }
-        
+
         #endregion
 
         #region Private Feilds
-        
+
 
 
         #endregion

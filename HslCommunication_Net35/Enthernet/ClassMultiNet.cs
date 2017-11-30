@@ -23,6 +23,7 @@ namespace HslCommunication.Enthernet
         /// </summary>
         public NetComplexServer()
         {
+            LogHeaderText = "NetComplexServer";
             AsyncCoordinator = new HslAsyncCoordinator(new Action(CalculateOnlineClients));
         }
 
@@ -179,7 +180,7 @@ namespace HslCommunication.Enthernet
             // 是否保存上线信息
             if (IsSaveLogClientLineChange)
             {
-                LogNet?.WriteInfo("IP:" + state.IpAddress + " Name:" + state?.LoginAlias + " " + StringResources.NetClientOnline);
+                LogNet?.WriteInfo(LogHeaderText, "IP:" + state.IpAddress + " Name:" + state?.LoginAlias + " " + StringResources.NetClientOnline);
             }
             // 计算客户端在线情况
             AsyncCoordinator.StartOperaterInfomation();
@@ -202,7 +203,7 @@ namespace HslCommunication.Enthernet
             // 是否保存上线信息
             if (IsSaveLogClientLineChange)
             {
-                LogNet?.WriteInfo("IP:" + state.IpAddress + " Name:" + state?.LoginAlias + " " + str);
+                LogNet?.WriteInfo(LogHeaderText, "IP:" + state.IpAddress + " Name:" + state?.LoginAlias + " " + str);
             }
             // 计算客户端在线情况
             AsyncCoordinator.StartOperaterInfomation();
@@ -253,7 +254,7 @@ namespace HslCommunication.Enthernet
                 if (All_sockets_connect.Count > ConnectMax)
                 {
                     socket?.Close();
-                    LogNet?.WriteWarn(StringResources.NetClientFull);
+                    LogNet?.WriteWarn(LogHeaderText, StringResources.NetClientFull);
                     return;
                 }
 
@@ -307,7 +308,7 @@ namespace HslCommunication.Enthernet
                 {
                     //登录前已经出错
                     TcpStateClose(stateone);
-                    LogNet?.WriteException(StringResources.NetClientLoginFailed, ex);
+                    LogNet?.WriteException(LogHeaderText, StringResources.NetClientLoginFailed, ex);
                 }
             }
         }
@@ -451,14 +452,14 @@ namespace HslCommunication.Enthernet
             {
                 //接收到字节数据
                 AcceptByte?.Invoke(receive, customer, content);
-                LogNet?.WriteDebug("Protocol:" + protocol + " customer:" + customer + " name:" + receive.LoginAlias);
+                // LogNet?.WriteDebug(LogHeaderText, "Protocol:" + protocol + " customer:" + customer + " name:" + receive.LoginAlias);
             }
             else if (protocol == HslCommunicationCode.Hsl_Protocol_User_String)
             {
                 //接收到文本数据
                 string str = Encoding.Unicode.GetString(content);
                 AcceptString?.Invoke(receive, customer, str);
-                LogNet?.WriteDebug("Protocol:" + protocol + " customer:" + customer + " name:" + receive.LoginAlias);
+                // LogNet?.WriteDebug(LogHeaderText, "Protocol:" + protocol + " customer:" + customer + " name:" + receive.LoginAlias);
             }
         }
         
@@ -488,7 +489,7 @@ namespace HslCommunication.Enthernet
 
                         if ((DateTime.Now - All_sockets_connect[i].HeartTime).TotalSeconds > 1 * 8)//8次没有收到失去联系
                         {
-                            LogNet?.WriteWarn("心跳验证超时，强制下线：" + All_sockets_connect[i].IpAddress.ToString());
+                            LogNet?.WriteWarn(LogHeaderText, "心跳验证超时，强制下线：" + All_sockets_connect[i].IpAddress.ToString());
                             TcpStateDownLine(All_sockets_connect[i], false);
                             continue;
                         }
@@ -496,7 +497,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException("心跳线程异常：", ex);
+                    LogNet?.WriteException(LogHeaderText, "心跳线程异常：", ex);
                 }
 
 
@@ -516,6 +517,17 @@ namespace HslCommunication.Enthernet
     /// </summary>
     public sealed class NetComplexClient : NetShareBase
     {
+        #region Constructor
+        /// <summary>
+        /// 实例化一个对象
+        /// </summary>
+        public NetComplexClient()
+        {
+            LogHeaderText = "NetComplexClient";
+        }
+
+        #endregion
+
         #region 基本属性块
         /// <summary>
         /// 客户端的核心连接块
@@ -612,7 +624,7 @@ namespace HslCommunication.Enthernet
             AcceptByte = null;
             AcceptString = null;
             stateone.WorkSocket?.Close();
-            LogNet?.WriteDebug("Client Close.");
+            LogNet?.WriteDebug(LogHeaderText, "Client Close.");
         }
         /// <summary>
         /// 启动客户端引擎，连接服务器系统
@@ -623,7 +635,7 @@ namespace HslCommunication.Enthernet
             Thread thread_login = new Thread(new ThreadStart(ThreadLogin));
             thread_login.IsBackground = true;
             thread_login.Start();
-            LogNet?.WriteDebug("Client Start.");
+            LogNet?.WriteDebug(LogHeaderText, "Client Start.");
 
             if (thread_heart_check == null)
             {
@@ -659,7 +671,7 @@ namespace HslCommunication.Enthernet
 
 
             stateone.HeartTime = DateTime.Now;
-            LogNet?.WriteDebug("Begin Connect Server, Times: " + Connect_Failed_Count);
+            LogNet?.WriteDebug(LogHeaderText, "Begin Connect Server, Times: " + Connect_Failed_Count);
 
 
             OperateResult result = new OperateResult();
@@ -668,7 +680,7 @@ namespace HslCommunication.Enthernet
                 Connect_Failed_Count++;
                 Is_Client_Connecting = false;
                 LoginFailed?.Invoke(Connect_Failed_Count);
-                LogNet?.WriteDebug("Connected Failed, Times: " + Connect_Failed_Count);
+                LogNet?.WriteDebug(LogHeaderText, "Connected Failed, Times: " + Connect_Failed_Count);
                 // 连接失败，重新连接服务器
                 ReconnectServer();
                 return;
@@ -684,7 +696,7 @@ namespace HslCommunication.Enthernet
             {
                 Connect_Failed_Count++;
                 Is_Client_Connecting = false;
-                LogNet?.WriteDebug("Login Server Failed, Times: " + Connect_Failed_Count);
+                LogNet?.WriteDebug(LogHeaderText, "Login Server Failed, Times: " + Connect_Failed_Count);
                 LoginFailed?.Invoke(Connect_Failed_Count);
                 // 连接失败，重新连接服务器
                 ReconnectServer();
@@ -711,7 +723,7 @@ namespace HslCommunication.Enthernet
             Is_Client_Start = true;
             LoginSuccess?.Invoke();
 
-            LogNet?.WriteDebug("Login Server Success, Times: " + Connect_Failed_Count);
+            LogNet?.WriteDebug(LogHeaderText, "Login Server Success, Times: " + Connect_Failed_Count);
 
             Is_Client_Connecting = false;
 
@@ -731,7 +743,7 @@ namespace HslCommunication.Enthernet
             // 是否退出了系统，退出则不再重连
             if (IsQuie) return;
 
-            LogNet?.WriteDebug("Prepare ReConnect Server.");
+            LogNet?.WriteDebug(LogHeaderText, "Prepare ReConnect Server.");
 
             // 触发连接失败，重连系统前错误
             BeforReConnected?.Invoke();
@@ -765,7 +777,7 @@ namespace HslCommunication.Enthernet
                 // MessageAlerts?.Invoke("数据接收出错：" + ex.Message);
             }
 
-            LogNet?.WriteDebug("Socket Excepiton Occured.");
+            LogNet?.WriteDebug(LogHeaderText, "Socket Excepiton Occured.");
         }
 
         
@@ -859,7 +871,7 @@ namespace HslCommunication.Enthernet
                     double timeSpan = (DateTime.Now - stateone.HeartTime).TotalSeconds;
                     if (timeSpan > 1 * 8)//8次没有收到失去联系
                     {
-                        LogNet?.WriteDebug($"Heart Check Failed int {timeSpan} Seconds.");
+                        LogNet?.WriteDebug(LogHeaderText, $"Heart Check Failed int {timeSpan} Seconds.");
                         ReconnectServer();
                         Thread.Sleep(1000);
                     }

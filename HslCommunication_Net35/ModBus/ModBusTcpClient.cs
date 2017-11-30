@@ -82,6 +82,7 @@ namespace HslCommunication.ModBus
             serverEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(ipAddress), port);
             simpleHybird = new SimpleHybirdLock();
             this.station = station;
+            LogHeaderText = "ModBusTcpClient";
         }
 
 
@@ -97,6 +98,7 @@ namespace HslCommunication.ModBus
 
         #region Private Method
 
+        // 获取消息id，每条指令都递增一
         private ushort GetMessageId()
         {
             ushort result = 0;
@@ -240,6 +242,7 @@ namespace HslCommunication.ModBus
             }
             catch(Exception ex)
             {
+                LogNet?.WriteException(LogHeaderText, ex);
                 socket?.Close();
                 response = null;
                 result.Message = ex.Message;
