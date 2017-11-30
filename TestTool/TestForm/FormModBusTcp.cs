@@ -45,7 +45,7 @@ namespace TestTool.TestForm
         private void TcpServer_OnDataReceived(byte[] object1)
         {
             m_ReceivedTimes++;
-            BeginInvoke(new Action<byte[]>(ShowModbusData), object1);
+            //BeginInvoke(new Action<byte[]>(ShowModbusData), object1);
         }
 
 
@@ -72,7 +72,7 @@ namespace TestTool.TestForm
         {
             comboBox1.DataSource = HslCommunication.BasicFramework.SoftBasic.GetEnumValues<HslCommunication.ModBus.ModBusFunctionMask>();
 
-            busTcpClient.ConnectServer();
+            // busTcpClient.ConnectServer();
         }
         
         private void FormModBusTcp_FormClosing(object sender, FormClosingEventArgs e)
@@ -394,6 +394,43 @@ namespace TestTool.TestForm
             busTcpClient.WriteRegister(100, 123.456d);// 写入寄存器100-103为一个双精度的数据
             busTcpClient.WriteRegister(100, "K123456789");
             
+        }
+
+        private void userButton8_Click_1(object sender, EventArgs e)
+        {
+            // 写入数据
+            tcpServer.WriteRegister(100, (short)12345);
+        }
+
+        private void userButton7_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(tcpServer.ReadShortRegister(100).ToString());
+        }
+
+
+        private void userButton40_Click(object sender, EventArgs e)
+        {
+            bool Coil100 = tcpServer.ReadCoil(100);                  // 读线圈100的值
+            bool[] Coil100_109 = tcpServer.ReadCoil(100, 10);        // 读线圈数组
+            short Short100 = tcpServer.ReadShortRegister(100);       // 读取寄存器值
+            ushort UShort100 = tcpServer.ReadUShortRegister(100);    // 读取寄存器ushort值
+            int Int100 = tcpServer.ReadIntRegister(100);             // 读取寄存器int值
+            uint UInt100 = tcpServer.ReadUIntRegister(100);          // 读取寄存器uint值
+            float Float100 = tcpServer.ReadFloatRegister(100);       // 读取寄存器Float值
+            long Long100 = tcpServer.ReadLongRegister(100);          // 读取寄存器long值
+            ulong ULong100 = tcpServer.ReadULongRegister(100);       // 读取寄存器ulong值
+            double Double100 = tcpServer.ReadDoubleRegister(100);    // 读取寄存器double值
+
+            tcpServer.WriteCoil(100, true);              // 写线圈的通断
+            tcpServer.WriteRegister(100, (short)5);      // 写入short值
+            tcpServer.WriteRegister(100, (ushort)45678); // 写入ushort值
+            tcpServer.WriteRegister(100, 12345667);      // 写入int值
+            tcpServer.WriteRegister(100, (uint)12312312);// 写入uint值
+            tcpServer.WriteRegister(100, 123.456f);      // 写入float值
+            tcpServer.WriteRegister(100, 1231231231233L);// 写入long值
+            tcpServer.WriteRegister(100, 1212312313UL);  // 写入ulong值
+            tcpServer.WriteRegister(100, 123.456d);      // 写入double值
+
         }
     }
 }

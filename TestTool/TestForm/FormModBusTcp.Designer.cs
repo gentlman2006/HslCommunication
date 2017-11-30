@@ -45,6 +45,8 @@
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.userButton1 = new HslCommunication.Controls.UserButton();
             this.userButton6 = new HslCommunication.Controls.UserButton();
+            this.userButton7 = new HslCommunication.Controls.UserButton();
+            this.userButton8 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
@@ -236,11 +238,41 @@
             this.userButton6.UIText = "连续写四个";
             this.userButton6.Click += new System.EventHandler(this.userButton6_Click);
             // 
+            // userButton7
+            // 
+            this.userButton7.BackColor = System.Drawing.Color.Transparent;
+            this.userButton7.CustomerInformation = "";
+            this.userButton7.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton7.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton7.Location = new System.Drawing.Point(308, 13);
+            this.userButton7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton7.Name = "userButton7";
+            this.userButton7.Size = new System.Drawing.Size(129, 37);
+            this.userButton7.TabIndex = 17;
+            this.userButton7.UIText = "读取数据";
+            this.userButton7.Click += new System.EventHandler(this.userButton7_Click);
+            // 
+            // userButton8
+            // 
+            this.userButton8.BackColor = System.Drawing.Color.Transparent;
+            this.userButton8.CustomerInformation = "";
+            this.userButton8.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton8.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton8.Location = new System.Drawing.Point(460, 13);
+            this.userButton8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton8.Name = "userButton8";
+            this.userButton8.Size = new System.Drawing.Size(129, 37);
+            this.userButton8.TabIndex = 18;
+            this.userButton8.UIText = "写入数据";
+            this.userButton8.Click += new System.EventHandler(this.userButton8_Click_1);
+            // 
             // FormModBusTcp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1027, 619);
+            this.Controls.Add(this.userButton8);
+            this.Controls.Add(this.userButton7);
             this.Controls.Add(this.userButton6);
             this.Controls.Add(this.userButton5);
             this.Controls.Add(this.textBox6);
@@ -286,5 +318,7 @@
         private System.Windows.Forms.TextBox textBox6;
         private HslCommunication.Controls.UserButton userButton5;
         private HslCommunication.Controls.UserButton userButton6;
+        private HslCommunication.Controls.UserButton userButton7;
+        private HslCommunication.Controls.UserButton userButton8;
     }
 }

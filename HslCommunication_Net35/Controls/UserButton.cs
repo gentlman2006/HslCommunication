@@ -213,6 +213,10 @@ namespace HslCommunication.Controls
         }
 
         #endregion
+
+
+
+
         /// <summary>
         /// 触发一次点击的事件
         /// </summary>
@@ -220,6 +224,8 @@ namespace HslCommunication.Controls
         {
             OnClick(new EventArgs());
         }
+
+
         /// <summary>
         /// 重绘数据区
         /// </summary>
@@ -295,5 +301,20 @@ namespace HslCommunication.Controls
                 OnClick(new EventArgs());
             }
         }
+
+
+        /// <summary>
+        /// 点击按钮的触发事件
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnClick(EventArgs e)
+        {
+            if (Enabled)
+            {
+                base.OnClick(e);
+            }
+        }
+
+
     }
 }

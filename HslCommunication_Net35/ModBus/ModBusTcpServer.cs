@@ -176,6 +176,26 @@ namespace HslCommunication.ModBus
         #region Register Read
 
         /// <summary>
+        /// 读取自定义的寄存器的值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数据长度</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public byte[] ReadRegister(ushort address,ushort length)
+        {
+            byte[] buffer = new byte[length * 2];
+            hybirdLockRegister.Enter();
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                buffer[i] = Register[address * 2 + i];
+            }
+            hybirdLockRegister.Leave();
+            return buffer;
+        }
+
+
+        /// <summary>
         /// 读取一个寄存器的值
         /// </summary>
         /// <param name="address">起始地址</param>
@@ -185,10 +205,27 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[2];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address + 1];
-            buffer[1] = Register[address];
+            buffer[0] = Register[address * 2 + 1];
+            buffer[1] = Register[address * 2 + 0];
             hybirdLockRegister.Leave();
             return BitConverter.ToInt16(buffer, 0);
+        }
+
+        /// <summary>
+        /// 批量读取寄存器的值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">读取的short长度</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public short[] ReadShortRegister(ushort address, ushort length)
+        {
+            short[] result = new short[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = ReadShortRegister((ushort)(address + i));
+            }
+            return result;
         }
 
         /// <summary>
@@ -201,10 +238,27 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[2];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address + 1];
-            buffer[1] = Register[address];
+            buffer[0] = Register[address * 2 + 1];
+            buffer[1] = Register[address * 2 + 0];
             hybirdLockRegister.Leave();
             return BitConverter.ToUInt16(buffer, 0);
+        }
+
+        /// <summary>
+        /// 批量读取寄存器的值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">读取长度</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public ushort[] ReadUShortRegister(ushort address, ushort length)
+        {
+            ushort[] result = new ushort[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = ReadUShortRegister((ushort)(address + i));
+            }
+            return result;
         }
 
         /// <summary>
@@ -217,13 +271,32 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[4];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address + 3];
-            buffer[1] = Register[address + 2];
-            buffer[2] = Register[address + 1];
-            buffer[3] = Register[address + 0];
+            buffer[0] = Register[address * 2 + 3];
+            buffer[1] = Register[address * 2 + 2];
+            buffer[2] = Register[address * 2 + 1];
+            buffer[3] = Register[address * 2 + 0];
             hybirdLockRegister.Leave();
             return BitConverter.ToInt32(buffer, 0);
         }
+
+
+        /// <summary>
+        /// 批量读取寄存器组成的int值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public int[] ReadIntRegister(ushort address,ushort length)
+        {
+            int[] result = new int[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = ReadIntRegister((ushort)(address + 2 * i));
+            }
+            return result;
+        }
+
 
         /// <summary>
         /// 读取两个寄存器组成的uint值
@@ -235,12 +308,30 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[4];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address + 3];
-            buffer[1] = Register[address + 2];
-            buffer[2] = Register[address + 1];
-            buffer[3] = Register[address + 0];
+            buffer[0] = Register[address * 2 + 3];
+            buffer[1] = Register[address * 2 + 2];
+            buffer[2] = Register[address * 2 + 1];
+            buffer[3] = Register[address * 2 + 0];
             hybirdLockRegister.Leave();
             return BitConverter.ToUInt32(buffer, 0);
+        }
+
+
+        /// <summary>
+        /// 批量读取寄存器组成的uint值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public uint[] ReadUIntRegister(ushort address,ushort length)
+        {
+            uint[] result = new uint[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = ReadUIntRegister((ushort)(address + 2 * i));
+            }
+            return result;
         }
 
         /// <summary>
@@ -253,13 +344,31 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[4];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address + 3];
-            buffer[1] = Register[address + 2];
-            buffer[2] = Register[address + 1];
-            buffer[3] = Register[address + 0];
+            buffer[0] = Register[address * 2 + 3];
+            buffer[1] = Register[address * 2 + 2];
+            buffer[2] = Register[address * 2 + 1];
+            buffer[3] = Register[address * 2 + 0];
             hybirdLockRegister.Leave();
             return BitConverter.ToSingle(buffer, 0);
         }
+
+        /// <summary>
+        /// 批量读取寄存器组成的float值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public float[] ReadFloatRegister(ushort address,ushort length)
+        {
+            float[] result = new float[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = ReadFloatRegister((ushort)(address + 2 * i));
+            }
+            return result;
+        }
+
 
         /// <summary>
         /// 读取四个寄存器组成的long值
@@ -271,16 +380,34 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[8];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address + 7];
-            buffer[1] = Register[address + 6];
-            buffer[2] = Register[address + 5];
-            buffer[3] = Register[address + 4];
-            buffer[4] = Register[address + 3];
-            buffer[5] = Register[address + 2];
-            buffer[6] = Register[address + 1];
-            buffer[7] = Register[address + 0];
+            buffer[0] = Register[address * 2 + 7];
+            buffer[1] = Register[address * 2 + 6];
+            buffer[2] = Register[address * 2 + 5];
+            buffer[3] = Register[address * 2 + 4];
+            buffer[4] = Register[address * 2 + 3];
+            buffer[5] = Register[address * 2 + 2];
+            buffer[6] = Register[address * 2 + 1];
+            buffer[7] = Register[address * 2 + 0];
             hybirdLockRegister.Leave();
             return BitConverter.ToInt64(buffer, 0);
+        }
+
+
+        /// <summary>
+        /// 批量读取寄存器组成的long值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public long[] ReadLongRegister(ushort address,ushort length)
+        {
+            long[] result = new long[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = ReadLongRegister((ushort)(address + 4 * i));
+            }
+            return result;
         }
 
         /// <summary>
@@ -293,16 +420,34 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[8];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address + 7];
-            buffer[1] = Register[address + 6];
-            buffer[2] = Register[address + 5];
-            buffer[3] = Register[address + 4];
-            buffer[4] = Register[address + 3];
-            buffer[5] = Register[address + 2];
-            buffer[6] = Register[address + 1];
-            buffer[7] = Register[address + 0];
+            buffer[0] = Register[address * 2 + 7];
+            buffer[1] = Register[address * 2 + 6];
+            buffer[2] = Register[address * 2 + 5];
+            buffer[3] = Register[address * 2 + 4];
+            buffer[4] = Register[address * 2 + 3];
+            buffer[5] = Register[address * 2 + 2];
+            buffer[6] = Register[address * 2 + 1];
+            buffer[7] = Register[address * 2 + 0];
             hybirdLockRegister.Leave();
             return BitConverter.ToUInt64(buffer, 0);
+        }
+
+
+        /// <summary>
+        /// 批量读取寄存器组成的ulong值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public ulong[] ReadULongRegister(ushort address,ushort length)
+        {
+            ulong[] result = new ulong[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = ReadULongRegister((ushort)(address + 4 * i));
+            }
+            return result;
         }
 
         /// <summary>
@@ -315,18 +460,34 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[8];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address + 7];
-            buffer[1] = Register[address + 6];
-            buffer[2] = Register[address + 5];
-            buffer[3] = Register[address + 4];
-            buffer[4] = Register[address + 3];
-            buffer[5] = Register[address + 2];
-            buffer[6] = Register[address + 1];
-            buffer[7] = Register[address + 0];
+            buffer[0] = Register[address * 2 + 7];
+            buffer[1] = Register[address * 2 + 6];
+            buffer[2] = Register[address * 2 + 5];
+            buffer[3] = Register[address * 2 + 4];
+            buffer[4] = Register[address * 2 + 3];
+            buffer[5] = Register[address * 2 + 2];
+            buffer[6] = Register[address * 2 + 1];
+            buffer[7] = Register[address * 2 + 0];
             hybirdLockRegister.Leave();
             return BitConverter.ToDouble(buffer, 0);
         }
 
+        /// <summary>
+        /// 批量读取寄存器组成的double值
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <returns></returns>
+        public double[] ReadDoubleRegister(ushort address,ushort length)
+        {
+            double[] result = new double[length];
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = ReadDoubleRegister((ushort)(address + 4 * i));
+            }
+            return result;
+        }
 
         /// <summary>
         /// 读取ASCII字符串，长度为寄存器数量，最终的字符串长度为这个值的2倍
@@ -339,7 +500,7 @@ namespace HslCommunication.ModBus
         {
             string str = string.Empty;
             hybirdLockRegister.Enter();
-            str = Encoding.ASCII.GetString(Register, address, length * 2);
+            str = Encoding.ASCII.GetString(Register, address * 2, length * 2);
             hybirdLockRegister.Leave();
             return str;
         }
@@ -352,11 +513,279 @@ namespace HslCommunication.ModBus
 
         #region Register Write
 
+        /// <summary>
+        /// 写入寄存器数据，指定字节数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="high">高位数据</param>
+        /// <param name="low">地位数据</param>
+        public void WriteRegister(ushort address, byte high, byte low)
+        {
+            hybirdLockRegister.Enter();
+            Register[address * 2 + 0] = high;
+            Register[address * 2 + 1] = low;
+            hybirdLockRegister.Leave();
+        }
 
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
         public void WriteRegister(ushort address, short data)
         {
-
+            byte[] buffer = BitConverter.GetBytes(data);
+            hybirdLockRegister.Enter();
+            Register[address * 2 + 1] = buffer[0];
+            Register[address * 2 + 0] = buffer[1];
+            hybirdLockRegister.Leave();
         }
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, short[] data)
+        {
+            if (data == null) return;
+            for (ushort i = 0; i < data.Length; i++)
+            {
+                WriteRegister((ushort)(address + i), data[i]);
+            }
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, ushort data)
+        {
+            byte[] buffer = BitConverter.GetBytes(data);
+            hybirdLockRegister.Enter();
+            Register[address * 2 + 1] = buffer[0];
+            Register[address * 2 + 0] = buffer[1];
+            hybirdLockRegister.Leave();
+        }
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, ushort[] data)
+        {
+            if (data == null) return;
+            for (ushort i = 0; i < data.Length; i++)
+            {
+                WriteRegister((ushort)(address + i), data[i]);
+            }
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, int data)
+        {
+            byte[] buffer = BitConverter.GetBytes(data);
+            hybirdLockRegister.Enter();
+            Register[address * 2 + 3] = buffer[0];
+            Register[address * 2 + 2] = buffer[1];
+            Register[address * 2 + 1] = buffer[2];
+            Register[address * 2 + 0] = buffer[3];
+            hybirdLockRegister.Leave();
+        }
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, int[] data)
+        {
+            if (data == null) return;
+            for (ushort i = 0; i < data.Length; i++)
+            {
+                WriteRegister((ushort)(address + i * 2), data[i]);
+            }
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, uint data)
+        {
+            byte[] buffer = BitConverter.GetBytes(data);
+            hybirdLockRegister.Enter();
+            Register[address * 2 + 3] = buffer[0];
+            Register[address * 2 + 2] = buffer[1];
+            Register[address * 2 + 1] = buffer[2];
+            Register[address * 2 + 0] = buffer[3];
+            hybirdLockRegister.Leave();
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, uint[] data)
+        {
+            if (data == null) return;
+            for (ushort i = 0; i < data.Length; i++)
+            {
+                WriteRegister((ushort)(address + i * 2), data[i]);
+            }
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, float data)
+        {
+            byte[] buffer = BitConverter.GetBytes(data);
+            hybirdLockRegister.Enter();
+            Register[address * 2 + 3] = buffer[0];
+            Register[address * 2 + 2] = buffer[1];
+            Register[address * 2 + 1] = buffer[2];
+            Register[address * 2 + 0] = buffer[3];
+            hybirdLockRegister.Leave();
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, float[] data)
+        {
+            if (data == null) return;
+            for (ushort i = 0; i < data.Length; i++)
+            {
+                WriteRegister((ushort)(address + i * 2), data[i]);
+            }
+        }
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, long data)
+        {
+            byte[] buffer = BitConverter.GetBytes(data);
+            hybirdLockRegister.Enter();
+            Register[address * 2 + 7] = buffer[0];
+            Register[address * 2 + 6] = buffer[1];
+            Register[address * 2 + 5] = buffer[2];
+            Register[address * 2 + 4] = buffer[3];
+            Register[address * 2 + 3] = buffer[4];
+            Register[address * 2 + 2] = buffer[5];
+            Register[address * 2 + 1] = buffer[6];
+            Register[address * 2 + 0] = buffer[7];
+            hybirdLockRegister.Leave();
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, long[] data)
+        {
+            if (data == null) return;
+            for (ushort i = 0; i < data.Length; i++)
+            {
+                WriteRegister((ushort)(address + i * 4), data[i]);
+            }
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, ulong data)
+        {
+            byte[] buffer = BitConverter.GetBytes(data);
+            hybirdLockRegister.Enter();
+            Register[address * 2 + 7] = buffer[0];
+            Register[address * 2 + 6] = buffer[1];
+            Register[address * 2 + 5] = buffer[2];
+            Register[address * 2 + 4] = buffer[3];
+            Register[address * 2 + 3] = buffer[4];
+            Register[address * 2 + 2] = buffer[5];
+            Register[address * 2 + 1] = buffer[6];
+            Register[address * 2 + 0] = buffer[7];
+            hybirdLockRegister.Leave();
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, ulong[] data)
+        {
+            if (data == null) return;
+            for (ushort i = 0; i < data.Length; i++)
+            {
+                WriteRegister((ushort)(address + i * 4), data[i]);
+            }
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, double data)
+        {
+            byte[] buffer = BitConverter.GetBytes(data);
+            hybirdLockRegister.Enter();
+            Register[address * 2 + 7] = buffer[0];
+            Register[address * 2 + 6] = buffer[1];
+            Register[address * 2 + 5] = buffer[2];
+            Register[address * 2 + 4] = buffer[3];
+            Register[address * 2 + 3] = buffer[4];
+            Register[address * 2 + 2] = buffer[5];
+            Register[address * 2 + 1] = buffer[6];
+            Register[address * 2 + 0] = buffer[7];
+            hybirdLockRegister.Leave();
+        }
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">数据值</param>
+        public void WriteRegister(ushort address, double[] data)
+        {
+            if (data == null) return;
+            for (ushort i = 0; i < data.Length; i++)
+            {
+                WriteRegister((ushort)(address + i * 4), data[i]);
+            }
+        }
+
 
         #endregion
 
@@ -441,26 +870,124 @@ namespace HslCommunication.ModBus
 
                         // 需要回发消息
                         byte[] copy = null;
-                        if (data[7] < 0x05)
+                        switch(data[7])
                         {
-                            // 读取数据的情况，返回的数据长度为0
-                            copy = new byte[9];
-                            Array.Copy(data, 0, copy, 0, 8);
-                            copy[4] = 0x00;
-                            copy[5] = 0x03;
+                            case 0x01:
+                                {
+                                    // 线圈读取
+                                    int address = data[8] * 256 + data[9];
+                                    int length = data[10] * 256 + data[11];
+                                    if (length > 2048) length = 2048;         // 线圈读取应该小于2048个
+                                    bool[] read = ReadCoil((ushort)address, (ushort)length);
+                                    byte[] buffer = BasicFramework.SoftBasic.BoolArrayToByte(read);
+                                    copy = new byte[9 + buffer.Length];
+                                    Array.Copy(data, 0, copy, 0, 8);
+                                    copy[4] = (byte)((copy.Length-6) / 256);
+                                    copy[5] = (byte)((copy.Length-6) % 256);
+                                    copy[8] = (byte)buffer.Length;
+                                    Array.Copy(buffer, 0, copy, 9, buffer.Length);
+                                    break;
+                                }
+                            case 0x02:
+                                {
+                                    // 离散值读取，本服务器无效
+                                    copy = new byte[9];
+                                    Array.Copy(data, 0, copy, 0, 8);
+                                    copy[4] = 0x00;
+                                    copy[5] = 0x03;
+                                    break;
+                                }
+                            case 0x03:
+                                {
+                                    // 寄存器读取
+                                    int address = data[8] * 256 + data[9];
+                                    int length = data[10] * 256 + data[11];
+                                    if (length > 127) length = 127;          // 寄存器最大读取范围为127个
+                                    byte[] buffer = ReadRegister((ushort)address, (ushort)length);
+                                    copy = new byte[9 + buffer.Length];
+                                    Array.Copy(data, 0, copy, 0, 8);
+                                    copy[4] = (byte)((copy.Length-6) / 256);
+                                    copy[5] = (byte)((copy.Length-6) % 256);
+                                    copy[8] = (byte)buffer.Length;
+                                    Array.Copy(buffer, 0, copy, 9, buffer.Length);
+                                    break;
+                                }
+                            case 0x05:
+                                {
+                                    // 写单个线圈
+                                    int address = data[8] * 256 + data[9];
+                                    if (data[10] == 0xFF && data[11] == 0x00)
+                                    {
+                                        WriteCoil((ushort)address, true);
+                                    }
+                                    else if (data[10] == 0x00 && data[11] == 0x00)
+                                    {
+                                        WriteCoil((ushort)address, false);
+                                    }
+                                    copy = new byte[12];
+                                    Array.Copy(data, 0, copy, 0, 12);
+                                    copy[4] = 0x00;
+                                    copy[5] = 0x06;
+                                    break;
+                                }
+                            case 0x06:
+                                {
+                                    // 写单个寄存器
+                                    int address = data[8] * 256 + data[9];
+                                    WriteRegister((ushort)address, data[10], data[11]);
+                                    copy = new byte[12];
+                                    Array.Copy(data, 0, copy, 0, 12);
+                                    copy[4] = 0x00;
+                                    copy[5] = 0x06;
+                                    break;
+                                }
+                            case 0x0F:
+                                {
+                                    // 写多个线圈
+                                    int address =  data[8] * 256 + data[9];
+                                    int length = data[10] * 256 + data[11];
+                                    byte[] buffer = new byte[data.Length - 13];
+                                    Array.Copy(data, 13, buffer, 0, buffer.Length);
+                                    bool[] value = BasicFramework.SoftBasic.ByteToBoolArray(buffer, length);
+                                    WriteCoil((ushort)address, value);
+                                    copy = new byte[12];
+                                    Array.Copy(data, 0, copy, 0, 12);
+                                    copy[4] = 0x00;
+                                    copy[5] = 0x06;
+                                    break;
+                                }
+                            case 0x10:
+                                {
+                                    // 写多个寄存器
+                                    int address =  data[8] * 256 + data[9];
+                                    int length = data[10] * 256 + data[11];
+                                    byte[] buffer = new byte[data.Length - 13];
+                                    for (int i = 0; i < length; i++)
+                                    {
+                                        if ((2 * i + 14) < data.Length)
+                                        {
+                                            WriteRegister((ushort)(address + i), data[2 * i + 13], data[2 * i + 14]);
+                                        }
+                                    }
+                                    copy = new byte[12];
+                                    Array.Copy(data, 0, copy, 0, 12);
+                                    copy[4] = 0x00;
+                                    copy[5] = 0x06;
+                                    break;
+                                }
+                            default:
+                                {
+                                    copy = new byte[12];
+                                    Array.Copy(data, 0, copy, 0, 12);
+                                    copy[4] = 0x00;
+                                    copy[5] = 0x06;
+                                    break;
+                                }
                         }
-                        else
-                        {
-                            // 数据写入情况，返回写入指令，去掉数据值
-                            copy = new byte[12];
-                            Array.Copy(data, 0, copy, 0, 12);
-                            copy[4] = 0x00;
-                            copy[5] = 0x06;
-                        }
-
+                        
                         // 回发数据
                         state.WorkSocket.BeginSend(copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback(DataSendCallBack), state: state);
-                        
+
                         // 通知处理消息
                         
                         if(IsStarted) OnDataReceived?.Invoke(data);
@@ -471,7 +998,7 @@ namespace HslCommunication.ModBus
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close();
                     state = null;
-                    if(IsStarted) LogNet?.WriteException("头子节接收失败！", ex);
+                    if(IsStarted) LogNet?.WriteException("内容数据接收失败！", ex);
                 }
             }
         }
@@ -489,7 +1016,7 @@ namespace HslCommunication.ModBus
                 {
                     state.WorkSocket?.Close();
                     state = null;
-                    if(IsStarted) LogNet?.WriteException("头子节接收失败！", ex);
+                    if(IsStarted) LogNet?.WriteException("内容数据回发失败！", ex);
                 }
             }
         }

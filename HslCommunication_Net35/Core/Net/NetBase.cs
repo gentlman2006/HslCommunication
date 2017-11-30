@@ -2744,7 +2744,7 @@ namespace HslCommunication.Core
         /// <returns></returns>
         protected bool SendCommandAndReceiveResponse(byte[] send, out byte[] receive, OperateResult result)
         {
-            string str = SoftBasic.ByteToHexString(send, ' ');
+            // string str = SoftBasic.ByteToHexString(send, ' ');
 
             serverInterfaceLock.Enter();                        // 进入读取的锁
 
@@ -2765,9 +2765,11 @@ namespace HslCommunication.Core
             }
 
             // 进行10秒接收超时的机制
-            HslTimeOut hslTimeOut = new HslTimeOut();
-            hslTimeOut.WorkSocket = socket;
-            hslTimeOut.DelayTime = 10000;                       // 10秒内必须接收到数据
+            HslTimeOut hslTimeOut = new HslTimeOut
+            {
+                WorkSocket = socket,
+                DelayTime = 10000                       // 10秒内必须接收到数据
+            };
             ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckConnect), hslTimeOut);
 
             if (!ReceiveResponse(socket, out byte[] response, result))
