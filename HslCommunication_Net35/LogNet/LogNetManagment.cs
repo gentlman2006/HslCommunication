@@ -93,7 +93,7 @@ namespace HslCommunication.LogNet
             {
                 if (!string.IsNullOrEmpty(text))
                 {
-                    builder.Append("  ");
+                    builder.Append(" : ");
                 }
                 builder.Append("错误消息：");
                 builder.Append(ex.Message);
@@ -116,5 +116,5 @@ namespace HslCommunication.LogNet
             return builder.ToString();
         }
     }
-        
+
 }

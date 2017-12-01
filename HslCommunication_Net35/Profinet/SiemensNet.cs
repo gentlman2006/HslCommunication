@@ -349,9 +349,9 @@ namespace HslCommunication.Profinet
 
             switch (siemens)
             {
-                case SiemensPLCS.S1200: plcHead1[18] = 1; break;
+                case SiemensPLCS.S1200: plcHead1[18] = 0; break;
                 case SiemensPLCS.S300: plcHead1[18] = 2; break;
-                default: plcHead1[18] = 3; break;
+                default: plcHead1[18] = 0; break;
             }
         }
 
@@ -421,6 +421,9 @@ namespace HslCommunication.Profinet
             int readCount = count.Length;
 
             byte[] _PLCCommand = new byte[19 + readCount * 12];
+            
+            // ======================================================================================
+            // Header
             // 报文头
             _PLCCommand[0] = 0x03;
             _PLCCommand[1] = 0x00;
@@ -431,22 +434,29 @@ namespace HslCommunication.Profinet
             _PLCCommand[4] = 0x02;
             _PLCCommand[5] = 0xF0;
             _PLCCommand[6] = 0x80;
+            // 协议标识
             _PLCCommand[7] = 0x32;
             // 命令：发
             _PLCCommand[8] = 0x01;
-            // 标识序列号
+            // redundancy identification (reserved): 0x0000;
             _PLCCommand[9] = 0x00;
             _PLCCommand[10] = 0x00;
+            // protocol data unit reference; it’s increased by request event;
             _PLCCommand[11] = 0x00;
             _PLCCommand[12] = 0x01;
-            // 命令数据总长度
+            // 参数命令数据总长度
             _PLCCommand[13] = (byte)((_PLCCommand.Length - 17) / 256);
             _PLCCommand[14] = (byte)((_PLCCommand.Length - 17) % 256);
 
+            // 读取内部数据时为00，读取CPU型号为Data数据长度
             _PLCCommand[15] = 0x00;
             _PLCCommand[16] = 0x00;
 
-            // 命令起始符
+
+            // ======================================================================================
+            // Parameter
+
+            // 读写指令，04读，05写
             _PLCCommand[17] = 0x04;
             // 读取数据块个数
             _PLCCommand[18] = (byte)readCount;
@@ -462,10 +472,13 @@ namespace HslCommunication.Profinet
                 }
                 
                 //===========================================================================================
-                // 读取地址的前缀
+                // 指定有效值类型
                 _PLCCommand[19 + ii * 12] = 0x12;
+                // 接下来本次地址访问长度
                 _PLCCommand[20 + ii * 12] = 0x0A;
+                // 语法标记，ANY
                 _PLCCommand[21 + ii * 12] = 0x10;
+                // 按字为单位
                 _PLCCommand[22 + ii * 12] = 0x02;
                 // 访问数据的个数
                 _PLCCommand[23 + ii * 12] = (byte)(count[ii] / 256);
@@ -594,7 +607,7 @@ namespace HslCommunication.Profinet
             // 写入长度+4
             _PLCCommand[15] = (byte)((4 + data.Length) / 256);
             _PLCCommand[16] = (byte)((4 + data.Length) % 256);
-            // 命令起始符
+            // 读写指令
             _PLCCommand[17] = 0x05;
             // 写入数据块个数
             _PLCCommand[18] = 0x01;
@@ -819,6 +832,16 @@ namespace HslCommunication.Profinet
                     }
 
                     startAddress = CalculateAddressStarted(address.Substring(address.IndexOf('.') + 1));
+                }
+                else if(address[0] == 'T')
+                {
+                    type = 0x1D;
+                    startAddress = CalculateAddressStarted(address.Substring(1));
+                }
+                else if(address[0] == 'C')
+                {
+                    type = 0x1C;
+                    startAddress = CalculateAddressStarted(address.Substring(1));
                 }
                 else
                 {
@@ -1641,18 +1664,17 @@ namespace HslCommunication.Profinet
 
         #region Private Members
 
-
         private byte[] plcHead1 = new byte[22]
         {
                 0x03,  // 报文头
                 0x00,
                 0x00,  // 数据长度
                 0x16,
-                0x11,
-                0xE0,
-                0x00,
-                0x00,
-                0x00,
+                0x11,  // 连接类型0x11:tcp  0x12 ISO-on-TCP
+                0xE0,  // 主动建立连接
+                0x00,  // 本地接口ID
+                0x00,  // 主动连接时为0
+                0x00,  // 该参数未使用
                 0x01,
                 0x00,
                 0xC1,
@@ -1667,6 +1689,7 @@ namespace HslCommunication.Profinet
                 0x01,
                 0x0A
         };
+
         private byte[] plcHead2 = new byte[25]
         {
                 0x03,
@@ -1686,7 +1709,7 @@ namespace HslCommunication.Profinet
                 0x08,
                 0x00,
                 0x00,
-                0xF0,
+                0xF0,  // 设置通讯
                 0x00,
                 0x00,
                 0x01,
@@ -1695,7 +1718,6 @@ namespace HslCommunication.Profinet
                 0x03,
                 0xC0
         };
-        
         private SiemensPLCS CurrentPlc = SiemensPLCS.S1200;
         
         #endregion
