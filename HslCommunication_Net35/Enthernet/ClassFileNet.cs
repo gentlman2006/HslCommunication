@@ -28,7 +28,7 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 文件传输客户端基类
     /// </summary>
-    public class FileClientBase : NetShareBase
+    public abstract class FileClientBase : NetShareBase
     {
 
         #region Private Member
@@ -256,7 +256,7 @@ namespace HslCommunication.Enthernet
             else
             {
                 socket?.Close();
-                LogNet?.WriteError("Not supported data type!");
+                LogNet?.WriteError(LogHeaderText,"Not supported data type!");
                 return result;
             }
 
@@ -342,7 +342,7 @@ namespace HslCommunication.Enthernet
             else
             {
                 socket?.Close();
-                LogNet?.WriteError("source if not corrected!");
+                LogNet?.WriteError(LogHeaderText,"source if not corrected!");
                 return result;
             }
 
@@ -816,12 +816,12 @@ namespace HslCommunication.Enthernet
                     // 发送文件数据
                     if (!SendFileAndCheckReceive(socket, fullFileName, fileName, "", "", result, null))
                     {
-                        LogNet?.WriteError($"{StringResources.FileDownloadFailed}:{relativeName} ip:{IpAddress}");
+                        LogNet?.WriteError(LogHeaderText, $"{StringResources.FileDownloadFailed}:{relativeName} ip:{IpAddress}");
                         return;
                     }
                     else
                     {
-                        LogNet?.WriteInfo(StringResources.FileDownloadSuccess + ":" + relativeName);
+                        LogNet?.WriteInfo(LogHeaderText, StringResources.FileDownloadSuccess + ":" + relativeName);
                     }
                     socket?.Close();
                 }
@@ -844,7 +844,7 @@ namespace HslCommunication.Enthernet
                     }
                     catch (Exception ex)
                     {
-                        LogNet?.WriteException("创建文件夹失败：" + fullFileName, ex);
+                        LogNet?.WriteException(LogHeaderText,"创建文件夹失败：" + fullFileName, ex);
                         socket?.Close();
                         return;
                     }
@@ -861,11 +861,11 @@ namespace HslCommunication.Enthernet
                         ))
                     {
                         socket?.Close();
-                        LogNet?.WriteInfo(StringResources.FileUploadSuccess + ":" + relativeName);
+                        LogNet?.WriteInfo(LogHeaderText,StringResources.FileUploadSuccess + ":" + relativeName);
                     }
                     else
                     {
-                        LogNet?.WriteInfo(StringResources.FileUploadFailed + ":" + relativeName);
+                        LogNet?.WriteInfo(LogHeaderText,StringResources.FileUploadFailed + ":" + relativeName);
                     }
                 }
                 else if (customer == HslCommunicationCode.Hsl_Protocol_File_Delete)
@@ -887,7 +887,7 @@ namespace HslCommunication.Enthernet
                         socket?.Close();
                     }
 
-                    if (deleteResult) LogNet?.WriteInfo(StringResources.FileDeleteSuccess + ":" + fullFileName);
+                    if (deleteResult) LogNet?.WriteInfo(LogHeaderText,StringResources.FileDeleteSuccess + ":" + fullFileName);
                 }
                 else if (customer == HslCommunicationCode.Hsl_Protocol_File_Directory_Files)
                 {
@@ -1223,7 +1223,7 @@ namespace HslCommunication.Enthernet
                 {
                     if(DeleteFileByName(fileUltimatePath))
                     {
-                        LogNet?.WriteInfo("文件删除成功:" + fileUltimatePath);
+                        LogNet?.WriteInfo(LogHeaderText, "文件删除成功:" + fileUltimatePath);
                     }
                 });
             }
@@ -1282,12 +1282,12 @@ namespace HslCommunication.Enthernet
                         null))
                     {
                         fileMarkId.LeaveReadOperator();
-                        LogNet?.WriteError($"{StringResources.FileDownloadFailed}:{relativeName} ip:{IpAddress}");
+                        LogNet?.WriteError(LogHeaderText,$"{StringResources.FileDownloadFailed}:{relativeName} ip:{IpAddress}");
                         return;
                     }
                     else
                     {
-                        LogNet?.WriteInfo(StringResources.FileDownloadSuccess + ":" + relativeName);
+                        LogNet?.WriteInfo(LogHeaderText,StringResources.FileDownloadSuccess + ":" + relativeName);
                     }
                     fileMarkId.LeaveReadOperator();
                     // 关闭连接
@@ -1309,7 +1309,7 @@ namespace HslCommunication.Enthernet
                     }
                     catch (Exception ex)
                     {
-                        LogNet?.WriteException("创建文件夹失败：" + fullFileName, ex);
+                        LogNet?.WriteException(LogHeaderText,"创建文件夹失败：" + fullFileName, ex);
                         socket?.Close();
                         return;
                     }
@@ -1322,11 +1322,11 @@ namespace HslCommunication.Enthernet
                         ))
                     {
                         socket?.Close();
-                        LogNet?.WriteInfo(StringResources.FileUploadSuccess + ":" + relativeName);
+                        LogNet?.WriteInfo(LogHeaderText,StringResources.FileUploadSuccess + ":" + relativeName);
                     }
                     else
                     {
-                        LogNet?.WriteInfo(StringResources.FileUploadFailed + ":" + relativeName);
+                        LogNet?.WriteInfo(LogHeaderText,StringResources.FileUploadFailed + ":" + relativeName);
                     }
                 }
                 else if (customer == HslCommunicationCode.Hsl_Protocol_File_Delete)
@@ -1352,7 +1352,7 @@ namespace HslCommunication.Enthernet
                         socket?.Close();
                     }
 
-                    LogNet?.WriteInfo(StringResources.FileDeleteSuccess + ":" + relativeName);
+                    LogNet?.WriteInfo(LogHeaderText,StringResources.FileDeleteSuccess + ":" + relativeName);
                 }
                 else if (customer == HslCommunicationCode.Hsl_Protocol_File_Directory_Files)
                 {

@@ -12,6 +12,19 @@ namespace HslCommunication.BasicFramework
     /// <typeparam name="T">类型</typeparam>
     public class SoftMsgQueue<T> : SoftFileSaveBase
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个对象
+        /// </summary>
+        public SoftMsgQueue()
+        {
+            LogHeaderText = "SoftMsgQueue<T>";
+        }
+
+        #endregion
+
+
         /// <summary>
         /// 所有临时存储的数据
         /// </summary>

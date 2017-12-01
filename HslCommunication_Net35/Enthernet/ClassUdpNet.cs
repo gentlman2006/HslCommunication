@@ -50,7 +50,7 @@ namespace HslCommunication.Enthernet
 
                 RefreshReceive();
 
-                LogNet?.WriteInfo(StringResources.NetEngineStart);
+                LogNet?.WriteInfo(LogHeaderText, StringResources.NetEngineStart);
 
                 IsStarted = true;
             }

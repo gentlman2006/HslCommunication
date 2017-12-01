@@ -28,6 +28,11 @@ namespace HslCommunication.BasicFramework
         private SimpleHybirdLock HybirdLock = new SimpleHybirdLock();
 
         /// <summary>
+        /// 在日志保存时的标记当前调用类的信息
+        /// </summary>
+        protected string LogHeaderText { get; set; }
+
+        /// <summary>
         /// 获取需要保存的数据，需要重写实现
         /// </summary>
         /// <returns></returns>
@@ -71,7 +76,7 @@ namespace HslCommunication.BasicFramework
                     }
                     catch(Exception ex)
                     {
-                        ILogNet?.WriteException(StringResources.FileLoadFailed, ex);
+                        ILogNet?.WriteException(LogHeaderText,StringResources.FileLoadFailed, ex);
                     }
                     finally
                     {
@@ -106,7 +111,7 @@ namespace HslCommunication.BasicFramework
                 }
                 catch (Exception ex)
                 {
-                    ILogNet?.WriteException(StringResources.FileSaveFailed, ex);
+                    ILogNet?.WriteException(LogHeaderText,StringResources.FileSaveFailed, ex);
                 }
                 finally
                 {

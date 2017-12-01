@@ -737,7 +737,7 @@ namespace HslCommunication.Profinet
             {
                 socket?.Close();
                 data = null;
-                LogNet?.WriteException("Receive Data Failed: ", ex);
+                LogNet?.WriteException(LogHeaderText, "Receive Data Failed: ", ex);
                 result.Message = "初始化信息接收失败：" + ex.Message;
                 return false;
             }
@@ -756,7 +756,7 @@ namespace HslCommunication.Profinet
             catch(Exception ex)
             {
                 result.Message = "初始化信息发送失败：" + ex.Message;
-                LogNet?.WriteException("Send Data Failed: ", ex);
+                LogNet?.WriteException(LogHeaderText, "Send Data Failed: ", ex);
                 socket?.Close();
                 return false;
             }

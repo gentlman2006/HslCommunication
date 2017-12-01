@@ -71,11 +71,18 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 写入一条调试信息
         /// </summary>
-        /// <param name="header">日志头标记</param>
+        /// <param name="keyWord">关键字</param>
         /// <param name="text">文本内容</param>
-        public void WriteDebug(string header,string text)
+        public void WriteDebug(string keyWord, string text)
         {
-            WriteDebug(header + " : " + text);
+            if (string.IsNullOrEmpty(keyWord))
+            {
+                WriteDebug(text);
+            }
+            else
+            {
+                WriteDebug(keyWord + " : " + text);
+            }
         }
 
         /// <summary>
@@ -90,11 +97,18 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 写入一条普通信息
         /// </summary>
-        /// <param name="header">日志头标记</param>
+        /// <param name="keyWord">关键字</param>
         /// <param name="text">文本内容</param>
-        public void WriteInfo(string header, string text)
+        public void WriteInfo(string keyWord, string text)
         {
-            WriteInfo(header + " : " + text);
+            if (string.IsNullOrEmpty(keyWord))
+            {
+                WriteInfo(text);
+            }
+            else
+            {
+                WriteInfo(keyWord + " : " + text);
+            }
         }
 
         /// <summary>
@@ -109,11 +123,18 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 写入一条警告信息
         /// </summary>
-        /// <param name="header">日志头标记</param>
+        /// <param name="keyWord">关键字</param>
         /// <param name="text">文本内容</param>
-        public void WriteWarn(string header, string text)
+        public void WriteWarn(string keyWord, string text)
         {
-            WriteWarn(header + " : " + text);
+            if (string.IsNullOrEmpty(keyWord))
+            {
+                WriteWarn(text);
+            }
+            else
+            {
+                WriteWarn(keyWord + " : " + text);
+            }
         }
 
 
@@ -129,11 +150,18 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 写入一条错误消息
         /// </summary>
-        /// <param name="header">日志头标记</param>
+        /// <param name="keyWord">关键字</param>
         /// <param name="text">文本内容</param>
-        public void WriteError(string header, string text)
+        public void WriteError(string keyWord, string text)
         {
-            WriteError(header + " : " + text);
+            if (string.IsNullOrEmpty(keyWord))
+            {
+                WriteError(text);
+            }
+            else
+            {
+                WriteError(keyWord + " : " + text);
+            }
         }
 
         /// <summary>
@@ -149,32 +177,46 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 写入一条致命错误信息
         /// </summary>
-        /// <param name="header">日志头标记</param>
+        /// <param name="keyWord">关键字</param>
         /// <param name="text">文本内容</param>
-        public void WriteFatal(string header, string text)
+        public void WriteFatal(string keyWord, string text)
         {
-            WriteFatal(header + " : " + text);
+            if (string.IsNullOrEmpty(keyWord))
+            {
+                WriteFatal(text);
+            }
+            else
+            {
+                WriteFatal(keyWord + " : " + text);
+            }
         }
 
         /// <summary>
         /// 写入一条异常信息
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="keyWord">关键字</param>
         /// <param name="ex"></param>
-        public void WriteException(string text, Exception ex)
+        public void WriteException(string keyWord, Exception ex)
         {
-            RecordMessage(HslMessageDegree.FATAL, LogNetManagment.GetSaveStringFromException(text, ex));
+            RecordMessage(HslMessageDegree.FATAL, LogNetManagment.GetSaveStringFromException(keyWord, ex));
         }
 
         /// <summary>
         /// 写入一条异常信息
         /// </summary>
-        /// <param name="header">标题</param>
+        /// <param name="keyWord">关键字</param>
         /// <param name="text">内容</param>
         /// <param name="ex">异常</param>
-        public void WriteException(string header, string text, Exception ex)
+        public void WriteException(string keyWord, string text, Exception ex)
         {
-            WriteException(header + " : " + text, ex);
+            if (string.IsNullOrEmpty(keyWord))
+            {
+                WriteException(text, ex);
+            }
+            else
+            {
+                WriteException(keyWord + " : " + text, ex);
+            }
         }
 
         /// <summary>
@@ -272,10 +314,10 @@ namespace HslCommunication.LogNet
 
         private void WriteToFile(HslMessageDegree degree, string text)
         {
-            //过滤事件
+            // 过滤事件
             if (degree <= m_messageDegree)
             {
-                //需要记录数据
+                // 需要记录数据
                 HslMessageItem item = GetHslMessageItem(degree, text);
 
                 HslEventArgs args = new HslEventArgs()
@@ -284,7 +326,7 @@ namespace HslCommunication.LogNet
                 };
 
                 AddItemToCache(item);
-                //触发事件
+                // 触发事件
                 OnBeforeSaveToFile(args);
             }
 
@@ -356,7 +398,7 @@ namespace HslCommunication.LogNet
                     AddItemToCache(new HslMessageItem()
                     {
                         Degree = HslMessageDegree.FATAL,
-                        Text = LogNetManagment.GetSaveStringFromException(null, ex),
+                        Text = LogNetManagment.GetSaveStringFromException("LogNetSelf", ex),
                     });
                 }
                 finally
@@ -418,7 +460,7 @@ namespace HslCommunication.LogNet
                     AddItemToCache(new HslMessageItem()
                     {
                         Degree = HslMessageDegree.FATAL,
-                        Text = LogNetManagment.GetSaveStringFromException(null, ex),
+                        Text = LogNetManagment.GetSaveStringFromException("LogNetSelf", ex),
                     });
                 }
                 finally

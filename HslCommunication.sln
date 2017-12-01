@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunication_Net35", "HslCommunication_Net35\HslCommunication_Net35.csproj", "{D3710B78-1B32-4D53-9604-0451A795A2F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "软件自动更新", "软件自动更新\软件自动更新.csproj", "{4FADD98F-9C73-4D2F-9AC1-CF8993265D8E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTool", "TestTool\TestTool.csproj", "{D68DEDE9-1610-4872-9AED-0E4F90D191EC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunication_Net461", "HslCommunication_Net461\HslCommunication_Net461.csproj", "{82B51B2E-EB08-457A-A282-14EDD948B35F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{D68DEDE9-1610-4872-9AED-0E4F90D191EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D68DEDE9-1610-4872-9AED-0E4F90D191EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D68DEDE9-1610-4872-9AED-0E4F90D191EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{82B51B2E-EB08-457A-A282-14EDD948B35F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82B51B2E-EB08-457A-A282-14EDD948B35F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82B51B2E-EB08-457A-A282-14EDD948B35F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82B51B2E-EB08-457A-A282-14EDD948B35F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

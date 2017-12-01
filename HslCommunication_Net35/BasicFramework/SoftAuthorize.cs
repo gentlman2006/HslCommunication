@@ -22,6 +22,7 @@ namespace HslCommunication.BasicFramework
         public SoftAuthorize()
         {
             machine_code = GetInfo();
+            LogHeaderText = "SoftAuthorize";
         }
 
         #endregion

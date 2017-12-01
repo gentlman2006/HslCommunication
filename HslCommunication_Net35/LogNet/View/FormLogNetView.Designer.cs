@@ -98,8 +98,8 @@
             this.toolStripStatusLabel2.IsLink = true;
             this.toolStripStatusLabel2.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(189, 17);
-            this.toolStripStatusLabel2.Text = "https://github.com/dathlin/C-S-";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(273, 17);
+            this.toolStripStatusLabel2.Text = "https://github.com/dathlin/ClientServerProject";
             this.toolStripStatusLabel2.ToolTipText = "click to forward";
             this.toolStripStatusLabel2.Click += new System.EventHandler(this.toolStripStatusLabel2_Click);
             // 

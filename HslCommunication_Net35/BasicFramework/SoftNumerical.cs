@@ -32,6 +32,7 @@ namespace HslCommunication.BasicFramework
         /// <param name="fileSavePath">流水号存储的文本位置</param>
         public SoftNumericalOrder(string textHead, string timeFormate,int numberLength, string fileSavePath)
         {
+            LogHeaderText = "SoftNumericalOrder";
             TextHead = textHead;
             TimeFormate = timeFormate;
             NumberLength = numberLength;
