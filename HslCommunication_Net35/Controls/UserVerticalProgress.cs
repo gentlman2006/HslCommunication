@@ -10,7 +10,7 @@ using System.Windows.Forms;
 namespace HslCommunication.Controls
 {
     /// <summary>
-    /// 一个直立的属性控件，满足不同的情况使用
+    /// 一个直立的进度条控件，满足不同的情况使用
     /// </summary>
     public partial class UserVerticalProgress : UserControl
     {
@@ -20,6 +20,19 @@ namespace HslCommunication.Controls
         public UserVerticalProgress()
         {
             InitializeComponent();
+
+            m_borderPen = new Pen(Color.DimGray);
+            m_backBrush = new SolidBrush(SystemColors.Control);
+            m_foreBrush = new SolidBrush(Color.DodgerBlue);
+            
+            m_formatCenter = new StringFormat();
+            m_formatCenter.Alignment = StringAlignment.Center;
+            m_formatCenter.LineAlignment = StringAlignment.Center;
+
+            m_UpdateAction = new Action(UpdateRender);
+            hybirdLock = new Core.SimpleHybirdLock();
+
+            DoubleBuffered = true;
         }
 
 
@@ -32,8 +45,264 @@ namespace HslCommunication.Controls
 
         private void UserVerticalProgress_Paint(object sender, PaintEventArgs e)
         {
+            try
+            {
+                // 根据实际值来绘制图形
+                Graphics g = e.Graphics;
+                Rectangle rectangle = new Rectangle(0, 0, Width - 1, Height - 1);
+                g.FillRectangle(m_backBrush, rectangle);
 
+                int height = (int)(m_actual * 1L * (Height - 2) / m_Max);
+                rectangle = new Rectangle(0, Height - 1 - height, Width - 1, height);
+                g.FillRectangle(m_foreBrush, rectangle);
+
+                rectangle = new Rectangle(0, 0, Width - 1, Height - 1);
+                if (m_isTextRender)
+                {
+                    string str = (m_actual * 100L / m_Max) + "%";
+                    using (Brush brush = new SolidBrush(ForeColor))
+                    {
+                        g.DrawString(str, Font, brush, rectangle, m_formatCenter);
+                    }
+                }
+
+                g.DrawRectangle(m_borderPen, rectangle);
+            }
+            catch
+            {
+
+            }
         }
+
+        private void UserVerticalProgress_SizeChanged(object sender, EventArgs e)
+        {
+            Invalidate();
+        }
+
+        #region Private Members
+
+        private int m_version = 0;                       // 设置数据时的版本，用于更新时的版本验证
+        private int m_Max = 100;                         // 默认的最大值
+        private int m_value = 0;                         // 当前的设定值
+        private int m_actual = 0;                        // 当前的实际值
+        private Pen m_borderPen;                         // 边框的画笔
+        private Color m_borderColor;                     // 边框的背景色
+        private Brush m_backBrush;                       // 背景色
+        private Brush m_foreBrush;                       // 前景色
+        private Color m_progressColor;                   // 前景色颜色
+        private StringFormat m_formatCenter;             // 中间显示字符串的格式
+        private bool m_isTextRender = false;             // 是否显示文本信息
+        private Action m_UpdateAction;                   // 更新界面的委托
+        private Core.SimpleHybirdLock hybirdLock;        // 数据的同步锁
+        private int m_speed = 5;                         // 进度条的升降快慢
+
+        #endregion
+
+
+        #region Public Properties
+
+
+        /// <summary>
+        /// 获取或设置控件的背景颜色值
+        /// </summary>
+        [Description("获取或设置进度条的背景色")]
+        [Category("外观")]
+        [Browsable(true)]
+        public override Color BackColor
+        {
+            get => base.BackColor;
+            set
+            {
+                base.BackColor = value;
+                m_backBrush?.Dispose();
+                m_backBrush = new SolidBrush(value);
+                Invalidate();
+            }
+        }
+
+
+        /// <summary>
+        /// 获取或设置进度的颜色
+        /// </summary>
+        [Description("获取或设置进度条的前景色")]
+        [Category("外观")]
+        [Browsable(true)]
+        public Color ProgressColor
+        {
+            get { return m_progressColor; }
+            set
+            {
+                m_progressColor = value;
+                m_foreBrush?.Dispose();
+                m_foreBrush = new SolidBrush(value);
+                Invalidate();
+            }
+        }
+
+
+        /// <summary>
+        /// 进度条的最大值，默认为100
+        /// </summary>
+        [Description("获取或设置进度条的最大值，默认为100")]
+        [Category("外观")]
+        [Browsable(true)]
+        [DefaultValue(100)]
+        public int Max
+        {
+            get { return m_Max; }
+            set
+            {
+                if (value > 1)
+                {
+                    m_Max = value;
+                }
+                if (m_value > m_Max) m_value = m_Max;
+                Invalidate();
+            }
+        }
+
+
+        /// <summary>
+        /// 当前进度条的值，不能大于最大值或小于0
+        /// </summary>
+        [Description("获取或设置当前进度条的值")]
+        [Category("外观")]
+        [Browsable(true)]
+        [DefaultValue(0)]
+        public int Value
+        {
+            get { return m_value; }
+            set
+            {
+                if (value >= 0 && value <= m_Max)
+                {
+                    if (value != m_value)
+                    {
+                        m_value = value;
+                        int version = System.Threading.Interlocked.Increment(ref m_version);
+                        System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(
+                            ThreadPoolUpdateProgress), version);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 是否显示进度
+        /// </summary>
+        [Description("获取或设置是否显示进度文本")]
+        [Category("外观")]
+        [Browsable(true)]
+        [DefaultValue(false)]
+        public bool IsTextRender
+        {
+            get { return m_isTextRender; }
+            set
+            {
+                m_isTextRender = value;
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 设置进度条的边框颜色
+        /// </summary>
+        [Description("获取或设置进度条的边框颜色")]
+        [Category("外观")]
+        [Browsable(true)]
+        public Color BorderColor
+        {
+            get { return m_borderColor; }
+            set
+            {
+                m_borderColor = value;
+                m_borderPen?.Dispose();
+                m_borderPen = new Pen(value);
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 设置进度变更的速度
+        /// </summary>
+        [Description("获取或设置进度条的变化进度")]
+        [Category("外观")]
+        [Browsable(true)]
+        public int ValueChangeSpeed
+        {
+            get{return m_speed;}
+            set
+            {
+                if (value >= 1 && value < 10000)
+                {
+                    m_speed = value;
+                }
+            }
+        }
+
+
+        #endregion
+
+        #region Update Progress
+
+
+        private void ThreadPoolUpdateProgress(object obj)
+        {
+            try
+            {
+                // 开始计算更新细节
+                int version = (int)obj;
+                if (m_speed < 1) m_speed = 1;
+
+                while (m_actual != m_value)
+                {
+                    System.Threading.Thread.Sleep(17);
+
+                    if (version != m_version) break;
+
+                    hybirdLock.Enter();
+
+                    int newActual = 0;
+                    if (m_actual > m_value)
+                    {
+                        int offect = m_actual - m_value;
+                        if (offect > m_speed) offect = m_speed;
+                        newActual = m_actual - offect;
+                    }
+                    else
+                    {
+                        int offect = m_value - m_actual;
+                        if (offect > m_speed) offect = m_speed;
+                        newActual = m_actual + offect;
+                    }
+                    m_actual = newActual;
+
+                    hybirdLock.Leave();
+
+                    if (version == m_version)
+                    {
+                        if (IsHandleCreated) Invoke(m_UpdateAction);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            
+        }
+
+        private void UpdateRender()
+        {
+            Invalidate();
+        }
+
+        #endregion
+
 
     }
 }
