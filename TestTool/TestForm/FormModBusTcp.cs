@@ -38,9 +38,39 @@ namespace TestTool.TestForm
                 tcpServer.OnDataReceived += TcpServer_OnDataReceived; // 关联数据接收方法
                 tcpServer.ServerStart(51234); // 绑定端口
                 timer.Start(); // 启动服务
+
+                // 创建一个数据订阅
+                ModBusMonitorAddress monitorAddress = new ModBusMonitorAddress()
+                {
+                    Address = 0x01
+                };
+                monitorAddress.OnWrite += MonitorAddress_OnWrite;
+                monitorAddress.OnChange += MonitorAddress_OnChange;
+                tcpServer.AddSubcription(monitorAddress);
             }
         }
 
+        private void MonitorAddress_OnChange(short before, short after)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<short, short>(MonitorAddress_OnChange), before, after);
+                return;
+            }
+
+            label6.Text = DateTime.Now.ToString() + " 原值：" + before + " 更新值：" + after;
+        }
+
+        private void MonitorAddress_OnWrite(short value)
+        {
+            if(InvokeRequired)
+            {
+                Invoke(new Action<short>(MonitorAddress_OnWrite), value);
+                return;
+            }
+
+            label5.Text = DateTime.Now.ToString() + " 写入：" + value;
+        }
 
         private void TcpServer_OnDataReceived(byte[] object1)
         {

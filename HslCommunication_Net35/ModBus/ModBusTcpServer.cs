@@ -40,6 +40,9 @@ namespace HslCommunication.ModBus
             hybirdLockCoil = new SimpleHybirdLock();
             hybirdLockRegister = new SimpleHybirdLock();
             LogHeaderText = "ModBusTcpServer";
+
+            subscriptions = new List<ModBusMonitorAddress>();
+            subcriptionHybirdLock = new SimpleHybirdLock();
         }
 
         #endregion
@@ -537,10 +540,7 @@ namespace HslCommunication.ModBus
         public void WriteRegister(ushort address, short data)
         {
             byte[] buffer = BitConverter.GetBytes(data);
-            hybirdLockRegister.Enter();
-            Register[address * 2 + 1] = buffer[0];
-            Register[address * 2 + 0] = buffer[1];
-            hybirdLockRegister.Leave();
+            WriteRegister(address, buffer[1], buffer[0]);
         }
 
         /// <summary>
@@ -566,10 +566,7 @@ namespace HslCommunication.ModBus
         public void WriteRegister(ushort address, ushort data)
         {
             byte[] buffer = BitConverter.GetBytes(data);
-            hybirdLockRegister.Enter();
-            Register[address * 2 + 1] = buffer[0];
-            Register[address * 2 + 0] = buffer[1];
-            hybirdLockRegister.Leave();
+            WriteRegister(address, buffer[1], buffer[0]);
         }
 
         /// <summary>
@@ -810,12 +807,14 @@ namespace HslCommunication.ModBus
                     }
                     else
                     {
+                        // 准备接收的数据长度
+                        int ContentLength = state.HeadByte[4] * 256 + state.HeadByte[5];
                         // 第一次过滤，过滤掉不是Modbus Tcp协议的
                         if (state.HeadByte[2] == 0x00 &&
-                            state.HeadByte[3] == 0x00)
+                            state.HeadByte[3] == 0x00 &&
+                            ContentLength < 300)
                         {
                             // 头子节接收完成
-                            int ContentLength = state.HeadByte[4] * 256 + state.HeadByte[5];
                             state.Content = new byte[ContentLength];
 
                             // 开始接收内容
@@ -869,12 +868,29 @@ namespace HslCommunication.ModBus
                         // 重新启动接收
                         state.WorkSocket.BeginReceive(state.HeadByte, state.HeadByteReceivedLength, state.HeadByte.Length, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
 
+                        if(data[7] == 0x01 ||
+                            data[7] == 0x02 ||
+                            data[7] == 0x03)
+                        {
+                            if(data.Length != 0x0C)
+                            {
+                                // 指令长度验证错误，关闭网络连接
+                                state.WorkSocket?.Close();
+                                state = null;
+                                if (IsStarted) LogNet?.WriteWarn(LogHeaderText, "Command length check failed！");
+                                return;
+                            }
+                        }
+
+
+
                         // 需要回发消息
                         byte[] copy = null;
                         switch (data[7])
                         {
                             case 0x01:
                                 {
+                                    
                                     // 线圈读取
                                     int address = data[8] * 256 + data[9];
                                     int length = data[10] * 256 + data[11];
@@ -934,8 +950,14 @@ namespace HslCommunication.ModBus
                             case 0x06:
                                 {
                                     // 写单个寄存器
-                                    int address = data[8] * 256 + data[9];
-                                    WriteRegister((ushort)address, data[10], data[11]);
+                                    ushort address = (ushort)(data[8] * 256 + data[9]);
+                                    short ValueOld = ReadShortRegister(address);
+                                    // 写入到寄存器
+                                    WriteRegister(address, data[10], data[11]);
+                                    short ValueNew = ReadShortRegister(address);
+                                    // 触发写入请求
+                                    OnRegisterBeforWrite(address, ValueOld, ValueNew);
+
                                     copy = new byte[12];
                                     Array.Copy(data, 0, copy, 0, 12);
                                     copy[4] = 0x00;
@@ -967,7 +989,11 @@ namespace HslCommunication.ModBus
                                     {
                                         if ((2 * i + 14) < data.Length)
                                         {
+                                            short ValueOld = ReadShortRegister((ushort)(address + i));
                                             WriteRegister((ushort)(address + i), data[2 * i + 13], data[2 * i + 14]);
+                                            short ValueNew = ReadShortRegister((ushort)(address + i));
+                                            // 触发写入请求
+                                            OnRegisterBeforWrite((ushort)(address + i), ValueOld, ValueNew);
                                         }
                                     }
                                     copy = new byte[12];
@@ -986,13 +1012,14 @@ namespace HslCommunication.ModBus
                                     break;
                                 }
                         }
+                        
+                        // 通知处理消息
+                        if (IsStarted) OnDataReceived?.Invoke(data);
 
-                        // 回发数据
+                        // 回发数据，先获取发送锁
+                        state.hybirdLock.Enter();
                         state.WorkSocket.BeginSend(copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback(DataSendCallBack), state: state);
 
-                        // 通知处理消息
-
-                        if (IsStarted) OnDataReceived?.Invoke(data);
                     }
                 }
                 catch (Exception ex)
@@ -1008,8 +1035,9 @@ namespace HslCommunication.ModBus
 
         private void DataSendCallBack(IAsyncResult ar)
         {
-            if (ar is ModBusState state)
+            if (ar.AsyncState is ModBusState state)
             {
+                state.hybirdLock.Leave();
                 try
                 {
                     state.WorkSocket.EndSend(ar);
@@ -1031,10 +1059,106 @@ namespace HslCommunication.ModBus
 
         #endregion
 
+        #region Subscription Support
+
+        // 本服务器端支持指定地址的数据订阅器，目前仅支持寄存器操作
+
+        private List<ModBusMonitorAddress> subscriptions;     // 数据订阅集合
+        private SimpleHybirdLock subcriptionHybirdLock;       // 集合锁
+
+        /// <summary>
+        /// 新增一个数据监视的任务
+        /// </summary>
+        /// <param name="monitor"></param>
+        public void AddSubcription(ModBusMonitorAddress monitor)
+        {
+            subcriptionHybirdLock.Enter();
+            subscriptions.Add(monitor);
+            subcriptionHybirdLock.Leave();
+        }
+
+        /// <summary>
+        /// 移除一个数据监视的任务
+        /// </summary>
+        /// <param name="monitor"></param>
+        public void RemoveSubcrption(ModBusMonitorAddress monitor)
+        {
+            subcriptionHybirdLock.Enter();
+            subscriptions.Remove(monitor);
+            subcriptionHybirdLock.Leave();
+        }
+
+
+        /// <summary>
+        /// 在数据变更后，进行触发是否产生订阅
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="before"></param>
+        /// <param name="after"></param>
+        private void OnRegisterBeforWrite(ushort address, short before, short after)
+        {
+            subcriptionHybirdLock.Enter();
+
+            for (int i = 0; i < subscriptions.Count; i++)
+            {
+                if (subscriptions[i].Address == address)
+                {
+                    subscriptions[i].SetValue(after);
+                    if (before != after)
+                    {
+                        subscriptions[i].SetChangeValue(before, after);
+                    }
+                }
+            }
+
+            subcriptionHybirdLock.Leave();
+        }
+
+        #endregion
+
     }
 
 
+    /// <summary>
+    /// 服务器端提供的数据监视服务
+    /// </summary>
+    public class ModBusMonitorAddress
+    {
+        /// <summary>
+        /// 本次数据监视的地址
+        /// </summary>
+        public ushort Address { get; set; }
+        /// <summary>
+        /// 数据写入时触发的事件
+        /// </summary>
+        public event Action<short> OnWrite;
+        /// <summary>
+        /// 数据改变时触发的事件
+        /// </summary>
+        public event Action<short, short> OnChange;
 
+        /// <summary>
+        /// 强制设置触发事件
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetValue(short value)
+        {
+            OnWrite?.Invoke(value);
+        }
+
+        /// <summary>
+        /// 强制设置触发值变更事件
+        /// </summary>
+        /// <param name="before">变更前的值</param>
+        /// <param name="after">变更后的值</param>
+        public void SetChangeValue(short before, short after)
+        {
+            if (before != after)
+            {
+                OnChange?.Invoke(before, after);
+            }
+        }
+    }
 
 
 
@@ -1043,6 +1167,27 @@ namespace HslCommunication.ModBus
     /// </summary>
     internal class ModBusState
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个对象
+        /// </summary>
+        public ModBusState()
+        {
+            hybirdLock = new SimpleHybirdLock();
+            ConnectTime = DateTime.Now;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 连接的时间
+        /// </summary>
+        public DateTime ConnectTime { get; private set; }
+
+
+
+
         /// <summary>
         /// 工作套接字
         /// </summary>
@@ -1067,6 +1212,10 @@ namespace HslCommunication.ModBus
         /// </summary>
         public int ContentReceivedLength = 0;
 
+        /// <summary>
+        /// 回发信息的同步锁
+        /// </summary>
+        internal SimpleHybirdLock hybirdLock;
 
         /// <summary>
         /// 清除原先的接收状态

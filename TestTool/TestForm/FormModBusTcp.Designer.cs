@@ -47,6 +47,8 @@
             this.userButton6 = new HslCommunication.Controls.UserButton();
             this.userButton7 = new HslCommunication.Controls.UserButton();
             this.userButton8 = new HslCommunication.Controls.UserButton();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // textBox1
@@ -66,7 +68,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(183, 34);
+            this.label1.Location = new System.Drawing.Point(432, 34);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(56, 16);
             this.label1.TabIndex = 2;
@@ -244,7 +246,7 @@
             this.userButton7.CustomerInformation = "";
             this.userButton7.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton7.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton7.Location = new System.Drawing.Point(308, 13);
+            this.userButton7.Location = new System.Drawing.Point(551, 13);
             this.userButton7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton7.Name = "userButton7";
             this.userButton7.Size = new System.Drawing.Size(129, 37);
@@ -258,7 +260,7 @@
             this.userButton8.CustomerInformation = "";
             this.userButton8.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton8.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton8.Location = new System.Drawing.Point(460, 13);
+            this.userButton8.Location = new System.Drawing.Point(686, 13);
             this.userButton8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton8.Name = "userButton8";
             this.userButton8.Size = new System.Drawing.Size(129, 37);
@@ -266,11 +268,31 @@
             this.userButton8.UIText = "写入数据";
             this.userButton8.Click += new System.EventHandler(this.userButton8_Click_1);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(172, 13);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(41, 12);
+            this.label5.TabIndex = 19;
+            this.label5.Text = "label5";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(172, 34);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(41, 12);
+            this.label6.TabIndex = 20;
+            this.label6.Text = "label6";
+            // 
             // FormModBusTcp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1027, 619);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.userButton8);
             this.Controls.Add(this.userButton7);
             this.Controls.Add(this.userButton6);
@@ -320,5 +342,7 @@
         private HslCommunication.Controls.UserButton userButton6;
         private HslCommunication.Controls.UserButton userButton7;
         private HslCommunication.Controls.UserButton userButton8;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }

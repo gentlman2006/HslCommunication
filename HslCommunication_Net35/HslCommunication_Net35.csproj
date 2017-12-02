@@ -83,6 +83,12 @@
     <Compile Include="BasicFramework\SoftSecurity.cs" />
     <Compile Include="BasicFramework\SoftSqlOperate.cs" />
     <Compile Include="BasicFramework\SoftVersion.cs" />
+    <Compile Include="Controls\UserVerticalProgress.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UserVerticalProgress.Designer.cs">
+      <DependentUpon>UserVerticalProgress.cs</DependentUpon>
+    </Compile>
     <Compile Include="Core\Net\ClassNetHandle.cs" />
     <Compile Include="Core\Net\CommunicationCode.cs" />
     <Compile Include="Controls\UserButton.cs">
@@ -162,6 +168,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserClock.resx">
       <DependentUpon>UserClock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserVerticalProgress.resx">
+      <DependentUpon>UserVerticalProgress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LogNet\View\FormLogNetView.resx">
       <DependentUpon>FormLogNetView.cs</DependentUpon>
