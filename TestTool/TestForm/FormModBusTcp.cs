@@ -50,22 +50,22 @@ namespace TestTool.TestForm
             }
         }
 
-        private void MonitorAddress_OnChange(short before, short after)
+        private void MonitorAddress_OnChange(ModBusMonitorAddress monitor, short before, short after)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<short, short>(MonitorAddress_OnChange), before, after);
+                Invoke(new Action<ModBusMonitorAddress, short, short>(MonitorAddress_OnChange), monitor, before, after);
                 return;
             }
 
             label6.Text = DateTime.Now.ToString() + " 原值：" + before + " 更新值：" + after;
         }
 
-        private void MonitorAddress_OnWrite(short value)
+        private void MonitorAddress_OnWrite(ModBusMonitorAddress monitor, short value)
         {
-            if(InvokeRequired)
+            if (InvokeRequired)
             {
-                Invoke(new Action<short>(MonitorAddress_OnWrite), value);
+                Invoke(new Action<ModBusMonitorAddress, short>(MonitorAddress_OnWrite), monitor, value);
                 return;
             }
 
@@ -104,7 +104,7 @@ namespace TestTool.TestForm
 
             // busTcpClient.ConnectServer();
         }
-        
+
         private void FormModBusTcp_FormClosing(object sender, FormClosingEventArgs e)
         {
             tcpServer?.ServerClose();
@@ -118,7 +118,7 @@ namespace TestTool.TestForm
             byte[] data = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes("00 00 00 00 00 06 00 03 00 00 00 03");
 
             HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadFromServerCore(data);
-            if(read.IsSuccess)
+            if (read.IsSuccess)
             {
                 // 获取结果，并转化为Hex字符串，方便显示
                 string result = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content, ' ');
@@ -137,7 +137,7 @@ namespace TestTool.TestForm
 
             ModBusFunctionMask mask = (ModBusFunctionMask)comboBox1.SelectedItem;
 
-            switch(mask)
+            switch (mask)
             {
                 case ModBusFunctionMask.ReadCoil:
                     {
@@ -157,7 +157,7 @@ namespace TestTool.TestForm
                         read = busTcpClient.ReadRegister(ushort.Parse(textBox4.Text), ushort.Parse(textBox5.Text));
                         break;
                     }
-                default:break;
+                default: break;
             }
 
             if (read != null)
@@ -259,10 +259,10 @@ namespace TestTool.TestForm
 
         #endregion
 
-        private void userButton8_Click(object sender,EventArgs e)
+        private void userButton8_Click(object sender, EventArgs e)
         {
             HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadDiscrete(0, 10);
-            if(read.IsSuccess)
+            if (read.IsSuccess)
             {
                 // 共返回2个字节，以下展示手动处理位，分别获取10和线圈的通断情况
                 bool coil_0 = (read.Content[0] & 0x01) == 0x01;
@@ -367,7 +367,7 @@ namespace TestTool.TestForm
             {
                 short value = short.Parse(textBox6.Text);
                 textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
-                if(!busTcpClient.WriteOneRegister(0, value).IsSuccess)
+                if (!busTcpClient.WriteOneRegister(0, value).IsSuccess)
                     textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "失败" + Environment.NewLine);
 
                 textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
@@ -423,7 +423,7 @@ namespace TestTool.TestForm
             busTcpClient.WriteRegister(100, 12634534534543656UL);// 写入寄存器100-103为一个大数据
             busTcpClient.WriteRegister(100, 123.456d);// 写入寄存器100-103为一个双精度的数据
             busTcpClient.WriteRegister(100, "K123456789");
-            
+
         }
 
         private void userButton8_Click_1(object sender, EventArgs e)

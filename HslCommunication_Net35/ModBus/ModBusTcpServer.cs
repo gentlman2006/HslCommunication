@@ -868,11 +868,11 @@ namespace HslCommunication.ModBus
                         // 重新启动接收
                         state.WorkSocket.BeginReceive(state.HeadByte, state.HeadByteReceivedLength, state.HeadByte.Length, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
 
-                        if(data[7] == 0x01 ||
+                        if (data[7] == 0x01 ||
                             data[7] == 0x02 ||
                             data[7] == 0x03)
                         {
-                            if(data.Length != 0x0C)
+                            if (data.Length != 0x0C)
                             {
                                 // 指令长度验证错误，关闭网络连接
                                 state.WorkSocket?.Close();
@@ -890,7 +890,7 @@ namespace HslCommunication.ModBus
                         {
                             case 0x01:
                                 {
-                                    
+
                                     // 线圈读取
                                     int address = data[8] * 256 + data[9];
                                     int length = data[10] * 256 + data[11];
@@ -1012,7 +1012,7 @@ namespace HslCommunication.ModBus
                                     break;
                                 }
                         }
-                        
+
                         // 通知处理消息
                         if (IsStarted) OnDataReceived?.Invoke(data);
 
@@ -1131,11 +1131,11 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 数据写入时触发的事件
         /// </summary>
-        public event Action<short> OnWrite;
+        public event Action<ModBusMonitorAddress, short> OnWrite;
         /// <summary>
         /// 数据改变时触发的事件
         /// </summary>
-        public event Action<short, short> OnChange;
+        public event Action<ModBusMonitorAddress, short, short> OnChange;
 
         /// <summary>
         /// 强制设置触发事件
@@ -1143,7 +1143,7 @@ namespace HslCommunication.ModBus
         /// <param name="value"></param>
         public void SetValue(short value)
         {
-            OnWrite?.Invoke(value);
+            OnWrite?.Invoke(this, value);
         }
 
         /// <summary>
@@ -1155,7 +1155,7 @@ namespace HslCommunication.ModBus
         {
             if (before != after)
             {
-                OnChange?.Invoke(before, after);
+                OnChange?.Invoke(this, before, after);
             }
         }
     }
