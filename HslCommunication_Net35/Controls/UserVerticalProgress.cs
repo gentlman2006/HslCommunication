@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
 
 namespace HslCommunication.Controls
 {
@@ -55,6 +56,15 @@ namespace HslCommunication.Controls
                 int height = (int)(m_actual * 1L * (Height - 2) / m_Max);
                 rectangle = new Rectangle(0, Height - 1 - height, Width - 1, height);
                 g.FillRectangle(m_foreBrush, rectangle);
+
+                if(m_actual != m_value)
+                {
+                    rectangle = new Rectangle(0, rectangle.Y - 5, Width - 1, 5);
+                    using (Brush b = new LinearGradientBrush(rectangle, m_progressColor, BackColor, 270f))
+                    {
+                        g.FillRectangle(b, rectangle);
+                    }
+                }
 
                 rectangle = new Rectangle(0, 0, Width - 1, Height - 1);
                 if (m_isTextRender)
@@ -233,7 +243,7 @@ namespace HslCommunication.Controls
             get{return m_speed;}
             set
             {
-                if (value >= 1 && value < 10000)
+                if (value >= 1)
                 {
                     m_speed = value;
                 }

@@ -57,15 +57,15 @@
             this.userVerticalProgress1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userVerticalProgress1.ForeColor = System.Drawing.Color.Black;
             this.userVerticalProgress1.IsTextRender = true;
-            this.userVerticalProgress1.Location = new System.Drawing.Point(591, 113);
+            this.userVerticalProgress1.Location = new System.Drawing.Point(609, 113);
             this.userVerticalProgress1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userVerticalProgress1.Name = "userVerticalProgress1";
             this.userVerticalProgress1.ProgressColor = System.Drawing.Color.DodgerBlue;
-            this.userVerticalProgress1.Size = new System.Drawing.Size(69, 286);
+            this.userVerticalProgress1.Size = new System.Drawing.Size(46, 338);
             this.userVerticalProgress1.TabIndex = 11;
             this.userVerticalProgress1.UseWaitCursor = true;
             this.userVerticalProgress1.Value = 100;
-            this.userVerticalProgress1.ValueChangeSpeed = 5;
+            this.userVerticalProgress1.ValueChangeSpeed = 1;
             // 
             // userButton10
             // 

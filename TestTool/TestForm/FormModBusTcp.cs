@@ -58,7 +58,7 @@ namespace TestTool.TestForm
                 return;
             }
 
-            label6.Text = DateTime.Now.ToString() + " 原值：" + before + " 更新值：" + after;
+            label6.Text = DateTime.Now.ToString() + " 地址：" + monitor.Address +" 原值：" + before + " 更新值：" + after;
         }
 
         private void MonitorAddress_OnWrite(ModBusMonitorAddress monitor, short value)
@@ -69,7 +69,7 @@ namespace TestTool.TestForm
                 return;
             }
 
-            label5.Text = DateTime.Now.ToString() + " 写入：" + value;
+            label5.Text = DateTime.Now.ToString() + " 地址：" + monitor.Address + " 写入：" + value;
         }
 
         private void TcpServer_OnDataReceived(byte[] object1)
