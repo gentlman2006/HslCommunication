@@ -53,18 +53,47 @@ namespace HslCommunication.Controls
                 Rectangle rectangle = new Rectangle(0, 0, Width - 1, Height - 1);
                 g.FillRectangle(m_backBrush, rectangle);
 
-                int height = (int)(m_actual * 1L * (Height - 2) / m_Max);
-                rectangle = new Rectangle(0, Height - 1 - height, Width - 1, height);
-                g.FillRectangle(m_foreBrush, rectangle);
 
-                if(m_actual != m_value)
+                switch(m_progressStyle)
                 {
-                    rectangle = new Rectangle(0, rectangle.Y - 5, Width - 1, 5);
-                    using (Brush b = new LinearGradientBrush(rectangle, m_progressColor, BackColor, 270f))
-                    {
-                        g.FillRectangle(b, rectangle);
-                    }
+                    case ProgressStyle.Vertical:
+                        {
+                            // 垂直方向的进度条
+                            int height = (int)(m_actual * 1L * (Height - 2) / m_Max);
+                            rectangle = new Rectangle(0, Height - 1 - height, Width - 1, height);
+                            g.FillRectangle(m_foreBrush, rectangle);
+
+                            //if (m_actual != m_value)
+                            //{
+                            //    rectangle = new Rectangle(0, rectangle.Y - 5, Width - 1, 5);
+                            //    using (Brush b = new LinearGradientBrush(rectangle, m_progressColor, BackColor, 270f))
+                            //    {
+                            //        g.FillRectangle(b, rectangle);
+                            //    }
+                            //}
+                            break;
+                        }
+                    case ProgressStyle.Horizontal:
+                        {
+                            // 水平方向的进度条
+                            int width = (int)(m_actual * 1L * (Width - 2) / m_Max);
+                            rectangle = new Rectangle(0, 0, width + 1, Height - 1);
+                            g.FillRectangle(m_foreBrush, rectangle);
+
+                            //if (m_actual == m_value)
+                            //{
+                            //    rectangle = new Rectangle(width + 1, 0, 5, Height - 1);
+                            //    using (Brush b = new LinearGradientBrush(rectangle, m_progressColor, BackColor, 0f))
+                            //    {
+                            //        g.FillRectangle(b, rectangle);
+                            //    }
+                            //}
+                            break;
+                        }
                 }
+
+
+
 
                 rectangle = new Rectangle(0, 0, Width - 1, Height - 1);
                 if (m_isTextRender)
@@ -91,20 +120,21 @@ namespace HslCommunication.Controls
 
         #region Private Members
 
-        private int m_version = 0;                       // 设置数据时的版本，用于更新时的版本验证
-        private int m_Max = 100;                         // 默认的最大值
-        private int m_value = 0;                         // 当前的设定值
-        private int m_actual = 0;                        // 当前的实际值
-        private Pen m_borderPen;                         // 边框的画笔
-        private Color m_borderColor;                     // 边框的背景色
-        private Brush m_backBrush;                       // 背景色
-        private Brush m_foreBrush;                       // 前景色
-        private Color m_progressColor;                   // 前景色颜色
-        private StringFormat m_formatCenter;             // 中间显示字符串的格式
-        private bool m_isTextRender = false;             // 是否显示文本信息
-        private Action m_UpdateAction;                   // 更新界面的委托
-        private Core.SimpleHybirdLock hybirdLock;        // 数据的同步锁
-        private int m_speed = 5;                         // 进度条的升降快慢
+        private int m_version = 0;                                          // 设置数据时的版本，用于更新时的版本验证
+        private int m_Max = 100;                                            // 默认的最大值
+        private int m_value = 0;                                            // 当前的设定值
+        private int m_actual = 0;                                           // 当前的实际值
+        private Pen m_borderPen;                                            // 边框的画笔
+        private Color m_borderColor;                                        // 边框的背景色
+        private Brush m_backBrush;                                          // 背景色
+        private Brush m_foreBrush;                                          // 前景色
+        private Color m_progressColor;                                      // 前景色颜色
+        private StringFormat m_formatCenter;                                // 中间显示字符串的格式
+        private bool m_isTextRender = false;                                // 是否显示文本信息
+        private Action m_UpdateAction;                                      // 更新界面的委托
+        private Core.SimpleHybirdLock hybirdLock;                           // 数据的同步锁
+        private int m_speed = 5;                                            // 进度条的升降快慢
+        private ProgressStyle m_progressStyle = ProgressStyle.Vertical;     // 进度条的样式，指示水平的还是竖直的
 
         #endregion
 
@@ -251,6 +281,20 @@ namespace HslCommunication.Controls
         }
 
 
+        /// <summary>
+        /// 进度条的样式
+        /// </summary>
+        [Description("获取或设置进度条的样式")]
+        [Category("外观")]
+        [Browsable(true)]
+        [DefaultValue(typeof(ProgressStyle),"Vertical")]
+        public ProgressStyle ProgressStyle
+        {
+            get { return m_progressStyle; }
+            set { m_progressStyle = value;Invalidate(); }
+        }
+
+
         #endregion
 
         #region Update Progress
@@ -314,5 +358,20 @@ namespace HslCommunication.Controls
         #endregion
 
 
+    }
+
+    /// <summary>
+    /// 进度条的样式
+    /// </summary>
+    public enum ProgressStyle
+    {
+        /// <summary>
+        /// 竖直的，纵向的进度条
+        /// </summary>
+        Vertical,
+        /// <summary>
+        /// 水平进度条
+        /// </summary>
+        Horizontal
     }
 }
