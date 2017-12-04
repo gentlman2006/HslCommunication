@@ -292,7 +292,9 @@
   <ItemGroup>
     <None Include="imgaes\WindowsForm_817_16x.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Doc.txt" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="imgaes\abstr11.png" />
   </ItemGroup>
