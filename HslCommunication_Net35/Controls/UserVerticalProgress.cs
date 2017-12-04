@@ -23,9 +23,11 @@ namespace HslCommunication.Controls
             InitializeComponent();
 
             m_borderPen = new Pen(Color.DimGray);
-            m_backBrush = new SolidBrush(SystemColors.Control);
-            m_foreBrush = new SolidBrush(Color.DodgerBlue);
-            
+            m_backBrush = new SolidBrush(Color.Transparent);
+            m_foreBrush = new SolidBrush(Color.Tomato);
+            m_progressColor = Color.Tomato;
+            m_borderColor = Color.DimGray;
+
             m_formatCenter = new StringFormat();
             m_formatCenter.Alignment = StringAlignment.Center;
             m_formatCenter.LineAlignment = StringAlignment.Center;
@@ -52,6 +54,7 @@ namespace HslCommunication.Controls
                 Graphics g = e.Graphics;
                 Rectangle rectangle = new Rectangle(0, 0, Width - 1, Height - 1);
                 g.FillRectangle(m_backBrush, rectangle);
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
 
                 switch(m_progressStyle)
@@ -107,9 +110,9 @@ namespace HslCommunication.Controls
 
                 g.DrawRectangle(m_borderPen, rectangle);
             }
-            catch
+            catch (Exception ex)
             {
-
+                // BasicFramework.SoftBasic.ShowExceptionMessage(ex);
             }
         }
 
@@ -130,16 +133,25 @@ namespace HslCommunication.Controls
         private Brush m_foreBrush;                                          // 前景色
         private Color m_progressColor;                                      // 前景色颜色
         private StringFormat m_formatCenter;                                // 中间显示字符串的格式
-        private bool m_isTextRender = false;                                // 是否显示文本信息
+        private bool m_isTextRender = true;                                // 是否显示文本信息
         private Action m_UpdateAction;                                      // 更新界面的委托
         private Core.SimpleHybirdLock hybirdLock;                           // 数据的同步锁
-        private int m_speed = 5;                                            // 进度条的升降快慢
+        private int m_speed = 1;                                            // 进度条的升降快慢
         private ProgressStyle m_progressStyle = ProgressStyle.Vertical;     // 进度条的样式，指示水平的还是竖直的
 
         #endregion
 
 
         #region Public Properties
+
+        /// <summary>
+        /// 获取或设置光标在控件上显示的信息
+        /// </summary>
+        public override Cursor Cursor
+        {
+            get => base.Cursor;
+            set => base.Cursor = value;
+        }
 
 
         /// <summary>
@@ -167,6 +179,7 @@ namespace HslCommunication.Controls
         [Description("获取或设置进度条的前景色")]
         [Category("外观")]
         [Browsable(true)]
+        [DefaultValue(typeof(Color),"Tomato")]
         public Color ProgressColor
         {
             get { return m_progressColor; }
@@ -233,7 +246,7 @@ namespace HslCommunication.Controls
         [Description("获取或设置是否显示进度文本")]
         [Category("外观")]
         [Browsable(true)]
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         public bool IsTextRender
         {
             get { return m_isTextRender; }
@@ -250,6 +263,7 @@ namespace HslCommunication.Controls
         [Description("获取或设置进度条的边框颜色")]
         [Category("外观")]
         [Browsable(true)]
+        [DefaultValue(typeof(Color),"DimGray")]
         public Color BorderColor
         {
             get { return m_borderColor; }
@@ -268,6 +282,7 @@ namespace HslCommunication.Controls
         [Description("获取或设置进度条的变化进度")]
         [Category("外观")]
         [Browsable(true)]
+        [DefaultValue(1)]
         public int ValueChangeSpeed
         {
             get{return m_speed;}
@@ -332,7 +347,7 @@ namespace HslCommunication.Controls
                     m_actual = newActual;
 
                     hybirdLock.Leave();
-
+                    
                     if (version == m_version)
                     {
                         if (IsHandleCreated) Invoke(m_UpdateAction);
@@ -343,9 +358,9 @@ namespace HslCommunication.Controls
                     }
                 }
             }
-            catch
+            catch(Exception ex)
             {
-
+                // BasicFramework.SoftBasic.ShowExceptionMessage(ex);
             }
             
         }

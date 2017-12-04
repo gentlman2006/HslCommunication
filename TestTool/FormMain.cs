@@ -88,6 +88,8 @@ namespace TestTool
 
         private void userButton10_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("1234"); 
+            return;
             HslCommunication.OperateResult<string> result = GetInformation("D:\\123.txt");
             if(result.IsSuccess)
             {
@@ -123,6 +125,25 @@ namespace TestTool
             }
 
             return result;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("1234");
+        }
+
+        private void userButton11_Click(object sender, EventArgs e)
+        {
+            userButton10.Enabled = false;
+            button1.Enabled = false;
+        }
+
+        private void userButton12_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(textBox2.Text, out int value))
+            {
+                userVerticalProgress1.Value = value;
+            }
         }
     }
 }

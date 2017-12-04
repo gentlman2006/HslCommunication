@@ -214,7 +214,7 @@ namespace HslCommunication.Controls
 
         #endregion
 
-
+        
 
 
         /// <summary>
@@ -315,6 +315,16 @@ namespace HslCommunication.Controls
             }
         }
 
-
+        /// <summary>
+        /// 点击的时候触发事件
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            if (Enabled)
+            {
+                base.OnMouseClick(e);
+            }
+        }
     }
 }

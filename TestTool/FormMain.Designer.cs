@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.userButton11 = new HslCommunication.Controls.UserButton();
             this.userVerticalProgress1 = new HslCommunication.Controls.UserVerticalProgress();
             this.userButton10 = new HslCommunication.Controls.UserButton();
             this.userButton9 = new HslCommunication.Controls.UserButton();
@@ -40,6 +42,8 @@
             this.userButton3 = new HslCommunication.Controls.UserButton();
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.userButton1 = new HslCommunication.Controls.UserButton();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.userButton12 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
@@ -50,22 +54,40 @@
             this.textBox1.Size = new System.Drawing.Size(767, 30);
             this.textBox1.TabIndex = 2;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(636, 432);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(143, 33);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // userButton11
+            // 
+            this.userButton11.BackColor = System.Drawing.Color.Transparent;
+            this.userButton11.CustomerInformation = "";
+            this.userButton11.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton11.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton11.Location = new System.Drawing.Point(636, 341);
+            this.userButton11.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton11.Name = "userButton11";
+            this.userButton11.Size = new System.Drawing.Size(143, 33);
+            this.userButton11.TabIndex = 13;
+            this.userButton11.UIText = "禁用下面的按钮";
+            this.userButton11.Click += new System.EventHandler(this.userButton11_Click);
+            // 
             // userVerticalProgress1
             // 
             this.userVerticalProgress1.BackColor = System.Drawing.SystemColors.Control;
-            this.userVerticalProgress1.BorderColor = System.Drawing.Color.DimGray;
             this.userVerticalProgress1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userVerticalProgress1.ForeColor = System.Drawing.Color.Black;
-            this.userVerticalProgress1.IsTextRender = true;
-            this.userVerticalProgress1.Location = new System.Drawing.Point(408, 211);
+            this.userVerticalProgress1.Location = new System.Drawing.Point(441, 125);
             this.userVerticalProgress1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userVerticalProgress1.Name = "userVerticalProgress1";
-            this.userVerticalProgress1.ProgressColor = System.Drawing.Color.DodgerBlue;
-            this.userVerticalProgress1.Size = new System.Drawing.Size(63, 249);
+            this.userVerticalProgress1.Size = new System.Drawing.Size(83, 314);
             this.userVerticalProgress1.TabIndex = 11;
-            this.userVerticalProgress1.UseWaitCursor = true;
-            this.userVerticalProgress1.Value = 4;
-            this.userVerticalProgress1.ValueChangeSpeed = 1;
+            this.userVerticalProgress1.Value = 70;
             // 
             // userButton10
             // 
@@ -207,11 +229,38 @@
             this.userButton1.UIText = "PLC网络测试";
             this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
+            // textBox2
+            // 
+            this.textBox2.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBox2.Location = new System.Drawing.Point(530, 125);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(124, 26);
+            this.textBox2.TabIndex = 14;
+            this.textBox2.Text = "0";
+            // 
+            // userButton12
+            // 
+            this.userButton12.BackColor = System.Drawing.Color.Transparent;
+            this.userButton12.CustomerInformation = "";
+            this.userButton12.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton12.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton12.Location = new System.Drawing.Point(530, 158);
+            this.userButton12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton12.Name = "userButton12";
+            this.userButton12.Size = new System.Drawing.Size(143, 33);
+            this.userButton12.TabIndex = 15;
+            this.userButton12.UIText = "设置进度条";
+            this.userButton12.Click += new System.EventHandler(this.userButton12_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(791, 554);
+            this.Controls.Add(this.userButton12);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.userButton11);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.userVerticalProgress1);
             this.Controls.Add(this.userButton10);
             this.Controls.Add(this.userButton9);
@@ -246,6 +295,10 @@
         private HslCommunication.Controls.UserButton userButton9;
         private HslCommunication.Controls.UserButton userButton10;
         private HslCommunication.Controls.UserVerticalProgress userVerticalProgress1;
+        private System.Windows.Forms.Button button1;
+        private HslCommunication.Controls.UserButton userButton11;
+        private System.Windows.Forms.TextBox textBox2;
+        private HslCommunication.Controls.UserButton userButton12;
     }
 }
 
