@@ -88,7 +88,7 @@ namespace TestTool
 
         private void userButton10_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("1234"); 
+            textBox1.Text = random.Next(10000000).ToString(); 
             return;
             HslCommunication.OperateResult<string> result = GetInformation("D:\\123.txt");
             if(result.IsSuccess)
@@ -127,9 +127,10 @@ namespace TestTool
             return result;
         }
 
+        Random random = new Random();
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("1234");
+            textBox1.Text = random.Next(10000000).ToString();
         }
 
         private void userButton11_Click(object sender, EventArgs e)
