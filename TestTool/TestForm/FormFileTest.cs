@@ -69,6 +69,16 @@ namespace TestTool.TestForm
         #endregion
 
         #region 上传文件块
+        
+        /*************************************************************************************************
+         * 
+         *   一条指令即可完成文件的上传操作，上传模式有三种
+         *   1. 指定本地的完整路径的文件名
+         *   2. 将流（stream）中的数据上传到服务器
+         *   3. 将bitmap图片数据上传到服务器
+         * 
+         ********************************************************************************************/
+
 
         private void userButton3_Click(object sender, EventArgs e)
         {
@@ -109,7 +119,7 @@ namespace TestTool.TestForm
                     "Files",                    // 第一级分类，指示文件存储的类别，对应在服务器端存储的路径不一致
                     "Personal",                 // 第二级分类，指示文件存储的类别，对应在服务器端存储的路径不一致
                     "Admin",                    // 第三级分类，指示文件存储的类别，对应在服务器端存储的路径不一致
-                    "这个文件非常重要",         // 这个文件的额外描述文本，可以为空
+                    "这个文件非常重要",         // 这个文件的额外描述文本，可以为空（""）
                     "张三",                     // 文件的上传人，当然你也可以不使用
                     UpdateReportProgress        // 文件上传时的进度报告，如果你不需要，指定为NULL就行，一般文件比较大，带宽比较小，都需要进度提示
                     );
@@ -152,5 +162,91 @@ namespace TestTool.TestForm
 
         #endregion
 
+        #region 文件下载块
+
+
+        /*************************************************************************************************
+         * 
+         *   一条指令即可完成文件的上传操作，上传模式有三种
+         *   1. 指定本地的完整路径的文件名
+         *   2. 将流（stream）中的数据上传到服务器
+         *   3. 将bitmap图片数据上传到服务器
+         * 
+         ********************************************************************************************/
+
+
+        /// <summary>
+        /// 点击了文件下载触发的事件，如果需要下载一个文件，要传入下载文件的完整名称
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void userButton5_Click(object sender, EventArgs e)
+        {
+            // 点击开始上传，此处按照实际项目需求放到了后台线程处理，事实上这种耗时的操作就应该放到后台线程
+            System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ParameterizedThreadStart((ThreadDownloadFile)));
+            thread.IsBackground = true;
+            thread.Start(textBox2.Text);
+            userButton5.Enabled = false;
+            progressBar2.Value = 0;
+        }
+
+        private void ThreadDownloadFile(object filename)
+        {
+            if (filename is string fileName)
+            {
+                OperateResult result = integrationFileClient.DownloadFile(
+                    fileName,                   // 文件在服务器上保存的名称，举例123.txt
+                    "Files",                    // 第一级分类，指示文件存储的类别，对应在服务器端存储的路径不一致
+                    "Personal",                 // 第二级分类，指示文件存储的类别，对应在服务器端存储的路径不一致
+                    "Admin",                    // 第三级分类，指示文件存储的类别，对应在服务器端存储的路径不一致
+                    DownloadReportProgress,     // 文件下载的时候的进度报告，友好的提示下载进度信息
+                    Application.StartupPath + @"\Files\" + filename // 下载后在文本保存的路径，也可以直接下载到 MemoryStream 的数据流中，或是bitmap中
+                    );
+
+                // 切换到UI前台显示结果
+                Invoke(new Action<OperateResult>(operateResult =>
+                {
+                    if (result.IsSuccess)
+                    {
+                        MessageBox.Show("文件下载成功！");
+                    }
+                    else
+                    {
+                        // 失败原因多半来自网络异常，还有文件不存在，分类名称填写异常
+                        MessageBox.Show("文件下载失败：" + result.ToMessageShowString());
+                    }
+                }), result);
+            }
+        }
+
+        /// <summary>
+        /// 用于更新文件下载进度的方法，该方法是线程安全的
+        /// </summary>
+        /// <param name="receive">已经接收的字节数</param>
+        /// <param name="totle">总字节数</param>
+        private void DownloadReportProgress(long receive, long totle)
+        {
+            if(progressBar2.InvokeRequired)
+            {
+                progressBar2.Invoke(new Action<long, long>(DownloadReportProgress), receive, totle);
+                return;
+            }
+
+
+            // 此处代码是安全的
+            int value = (int)(receive * 100L / totle);
+            progressBar2.Value = value;
+        }
+
+
+
+        #endregion
+
+        #region 文件的删除
+
+
+
+
+        #endregion
     }
 }

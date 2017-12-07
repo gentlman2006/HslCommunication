@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("文件列表");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("文件列表");
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.userButton1 = new HslCommunication.Controls.UserButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -43,15 +43,15 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.userButton5 = new HslCommunication.Controls.UserButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.treeView1 = new System.Windows.Forms.TreeView();
-            this.userButton4 = new HslCommunication.Controls.UserButton();
-            this.label3 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.userButton4 = new HslCommunication.Controls.UserButton();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -198,6 +198,7 @@
             this.userButton5.Size = new System.Drawing.Size(80, 28);
             this.userButton5.TabIndex = 7;
             this.userButton5.UIText = "下载";
+            this.userButton5.Click += new System.EventHandler(this.userButton5_Click);
             // 
             // groupBox4
             // 
@@ -217,55 +218,22 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "获取文件信息块";
             // 
-            // textBox3
+            // textBox6
             // 
-            this.textBox3.Location = new System.Drawing.Point(259, 52);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox3.Size = new System.Drawing.Size(416, 248);
-            this.textBox3.TabIndex = 1;
+            this.textBox6.Location = new System.Drawing.Point(440, 19);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(103, 21);
+            this.textBox6.TabIndex = 14;
+            this.textBox6.Text = "Admin";
             // 
-            // treeView1
+            // label5
             // 
-            this.treeView1.Location = new System.Drawing.Point(6, 52);
-            this.treeView1.Name = "treeView1";
-            treeNode4.Name = "节点0";
-            treeNode4.Text = "文件列表";
-            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4});
-            this.treeView1.Size = new System.Drawing.Size(247, 248);
-            this.treeView1.TabIndex = 0;
-            // 
-            // userButton4
-            // 
-            this.userButton4.BackColor = System.Drawing.Color.Transparent;
-            this.userButton4.CustomerInformation = "";
-            this.userButton4.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton4.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton4.Location = new System.Drawing.Point(571, 17);
-            this.userButton4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton4.Name = "userButton4";
-            this.userButton4.Size = new System.Drawing.Size(104, 28);
-            this.userButton4.TabIndex = 8;
-            this.userButton4.UIText = "获取文件列表";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 23);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(77, 12);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "第一级分类：";
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(78, 19);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(103, 21);
-            this.textBox4.TabIndex = 10;
-            this.textBox4.Text = "Files";
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(370, 23);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(77, 12);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "第一级分类：";
             // 
             // textBox5
             // 
@@ -284,22 +252,55 @@
             this.label4.TabIndex = 11;
             this.label4.Text = "第一级分类：";
             // 
-            // textBox6
+            // textBox4
             // 
-            this.textBox6.Location = new System.Drawing.Point(440, 19);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(103, 21);
-            this.textBox6.TabIndex = 14;
-            this.textBox6.Text = "Admin";
+            this.textBox4.Location = new System.Drawing.Point(78, 19);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(103, 21);
+            this.textBox4.TabIndex = 10;
+            this.textBox4.Text = "Files";
             // 
-            // label5
+            // label3
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(370, 23);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(77, 12);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "第一级分类：";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 23);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(77, 12);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "第一级分类：";
+            // 
+            // userButton4
+            // 
+            this.userButton4.BackColor = System.Drawing.Color.Transparent;
+            this.userButton4.CustomerInformation = "";
+            this.userButton4.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton4.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton4.Location = new System.Drawing.Point(571, 17);
+            this.userButton4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton4.Name = "userButton4";
+            this.userButton4.Size = new System.Drawing.Size(104, 28);
+            this.userButton4.TabIndex = 8;
+            this.userButton4.UIText = "获取文件列表";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(259, 52);
+            this.textBox3.Multiline = true;
+            this.textBox3.Name = "textBox3";
+            this.textBox3.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox3.Size = new System.Drawing.Size(416, 248);
+            this.textBox3.TabIndex = 1;
+            // 
+            // treeView1
+            // 
+            this.treeView1.Location = new System.Drawing.Point(6, 52);
+            this.treeView1.Name = "treeView1";
+            treeNode1.Name = "节点0";
+            treeNode1.Text = "文件列表";
+            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode1});
+            this.treeView1.Size = new System.Drawing.Size(247, 248);
+            this.treeView1.TabIndex = 0;
             // 
             // FormFileTest
             // 
