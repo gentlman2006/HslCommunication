@@ -103,7 +103,14 @@ namespace HslCommunication.BasicFramework
         {
             long number = Interlocked.Increment(ref CurrentIndex);
             AsyncCoordinator.StartOperaterInfomation();
-            return TextHead + DateTime.Now.ToString(TimeFormate) + number.ToString().PadLeft(NumberLength, '0');
+            if (string.IsNullOrEmpty(TimeFormate))
+            {
+                return TextHead + number.ToString().PadLeft(NumberLength, '0');
+            }
+            else
+            {
+                return TextHead + DateTime.Now.ToString(TimeFormate) + number.ToString().PadLeft(NumberLength, '0');
+            }
         }
         /// <summary>
         /// 获取流水号数据
@@ -114,7 +121,14 @@ namespace HslCommunication.BasicFramework
         {
             long number = Interlocked.Increment(ref CurrentIndex);
             AsyncCoordinator.StartOperaterInfomation();
-            return textHead + DateTime.Now.ToString(TimeFormate) + number.ToString().PadLeft(NumberLength, '0');
+            if (string.IsNullOrEmpty(TimeFormate))
+            {
+                return textHead + number.ToString().PadLeft(NumberLength, '0');
+            }
+            else
+            {
+                return textHead + DateTime.Now.ToString(TimeFormate) + number.ToString().PadLeft(NumberLength, '0');
+            }
         }
 
 

@@ -1052,13 +1052,7 @@ namespace HslCommunication.ModBus
         }
 
         #endregion
-
-        #region Private Feilds
-
-
-
-        #endregion
-
+        
         #region Subscription Support
 
         // 本服务器端支持指定地址的数据订阅器，目前仅支持寄存器操作
@@ -1108,6 +1102,7 @@ namespace HslCommunication.ModBus
                     {
                         subscriptions[i].SetChangeValue(before, after);
                     }
+                    break;
                 }
             }
 

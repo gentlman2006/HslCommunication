@@ -688,6 +688,36 @@ namespace HslCommunication.ModBus
             return GetInt16ResultFromBytes(ReadRegister(address, 1), true);
         }
 
+
+        /// <summary>
+        /// 读取指定地址的寄存器，并转化成short数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">读取的short数组的长度</param>
+        /// <returns></returns>
+        public OperateResult<short[]> ReadShortRegister(ushort address, ushort length)
+        {
+            short[] result = new short[length];
+            OperateResult<byte[]> read = ReadRegister(address, length);
+            if(read.IsSuccess)
+            {
+                for (int i = 0; i < result.Length; i++)
+                {
+                    byte[] buffer = new byte[2];
+                    buffer[0] = read.Content[2 * i + 1];
+                    buffer[1] = read.Content[2 * i + 0];
+                    result[i] = BitConverter.ToInt16(buffer, 0);
+                }
+            }
+
+            OperateResult<short[]> temp = new OperateResult<short[]>();
+            temp.IsSuccess = read.IsSuccess;
+            temp.ErrorCode = read.ErrorCode;
+            temp.Message = read.Message;
+            temp.Content = result;
+            return temp;
+        }
+
         /// <summary>
         /// 读取指定地址的寄存器，并转化成ushort
         /// </summary>
@@ -696,6 +726,37 @@ namespace HslCommunication.ModBus
         public OperateResult<ushort> ReadUShortRegister(ushort address)
         {
             return GetUInt16ResultFromBytes(ReadRegister(address, 1), true);
+        }
+
+
+
+        /// <summary>
+        /// 读取指定地址的寄存器，并转化成ushort数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">读取的ushort数组的长度</param>
+        /// <returns></returns>
+        public OperateResult<ushort[]> ReadUShortRegister(ushort address, ushort length)
+        {
+            ushort[] result = new ushort[length];
+            OperateResult<byte[]> read = ReadRegister(address, length);
+            if(read.IsSuccess)
+            {
+                for (int i = 0; i < result.Length; i++)
+                {
+                    byte[] buffer = new byte[2];
+                    buffer[0] = read.Content[2 * i + 1];
+                    buffer[1] = read.Content[2 * i + 0];
+                    result[i] = BitConverter.ToUInt16(buffer, 0);
+                }
+            }
+
+            OperateResult<ushort[]> temp = new OperateResult<ushort[]>();
+            temp.IsSuccess = read.IsSuccess;
+            temp.ErrorCode = read.ErrorCode;
+            temp.Message = read.Message;
+            temp.Content = result;
+            return temp;
         }
 
 
