@@ -47,36 +47,6 @@ namespace HslCommunication.ModBus
 
         #endregion
 
-        #region NetServer Override
-
-
-        /// <summary>
-        /// 当接收到了新的请求的时候执行的操作
-        /// </summary>
-        /// <param name="obj"></param>
-        protected override void ThreadPoolLogin(object obj)
-        {
-            // 为了提高系统的响应能力，采用异步来实现，即时有数万台设备接入也能应付
-            if (obj is Socket socket)
-            {
-                ModBusState state = new ModBusState()
-                {
-                    WorkSocket = socket,
-                };
-
-                try
-                {
-                    state.WorkSocket.BeginReceive(state.HeadByte, 0, 6, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
-                }
-                catch (Exception ex)
-                {
-                    if (IsStarted) LogNet?.WriteException(LogHeaderText, "头子节接收失败！", ex);
-                }
-            }
-        }
-
-
-        #endregion
 
         #region Public Members
 
@@ -787,6 +757,39 @@ namespace HslCommunication.ModBus
 
         #endregion
 
+        #region NetServer Override
+
+
+        /// <summary>
+        /// 当接收到了新的请求的时候执行的操作
+        /// </summary>
+        /// <param name="obj"></param>
+        protected override void ThreadPoolLogin(object obj)
+        {
+            // 为了提高系统的响应能力，采用异步来实现，即时有数万台设备接入也能应付
+            if (obj is Socket socket)
+            {
+                ModBusState state = new ModBusState()
+                {
+                    WorkSocket = socket,
+                };
+
+                try
+                {
+                    state.WorkSocket.BeginReceive(state.HeadByte, 0, 6, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
+                }
+                catch (Exception ex)
+                {
+                    state = null;
+                    LogNet?.WriteException(LogHeaderText, "头子节接收失败！", ex);
+                }
+            }
+        }
+
+
+        #endregion
+
+
         #region Private Method
 
 
@@ -796,47 +799,49 @@ namespace HslCommunication.ModBus
             {
                 try
                 {
-                    int count = state.WorkSocket.EndReceive(ar);
-
-                    state.HeadByteReceivedLength += count;
-                    if (state.HeadByteReceivedLength < state.HeadByte.Length)
-                    {
-                        // 数据不够，继续接收
-                        state.WorkSocket.BeginReceive(state.HeadByte, state.HeadByteReceivedLength, state.HeadByte.Length - state.HeadByteReceivedLength,
-                            SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
-                    }
-                    else
-                    {
-                        // 准备接收的数据长度
-                        int ContentLength = state.HeadByte[4] * 256 + state.HeadByte[5];
-                        // 第一次过滤，过滤掉不是Modbus Tcp协议的
-                        if (state.HeadByte[2] == 0x00 &&
-                            state.HeadByte[3] == 0x00 &&
-                            ContentLength < 300)
-                        {
-                            // 头子节接收完成
-                            state.Content = new byte[ContentLength];
-
-                            // 开始接收内容
-                            state.WorkSocket.BeginReceive(state.Content, state.ContentReceivedLength, state.Content.Length - state.ContentReceivedLength,
-                                SocketFlags.None, new AsyncCallback(ContentReveiveCallBack), state);
-                        }
-                        else
-                        {
-                            // 关闭连接，记录日志
-                            state.WorkSocket?.Close();
-                            state = null;
-                            if (IsStarted) LogNet?.WriteDebug(LogHeaderText, "Received Bytes, but is was not modbus tcp protocols");
-                        }
-                    }
+                    state.HeadByteReceivedLength += state.WorkSocket.EndReceive(ar);
                 }
                 catch (Exception ex)
                 {
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close();
                     state = null;
-                    if (IsStarted) LogNet?.WriteException(LogHeaderText, "头子节接收失败！", ex);
+                    LogNet?.WriteException(LogHeaderText, "头子节接收失败！", ex);
+                    return;
                 }
+
+
+                if (state.HeadByteReceivedLength < state.HeadByte.Length)
+                {
+                    // 数据不够，继续接收
+                    state.WorkSocket.BeginReceive(state.HeadByte, state.HeadByteReceivedLength, state.HeadByte.Length - state.HeadByteReceivedLength,
+                        SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
+                    return;
+                }
+
+
+                // 准备接收的数据长度
+                int ContentLength = state.HeadByte[4] * 256 + state.HeadByte[5];
+                // 第一次过滤，过滤掉不是Modbus Tcp协议的
+                if (state.HeadByte[2] == 0x00 &&
+                    state.HeadByte[3] == 0x00 &&
+                    ContentLength < 300)
+                {
+                    // 头子节接收完成
+                    state.Content = new byte[ContentLength];
+                    state.ContentReceivedLength = 0;
+                    // 开始接收内容
+                    state.WorkSocket.BeginReceive(state.Content, state.ContentReceivedLength, state.Content.Length - state.ContentReceivedLength,
+                        SocketFlags.None, new AsyncCallback(ContentReveiveCallBack), state);
+                }
+                else
+                {
+                    // 关闭连接，记录日志
+                    state.WorkSocket?.Close();
+                    state = null;
+                    LogNet?.WriteDebug(LogHeaderText, "Received Bytes, but is was not modbus tcp protocols");
+                }
+               
             }
         }
 
@@ -847,188 +852,204 @@ namespace HslCommunication.ModBus
             {
                 try
                 {
-                    int count = state.WorkSocket.EndReceive(ar);
-
-                    state.ContentReceivedLength += count;
-                    if (state.ContentReceivedLength < state.Content.Length)
-                    {
-                        // 数据不够，继续接收
-                        state.WorkSocket.BeginReceive(state.Content, state.ContentReceivedLength, state.Content.Length - state.ContentReceivedLength,
-                            SocketFlags.None, new AsyncCallback(ContentReveiveCallBack), state);
-                    }
-                    else
-                    {
-                        // 内容接收完成，所有的数据接收结束
-                        byte[] data = new byte[state.HeadByte.Length + state.Content.Length];
-                        state.HeadByte.CopyTo(data, 0);
-                        state.Content.CopyTo(data, state.HeadByte.Length);
-
-                        state.Clear();
-
-                        // 重新启动接收
-                        state.WorkSocket.BeginReceive(state.HeadByte, state.HeadByteReceivedLength, state.HeadByte.Length, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
-
-                        if (data[7] == 0x01 ||
-                            data[7] == 0x02 ||
-                            data[7] == 0x03)
-                        {
-                            if (data.Length != 0x0C)
-                            {
-                                // 指令长度验证错误，关闭网络连接
-                                state.WorkSocket?.Close();
-                                state = null;
-                                if (IsStarted) LogNet?.WriteWarn(LogHeaderText, "Command length check failed！");
-                                return;
-                            }
-                        }
-
-
-
-                        // 需要回发消息
-                        byte[] copy = null;
-                        switch (data[7])
-                        {
-                            case 0x01:
-                                {
-
-                                    // 线圈读取
-                                    int address = data[8] * 256 + data[9];
-                                    int length = data[10] * 256 + data[11];
-                                    if (length > 2048) length = 2048;         // 线圈读取应该小于2048个
-                                    bool[] read = ReadCoil((ushort)address, (ushort)length);
-                                    byte[] buffer = BasicFramework.SoftBasic.BoolArrayToByte(read);
-                                    copy = new byte[9 + buffer.Length];
-                                    Array.Copy(data, 0, copy, 0, 8);
-                                    copy[4] = (byte)((copy.Length - 6) / 256);
-                                    copy[5] = (byte)((copy.Length - 6) % 256);
-                                    copy[8] = (byte)buffer.Length;
-                                    Array.Copy(buffer, 0, copy, 9, buffer.Length);
-                                    break;
-                                }
-                            case 0x02:
-                                {
-                                    // 离散值读取，本服务器无效
-                                    copy = new byte[9];
-                                    Array.Copy(data, 0, copy, 0, 8);
-                                    copy[4] = 0x00;
-                                    copy[5] = 0x03;
-                                    break;
-                                }
-                            case 0x03:
-                                {
-                                    // 寄存器读取
-                                    int address = data[8] * 256 + data[9];
-                                    int length = data[10] * 256 + data[11];
-                                    if (length > 127) length = 127;          // 寄存器最大读取范围为127个
-                                    byte[] buffer = ReadRegister((ushort)address, (ushort)length);
-                                    copy = new byte[9 + buffer.Length];
-                                    Array.Copy(data, 0, copy, 0, 8);
-                                    copy[4] = (byte)((copy.Length - 6) / 256);
-                                    copy[5] = (byte)((copy.Length - 6) % 256);
-                                    copy[8] = (byte)buffer.Length;
-                                    Array.Copy(buffer, 0, copy, 9, buffer.Length);
-                                    break;
-                                }
-                            case 0x05:
-                                {
-                                    // 写单个线圈
-                                    int address = data[8] * 256 + data[9];
-                                    if (data[10] == 0xFF && data[11] == 0x00)
-                                    {
-                                        WriteCoil((ushort)address, true);
-                                    }
-                                    else if (data[10] == 0x00 && data[11] == 0x00)
-                                    {
-                                        WriteCoil((ushort)address, false);
-                                    }
-                                    copy = new byte[12];
-                                    Array.Copy(data, 0, copy, 0, 12);
-                                    copy[4] = 0x00;
-                                    copy[5] = 0x06;
-                                    break;
-                                }
-                            case 0x06:
-                                {
-                                    // 写单个寄存器
-                                    ushort address = (ushort)(data[8] * 256 + data[9]);
-                                    short ValueOld = ReadShortRegister(address);
-                                    // 写入到寄存器
-                                    WriteRegister(address, data[10], data[11]);
-                                    short ValueNew = ReadShortRegister(address);
-                                    // 触发写入请求
-                                    OnRegisterBeforWrite(address, ValueOld, ValueNew);
-
-                                    copy = new byte[12];
-                                    Array.Copy(data, 0, copy, 0, 12);
-                                    copy[4] = 0x00;
-                                    copy[5] = 0x06;
-                                    break;
-                                }
-                            case 0x0F:
-                                {
-                                    // 写多个线圈
-                                    int address = data[8] * 256 + data[9];
-                                    int length = data[10] * 256 + data[11];
-                                    byte[] buffer = new byte[data.Length - 13];
-                                    Array.Copy(data, 13, buffer, 0, buffer.Length);
-                                    bool[] value = BasicFramework.SoftBasic.ByteToBoolArray(buffer, length);
-                                    WriteCoil((ushort)address, value);
-                                    copy = new byte[12];
-                                    Array.Copy(data, 0, copy, 0, 12);
-                                    copy[4] = 0x00;
-                                    copy[5] = 0x06;
-                                    break;
-                                }
-                            case 0x10:
-                                {
-                                    // 写多个寄存器
-                                    int address = data[8] * 256 + data[9];
-                                    int length = data[10] * 256 + data[11];
-                                    byte[] buffer = new byte[data.Length - 13];
-                                    for (int i = 0; i < length; i++)
-                                    {
-                                        if ((2 * i + 14) < data.Length)
-                                        {
-                                            short ValueOld = ReadShortRegister((ushort)(address + i));
-                                            WriteRegister((ushort)(address + i), data[2 * i + 13], data[2 * i + 14]);
-                                            short ValueNew = ReadShortRegister((ushort)(address + i));
-                                            // 触发写入请求
-                                            OnRegisterBeforWrite((ushort)(address + i), ValueOld, ValueNew);
-                                        }
-                                    }
-                                    copy = new byte[12];
-                                    Array.Copy(data, 0, copy, 0, 12);
-                                    copy[4] = 0x00;
-                                    copy[5] = 0x06;
-                                    break;
-                                }
-                            default:
-                                {
-                                    if (IsStarted) LogNet?.WriteWarn(LogHeaderText, "Unknown Function Code:" + data[7]);
-                                    copy = new byte[12];
-                                    Array.Copy(data, 0, copy, 0, 12);
-                                    copy[4] = 0x00;
-                                    copy[5] = 0x06;
-                                    break;
-                                }
-                        }
-
-                        // 通知处理消息
-                        if (IsStarted) OnDataReceived?.Invoke(data);
-
-                        // 回发数据，先获取发送锁
-                        state.hybirdLock.Enter();
-                        state.WorkSocket.BeginSend(copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback(DataSendCallBack), state: state);
-
-                    }
+                    state.ContentReceivedLength += state.WorkSocket.EndReceive(ar);
                 }
                 catch (Exception ex)
                 {
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close();
                     state = null;
-                    if (IsStarted) LogNet?.WriteException(LogHeaderText, "内容数据接收失败！", ex);
+                    LogNet?.WriteException(LogHeaderText, "内容数据接收失败！", ex);
+                    return;
                 }
+
+                if (state.ContentReceivedLength < state.Content.Length)
+                {
+                    // 数据不够，继续接收
+                    state.WorkSocket.BeginReceive(state.Content, state.ContentReceivedLength, state.Content.Length - state.ContentReceivedLength,
+                        SocketFlags.None, new AsyncCallback(ContentReveiveCallBack), state);
+                    return;
+                }
+
+
+                // 数据接收完成
+                // 内容接收完成，所有的数据接收结束
+                byte[] data = new byte[state.HeadByte.Length + state.Content.Length];
+                state.HeadByte.CopyTo(data, 0);
+                state.Content.CopyTo(data, state.HeadByte.Length);
+
+                state.Clear();
+
+
+
+                if (data[7] == 0x01 ||
+                    data[7] == 0x02 ||
+                    data[7] == 0x03)
+                {
+                    if (data.Length != 0x0C)
+                    {
+                        // 指令长度验证错误，关闭网络连接
+                        state.WorkSocket?.Close();
+                        state = null;
+                        LogNet?.WriteWarn(LogHeaderText, "Command length check failed！");
+                        return;
+                    }
+                }
+
+
+
+                // 需要回发消息
+                byte[] copy = null;
+                switch (data[7])
+                {
+                    case 0x01:
+                        {
+                            // 线圈读取
+                            int address = data[8] * 256 + data[9];
+                            int length = data[10] * 256 + data[11];
+                            if (length > 2048) length = 2048;         // 线圈读取应该小于2048个
+                            bool[] read = ReadCoil((ushort)address, (ushort)length);
+                            byte[] buffer = BasicFramework.SoftBasic.BoolArrayToByte(read);
+                            copy = new byte[9 + buffer.Length];
+                            Array.Copy(data, 0, copy, 0, 8);
+                            copy[4] = (byte)((copy.Length - 6) / 256);
+                            copy[5] = (byte)((copy.Length - 6) % 256);
+                            copy[8] = (byte)buffer.Length;
+                            Array.Copy(buffer, 0, copy, 9, buffer.Length);
+                            break;
+                        }
+                    case 0x02:
+                        {
+                            // 离散值读取，本服务器无效
+                            copy = new byte[9];
+                            Array.Copy(data, 0, copy, 0, 8);
+                            copy[4] = 0x00;
+                            copy[5] = 0x03;
+                            break;
+                        }
+                    case 0x03:
+                        {
+                            // 寄存器读取
+                            int address = data[8] * 256 + data[9];
+                            int length = data[10] * 256 + data[11];
+                            if (length > 127) length = 127;          // 寄存器最大读取范围为127个
+                            byte[] buffer = ReadRegister((ushort)address, (ushort)length);
+                            copy = new byte[9 + buffer.Length];
+                            Array.Copy(data, 0, copy, 0, 8);
+                            copy[4] = (byte)((copy.Length - 6) / 256);
+                            copy[5] = (byte)((copy.Length - 6) % 256);
+                            copy[8] = (byte)buffer.Length;
+                            Array.Copy(buffer, 0, copy, 9, buffer.Length);
+                            break;
+                        }
+                    case 0x05:
+                        {
+                            // 写单个线圈
+                            int address = data[8] * 256 + data[9];
+                            if (data[10] == 0xFF && data[11] == 0x00)
+                            {
+                                WriteCoil((ushort)address, true);
+                            }
+                            else if (data[10] == 0x00 && data[11] == 0x00)
+                            {
+                                WriteCoil((ushort)address, false);
+                            }
+                            copy = new byte[12];
+                            Array.Copy(data, 0, copy, 0, 12);
+                            copy[4] = 0x00;
+                            copy[5] = 0x06;
+                            break;
+                        }
+                    case 0x06:
+                        {
+                            // 写单个寄存器
+                            ushort address = (ushort)(data[8] * 256 + data[9]);
+                            short ValueOld = ReadShortRegister(address);
+                            // 写入到寄存器
+                            WriteRegister(address, data[10], data[11]);
+                            short ValueNew = ReadShortRegister(address);
+                            // 触发写入请求
+                            OnRegisterBeforWrite(address, ValueOld, ValueNew);
+
+                            copy = new byte[12];
+                            Array.Copy(data, 0, copy, 0, 12);
+                            copy[4] = 0x00;
+                            copy[5] = 0x06;
+                            break;
+                        }
+                    case 0x0F:
+                        {
+                            // 写多个线圈
+                            int address = data[8] * 256 + data[9];
+                            int length = data[10] * 256 + data[11];
+                            byte[] buffer = new byte[data.Length - 13];
+                            Array.Copy(data, 13, buffer, 0, buffer.Length);
+                            bool[] value = BasicFramework.SoftBasic.ByteToBoolArray(buffer, length);
+                            WriteCoil((ushort)address, value);
+                            copy = new byte[12];
+                            Array.Copy(data, 0, copy, 0, 12);
+                            copy[4] = 0x00;
+                            copy[5] = 0x06;
+                            break;
+                        }
+                    case 0x10:
+                        {
+                            // 写多个寄存器
+                            int address = data[8] * 256 + data[9];
+                            int length = data[10] * 256 + data[11];
+                            byte[] buffer = new byte[data.Length - 13];
+                            for (int i = 0; i < length; i++)
+                            {
+                                if ((2 * i + 14) < data.Length)
+                                {
+                                    short ValueOld = ReadShortRegister((ushort)(address + i));
+                                    WriteRegister((ushort)(address + i), data[2 * i + 13], data[2 * i + 14]);
+                                    short ValueNew = ReadShortRegister((ushort)(address + i));
+                                    // 触发写入请求
+                                    OnRegisterBeforWrite((ushort)(address + i), ValueOld, ValueNew);
+                                }
+                            }
+                            copy = new byte[12];
+                            Array.Copy(data, 0, copy, 0, 12);
+                            copy[4] = 0x00;
+                            copy[5] = 0x06;
+                            break;
+                        }
+                    default:
+                        {
+                            if (IsStarted) LogNet?.WriteWarn(LogHeaderText, "Unknown Function Code:" + data[7]);
+                            copy = new byte[12];
+                            Array.Copy(data, 0, copy, 0, 12);
+                            copy[4] = 0x00;
+                            copy[5] = 0x06;
+                            break;
+                        }
+                }
+
+                // 回发数据，先获取发送锁
+                state.hybirdLock.Enter();
+                state.WorkSocket.BeginSend(copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback(DataSendCallBack), state: state);
+
+                
+                try
+                {
+                    // 管他是什么，先开始数据接收
+                    // state.WorkSocket?.Close();
+                    state.WorkSocket.BeginReceive(state.HeadByte, 0, 6, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
+                }
+                catch (Exception ex)
+                {
+                    // 指令长度验证错误，关闭网络连接
+                    state.WorkSocket?.Close();
+                    state = null;
+                    LogNet?.WriteException(LogHeaderText, "Send exception:", ex);
+                }
+
+
+                // 通知处理消息
+                if (IsStarted) OnDataReceived?.Invoke(data);
+
+
             }
         }
 
@@ -1046,7 +1067,7 @@ namespace HslCommunication.ModBus
                 {
                     state.WorkSocket?.Close();
                     state = null;
-                    if (IsStarted) LogNet?.WriteException(LogHeaderText, "内容数据回发失败！", ex);
+                    LogNet?.WriteException(LogHeaderText, "内容数据回发失败！", ex);
                 }
             }
         }
@@ -1171,6 +1192,7 @@ namespace HslCommunication.ModBus
         {
             hybirdLock = new SimpleHybirdLock();
             ConnectTime = DateTime.Now;
+            HeadByte = new byte[6];
         }
 
         #endregion
