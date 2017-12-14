@@ -271,6 +271,7 @@ namespace HslCommunication.ModBus
                 Content.ParseSource(read.Content);
                 result.Content = Content;
                 result.IsSuccess = true;
+                result.Message = "Success";
             }
             else
             {
@@ -296,6 +297,10 @@ namespace HslCommunication.ModBus
         #endregion
 
         #region Write Support
+
+
+
+
 
         /// <summary>
         /// 写单个线圈，对应的功能码0x05

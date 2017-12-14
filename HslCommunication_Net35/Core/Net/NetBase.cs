@@ -2825,6 +2825,7 @@ namespace HslCommunication.Core
                 // 成功
                 result.Content = response;
                 result.IsSuccess = true;
+                result.Message = "Success";
                 return result;
             }
         }
