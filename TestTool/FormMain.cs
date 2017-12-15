@@ -146,5 +146,16 @@ namespace TestTool
                 userVerticalProgress1.Value = value;
             }
         }
+
+        private void userButton13_Click(object sender, EventArgs e)
+        {
+            // 日志查看器
+            //using (HslCommunication.LogNet.FormLogNetView form = new HslCommunication.LogNet.FormLogNetView())
+            //{
+            //    form.ShowDialog();
+            //}
+            TestForm.FormLogNetTest form = new TestForm.FormLogNetTest();
+            form.ShowDialog();
+        }
     }
 }

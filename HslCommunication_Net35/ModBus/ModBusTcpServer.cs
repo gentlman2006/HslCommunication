@@ -776,7 +776,7 @@ namespace HslCommunication.ModBus
 
                 try
                 {
-                    state.WorkSocket.BeginReceive(state.HeadByte, 0, 6, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
+                    state.WorkSocket.BeginReceive(state.HeadByte, 0, 6, SocketFlags.None, new AsyncCallback(ModbusHeadReveiveCallback), state);
                 }
                 catch (Exception ex)
                 {
@@ -793,7 +793,7 @@ namespace HslCommunication.ModBus
         #region Private Method
 
 
-        private void HeadReveiveCallBack(IAsyncResult ar)
+        private void ModbusHeadReveiveCallback(IAsyncResult ar)
         {
             if (ar.AsyncState is ModBusState state)
             {
@@ -815,7 +815,7 @@ namespace HslCommunication.ModBus
                 {
                     // 数据不够，继续接收
                     state.WorkSocket.BeginReceive(state.HeadByte, state.HeadByteReceivedLength, state.HeadByte.Length - state.HeadByteReceivedLength,
-                        SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
+                        SocketFlags.None, new AsyncCallback(ModbusHeadReveiveCallback), state);
                     return;
                 }
 
@@ -832,7 +832,7 @@ namespace HslCommunication.ModBus
                     state.ContentReceivedLength = 0;
                     // 开始接收内容
                     state.WorkSocket.BeginReceive(state.Content, state.ContentReceivedLength, state.Content.Length - state.ContentReceivedLength,
-                        SocketFlags.None, new AsyncCallback(ContentReveiveCallBack), state);
+                        SocketFlags.None, new AsyncCallback(ModbusDataReveiveCallback), state);
                 }
                 else
                 {
@@ -846,7 +846,7 @@ namespace HslCommunication.ModBus
         }
 
 
-        private void ContentReveiveCallBack(IAsyncResult ar)
+        private void ModbusDataReveiveCallback(IAsyncResult ar)
         {
             if (ar.AsyncState is ModBusState state)
             {
@@ -867,7 +867,7 @@ namespace HslCommunication.ModBus
                 {
                     // 数据不够，继续接收
                     state.WorkSocket.BeginReceive(state.Content, state.ContentReceivedLength, state.Content.Length - state.ContentReceivedLength,
-                        SocketFlags.None, new AsyncCallback(ContentReveiveCallBack), state);
+                        SocketFlags.None, new AsyncCallback(ModbusDataReveiveCallback), state);
                     return;
                 }
 
@@ -1026,24 +1026,26 @@ namespace HslCommunication.ModBus
                         }
                 }
 
-                // 回发数据，先获取发送锁
-                state.hybirdLock.Enter();
-                state.WorkSocket.BeginSend(copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback(DataSendCallBack), state: state);
-
+                
                 
                 try
                 {
                     // 管他是什么，先开始数据接收
                     // state.WorkSocket?.Close();
-                    state.WorkSocket.BeginReceive(state.HeadByte, 0, 6, SocketFlags.None, new AsyncCallback(HeadReveiveCallBack), state);
+                    state.WorkSocket.BeginReceive(state.HeadByte, 0, 6, SocketFlags.None, new AsyncCallback(ModbusHeadReveiveCallback), state);
                 }
                 catch (Exception ex)
                 {
-                    // 指令长度验证错误，关闭网络连接
                     state.WorkSocket?.Close();
                     state = null;
                     LogNet?.WriteException(LogHeaderText, "Send exception:", ex);
+                    return;
                 }
+
+
+                // 回发数据，先获取发送锁
+                state.hybirdLock.Enter();
+                state.WorkSocket.BeginSend(copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback(DataSendCallBack), state: state);
 
 
                 // 通知处理消息

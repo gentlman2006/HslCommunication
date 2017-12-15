@@ -44,6 +44,7 @@
             this.userButton1 = new HslCommunication.Controls.UserButton();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.userButton12 = new HslCommunication.Controls.UserButton();
+            this.userButton13 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
@@ -252,11 +253,26 @@
             this.userButton12.UIText = "设置进度条";
             this.userButton12.Click += new System.EventHandler(this.userButton12_Click);
             // 
+            // userButton13
+            // 
+            this.userButton13.BackColor = System.Drawing.Color.Transparent;
+            this.userButton13.CustomerInformation = "";
+            this.userButton13.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton13.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton13.Location = new System.Drawing.Point(636, 220);
+            this.userButton13.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton13.Name = "userButton13";
+            this.userButton13.Size = new System.Drawing.Size(143, 33);
+            this.userButton13.TabIndex = 16;
+            this.userButton13.UIText = "日志查看器";
+            this.userButton13.Click += new System.EventHandler(this.userButton13_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(791, 554);
+            this.Controls.Add(this.userButton13);
             this.Controls.Add(this.userButton12);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.userButton11);
@@ -299,6 +315,7 @@
         private HslCommunication.Controls.UserButton userButton11;
         private System.Windows.Forms.TextBox textBox2;
         private HslCommunication.Controls.UserButton userButton12;
+        private HslCommunication.Controls.UserButton userButton13;
     }
 }
 

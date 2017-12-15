@@ -80,6 +80,12 @@
     <Compile Include="TestForm\FormJsonTest.Designer.cs">
       <DependentUpon>FormJsonTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestForm\FormLogNetTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm\FormLogNetTest.Designer.cs">
+      <DependentUpon>FormLogNetTest.cs</DependentUpon>
+    </Compile>
     <Compile Include="TestForm\FormModBusTcp.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -130,6 +136,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormJsonTest.resx">
       <DependentUpon>FormJsonTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestForm\FormLogNetTest.resx">
+      <DependentUpon>FormLogNetTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormModBusTcp.resx">
       <DependentUpon>FormModBusTcp.cs</DependentUpon>

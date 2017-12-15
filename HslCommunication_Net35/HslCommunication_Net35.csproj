@@ -136,6 +136,7 @@
     <Compile Include="ModBus\ModBusTcpServer.cs" />
     <Compile Include="Core\Types\IDataTransfer.cs" />
     <Compile Include="Profinet\MelsecNet.cs" />
+    <Compile Include="Profinet\OmronNet.cs" />
     <Compile Include="Profinet\PlcNetBase.cs" />
     <Compile Include="Profinet\SiemensNet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
