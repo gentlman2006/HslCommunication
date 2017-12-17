@@ -39,7 +39,7 @@ Install-Package HslCommunication
 
 * [日志记录功能](http://www.cnblogs.com/dathlin/p/7691693.html)
 * [同步网络通讯功能](http://www.cnblogs.com/dathlin/p/7697782.html)
-* [文件管理引擎](https://github.com/dathlin/FileManagment)
+* [文件管理引擎](http://www.cnblogs.com/dathlin/p/7746113.html)
 * 异步网络通讯功能
 * [三菱及西门子PLC访问](http://www.cnblogs.com/dathlin/p/7469679.html)
 * 邮件功能使用
