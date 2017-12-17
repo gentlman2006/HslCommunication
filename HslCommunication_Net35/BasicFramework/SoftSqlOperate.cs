@@ -176,6 +176,45 @@ namespace HslCommunication.BasicFramework
                 }
             }
         }
+
+
+
+        /// <summary>
+        /// 用于选择聚合函数值的方法，例如Count，Average，Max，Min，Sum等最终只有一个结果值的对象
+        /// </summary>
+        /// <param name="conStr">数据库的连接字符串</param>
+        /// <param name="cmdStr">sql语句，选择数据表的语句</param>
+        /// <returns></returns>
+        public static int ExecuteSelectCount(string conStr, string cmdStr)
+        {
+            using (SqlConnection conn = new SqlConnection(conStr))
+            {
+                conn.Open();
+                return ExecuteSelectCount(conn, cmdStr);
+            }
+        }
+
+
+        /// <summary>
+        /// 用于选择聚合函数值的方法，例如Count，Average，Max，Min，Sum等最终只有一个结果值的对象
+        /// </summary>
+        /// <param name="conn">数据库的连接对象</param>
+        /// <param name="cmdStr">sql语句，选择数据表的语句</param>
+        /// <returns></returns>
+        public static int ExecuteSelectCount(SqlConnection conn, string cmdStr)
+        {
+            using (SqlCommand cmd = new SqlCommand(cmdStr, conn))
+            {
+                int temp = 0;
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.Read())
+                {
+                    temp = Convert.ToInt32(sdr[0]);
+                }
+                sdr.Close();
+                return temp;
+            }
+        }
     }
 
 
