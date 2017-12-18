@@ -2794,7 +2794,7 @@ namespace HslCommunication.Core
             hslTimeOut.IsSuccessful = true;                     // 退出超时的算法
 
             receive = response;                                 // 接收到数据
-            if (!isSocketInitialization) socket?.Close();       // 如果是短连接就关闭连接
+            if (!isSocketInitialization) socket.Close();       // 如果是短连接就关闭连接
 
             serverInterfaceLock.Leave();                        // 离开读取的锁
             
