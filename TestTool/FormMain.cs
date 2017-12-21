@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 
 namespace TestTool
 {
@@ -157,5 +158,50 @@ namespace TestTool
             TestForm.FormLogNetTest form = new TestForm.FormLogNetTest();
             form.ShowDialog();
         }
+
+
+
+
+
+
+
+
+        private void userButton14_Click(object sender, EventArgs e)
+        {
+            string json = JObject.FromObject(new AA()
+            {
+                asdasdasdasd = "123123123",
+                adasdasd = 1234,
+            }).ToString();
+
+
+            AA aa = GetT<AA>(json);
+            ;
+        }
+
+        private T GetT<T>(string json)
+        {
+            JObject jObject = JObject.Parse(json);
+            string dataType = jObject["DataType"].ToObject<string>();
+
+            Type type = Type.GetType("TestTool."+dataType);
+            object obj = jObject.ToObject(type);
+            return (T)obj;
+        }
+    }
+
+    public class AA
+    {
+        public AA()
+        {
+            DataType = "AA";
+        }
+
+
+        public int adasdasd { get; set; }
+
+        public string asdasdasdasd { get; set; }
+
+        public string DataType { get; set; }
     }
 }
