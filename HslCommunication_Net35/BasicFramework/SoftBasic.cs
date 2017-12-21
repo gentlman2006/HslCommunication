@@ -65,7 +65,7 @@ namespace HslCommunication.BasicFramework
 
         #region 数据大小相关
 
-        
+
         /// <summary>
         /// 从一个字节大小返回带单位的描述
         /// </summary>
@@ -133,7 +133,7 @@ namespace HslCommunication.BasicFramework
                 return default_value;
             }
         }
-        
+
 
 
         /// <summary>
@@ -159,20 +159,34 @@ namespace HslCommunication.BasicFramework
         #endregion
 
         #region 异常错误信息格式化
-        
+
         /// <summary>
         /// 显示一个完整的错误信息
         /// </summary>
-        /// <param name="ex"></param>
+        /// <param name="ex">异常对象</param>
         /// <exception cref="NullReferenceException"></exception>
         public static void ShowExceptionMessage(Exception ex)
         {
             MessageBox.Show(GetExceptionMessage(ex));
         }
+
+
+        /// <summary>
+        /// 显示一个完整的错误信息，和额外的字符串描述信息
+        /// </summary>
+        /// <param name="extraMsg">额外的描述信息</param>
+        /// <param name="ex">异常对象</param>
+        /// <exception cref="NullReferenceException"></exception>
+        public static void ShowExceptionMessage(string extraMsg, Exception ex)
+        {
+            MessageBox.Show(GetExceptionMessage(extraMsg, ex));
+        }
+
+
         /// <summary>
         /// 获取一个异常的完整错误信息
         /// </summary>
-        /// <param name="ex"></param>
+        /// <param name="ex">异常对象</param>
         /// <returns></returns>
         /// <exception cref="NullReferenceException"></exception>
         public static string GetExceptionMessage(Exception ex)
@@ -181,6 +195,26 @@ namespace HslCommunication.BasicFramework
                 StringResources.ExceptionStackTrace + ex.StackTrace + Environment.NewLine +
                 StringResources.ExceptopnTargetSite + ex.TargetSite;
         }
+
+        /// <summary>
+        /// 获取一个异常的完整错误信息，和额外的字符串描述信息
+        /// </summary>
+        /// <param name="extraMsg">额外的信息</param>
+        /// <param name="ex">异常对象</param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
+        public static string GetExceptionMessage(string extraMsg, Exception ex)
+        {
+            if (string.IsNullOrEmpty(extraMsg))
+            {
+                return GetExceptionMessage(ex);
+            }
+            else
+            {
+                return extraMsg + Environment.NewLine + GetExceptionMessage(ex);
+            }
+        }
+
 
         #endregion
 
@@ -246,7 +280,7 @@ namespace HslCommunication.BasicFramework
             {
                 '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
             };
-            
+
             MemoryStream ms = new MemoryStream();
 
             for (int i = 0; i < hex.Length; i++)
@@ -354,7 +388,7 @@ namespace HslCommunication.BasicFramework
         #endregion
 
         #region 基础框架块
-        
+
         /// <summary>
         /// 设置或获取系统框架的版本号
         /// </summary>
@@ -364,7 +398,7 @@ namespace HslCommunication.BasicFramework
         #endregion
 
         #region 深度克隆对象
-        
+
         /// <summary>
         /// 使用序列化反序列化深度克隆一个对象
         /// </summary>
