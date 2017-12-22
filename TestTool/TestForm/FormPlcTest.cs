@@ -694,6 +694,11 @@ namespace TestTool.TestForm
 
         private void userButton22_Click_1(object sender, EventArgs e)
         {
+            string temp = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(
+                siemensTcpNet.ReadFromServerCore(HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(
+                    "03 00 00 1F 02 F0 80 32 01 00 00 00 01 00 0E 00 00 04 01 12 0A 10 01 00 01 00 00 81 00 00 00")).Content, ' ');
+
+
             // M100读取
             //TextBoxAppendStringLine(siemensTcpNet.ReadByteFromPLC("M100").Content.ToString());
             TextBoxAppendStringLine(siemensTcpNet.ReadBoolFromPLC("M100.0").Content.ToString());
