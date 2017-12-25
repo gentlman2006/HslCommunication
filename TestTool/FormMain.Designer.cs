@@ -86,10 +86,11 @@
             this.userVerticalProgress1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userVerticalProgress1.Location = new System.Drawing.Point(441, 125);
             this.userVerticalProgress1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userVerticalProgress1.Max = 200;
             this.userVerticalProgress1.Name = "userVerticalProgress1";
             this.userVerticalProgress1.Size = new System.Drawing.Size(83, 314);
             this.userVerticalProgress1.TabIndex = 11;
-            this.userVerticalProgress1.Value = 70;
+            this.userVerticalProgress1.Value = 100;
             // 
             // userButton10
             // 

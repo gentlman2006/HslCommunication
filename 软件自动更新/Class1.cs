@@ -79,12 +79,19 @@ namespace 软件自动更新
             ServerIp = "117.48.203.204",
             ServerPort = 17538,
         };
+        public static SystemUpdate 汇博生产管理系统 = new SystemUpdate()
+        {
+            SoftName = "生产管理系统客户端",
+            SoftNameHead = "江苏汇博",
+            ServerIp = "117.48.203.204",
+            ServerPort = 23458,
+        };
     }
 
 
     public class Class1
     {
-        public static SystemUpdate CurrentSystem = SystemUpdate.CS项目基础模版;
+        public static SystemUpdate CurrentSystem = SystemUpdate.汇博生产管理系统;
     }
     
 

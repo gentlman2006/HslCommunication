@@ -714,19 +714,41 @@ namespace TestTool.TestForm
 
         private void userButton23_Click_1(object sender, EventArgs e)
         {
-            byte[] buffer = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(
-                "03 00 00 24 02 F0 80 32 01 00 00 00 01 00 0E 00 05 05 01 12 0A 10 02 00 01 00 00 83 00 03 20 00 04 00 08 3B");
+            byte[] buffer = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(textBox2.Text);
             OperateResult<byte[]> operate = siemensTcpNet.ReadFromServerCore(buffer);
             if (operate.IsSuccess)
             {
                 // 显示服务器返回的报文
-                TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(operate.Content));
+                TextBoxAppendStringLine(HslCommunication.BasicFramework.SoftBasic.ByteToHexString(operate.Content, ' '));
             }
             else
             {
                 // 显示网络错误
                 MessageBox.Show(operate.ToMessageShowString());
             }
+        }
+
+        private void userButton24_Click(object sender, EventArgs e)
+        {
+            OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC("I0", 2);
+            if (read.IsSuccess)
+            {
+                textBox1.Text = "I0:" + read.Content[0] + " I1:" + read.Content[1];
+                bool I0_0 = (read.Content[0] & 0x01) == 0x01;//M100.0的通断
+                bool I0_1 = (read.Content[0] & 0x02) == 0x02;//M100.1的通断
+                bool I0_2 = (read.Content[0] & 0x04) == 0x04;//M100.2的通断
+                bool I0_3 = (read.Content[0] & 0x08) == 0x08;//M100.3的通断
+                bool I0_4 = (read.Content[0] & 0x10) == 0x10;//M100.4的通断
+                bool I0_5 = (read.Content[0] & 0x20) == 0x20;//M100.5的通断
+                bool I0_6 = (read.Content[0] & 0x40) == 0x40;//M100.6的通断
+                bool I0_7 = (read.Content[0] & 0x80) == 0x80;//M100.7的通断
+                ;
+            }
+            else
+            {
+                MessageBox.Show(read.ToMessageShowString());
+            }
+
         }
     }
 }

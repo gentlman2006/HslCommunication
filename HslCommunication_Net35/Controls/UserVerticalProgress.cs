@@ -133,11 +133,12 @@ namespace HslCommunication.Controls
         private Brush m_foreBrush;                                          // 前景色
         private Color m_progressColor;                                      // 前景色颜色
         private StringFormat m_formatCenter;                                // 中间显示字符串的格式
-        private bool m_isTextRender = true;                                // 是否显示文本信息
+        private bool m_isTextRender = true;                                 // 是否显示文本信息
         private Action m_UpdateAction;                                      // 更新界面的委托
         private Core.SimpleHybirdLock hybirdLock;                           // 数据的同步锁
         private int m_speed = 1;                                            // 进度条的升降快慢
         private ProgressStyle m_progressStyle = ProgressStyle.Vertical;     // 进度条的样式，指示水平的还是竖直的
+        private bool m_UseAnimation = false;                                // 是否采用动画效果
 
         #endregion
 
@@ -232,9 +233,17 @@ namespace HslCommunication.Controls
                     if (value != m_value)
                     {
                         m_value = value;
-                        int version = System.Threading.Interlocked.Increment(ref m_version);
-                        System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(
-                            ThreadPoolUpdateProgress), version);
+                        if (UseAnimation)
+                        {
+                            int version = System.Threading.Interlocked.Increment(ref m_version);
+                            System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(
+                                ThreadPoolUpdateProgress), version);
+                        }
+                        else
+                        {
+                            m_actual = value;
+                            Invalidate();
+                        }
                     }
                 }
             }
@@ -293,6 +302,21 @@ namespace HslCommunication.Controls
                     m_speed = value;
                 }
             }
+        }
+
+
+
+        /// <summary>
+        /// 获取或设置进度条变化的时候是否采用动画效果
+        /// </summary>
+        [Description("获取或设置进度条变化的时候是否采用动画效果")]
+        [Category("外观")]
+        [Browsable(true)]
+        [DefaultValue(false)]
+        public bool UseAnimation
+        {
+            get { return m_UseAnimation; }
+            set { m_UseAnimation = value; }
         }
 
 
