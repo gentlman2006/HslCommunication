@@ -135,7 +135,7 @@ namespace TestTool
 
             userPieChart1.SetDataSource(
                 new string[] { "AAA", "BBB", "CCC", "DDD" },
-                new int[] { 10, 4, 5, 8 });
+                new int[] { 1, 2, 3, 4 });
         }
 
         private void userButton11_Click(object sender, EventArgs e)

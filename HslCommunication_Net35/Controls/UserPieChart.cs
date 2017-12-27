@@ -141,11 +141,11 @@ namespace HslCommunication.Controls
                     {
                         e.Graphics.RotateTransform(totleAngle - 270);
                         e.Graphics.DrawLine(Pens.DimGray, 0, 0, 32, 0);
-                        e.Graphics.TranslateTransform(40, 0);
+                        e.Graphics.TranslateTransform(35, 0);
                         e.Graphics.RotateTransform(180);
                         e.Graphics.DrawString(pieItems[i].Name, Font, Brushes.DimGray, new Point(0, -16));
                         e.Graphics.RotateTransform(-180);
-                        e.Graphics.TranslateTransform(-40, 0);
+                        e.Graphics.TranslateTransform(-35, 0);
                         e.Graphics.RotateTransform(270 - totleAngle);
                     }
 
