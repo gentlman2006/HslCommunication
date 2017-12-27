@@ -133,9 +133,17 @@ namespace TestTool
         {
             textBox1.Text = random.Next(10000000).ToString();
 
+            List<string> data = new List<string>();
+            List<int> ints = new List<int>();
+            for (int i = 0; i < 20; i++)
+            {
+                data.Add(random.Next(100, 999).ToString());
+                ints.Add(random.Next(0, 5));
+            }
+
             userPieChart1.SetDataSource(
-                new string[] { "AAA", "BBB", "CCC", "DDD" },
-                new int[] { 1, 2, 3, 4 });
+                data.ToArray(),
+                ints.ToArray());
         }
 
         private void userButton11_Click(object sender, EventArgs e)

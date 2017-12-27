@@ -42,25 +42,67 @@ namespace HslCommunication.Controls
         private HslPieItem[] pieItems = new HslPieItem[0];
         private Random random = null;
         private StringFormat formatCenter = null;
+        private int margin = 40;
+        private bool m_IsRenderPercent = false;
 
+        /// <summary>
+        /// 是否显示百分比信息
+        /// </summary>
+        [Browsable(true)]
+        [Category("外观")]
+        [DefaultValue(false)]
+        [Description("获取或设置是否显示百分比占用")]
+        public bool IsRenderPercent
+        {
+            get { return m_IsRenderPercent; }
+            set { m_IsRenderPercent = value; Invalidate(); }
+        }
+
+
+        private void SetMarginPaint(int value)
+        {
+            if (value > 500)
+            {
+                margin = 80;
+            }
+            else if (value > 300)
+            {
+                margin = 60;
+            }
+            else
+            {
+                margin = 40;
+            }
+        }
 
         private Point GetCenterPoint(out int width)
         {
             if (Width > Height)
             {
-                width = Height / 2 - 40;
+                SetMarginPaint(Height);
+                width = Height / 2 - margin;
                 return new Point(Height / 2 - 1, Height / 2 - 1);
             }
             else
             {
-                width = Width / 2 - 40;
+                SetMarginPaint(Width);
+                width = Width / 2 - margin;
                 return new Point(Width / 2 - 1, Width / 2 - 1);
             }
         }
 
+
+        /// <summary>
+        /// 随机生成颜色，该颜色相对于白色为深色颜色，参考网址 https://www.cnblogs.com/tqq-okc/archive/2012/08/25/color.html
+        /// </summary>
+        /// <returns></returns>
         private Color GetRandomColor()
         {
-            return Color.FromArgb(random.Next(256), random.Next(256), random.Next(256));
+            int int_Red = random.Next(256);
+            int int_Green = random.Next(256);
+            int int_Blue = (int_Red + int_Green > 400) ? 0 : 400 - int_Red - int_Green;
+            int_Blue = (int_Blue > 255) ? 255 : int_Blue;
+            return Color.FromArgb(int_Red, int_Green, int_Blue);
         }
 
 
@@ -108,48 +150,56 @@ namespace HslCommunication.Controls
                     e.Graphics.RotateTransform(0 - single / 2);
 
                     // 画标线
-                    e.Graphics.DrawLine(Pens.DimGray, width * 2 / 3, 0, width + 8, 0);
                     totleAngle += single / 2;
-                    e.Graphics.TranslateTransform(width + 8, 0);
+                    int mark = 8;
+                    if (totleAngle < 45 || totleAngle > 315) mark = 15;
+                    if (totleAngle > 135 && totleAngle < 225) mark = 15;
+
+                    e.Graphics.DrawLine(Pens.DimGray, width * 2 / 3, 0, width + mark, 0);
+                    e.Graphics.TranslateTransform(width + mark, 0);
 
                     if (totleAngle < 90)
                     {
                         e.Graphics.RotateTransform(totleAngle - 90);
-                        e.Graphics.DrawLine(Pens.DimGray, 0, 0, 32, 0);
+                        e.Graphics.DrawLine(Pens.DimGray, 0, 0, margin - mark, 0);
                         e.Graphics.DrawString(pieItems[i].Name, Font, Brushes.DimGray, new Point(0, -16));
+                        if (IsRenderPercent) e.Graphics.DrawString(Math.Round(single * 100 / 360, 2).ToString() + "%", Font, Brushes.DodgerBlue, new Point(0, 1));
                         e.Graphics.RotateTransform(90 - totleAngle);
                     }
                     else if (totleAngle < 180)
                     {
                         e.Graphics.RotateTransform(totleAngle - 90);
-                        e.Graphics.DrawLine(Pens.DimGray, 0, 0, 32, 0);
+                        e.Graphics.DrawLine(Pens.DimGray, 0, 0, margin - mark, 0);
                         e.Graphics.DrawString(pieItems[i].Name, Font, Brushes.DimGray, new Point(0, -16));
+                        if (IsRenderPercent) e.Graphics.DrawString(Math.Round(single * 100 / 360, 2).ToString() + "%", Font, Brushes.DodgerBlue, new Point(0, 1));
                         e.Graphics.RotateTransform(90 - totleAngle);
                     }
                     else if (totleAngle < 270)
                     {
                         e.Graphics.RotateTransform(totleAngle - 270);
-                        e.Graphics.DrawLine(Pens.DimGray, 0, 0, 32, 0);
-                        e.Graphics.TranslateTransform(40, 0);
+                        e.Graphics.DrawLine(Pens.DimGray, 0, 0, margin - mark, 0);
+                        e.Graphics.TranslateTransform(margin-8, 0);
                         e.Graphics.RotateTransform(180);
                         e.Graphics.DrawString(pieItems[i].Name, Font, Brushes.DimGray, new Point(0, -16));
+                        if (IsRenderPercent) e.Graphics.DrawString(Math.Round(single * 100 / 360, 2).ToString() + "%", Font, Brushes.DodgerBlue, new Point(0, 1));
                         e.Graphics.RotateTransform(-180);
-                        e.Graphics.TranslateTransform(-40, 0);
+                        e.Graphics.TranslateTransform(8-margin, 0);
                         e.Graphics.RotateTransform(270 - totleAngle);
                     }
                     else
                     {
                         e.Graphics.RotateTransform(totleAngle - 270);
-                        e.Graphics.DrawLine(Pens.DimGray, 0, 0, 32, 0);
-                        e.Graphics.TranslateTransform(35, 0);
+                        e.Graphics.DrawLine(Pens.DimGray, 0, 0, margin - mark, 0);
+                        e.Graphics.TranslateTransform(margin - 8, 0);
                         e.Graphics.RotateTransform(180);
                         e.Graphics.DrawString(pieItems[i].Name, Font, Brushes.DimGray, new Point(0, -16));
+                        if (IsRenderPercent) e.Graphics.DrawString(Math.Round(single * 100 / 360, 2).ToString() + "%", Font, Brushes.DodgerBlue, new Point(0, 1));
                         e.Graphics.RotateTransform(-180);
-                        e.Graphics.TranslateTransform(-35, 0);
+                        e.Graphics.TranslateTransform(8 - margin, 0);
                         e.Graphics.RotateTransform(270 - totleAngle);
                     }
 
-                    e.Graphics.TranslateTransform(-width - 8, 0);
+                    e.Graphics.TranslateTransform(-width - mark, 0);
                     e.Graphics.RotateTransform(0 - single / 2);
                     totleAngle += single / 2;
                 }

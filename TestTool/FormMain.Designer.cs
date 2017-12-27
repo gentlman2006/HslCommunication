@@ -80,10 +80,10 @@
             // 
             this.userPieChart1.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userPieChart1.Location = new System.Drawing.Point(86, 219);
+            this.userPieChart1.Location = new System.Drawing.Point(74, 229);
             this.userPieChart1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart1.Name = "userPieChart1";
-            this.userPieChart1.Size = new System.Drawing.Size(256, 246);
+            this.userPieChart1.Size = new System.Drawing.Size(219, 211);
             this.userPieChart1.TabIndex = 18;
             // 
             // userButton14
