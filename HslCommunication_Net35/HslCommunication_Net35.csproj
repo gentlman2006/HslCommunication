@@ -83,6 +83,12 @@
     <Compile Include="BasicFramework\SoftSecurity.cs" />
     <Compile Include="BasicFramework\SoftSqlOperate.cs" />
     <Compile Include="BasicFramework\SoftVersion.cs" />
+    <Compile Include="Controls\UserPieChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UserPieChart.Designer.cs">
+      <DependentUpon>UserPieChart.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UserVerticalProgress.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -104,6 +110,7 @@
       <DependentUpon>UserClock.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\Thread\ThreadLock.cs" />
+    <Compile Include="Core\Types\HslPieItem.cs" />
     <Compile Include="Enthernet\ClassFileNet.cs" />
     <Compile Include="Enthernet\ClassMultiNet.cs" />
     <Compile Include="Enthernet\ClassSimplify.cs" />
@@ -169,6 +176,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserClock.resx">
       <DependentUpon>UserClock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserPieChart.resx">
+      <DependentUpon>UserPieChart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserVerticalProgress.resx">
       <DependentUpon>UserVerticalProgress.cs</DependentUpon>

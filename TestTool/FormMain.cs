@@ -132,6 +132,10 @@ namespace TestTool
         private void button1_Click(object sender, EventArgs e)
         {
             textBox1.Text = random.Next(10000000).ToString();
+
+            userPieChart1.SetDataSource(
+                new string[] { "AAA", "BBB", "CCC", "DDD" },
+                new int[] { 10, 4, 5, 8 });
         }
 
         private void userButton11_Click(object sender, EventArgs e)

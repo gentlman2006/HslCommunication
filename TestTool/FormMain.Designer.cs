@@ -30,6 +30,11 @@
         {
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.userPieChart1 = new HslCommunication.Controls.UserPieChart();
+            this.userButton14 = new HslCommunication.Controls.UserButton();
+            this.userButton13 = new HslCommunication.Controls.UserButton();
+            this.userButton12 = new HslCommunication.Controls.UserButton();
             this.userButton11 = new HslCommunication.Controls.UserButton();
             this.userVerticalProgress1 = new HslCommunication.Controls.UserVerticalProgress();
             this.userButton10 = new HslCommunication.Controls.UserButton();
@@ -42,10 +47,6 @@
             this.userButton3 = new HslCommunication.Controls.UserButton();
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.userButton1 = new HslCommunication.Controls.UserButton();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.userButton12 = new HslCommunication.Controls.UserButton();
-            this.userButton13 = new HslCommunication.Controls.UserButton();
-            this.userButton14 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
@@ -65,6 +66,67 @@
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // textBox2
+            // 
+            this.textBox2.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBox2.Location = new System.Drawing.Point(530, 125);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(124, 26);
+            this.textBox2.TabIndex = 14;
+            this.textBox2.Text = "0";
+            // 
+            // userPieChart1
+            // 
+            this.userPieChart1.BackColor = System.Drawing.Color.Transparent;
+            this.userPieChart1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userPieChart1.Location = new System.Drawing.Point(86, 219);
+            this.userPieChart1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userPieChart1.Name = "userPieChart1";
+            this.userPieChart1.Size = new System.Drawing.Size(256, 246);
+            this.userPieChart1.TabIndex = 18;
+            // 
+            // userButton14
+            // 
+            this.userButton14.BackColor = System.Drawing.Color.Transparent;
+            this.userButton14.CustomerInformation = "";
+            this.userButton14.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton14.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton14.Location = new System.Drawing.Point(326, 472);
+            this.userButton14.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton14.Name = "userButton14";
+            this.userButton14.Size = new System.Drawing.Size(143, 33);
+            this.userButton14.TabIndex = 17;
+            this.userButton14.UIText = "json转换测试";
+            this.userButton14.Click += new System.EventHandler(this.userButton14_Click);
+            // 
+            // userButton13
+            // 
+            this.userButton13.BackColor = System.Drawing.Color.Transparent;
+            this.userButton13.CustomerInformation = "";
+            this.userButton13.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton13.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton13.Location = new System.Drawing.Point(636, 220);
+            this.userButton13.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton13.Name = "userButton13";
+            this.userButton13.Size = new System.Drawing.Size(143, 33);
+            this.userButton13.TabIndex = 16;
+            this.userButton13.UIText = "日志查看器";
+            this.userButton13.Click += new System.EventHandler(this.userButton13_Click);
+            // 
+            // userButton12
+            // 
+            this.userButton12.BackColor = System.Drawing.Color.Transparent;
+            this.userButton12.CustomerInformation = "";
+            this.userButton12.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton12.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton12.Location = new System.Drawing.Point(530, 158);
+            this.userButton12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton12.Name = "userButton12";
+            this.userButton12.Size = new System.Drawing.Size(143, 33);
+            this.userButton12.TabIndex = 15;
+            this.userButton12.UIText = "设置进度条";
+            this.userButton12.Click += new System.EventHandler(this.userButton12_Click);
             // 
             // userButton11
             // 
@@ -88,7 +150,7 @@
             this.userVerticalProgress1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userVerticalProgress1.Max = 200;
             this.userVerticalProgress1.Name = "userVerticalProgress1";
-            this.userVerticalProgress1.Size = new System.Drawing.Size(83, 314);
+            this.userVerticalProgress1.Size = new System.Drawing.Size(54, 283);
             this.userVerticalProgress1.TabIndex = 11;
             this.userVerticalProgress1.Value = 100;
             // 
@@ -232,62 +294,12 @@
             this.userButton1.UIText = "PLC网络测试";
             this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
-            // textBox2
-            // 
-            this.textBox2.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox2.Location = new System.Drawing.Point(530, 125);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(124, 26);
-            this.textBox2.TabIndex = 14;
-            this.textBox2.Text = "0";
-            // 
-            // userButton12
-            // 
-            this.userButton12.BackColor = System.Drawing.Color.Transparent;
-            this.userButton12.CustomerInformation = "";
-            this.userButton12.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton12.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton12.Location = new System.Drawing.Point(530, 158);
-            this.userButton12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton12.Name = "userButton12";
-            this.userButton12.Size = new System.Drawing.Size(143, 33);
-            this.userButton12.TabIndex = 15;
-            this.userButton12.UIText = "设置进度条";
-            this.userButton12.Click += new System.EventHandler(this.userButton12_Click);
-            // 
-            // userButton13
-            // 
-            this.userButton13.BackColor = System.Drawing.Color.Transparent;
-            this.userButton13.CustomerInformation = "";
-            this.userButton13.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton13.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton13.Location = new System.Drawing.Point(636, 220);
-            this.userButton13.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton13.Name = "userButton13";
-            this.userButton13.Size = new System.Drawing.Size(143, 33);
-            this.userButton13.TabIndex = 16;
-            this.userButton13.UIText = "日志查看器";
-            this.userButton13.Click += new System.EventHandler(this.userButton13_Click);
-            // 
-            // userButton14
-            // 
-            this.userButton14.BackColor = System.Drawing.Color.Transparent;
-            this.userButton14.CustomerInformation = "";
-            this.userButton14.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton14.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton14.Location = new System.Drawing.Point(225, 355);
-            this.userButton14.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton14.Name = "userButton14";
-            this.userButton14.Size = new System.Drawing.Size(143, 33);
-            this.userButton14.TabIndex = 17;
-            this.userButton14.UIText = "json转换测试";
-            this.userButton14.Click += new System.EventHandler(this.userButton14_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(791, 554);
+            this.Controls.Add(this.userPieChart1);
             this.Controls.Add(this.userButton14);
             this.Controls.Add(this.userButton13);
             this.Controls.Add(this.userButton12);
@@ -334,6 +346,7 @@
         private HslCommunication.Controls.UserButton userButton12;
         private HslCommunication.Controls.UserButton userButton13;
         private HslCommunication.Controls.UserButton userButton14;
+        private HslCommunication.Controls.UserPieChart userPieChart1;
     }
 }
 

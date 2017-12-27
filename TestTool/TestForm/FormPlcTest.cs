@@ -730,18 +730,29 @@ namespace TestTool.TestForm
 
         private void userButton24_Click(object sender, EventArgs e)
         {
+            short value = siemensTcpNet.ReadShortFromPLC("I0").Content;
+
             OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC("I0", 2);
             if (read.IsSuccess)
             {
-                textBox1.Text = "I0:" + read.Content[0] + " I1:" + read.Content[1];
-                bool I0_0 = (read.Content[0] & 0x01) == 0x01;//M100.0的通断
-                bool I0_1 = (read.Content[0] & 0x02) == 0x02;//M100.1的通断
-                bool I0_2 = (read.Content[0] & 0x04) == 0x04;//M100.2的通断
-                bool I0_3 = (read.Content[0] & 0x08) == 0x08;//M100.3的通断
-                bool I0_4 = (read.Content[0] & 0x10) == 0x10;//M100.4的通断
-                bool I0_5 = (read.Content[0] & 0x20) == 0x20;//M100.5的通断
-                bool I0_6 = (read.Content[0] & 0x40) == 0x40;//M100.6的通断
-                bool I0_7 = (read.Content[0] & 0x80) == 0x80;//M100.7的通断
+                textBox1.Text = read.Content[0].ToString();
+                //bool I0_0 = (read.Content[0] & 0x01) == 0x01;//M100.0的通断
+                //bool I0_1 = (read.Content[0] & 0x02) == 0x02;//M100.1的通断
+                //bool I0_2 = (read.Content[0] & 0x04) == 0x04;//M100.2的通断
+                //bool I0_3 = (read.Content[0] & 0x08) == 0x08;//M100.3的通断
+                //bool I0_4 = (read.Content[0] & 0x10) == 0x10;//M100.4的通断
+                //bool I0_5 = (read.Content[0] & 0x20) == 0x20;//M100.5的通断
+                //bool I0_6 = (read.Content[0] & 0x40) == 0x40;//M100.6的通断
+                //bool I0_7 = (read.Content[0] & 0x80) == 0x80;//M100.7的通断
+
+                string I0_0 = (read.Content[0] & 0x01) == 0x01 ? "1" : "0";
+                string I0_1 = (read.Content[0] & 0x02) == 0x02 ? "1" : "0";
+                string I0_2 = (read.Content[0] & 0x04) == 0x04 ? "1" : "0";
+                string I0_3 = (read.Content[0] & 0x08) == 0x08 ? "1" : "0";
+                string I0_4 = (read.Content[0] & 0x10) == 0x10 ? "1" : "0";
+                string I0_5 = (read.Content[0] & 0x20) == 0x20 ? "1" : "0";
+                string I0_6 = (read.Content[0] & 0x40) == 0x40 ? "1" : "0";
+                string I0_7 = (read.Content[0] & 0x80) == 0x80 ? "1" : "0";
                 ;
             }
             else
