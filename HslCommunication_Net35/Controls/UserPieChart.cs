@@ -93,15 +93,14 @@ namespace HslCommunication.Controls
 
 
         /// <summary>
-        /// 随机生成颜色，该颜色相对于白色为深色颜色，参考网址 https://www.cnblogs.com/tqq-okc/archive/2012/08/25/color.html
+        /// 随机生成颜色，该颜色相对于白色为深色颜色
         /// </summary>
         /// <returns></returns>
         private Color GetRandomColor()
         {
             int int_Red = random.Next(256);
             int int_Green = random.Next(256);
-            int int_Blue = (int_Red + int_Green > 400) ? 0 : 400 - int_Red - int_Green;
-            int_Blue = (int_Blue > 255) ? 255 : int_Blue;
+            int int_Blue = (int_Red + int_Green > 430) ? random.Next(100) : random.Next(200);
             return Color.FromArgb(int_Red, int_Green, int_Blue);
         }
 
@@ -129,7 +128,8 @@ namespace HslCommunication.Controls
 
                 // 计算分布
                 int totle = pieItems.Sum(item => item.Value);
-                float totleAngle = 0;
+                float totleAngle = 0;     // 本次绘制的角度
+                float lastAngle = -90;    // 上一次的角度
                 for (int i = 0; i < pieItems.Length; i++)
                 {
                     float single = 0;
@@ -157,6 +157,13 @@ namespace HslCommunication.Controls
 
                     e.Graphics.DrawLine(Pens.DimGray, width * 2 / 3, 0, width + mark, 0);
                     e.Graphics.TranslateTransform(width + mark, 0);
+
+                    if(totleAngle - lastAngle < 5)
+                    {
+                        // 两次的标线非常接近
+
+                    }
+                    lastAngle = totleAngle;
 
                     if (totleAngle < 90)
                     {

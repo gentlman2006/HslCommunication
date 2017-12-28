@@ -135,7 +135,7 @@ namespace TestTool
 
             List<string> data = new List<string>();
             List<int> ints = new List<int>();
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 8; i++)
             {
                 data.Add(random.Next(100, 999).ToString());
                 ints.Add(random.Next(0, 5));
