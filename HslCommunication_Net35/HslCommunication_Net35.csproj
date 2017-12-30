@@ -83,6 +83,12 @@
     <Compile Include="BasicFramework\SoftSecurity.cs" />
     <Compile Include="BasicFramework\SoftSqlOperate.cs" />
     <Compile Include="BasicFramework\SoftVersion.cs" />
+    <Compile Include="Controls\UserGaugeChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UserGaugeChart.Designer.cs">
+      <DependentUpon>UserGaugeChart.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UserPieChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -176,6 +182,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserClock.resx">
       <DependentUpon>UserClock.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserGaugeChart.resx">
+      <DependentUpon>UserGaugeChart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserPieChart.resx">
       <DependentUpon>UserPieChart.cs</DependentUpon>
