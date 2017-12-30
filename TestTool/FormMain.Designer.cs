@@ -47,6 +47,7 @@
             this.userButton3 = new HslCommunication.Controls.UserButton();
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.userButton1 = new HslCommunication.Controls.UserButton();
+            this.userButton15 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
@@ -294,11 +295,26 @@
             this.userButton1.UIText = "PLC网络测试";
             this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
+            // userButton15
+            // 
+            this.userButton15.BackColor = System.Drawing.Color.Transparent;
+            this.userButton15.CustomerInformation = "";
+            this.userButton15.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton15.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton15.Location = new System.Drawing.Point(608, 13);
+            this.userButton15.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton15.Name = "userButton15";
+            this.userButton15.Size = new System.Drawing.Size(143, 33);
+            this.userButton15.TabIndex = 19;
+            this.userButton15.UIText = "控件测试";
+            this.userButton15.Click += new System.EventHandler(this.userButton15_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(791, 554);
+            this.Controls.Add(this.userButton15);
             this.Controls.Add(this.userPieChart1);
             this.Controls.Add(this.userButton14);
             this.Controls.Add(this.userButton13);
@@ -347,6 +363,7 @@
         private HslCommunication.Controls.UserButton userButton13;
         private HslCommunication.Controls.UserButton userButton14;
         private HslCommunication.Controls.UserPieChart userPieChart1;
+        private HslCommunication.Controls.UserButton userButton15;
     }
 }
 

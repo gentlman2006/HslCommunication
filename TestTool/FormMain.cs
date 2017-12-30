@@ -200,6 +200,13 @@ namespace TestTool
             object obj = jObject.ToObject(type);
             return (T)obj;
         }
+
+        private void userButton15_Click(object sender, EventArgs e)
+        {
+            TestForm.FormControls form = new TestForm.FormControls();
+            form.ShowDialog();
+            form.Dispose();
+        }
     }
 
     public class AA

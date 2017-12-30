@@ -26,6 +26,10 @@ namespace HslCommunication.Controls
 
 
             pen_gauge_border = new Pen(color_gauge_border);
+            brush_gauge_pointer = new SolidBrush(color_gauge_pointer);
+            centerFormat = new StringFormat();
+            centerFormat.Alignment = StringAlignment.Center;
+            centerFormat.LineAlignment = StringAlignment.Center;
 
             DoubleBuffered = true;
 
@@ -51,28 +55,58 @@ namespace HslCommunication.Controls
             Rectangle circular = new Rectangle(-radius, -radius, 2 * radius, 2 * radius);
             Rectangle circular_mini = new Rectangle(-radius / 3, -radius / 3, 2 * radius / 3, 2 * radius / 3);
 
-
             g.TranslateTransform(center.X, center.Y);
 
-            GraphicsPath path = new GraphicsPath(FillMode.Alternate);
-            path.AddArc(circular_mini, -angle, angle * 2 - 180);
-            path.AddLine((int)(-(radius / 3) * Math.Cos(angle / 180 * Math.PI)), -(int)((radius / 3) * Math.Sin(angle / 180 * Math.PI)), -(int)(radius * Math.Cos(angle / 180 * Math.PI)), -(int)(radius * Math.Sin(angle / 180 * Math.PI)));
-            path.AddArc(circular, angle - 180, 180 - angle * 2);
-            path.AddLine((int)(radius * Math.Cos(angle / 180 * Math.PI)), -(int)(radius * Math.Sin(angle / 180 * Math.PI)), (int)((radius / 3) * Math.Cos(angle / 180 * Math.PI)), -(int)((radius / 3) * Math.Sin(angle / 180 * Math.PI)));
+            g.DrawArc(pen_gauge_border, circular_mini, -angle, angle * 2 - 180);
+            g.DrawArc(pen_gauge_border, circular, angle - 180, 180 - angle * 2);
+            g.DrawLine(pen_gauge_border, (int)(-(radius / 3) * Math.Cos(angle / 180 * Math.PI)), -(int)((radius / 3) * Math.Sin(angle / 180 * Math.PI)), -(int)((radius - 30) * Math.Cos(angle / 180 * Math.PI)), -(int)((radius - 30) * Math.Sin(angle / 180 * Math.PI)));
+            g.DrawLine(pen_gauge_border, (int)((radius - 30) * Math.Cos(angle / 180 * Math.PI)), -(int)((radius - 30) * Math.Sin(angle / 180 * Math.PI)), (int)((radius / 3) * Math.Cos(angle / 180 * Math.PI)), -(int)((radius / 3) * Math.Sin(angle / 180 * Math.PI)));
 
+            // 开始绘制刻度
+            g.RotateTransform(angle - 90);
+            int totle = GetGraduationNumber(angle, radius);
+            for (int i = 0; i <= totle; i++)
+            {
+                Rectangle rect = new Rectangle(-2, -radius, 3, 7);
+                g.FillRectangle(Brushes.DimGray, rect);
+                rect = new Rectangle(-50, -radius + 7, 100, 20);
 
-            g.DrawPath(pen_gauge_border, path);
+                double current = ValueStart + (ValueMax - ValueStart) * i / totle;
+                g.DrawString(current.ToString(), Font, Brushes.DodgerBlue, rect, centerFormat);
+                g.RotateTransform((180 - 2 * angle) / totle);
+            }
+            g.RotateTransform(-(180 - 2 * angle) / totle);
+            g.RotateTransform(angle - 90);
 
-            // g.FillPath(brush_Gauge_background, path);
+            Rectangle text = new Rectangle(-40, -(radius * 2 / 3 - 3), 80, 25);
+            // g.FillRectangle(Brushes.Wheat, text);
+            g.DrawString(Value.ToString(), Font, Brushes.Gray, text, centerFormat);
+            g.DrawRectangle(pen_gauge_border, text);
 
-            //g.DrawArc(Pens.Tomato, circular_mini, -angle, angle * 2 - 180);
-            //g.DrawArc(Pens.Tomato, circular, -angle, angle * 2 - 180);
-            //g.DrawString(angle.ToString(), Font, Brushes.Chocolate, new Point(0, -20));
+            g.RotateTransform(angle - 90);
+            g.RotateTransform((float)((Value - ValueStart) / (ValueMax - ValueStart) * (180 - 2 * angle)));
+            g.DrawLine(Pens.DodgerBlue, 0, 0, 0, -radius + 20);
 
             g.ResetTransform();
 
         }
 
+        /// <summary>
+        /// 获取刻度的层级，根据圆弧的长度以及差值
+        /// </summary>
+        /// <returns></returns>
+        private int GetGraduationNumber(float angle, int radius)
+        {
+            float length = Convert.ToSingle(2 * Math.PI * radius * angle / 360);
+            int max = (int)(length / 40);         // 最多的情况
+
+            return 10;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private OperateResult<Point, int, double> GetCenterPoint()
         {
             OperateResult<Point, int, double> result = new OperateResult<Point, int, double>();
@@ -102,8 +136,15 @@ namespace HslCommunication.Controls
 
 
         private Color color_gauge_pointer = Color.Tomato;
+        private Brush brush_gauge_pointer = null;                             // 绘制仪表盘的指针的颜色
+
+        private double value_start = 0;                                       // 仪表盘的初始值
+        private double value_max = 100d;                                      // 仪表盘的结束值
+        private double value_current = 0d;                                    // 仪表盘的当前值
 
 
+
+        private StringFormat centerFormat = null;                                   // 居中显示的格式化文本
         #endregion
 
 
@@ -129,9 +170,98 @@ namespace HslCommunication.Controls
         }
 
 
+        /// <summary>
+        /// 获取或设置指针的颜色
+        /// </summary>
+        [Browsable(true)]
+        [Category("外观")]
+        [Description("获取或设置仪表盘指针的颜色")]
+        [DefaultValue(typeof(Color), "Tomato")]
         public Color PointerColor
         {
+            get
+            {
+                return color_gauge_pointer;
+            }
+            set
+            {
+                brush_gauge_pointer?.Dispose();
+                brush_gauge_pointer = new SolidBrush(value);
+                color_gauge_pointer = value;
+                Invalidate();
+            }
+        }
 
+        /// <summary>
+        /// 获取或设置数值的起始值，默认为0
+        /// </summary>
+        [Browsable(true)]
+        [Category("外观")]
+        [Description("获取或设置数值的起始值，默认为0")]
+        [DefaultValue(0d)]
+        public double ValueStart
+        {
+            get
+            {
+                return value_start;
+            }
+            set
+            {
+                value_start = value;
+                if (value_max <= value_start)
+                {
+                    value_max = value_start + 1;
+                }
+                Invalidate();
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置数值的最大值，默认为100
+        /// </summary>
+        [Browsable(true)]
+        [Category("外观")]
+        [Description("获取或设置数值的最大值，默认为100")]
+        [DefaultValue(100d)]
+        public double ValueMax
+        {
+            get
+            {
+                return value_max;
+            }
+            set
+            {
+                value_max = value;
+                if (value_max <= value_start)
+                {
+                    value_max = value_start + 1;
+                }
+                Invalidate();
+            }
+        }
+
+
+        /// <summary>
+        /// 获取或设置数值的当前值，应该处于最小值和最大值之间
+        /// </summary>
+        [Browsable(true)]
+        [Category("外观")]
+        [Description("获取或设置数值的当前值，默认为0")]
+        [DefaultValue(0d)]
+        public double Value
+        {
+            get
+            {
+                return value_current;
+            }
+            set
+            {
+                if (ValueStart <= value && value <= ValueMax)
+                {
+                    value_current = value;
+                    Invalidate();
+                }
+            }
         }
 
 

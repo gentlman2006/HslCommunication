@@ -133,6 +133,8 @@ namespace HslCommunication.Controls
         /// <summary>
         /// 按钮的背景色
         /// </summary>
+        [Category("外观")]
+        [Description("按钮的活动色")]
         public Color EnableColor
         {
             get { return m_enablecolor; }
@@ -159,6 +161,7 @@ namespace HslCommunication.Controls
         /// 设置按钮的边框是否可见
         /// </summary>
         [Category("外观")]
+        [Browsable(true)]
         [DefaultValue(true)]
         [Description("指示按钮是否存在边框")]
         public bool BorderVisiable
@@ -169,6 +172,7 @@ namespace HslCommunication.Controls
         /// <summary>
         /// 存放用户需要保存的一些额外的信息
         /// </summary>
+        [Browsable(false)]
         public string CustomerInformation { get; set; } = "";
 
 
