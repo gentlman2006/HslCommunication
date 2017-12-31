@@ -95,6 +95,12 @@
     <Compile Include="Controls\UserPieChart.Designer.cs">
       <DependentUpon>UserPieChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UserSwitch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UserSwitch.Designer.cs">
+      <DependentUpon>UserSwitch.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UserVerticalProgress.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -188,6 +194,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserPieChart.resx">
       <DependentUpon>UserPieChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserSwitch.resx">
+      <DependentUpon>UserSwitch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserVerticalProgress.resx">
       <DependentUpon>UserVerticalProgress.cs</DependentUpon>

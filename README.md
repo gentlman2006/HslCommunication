@@ -49,7 +49,7 @@ Install-Package HslCommunication
 * [ModBus Tcp客户端开发](http://www.cnblogs.com/dathlin/p/7885368.html)
 * 多线程任务功能
 * [CRC16校验](http://www.cnblogs.com/dathlin/p/7821808.html)
-* 常用控件库
+* [常用控件库](http://www.cnblogs.com/dathlin/p/8150516.html)
 
 
 ## 二次扩展
