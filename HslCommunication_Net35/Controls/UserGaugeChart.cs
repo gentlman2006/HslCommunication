@@ -31,13 +31,37 @@ namespace HslCommunication.Controls
             centerFormat.Alignment = StringAlignment.Center;
             centerFormat.LineAlignment = StringAlignment.Center;
 
+            pen_gauge_alarm = new Pen(Color.OrangeRed, 3f);
+            pen_gauge_alarm.DashStyle = DashStyle.Custom;
+            pen_gauge_alarm.DashPattern = new float[] { 5, 1 };
+
+            hybirdLock = new Core.SimpleHybirdLock();
+            m_UpdateAction = new Action(Invalidate);
+            timer_alarm_check = new Timer();
+            timer_alarm_check.Tick += Timer_alarm_check_Tick;
+            timer_alarm_check.Interval = 1000;
+
             DoubleBuffered = true;
 
         }
 
+        private void Timer_alarm_check_Tick(object sender, EventArgs e)
+        {
+            if(value_current > value_alarm_max || value_current < value_alarm_min)
+            {
+                alarm_check = !alarm_check;
+            }
+            else
+            {
+                alarm_check = false;
+            }
+
+            Invalidate();
+        }
+
         private void UserGaugeChart_Load(object sender, EventArgs e)
         {
-
+            timer_alarm_check.Start();
         }
 
         private void UserGaugeChart_Paint(object sender, PaintEventArgs e)
@@ -53,6 +77,7 @@ namespace HslCommunication.Controls
             int radius = setting.Content2;
             float angle = Convert.ToSingle(setting.Content3);
             Rectangle circular = new Rectangle(-radius, -radius, 2 * radius, 2 * radius);
+            Rectangle circular_larger = new Rectangle(-radius - 5, -radius - 5, 2 * radius + 10, 2 * radius + 10);
             Rectangle circular_mini = new Rectangle(-radius / 3, -radius / 3, 2 * radius / 3, 2 * radius / 3);
 
             g.TranslateTransform(center.X, center.Y);
@@ -64,7 +89,7 @@ namespace HslCommunication.Controls
 
             // 开始绘制刻度
             g.RotateTransform(angle - 90);
-            int totle = GetGraduationNumber(angle, radius);
+            int totle = segment_count;
             for (int i = 0; i <= totle; i++)
             {
                 Rectangle rect = new Rectangle(-2, -radius, 3, 7);
@@ -78,30 +103,48 @@ namespace HslCommunication.Controls
             g.RotateTransform(-(180 - 2 * angle) / totle);
             g.RotateTransform(angle - 90);
 
-            Rectangle text = new Rectangle(-40, -(radius * 2 / 3 - 3), 80, 25);
+            Rectangle text = new Rectangle(-36, -(radius * 2 / 3 - 3), 72, 25);
+
+            // 如果处于报警中，就闪烁
+            if (value_current > value_alarm_max || value_current < value_alarm_min)
+            {
+                if(alarm_check)
+                {
+                    g.FillRectangle(Brushes.OrangeRed, text);
+                }
+            }
             // g.FillRectangle(Brushes.Wheat, text);
             g.DrawString(Value.ToString(), Font, Brushes.Gray, text, centerFormat);
             g.DrawRectangle(pen_gauge_border, text);
 
             g.RotateTransform(angle - 90);
-            g.RotateTransform((float)((Value - ValueStart) / (ValueMax - ValueStart) * (180 - 2 * angle)));
-            g.DrawLine(Pens.DodgerBlue, 0, 0, 0, -radius + 20);
+            g.RotateTransform((float)((value_paint - ValueStart) / (ValueMax - ValueStart) * (180 - 2 * angle)));
+
+            Rectangle rectangle = new Rectangle(-5, -5, 10, 10);
+            g.FillEllipse(brush_gauge_pointer, rectangle);
+            //g.DrawEllipse(Pens.Red, rectangle);
+            Point[] points = new Point[] { new Point(5, 0), new Point(2, -radius + 40), new Point(0, -radius + 20), new Point(-2, -radius + 40), new Point(-5, 0) };
+            g.FillPolygon(brush_gauge_pointer, points);
+            //g.DrawLines(Pens.Red, points);
+
+            g.RotateTransform((float)(-(value_paint - ValueStart) / (ValueMax - ValueStart) * (180 - 2 * angle)));
+            g.RotateTransform(90 - angle);
+
+            if (value_alarm_min > value_start && value_alarm_min <= value_max)
+            {
+                g.DrawArc(pen_gauge_alarm, circular_larger, angle - 180, (float)((ValueAlarmMin - ValueStart) / (ValueMax - ValueStart) * (180 - 2 * angle)));
+            }
+
+            if (value_alarm_max >= value_start && value_alarm_max < value_max)
+            {
+                float angle_max = (float)((value_alarm_max - ValueStart) / (ValueMax - ValueStart) * (180 - 2 * angle));
+                g.DrawArc(pen_gauge_alarm, circular_larger, -180 + angle + angle_max, 180 - 2 * angle - angle_max);
+            }
 
             g.ResetTransform();
 
         }
-
-        /// <summary>
-        /// 获取刻度的层级，根据圆弧的长度以及差值
-        /// </summary>
-        /// <returns></returns>
-        private int GetGraduationNumber(float angle, int radius)
-        {
-            float length = Convert.ToSingle(2 * Math.PI * radius * angle / 360);
-            int max = (int)(length / 40);         // 最多的情况
-
-            return 10;
-        }
+        
 
         /// <summary>
         /// 
@@ -127,6 +170,59 @@ namespace HslCommunication.Controls
             return result;
         }
 
+        private void ThreadPoolUpdateProgress(object obj)
+        {
+            try
+            {
+                // 开始计算更新细节
+                int version = (int)obj;
+
+                if (value_paint == value_current) return;
+                double m_speed = Math.Abs(value_paint - value_current) / 10;
+                if (m_speed == 0) m_speed = 1;
+
+                while (value_paint != value_current)
+                {
+                    System.Threading.Thread.Sleep(17);
+                    if (version != m_version) break;
+
+                    hybirdLock.Enter();
+
+                    double newActual = 0;
+                    if (value_paint > value_current)
+                    {
+                        double offect = value_paint - value_current;
+                        if (offect > m_speed) offect = m_speed;
+                        newActual = value_paint - offect;
+                    }
+                    else
+                    {
+                        double offect = value_current - value_paint;
+                        if (offect > m_speed) offect = m_speed;
+                        newActual = value_paint + offect;
+                    }
+                    value_paint = newActual;
+
+                    hybirdLock.Leave();
+
+                    if (version == m_version)
+                    {
+                        if (IsHandleCreated) Invoke(m_UpdateAction);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                // BasicFramework.SoftBasic.ShowExceptionMessage(ex);
+            }
+
+        }
+
 
 
         #region Private Member
@@ -141,10 +237,19 @@ namespace HslCommunication.Controls
         private double value_start = 0;                                       // 仪表盘的初始值
         private double value_max = 100d;                                      // 仪表盘的结束值
         private double value_current = 0d;                                    // 仪表盘的当前值
+        private double value_alarm_max = 80d;                                 // 仪表盘的上限报警值
+        private double value_alarm_min = 20d;                                 // 仪表盘的下限报警值
+        private Pen pen_gauge_alarm = null;                                   // 绘制仪表盘的报警区间的虚线画笔
 
+        private int m_version = 0;                                            // 设置数据时的版本，用于更新时的版本验证
+        private double value_paint = 0d;                                      // 绘制图形时候的中间值
+        private Core.SimpleHybirdLock hybirdLock;                             // 数据的同步锁
+        private Action m_UpdateAction;                                        // 更新界面的委托
+        private Timer timer_alarm_check;                                      // 数据处于危险区域的报警闪烁
+        private bool alarm_check = false;                                     // 每秒计时的报警反馈
 
-
-        private StringFormat centerFormat = null;                                   // 居中显示的格式化文本
+        private int segment_count = 10;                                       // 显示区域的分割片段
+        private StringFormat centerFormat = null;                             // 居中显示的格式化文本
         #endregion
 
 
@@ -258,12 +363,87 @@ namespace HslCommunication.Controls
             {
                 if (ValueStart <= value && value <= ValueMax)
                 {
-                    value_current = value;
+                    if (value != value_current)
+                    {
+                        value_current = value;
+                        int version = System.Threading.Interlocked.Increment(ref m_version);
+                        System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(
+                            ThreadPoolUpdateProgress), version);
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 获取或设置数值的上限报警值，设置为超过最大值则无上限报警
+        /// </summary>
+        [Browsable(true)]
+        [Category("外观")]
+        [Description("获取或设置数值的上限报警值，设置为超过最大值则无上限报警，默认为80")]
+        [DefaultValue(80d)]
+        public double ValueAlarmMax
+        {
+            get
+            {
+                return value_alarm_max;
+            }
+            set
+            {
+                if (ValueStart <= value)
+                {
+                    value_alarm_max = value;
                     Invalidate();
                 }
             }
         }
 
+
+        /// <summary>
+        /// 获取或设置数值的下限报警值，设置为超过最大值则无上限报警
+        /// </summary>
+        [Browsable(true)]
+        [Category("外观")]
+        [Description("获取或设置数值的下限报警值，设置为小于最小值则无下限报警，默认为20")]
+        [DefaultValue(20d)]
+        public double ValueAlarmMin
+        {
+            get
+            {
+                return value_alarm_min;
+            }
+            set
+            {
+                if (value <= ValueMax)
+                {
+                    value_alarm_min = value;
+                    Invalidate();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 获取或设置仪表盘的分割段数，最小为2，最大1000
+        /// </summary>
+        [Browsable(true)]
+        [Category("外观")]
+        [Description("获取或设置仪表盘的分割段数，最小为2，最大1000")]
+        [DefaultValue(10)]
+        public int SegmentCount
+        {
+            get
+            {
+                return segment_count;
+            }
+            set
+            {
+                if (value > 1 && value < 1000)
+                {
+                    segment_count = value;
+                }
+            }
+        }
 
         #endregion
 
