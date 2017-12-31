@@ -113,9 +113,15 @@ namespace HslCommunication.Controls
                     g.FillRectangle(Brushes.OrangeRed, text);
                 }
             }
+            
             // g.FillRectangle(Brushes.Wheat, text);
-            g.DrawString(Value.ToString(), Font, Brushes.Gray, text, centerFormat);
+            g.DrawString(Value.ToString(), Font, Brushes.DimGray, text, centerFormat);
             g.DrawRectangle(pen_gauge_border, text);
+            text.Offset(0, 25);
+            if(!string.IsNullOrEmpty(UnitText))
+            {
+                g.DrawString(UnitText, Font, Brushes.Gray, text, centerFormat);
+            }
 
             g.RotateTransform(angle - 90);
             g.RotateTransform((float)((value_paint - ValueStart) / (ValueMax - ValueStart) * (180 - 2 * angle)));
@@ -250,6 +256,8 @@ namespace HslCommunication.Controls
 
         private int segment_count = 10;                                       // 显示区域的分割片段
         private StringFormat centerFormat = null;                             // 居中显示的格式化文本
+        private string value_unit_text = string.Empty;                        // 数值的单位，可以设置并显示
+
         #endregion
 
 
@@ -444,6 +452,27 @@ namespace HslCommunication.Controls
                 }
             }
         }
+
+        /// <summary>
+        /// 获取或设置仪表盘的单位描述文本
+        /// </summary>
+        [Browsable(true)]
+        [Category("外观")]
+        [Description("获取或设置仪表盘的单位描述文本")]
+        [DefaultValue("")]
+        public string UnitText
+        {
+            get
+            {
+                return value_unit_text;
+            }
+            set
+            {
+                value_unit_text = value;
+                Invalidate();
+            }
+        }
+
 
         #endregion
 

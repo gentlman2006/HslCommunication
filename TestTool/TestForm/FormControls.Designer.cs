@@ -29,6 +29,12 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormControls));
+            this.userGaugeChart7 = new HslCommunication.Controls.UserGaugeChart();
+            this.userGaugeChart6 = new HslCommunication.Controls.UserGaugeChart();
+            this.userGaugeChart5 = new HslCommunication.Controls.UserGaugeChart();
+            this.userGaugeChart4 = new HslCommunication.Controls.UserGaugeChart();
+            this.userGaugeChart3 = new HslCommunication.Controls.UserGaugeChart();
+            this.userGaugeChart2 = new HslCommunication.Controls.UserGaugeChart();
             this.userPieChart4 = new HslCommunication.Controls.UserPieChart();
             this.userPieChart3 = new HslCommunication.Controls.UserPieChart();
             this.userPieChart2 = new HslCommunication.Controls.UserPieChart();
@@ -41,20 +47,92 @@
             this.userButton1 = new HslCommunication.Controls.UserButton();
             this.userPieChart1 = new HslCommunication.Controls.UserPieChart();
             this.userGaugeChart1 = new HslCommunication.Controls.UserGaugeChart();
-            this.userGaugeChart2 = new HslCommunication.Controls.UserGaugeChart();
-            this.userGaugeChart3 = new HslCommunication.Controls.UserGaugeChart();
-            this.userGaugeChart4 = new HslCommunication.Controls.UserGaugeChart();
-            this.userGaugeChart5 = new HslCommunication.Controls.UserGaugeChart();
-            this.userGaugeChart6 = new HslCommunication.Controls.UserGaugeChart();
-            this.userGaugeChart7 = new HslCommunication.Controls.UserGaugeChart();
             this.SuspendLayout();
+            // 
+            // userGaugeChart7
+            // 
+            this.userGaugeChart7.BackColor = System.Drawing.Color.Transparent;
+            this.userGaugeChart7.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart7.Location = new System.Drawing.Point(798, 219);
+            this.userGaugeChart7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userGaugeChart7.Name = "userGaugeChart7";
+            this.userGaugeChart7.SegmentCount = 6;
+            this.userGaugeChart7.Size = new System.Drawing.Size(165, 211);
+            this.userGaugeChart7.TabIndex = 17;
+            this.userGaugeChart7.Value = 70D;
+            this.userGaugeChart7.ValueMax = 120D;
+            // 
+            // userGaugeChart6
+            // 
+            this.userGaugeChart6.BackColor = System.Drawing.Color.Transparent;
+            this.userGaugeChart6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart6.Location = new System.Drawing.Point(932, 482);
+            this.userGaugeChart6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userGaugeChart6.Name = "userGaugeChart6";
+            this.userGaugeChart6.SegmentCount = 12;
+            this.userGaugeChart6.Size = new System.Drawing.Size(266, 127);
+            this.userGaugeChart6.TabIndex = 16;
+            this.userGaugeChart6.Value = 70D;
+            this.userGaugeChart6.ValueMax = 120D;
+            // 
+            // userGaugeChart5
+            // 
+            this.userGaugeChart5.BackColor = System.Drawing.Color.Black;
+            this.userGaugeChart5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart5.Location = new System.Drawing.Point(416, 239);
+            this.userGaugeChart5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userGaugeChart5.Name = "userGaugeChart5";
+            this.userGaugeChart5.SegmentCount = 12;
+            this.userGaugeChart5.Size = new System.Drawing.Size(376, 229);
+            this.userGaugeChart5.TabIndex = 15;
+            this.userGaugeChart5.Value = 70D;
+            this.userGaugeChart5.ValueMax = 120D;
+            // 
+            // userGaugeChart4
+            // 
+            this.userGaugeChart4.BackColor = System.Drawing.Color.Transparent;
+            this.userGaugeChart4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart4.Location = new System.Drawing.Point(34, 237);
+            this.userGaugeChart4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userGaugeChart4.Name = "userGaugeChart4";
+            this.userGaugeChart4.SegmentCount = 12;
+            this.userGaugeChart4.Size = new System.Drawing.Size(376, 229);
+            this.userGaugeChart4.TabIndex = 14;
+            this.userGaugeChart4.UnitText = "km/h";
+            this.userGaugeChart4.Value = 90D;
+            this.userGaugeChart4.ValueMax = 120D;
+            // 
+            // userGaugeChart3
+            // 
+            this.userGaugeChart3.BackColor = System.Drawing.Color.Transparent;
+            this.userGaugeChart3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart3.Location = new System.Drawing.Point(798, 13);
+            this.userGaugeChart3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userGaugeChart3.Name = "userGaugeChart3";
+            this.userGaugeChart3.PointerColor = System.Drawing.Color.ForestGreen;
+            this.userGaugeChart3.Size = new System.Drawing.Size(376, 229);
+            this.userGaugeChart3.TabIndex = 13;
+            this.userGaugeChart3.Value = 70D;
+            this.userGaugeChart3.ValueAlarmMax = 101D;
+            this.userGaugeChart3.ValueAlarmMin = 0D;
+            // 
+            // userGaugeChart2
+            // 
+            this.userGaugeChart2.BackColor = System.Drawing.Color.Transparent;
+            this.userGaugeChart2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart2.Location = new System.Drawing.Point(416, 2);
+            this.userGaugeChart2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userGaugeChart2.Name = "userGaugeChart2";
+            this.userGaugeChart2.Size = new System.Drawing.Size(376, 229);
+            this.userGaugeChart2.TabIndex = 12;
+            this.userGaugeChart2.Value = 70D;
             // 
             // userPieChart4
             // 
             this.userPieChart4.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userPieChart4.IsRenderPercent = true;
-            this.userPieChart4.Location = new System.Drawing.Point(936, 545);
+            this.userPieChart4.Location = new System.Drawing.Point(538, 482);
             this.userPieChart4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart4.Name = "userPieChart4";
             this.userPieChart4.Size = new System.Drawing.Size(238, 242);
@@ -188,83 +266,6 @@
             this.userGaugeChart1.TabIndex = 0;
             this.userGaugeChart1.Value = 70D;
             this.userGaugeChart1.ValueMax = 120D;
-            // 
-            // userGaugeChart2
-            // 
-            this.userGaugeChart2.BackColor = System.Drawing.Color.Transparent;
-            this.userGaugeChart2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart2.Location = new System.Drawing.Point(416, 2);
-            this.userGaugeChart2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userGaugeChart2.Name = "userGaugeChart2";
-            this.userGaugeChart2.Size = new System.Drawing.Size(376, 229);
-            this.userGaugeChart2.TabIndex = 12;
-            this.userGaugeChart2.Value = 70D;
-            // 
-            // userGaugeChart3
-            // 
-            this.userGaugeChart3.BackColor = System.Drawing.Color.Transparent;
-            this.userGaugeChart3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart3.Location = new System.Drawing.Point(798, 13);
-            this.userGaugeChart3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userGaugeChart3.Name = "userGaugeChart3";
-            this.userGaugeChart3.PointerColor = System.Drawing.Color.ForestGreen;
-            this.userGaugeChart3.Size = new System.Drawing.Size(376, 229);
-            this.userGaugeChart3.TabIndex = 13;
-            this.userGaugeChart3.Value = 70D;
-            this.userGaugeChart3.ValueAlarmMax = 101D;
-            this.userGaugeChart3.ValueAlarmMin = 0D;
-            // 
-            // userGaugeChart4
-            // 
-            this.userGaugeChart4.BackColor = System.Drawing.Color.Transparent;
-            this.userGaugeChart4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart4.Location = new System.Drawing.Point(34, 237);
-            this.userGaugeChart4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userGaugeChart4.Name = "userGaugeChart4";
-            this.userGaugeChart4.SegmentCount = 12;
-            this.userGaugeChart4.Size = new System.Drawing.Size(376, 229);
-            this.userGaugeChart4.TabIndex = 14;
-            this.userGaugeChart4.Value = 90D;
-            this.userGaugeChart4.ValueMax = 120D;
-            // 
-            // userGaugeChart5
-            // 
-            this.userGaugeChart5.BackColor = System.Drawing.Color.Black;
-            this.userGaugeChart5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart5.Location = new System.Drawing.Point(416, 239);
-            this.userGaugeChart5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userGaugeChart5.Name = "userGaugeChart5";
-            this.userGaugeChart5.SegmentCount = 12;
-            this.userGaugeChart5.Size = new System.Drawing.Size(376, 229);
-            this.userGaugeChart5.TabIndex = 15;
-            this.userGaugeChart5.Value = 70D;
-            this.userGaugeChart5.ValueMax = 120D;
-            // 
-            // userGaugeChart6
-            // 
-            this.userGaugeChart6.BackColor = System.Drawing.Color.Transparent;
-            this.userGaugeChart6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart6.Location = new System.Drawing.Point(954, 359);
-            this.userGaugeChart6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userGaugeChart6.Name = "userGaugeChart6";
-            this.userGaugeChart6.SegmentCount = 12;
-            this.userGaugeChart6.Size = new System.Drawing.Size(266, 127);
-            this.userGaugeChart6.TabIndex = 16;
-            this.userGaugeChart6.Value = 70D;
-            this.userGaugeChart6.ValueMax = 120D;
-            // 
-            // userGaugeChart7
-            // 
-            this.userGaugeChart7.BackColor = System.Drawing.Color.Transparent;
-            this.userGaugeChart7.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart7.Location = new System.Drawing.Point(798, 219);
-            this.userGaugeChart7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userGaugeChart7.Name = "userGaugeChart7";
-            this.userGaugeChart7.SegmentCount = 6;
-            this.userGaugeChart7.Size = new System.Drawing.Size(165, 211);
-            this.userGaugeChart7.TabIndex = 17;
-            this.userGaugeChart7.Value = 70D;
-            this.userGaugeChart7.ValueMax = 120D;
             // 
             // FormControls
             // 
