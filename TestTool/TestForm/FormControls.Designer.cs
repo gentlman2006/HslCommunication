@@ -66,7 +66,7 @@
             // 
             this.userGaugeChart6.BackColor = System.Drawing.Color.Transparent;
             this.userGaugeChart6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart6.Location = new System.Drawing.Point(932, 482);
+            this.userGaugeChart6.Location = new System.Drawing.Point(945, 278);
             this.userGaugeChart6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart6.Name = "userGaugeChart6";
             this.userGaugeChart6.SegmentCount = 12;
@@ -132,7 +132,7 @@
             this.userPieChart4.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userPieChart4.IsRenderPercent = true;
-            this.userPieChart4.Location = new System.Drawing.Point(538, 482);
+            this.userPieChart4.Location = new System.Drawing.Point(697, 458);
             this.userPieChart4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart4.Name = "userPieChart4";
             this.userPieChart4.Size = new System.Drawing.Size(238, 242);
@@ -143,7 +143,7 @@
             this.userPieChart3.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userPieChart3.IsRenderPercent = true;
-            this.userPieChart3.Location = new System.Drawing.Point(751, 600);
+            this.userPieChart3.Location = new System.Drawing.Point(869, 640);
             this.userPieChart3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart3.Name = "userPieChart3";
             this.userPieChart3.Size = new System.Drawing.Size(238, 242);
@@ -154,7 +154,7 @@
             this.userPieChart2.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userPieChart2.IsRenderPercent = true;
-            this.userPieChart2.Location = new System.Drawing.Point(507, 600);
+            this.userPieChart2.Location = new System.Drawing.Point(569, 586);
             this.userPieChart2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart2.Name = "userPieChart2";
             this.userPieChart2.Size = new System.Drawing.Size(238, 242);
@@ -248,7 +248,7 @@
             this.userPieChart1.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userPieChart1.IsRenderPercent = true;
-            this.userPieChart1.Location = new System.Drawing.Point(655, 492);
+            this.userPieChart1.Location = new System.Drawing.Point(960, 473);
             this.userPieChart1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart1.Name = "userPieChart1";
             this.userPieChart1.Size = new System.Drawing.Size(238, 242);
@@ -258,11 +258,11 @@
             // 
             this.userGaugeChart1.BackColor = System.Drawing.Color.Transparent;
             this.userGaugeChart1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart1.Location = new System.Drawing.Point(34, 2);
+            this.userGaugeChart1.Location = new System.Drawing.Point(44, 13);
             this.userGaugeChart1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart1.Name = "userGaugeChart1";
             this.userGaugeChart1.SegmentCount = 12;
-            this.userGaugeChart1.Size = new System.Drawing.Size(354, 213);
+            this.userGaugeChart1.Size = new System.Drawing.Size(366, 216);
             this.userGaugeChart1.TabIndex = 0;
             this.userGaugeChart1.Value = 70D;
             this.userGaugeChart1.ValueMax = 120D;

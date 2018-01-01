@@ -32,11 +32,17 @@
             // 
             // UserSwitch
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
+            this.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "UserSwitch";
-            this.Size = new System.Drawing.Size(200, 187);
+            this.Size = new System.Drawing.Size(214, 207);
+            this.Load += new System.EventHandler(this.UserSwitch_Load);
+            this.Click += new System.EventHandler(this.UserSwitch_Click);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.UserSwitch_Paint);
             this.ResumeLayout(false);
 
         }
