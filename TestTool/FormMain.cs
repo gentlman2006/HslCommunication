@@ -207,6 +207,13 @@ namespace TestTool
             form.ShowDialog();
             form.Dispose();
         }
+
+        private void userButton16_Click(object sender, EventArgs e)
+        {
+            TestForm.FormControlCollection form = new TestForm.FormControlCollection();
+            form.ShowDialog();
+            form.Dispose();
+        }
     }
 
     public class AA

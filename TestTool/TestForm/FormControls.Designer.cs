@@ -132,7 +132,7 @@
             this.userPieChart4.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userPieChart4.IsRenderPercent = true;
-            this.userPieChart4.Location = new System.Drawing.Point(697, 458);
+            this.userPieChart4.Location = new System.Drawing.Point(716, 438);
             this.userPieChart4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart4.Name = "userPieChart4";
             this.userPieChart4.Size = new System.Drawing.Size(238, 242);
@@ -154,7 +154,7 @@
             this.userPieChart2.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userPieChart2.IsRenderPercent = true;
-            this.userPieChart2.Location = new System.Drawing.Point(569, 586);
+            this.userPieChart2.Location = new System.Drawing.Point(554, 590);
             this.userPieChart2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart2.Name = "userPieChart2";
             this.userPieChart2.Size = new System.Drawing.Size(238, 242);
@@ -248,7 +248,7 @@
             this.userPieChart1.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userPieChart1.IsRenderPercent = true;
-            this.userPieChart1.Location = new System.Drawing.Point(960, 473);
+            this.userPieChart1.Location = new System.Drawing.Point(945, 438);
             this.userPieChart1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart1.Name = "userPieChart1";
             this.userPieChart1.Size = new System.Drawing.Size(238, 242);

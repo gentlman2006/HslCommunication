@@ -89,6 +89,12 @@
     <Compile Include="Controls\UserGaugeChart.Designer.cs">
       <DependentUpon>UserGaugeChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UserLantern.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UserLantern.Designer.cs">
+      <DependentUpon>UserLantern.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UserPieChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -191,6 +197,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserGaugeChart.resx">
       <DependentUpon>UserGaugeChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserLantern.resx">
+      <DependentUpon>UserLantern.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserPieChart.resx">
       <DependentUpon>UserPieChart.cs</DependentUpon>
