@@ -31,15 +31,29 @@ namespace TestTool.TestForm
 
                 List<string> data = new List<string>();
                 List<int> ints = new List<int>();
-                for (int i = 0; i < random.Next(4, 8); i++)
+                for (int i = 0; i < random.Next(4, 12); i++)
                 {
                     data.Add(random.Next(100, 999).ToString());
-                    ints.Add(random.Next(1, 5));
+                    ints.Add(random.Next(0, 5));
                 }
 
                 charts[j].SetDataSource(
                     data.ToArray(),
                     ints.ToArray());
+            }
+        }
+
+        private void userButton1_Click(object sender, EventArgs e)
+        {
+            if (userPieChart1.IsRenderSmall)
+            {
+                userPieChart1.IsRenderSmall = false;
+                userPieChart2.IsRenderSmall = false;
+            }
+            else
+            {
+                userPieChart1.IsRenderSmall = true;
+                userPieChart2.IsRenderSmall = true;
             }
         }
     }

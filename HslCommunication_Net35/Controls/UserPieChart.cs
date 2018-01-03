@@ -38,12 +38,16 @@ namespace HslCommunication.Controls
 
         }
 
+        #region Private
+        
+        private HslPieItem[] pieItems = new HslPieItem[0];                      // 饼图的数据
+        private Random random = null;                                           // 随机数
+        private StringFormat formatCenter = null;                               // 格式化的文本位置
+        private int margin = 40;                                                // 边界距离
+        private bool m_IsRenderPercent = false;                                 // 是否显示百分比
+        private bool m_IsRenderSmall = true;                                    // 是否在图形上显示占比非常小的文本信息
 
-        private HslPieItem[] pieItems = new HslPieItem[0];
-        private Random random = null;
-        private StringFormat formatCenter = null;
-        private int margin = 40;
-        private bool m_IsRenderPercent = false;
+        #endregion
 
         /// <summary>
         /// 是否显示百分比信息
@@ -57,6 +61,22 @@ namespace HslCommunication.Controls
             get { return m_IsRenderPercent; }
             set { m_IsRenderPercent = value; Invalidate( ); }
         }
+
+
+        /// <summary>
+        /// 是否在图形上显示占比非常小的文本信息
+        /// </summary>
+        [Browsable(true)]
+        [Category("外观")]
+        [Description("获取或设置是否显示占比很小的文本信息")]
+        [DefaultValue(true)]
+        public bool IsRenderSmall
+        {
+            get { return m_IsRenderSmall; }
+            set { m_IsRenderSmall = value; Invalidate( ); }
+        }
+
+
 
 
         private void SetMarginPaint( int value )
@@ -149,70 +169,77 @@ namespace HslCommunication.Controls
                     }
                     e.Graphics.RotateTransform( 0 - single / 2 );
 
-                    // 画标线
-                    totleAngle += single / 2;
-                    int mark = 8;
-                    if (totleAngle < 45 || totleAngle > 315) mark = 15;
-                    if (totleAngle > 135 && totleAngle < 225) mark = 15;
 
-                    e.Graphics.DrawLine( Pens.DimGray, width * 2 / 3, 0, width + mark, 0 );
-                    e.Graphics.TranslateTransform( width + mark, 0 );
-
-                    if (totleAngle - lastAngle < 5)
+                    if (single < 2f && !IsRenderSmall)
                     {
-                        // 两次的标线非常接近
-
-                    }
-                    lastAngle = totleAngle;
-
-                    if (totleAngle < 90)
-                    {
-                        e.Graphics.RotateTransform( totleAngle - 90 );
-                        e.Graphics.DrawLine( Pens.DimGray, 0, 0, margin - mark, 0 );
-                        e.Graphics.DrawString( pieItems[i].Name, Font, Brushes.DimGray, new Point( 0, -Font.Height ) );
-                        if (IsRenderPercent) e.Graphics.DrawString( Math.Round( single * 100 / 360, 2 ).ToString( ) + "%", Font, Brushes.DodgerBlue, new Point( 0, 1 ) );
-                        e.Graphics.RotateTransform( 90 - totleAngle );
-                    }
-                    else if (totleAngle < 180)
-                    {
-                        e.Graphics.RotateTransform( totleAngle - 90 );
-                        e.Graphics.DrawLine( Pens.DimGray, 0, 0, margin - mark, 0 );
-                        e.Graphics.DrawString( pieItems[i].Name, Font, Brushes.DimGray, new Point( 0, -Font.Height ) );
-                        if (IsRenderPercent) e.Graphics.DrawString( Math.Round( single * 100 / 360, 2 ).ToString( ) + "%", Font, Brushes.DodgerBlue, new Point( 0, 1 ) );
-                        e.Graphics.RotateTransform( 90 - totleAngle );
-                    }
-                    else if (totleAngle < 270)
-                    {
-                        e.Graphics.RotateTransform( totleAngle - 270 );
-                        e.Graphics.DrawLine( Pens.DimGray, 0, 0, margin - mark, 0 );
-                        e.Graphics.TranslateTransform( margin - 8, 0 );
-                        e.Graphics.RotateTransform( 180 );
-                        e.Graphics.DrawString( pieItems[i].Name, Font, Brushes.DimGray, new Point( 0, -Font.Height ) );
-                        if (IsRenderPercent) e.Graphics.DrawString( Math.Round( single * 100 / 360, 2 ).ToString( ) + "%", Font, Brushes.DodgerBlue, new Point( 0, 1 ) );
-                        e.Graphics.RotateTransform( -180 );
-                        e.Graphics.TranslateTransform( 8 - margin, 0 );
-                        e.Graphics.RotateTransform( 270 - totleAngle );
+                        totleAngle += single;
                     }
                     else
                     {
-                        e.Graphics.RotateTransform( totleAngle - 270 );
-                        e.Graphics.DrawLine( Pens.DimGray, 0, 0, margin - mark, 0 );
-                        e.Graphics.TranslateTransform( margin - 8, 0 );
-                        e.Graphics.RotateTransform( 180 );
-                        e.Graphics.DrawString( pieItems[i].Name, Font, Brushes.DimGray, new Point( 0, -Font.Height ) );
-                        if (IsRenderPercent) e.Graphics.DrawString( Math.Round( single * 100 / 360, 2 ).ToString( ) + "%", Font, Brushes.DodgerBlue, new Point( 0, 1 ) );
-                        e.Graphics.RotateTransform( -180 );
-                        e.Graphics.TranslateTransform( 8 - margin, 0 );
-                        e.Graphics.RotateTransform( 270 - totleAngle );
+                        // 画标线
+                        totleAngle += single / 2;
+                        int mark = 8;
+                        if (totleAngle < 45 || totleAngle > 315) mark = 15;
+                        if (totleAngle > 135 && totleAngle < 225) mark = 15;
+
+                        e.Graphics.DrawLine( Pens.DimGray, width * 2 / 3, 0, width + mark, 0 );
+                        e.Graphics.TranslateTransform( width + mark, 0 );
+
+                        if (totleAngle - lastAngle < 5)
+                        {
+                            // 两次的标线非常接近
+
+                        }
+                        lastAngle = totleAngle;
+
+
+
+                        if (totleAngle < 90)
+                        {
+                            e.Graphics.RotateTransform( totleAngle - 90 );
+                            e.Graphics.DrawLine( Pens.DimGray, 0, 0, margin - mark, 0 );
+                            e.Graphics.DrawString( pieItems[i].Name, Font, Brushes.DimGray, new Point( 0, -Font.Height ) );
+                            if (IsRenderPercent) e.Graphics.DrawString( Math.Round( single * 100 / 360, 2 ).ToString( ) + "%", Font, Brushes.DodgerBlue, new Point( 0, 1 ) );
+                            e.Graphics.RotateTransform( 90 - totleAngle );
+                        }
+                        else if (totleAngle < 180)
+                        {
+                            e.Graphics.RotateTransform( totleAngle - 90 );
+                            e.Graphics.DrawLine( Pens.DimGray, 0, 0, margin - mark, 0 );
+                            e.Graphics.DrawString( pieItems[i].Name, Font, Brushes.DimGray, new Point( 0, -Font.Height ) );
+                            if (IsRenderPercent) e.Graphics.DrawString( Math.Round( single * 100 / 360, 2 ).ToString( ) + "%", Font, Brushes.DodgerBlue, new Point( 0, 1 ) );
+                            e.Graphics.RotateTransform( 90 - totleAngle );
+                        }
+                        else if (totleAngle < 270)
+                        {
+                            e.Graphics.RotateTransform( totleAngle - 270 );
+                            e.Graphics.DrawLine( Pens.DimGray, 0, 0, margin - mark, 0 );
+                            e.Graphics.TranslateTransform( margin - 8, 0 );
+                            e.Graphics.RotateTransform( 180 );
+                            e.Graphics.DrawString( pieItems[i].Name, Font, Brushes.DimGray, new Point( 0, -Font.Height ) );
+                            if (IsRenderPercent) e.Graphics.DrawString( Math.Round( single * 100 / 360, 2 ).ToString( ) + "%", Font, Brushes.DodgerBlue, new Point( 0, 1 ) );
+                            e.Graphics.RotateTransform( -180 );
+                            e.Graphics.TranslateTransform( 8 - margin, 0 );
+                            e.Graphics.RotateTransform( 270 - totleAngle );
+                        }
+                        else
+                        {
+                            e.Graphics.RotateTransform( totleAngle - 270 );
+                            e.Graphics.DrawLine( Pens.DimGray, 0, 0, margin - mark, 0 );
+                            e.Graphics.TranslateTransform( margin - 8, 0 );
+                            e.Graphics.RotateTransform( 180 );
+                            e.Graphics.DrawString( pieItems[i].Name, Font, Brushes.DimGray, new Point( 0, -Font.Height ) );
+                            if (IsRenderPercent) e.Graphics.DrawString( Math.Round( single * 100 / 360, 2 ).ToString( ) + "%", Font, Brushes.DodgerBlue, new Point( 0, 1 ) );
+                            e.Graphics.RotateTransform( -180 );
+                            e.Graphics.TranslateTransform( 8 - margin, 0 );
+                            e.Graphics.RotateTransform( 270 - totleAngle );
+                        }
+
+                        e.Graphics.TranslateTransform( -width - mark, 0 );
+                        e.Graphics.RotateTransform( 0 - single / 2 );
+                        totleAngle += single / 2;
                     }
-
-                    e.Graphics.TranslateTransform( -width - mark, 0 );
-                    e.Graphics.RotateTransform( 0 - single / 2 );
-                    totleAngle += single / 2;
                 }
-
-
-
                 e.Graphics.ResetTransform( );
             }
             else
