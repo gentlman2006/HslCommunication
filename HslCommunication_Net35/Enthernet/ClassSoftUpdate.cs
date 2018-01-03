@@ -163,14 +163,12 @@ namespace HslCommunication.Enthernet
                     // 兼容原先版本的更新，新的验证方式无需理会
                     socket.Send(BitConverter.GetBytes(10000f));
                     Thread.Sleep(20);
-                    socket?.Shutdown(SocketShutdown.Both);
                     socket?.Close();
                 }
             }
             catch (Exception ex)
             {
                 Thread.Sleep(20);
-                socket?.Shutdown(SocketShutdown.Both);
                 socket?.Close();
                 LogNet?.WriteException(LogHeaderText, StringResources.FileSendClientFailed, ex);
             }
