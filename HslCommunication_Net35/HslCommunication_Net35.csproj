@@ -129,6 +129,7 @@
     </Compile>
     <Compile Include="Core\Thread\ThreadLock.cs" />
     <Compile Include="Core\Types\HslPieItem.cs" />
+    <Compile Include="Enthernet\ClassDeviceNet.cs" />
     <Compile Include="Enthernet\ClassFileNet.cs" />
     <Compile Include="Enthernet\ClassMultiNet.cs" />
     <Compile Include="Enthernet\ClassSimplify.cs" />
