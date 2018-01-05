@@ -215,6 +215,44 @@ namespace HslCommunication.ModBus
             return buffer;
         }
 
+
+        private OperateResult<byte[]> BytesTransform(OperateResult<byte[]> result)
+        {
+            if(result.IsSuccess)
+            {
+                if(result.Content.Length == 4)
+                {
+                    byte buffer = result.Content[0];
+                    result.Content[0] = result.Content[2];
+                    result.Content[2] = buffer;
+
+                    buffer = result.Content[1];
+                    result.Content[1] = result.Content[3];
+                    result.Content[3] = buffer;
+                }
+                else if (result.Content.Length == 8)
+                {
+                    byte buffer = result.Content[0];
+                    result.Content[0] = result.Content[6];
+                    result.Content[6] = buffer;
+
+                    buffer = result.Content[1];
+                    result.Content[1] = result.Content[7];
+                    result.Content[7] = buffer;
+
+                    buffer = result.Content[2];
+                    result.Content[0] = result.Content[4];
+                    result.Content[4] = buffer;
+
+                    buffer = result.Content[3];
+                    result.Content[1] = result.Content[5];
+                    result.Content[5] = buffer;
+                }
+            }
+
+            return result;
+        }
+
         #endregion
 
         #region DoubleModeNetBase Override
@@ -772,7 +810,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public OperateResult<int> ReadIntRegister(ushort address)
         {
-            return GetInt32ResultFromBytes(ReadRegister(address, 2), true);
+            return GetInt32ResultFromBytes(BytesTransform(ReadRegister(address, 2)), true);
         }
 
         /// <summary>
@@ -782,7 +820,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public OperateResult<uint> ReadUIntRegister(ushort address)
         {
-            return GetUInt32ResultFromBytes(ReadRegister(address, 2), true);
+            return GetUInt32ResultFromBytes(BytesTransform(ReadRegister(address, 2)), true);
         }
 
         /// <summary>
@@ -792,7 +830,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public OperateResult<float> ReadFloatRegister(ushort address)
         {
-            return GetFloatResultFromBytes(ReadRegister(address, 2), true);
+            return GetFloatResultFromBytes(BytesTransform(ReadRegister(address, 2)), true);
         }
 
         /// <summary>
@@ -802,7 +840,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public OperateResult<long> ReadLongRegister(ushort address)
         {
-            return GetInt64ResultFromBytes(ReadRegister(address, 4), true);
+            return GetInt64ResultFromBytes(BytesTransform(ReadRegister(address, 4)), true);
         }
 
 
@@ -813,7 +851,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public OperateResult<ulong> ReadULongRegister(ushort address)
         {
-            return GetUInt64ResultFromBytes(ReadRegister(address, 4), true);
+            return GetUInt64ResultFromBytes(BytesTransform(ReadRegister(address, 4)), true);
         }
 
         /// <summary>
@@ -823,7 +861,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public OperateResult<double> ReadDoubleRegister(ushort address)
         {
-            return GetDoubleResultFromBytes(ReadRegister(address, 4));
+            return GetDoubleResultFromBytes(BytesTransform(ReadRegister(address, 4)), true);
         }
 
         /// <summary>
