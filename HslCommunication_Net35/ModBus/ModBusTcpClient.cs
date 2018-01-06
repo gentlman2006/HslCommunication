@@ -220,37 +220,57 @@ namespace HslCommunication.ModBus
         {
             if(result.IsSuccess)
             {
-                if(result.Content.Length == 4)
+                if (result.Content.Length == 4)
                 {
-                    byte buffer = result.Content[0];
-                    result.Content[0] = result.Content[2];
-                    result.Content[2] = buffer;
-
-                    buffer = result.Content[1];
-                    result.Content[1] = result.Content[3];
-                    result.Content[3] = buffer;
+                    result.Content = BytesTransform(result.Content, 4);
                 }
-                else if (result.Content.Length == 8)
+                else if(result.Content.Length == 8)
                 {
-                    byte buffer = result.Content[0];
-                    result.Content[0] = result.Content[6];
-                    result.Content[6] = buffer;
-
-                    buffer = result.Content[1];
-                    result.Content[1] = result.Content[7];
-                    result.Content[7] = buffer;
-
-                    buffer = result.Content[2];
-                    result.Content[0] = result.Content[4];
-                    result.Content[4] = buffer;
-
-                    buffer = result.Content[3];
-                    result.Content[1] = result.Content[5];
-                    result.Content[5] = buffer;
+                    result.Content = BytesTransform(result.Content, 8);
                 }
             }
 
             return result;
+        }
+
+
+
+        private byte[] BytesTransform(byte[] data, int length)
+        {
+            int count = data.Length / length;
+            for (int i = 0; i < count; i++)
+            {
+                if(length == 4)
+                {
+                    byte buffer = data[4 * i + 0];
+                    data[4 * i + 0] = data[4 * i + 2];
+                    data[4 * i + 2] = buffer;
+
+                    buffer = data[4 * i + 1];
+                    data[4 * i + 1] = data[4 * i + 3];
+                    data[4 * i + 3] = buffer;
+                }
+                else if(length == 8)
+                {
+                    byte buffer = data[8 * i + 0];
+                    data[8 * i + 0] = data[8 * i + 6];
+                    data[8 * i + 6] = buffer;
+
+                    buffer = data[8 * i + 1];
+                    data[8 * i + 1] = data[8 * i + 7];
+                    data[8 * i + 7] = buffer;
+
+                    buffer = data[8 * i + 2];
+                    data[8 * i + 2] = data[8 * i + 4];
+                    data[8 * i + 4] = buffer;
+
+                    buffer = data[8 * i + 3];
+                    data[8 * i + 3] = data[8 * i + 5];
+                    data[8 * i + 5] = buffer;
+                }
+            }
+
+            return data;
         }
 
         #endregion
@@ -492,8 +512,8 @@ namespace HslCommunication.ModBus
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于64。");
-            
-            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+
+            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 4));
         }
 
 
@@ -519,8 +539,8 @@ namespace HslCommunication.ModBus
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于64。");
-            
-            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+
+            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 4));
         }
 
 
@@ -546,8 +566,8 @@ namespace HslCommunication.ModBus
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于64。");
-            
-            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+
+            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 4));
         }
 
         /// <summary>
@@ -572,8 +592,8 @@ namespace HslCommunication.ModBus
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 32) throw new ArgumentOutOfRangeException("value", "长度不能大于32。");
-            
-            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+
+            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 8));
         }
 
         /// <summary>
@@ -599,8 +619,8 @@ namespace HslCommunication.ModBus
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 32) throw new ArgumentOutOfRangeException("value", "长度不能大于32。");
-            
-            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+
+            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 8));
         }
 
         /// <summary>
@@ -625,8 +645,8 @@ namespace HslCommunication.ModBus
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 32) throw new ArgumentOutOfRangeException("value", "长度不能大于32。");
-            
-            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+
+            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 8));
         }
 
         /// <summary>
