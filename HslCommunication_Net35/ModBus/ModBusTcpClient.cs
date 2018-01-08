@@ -289,6 +289,18 @@ namespace HslCommunication.ModBus
             try
             {
                 byte[] head = NetSupport.ReadBytesFromSocket(socket, 6);
+
+                if (head[4] == 0x00 && head[5] == 0x00)
+                {
+                    // 数据异常，再接收一个字节，防止有些比较坑的设备新增一个额外的字节来防止读取
+                    for (int i = 0; i < head.Length - 1; i++)
+                    {
+                        head[i] = head[i + 1];
+                    }
+
+                    socket.Receive( head, 5, 1, SocketFlags.None );
+                }
+
                 int length = head[4] * 256 + head[5];
                 byte[] data = NetSupport.ReadBytesFromSocket(socket, length);
 
