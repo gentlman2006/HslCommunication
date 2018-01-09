@@ -25,7 +25,7 @@ namespace HslCommunication.LogNet
 
 
     #endregion
-    
+
     #region 日志文件的输出模式
 
     /// <summary>
@@ -42,17 +42,21 @@ namespace HslCommunication.LogNet
         /// </summary>
         ByEveryDay = 2,
         /// <summary>
+        /// 按每个周生成日志文件
+        /// </summary>
+        ByEveryWeek = 3,
+        /// <summary>
         /// 按每个月生成日志文件
         /// </summary>
-        ByEveryMonth = 3,
+        ByEveryMonth = 4,
         /// <summary>
         /// 按每季度生成日志文件
         /// </summary>
-        ByEverySeason=4,
+        ByEverySeason = 5,
         /// <summary>
         /// 按每年生成日志文件
         /// </summary>
-        ByEveryYear = 5,
+        ByEveryYear = 6,
     }
 
 

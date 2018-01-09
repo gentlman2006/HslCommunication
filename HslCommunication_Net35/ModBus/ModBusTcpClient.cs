@@ -216,6 +216,11 @@ namespace HslCommunication.ModBus
         }
 
 
+        /// <summary>
+        /// 单数据读取的转换方法
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         private OperateResult<byte[]> BytesTransform(OperateResult<byte[]> result)
         {
             if(result.IsSuccess)
@@ -234,7 +239,19 @@ namespace HslCommunication.ModBus
         }
 
 
-
+        /// <summary>
+        /// 特殊的高低位置换
+        /// </summary>
+        /// <remarks>
+        ///                  ___________________
+        ///                 |                   |
+        /// 4字节       byte[0]   byte[1]   byte[2]   byte[3]
+        ///                          |___________________|
+        /// 
+        /// </remarks>
+        /// <param name="data">字节数据</param>
+        /// <param name="length"></param>
+        /// <returns>置换后的结果</returns>
         private byte[] BytesTransform(byte[] data, int length)
         {
             int count = data.Length / length;

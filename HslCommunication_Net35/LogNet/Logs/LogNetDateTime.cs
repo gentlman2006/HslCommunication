@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -67,6 +68,12 @@ namespace HslCommunication.LogNet
                 case GenerateMode.ByEveryDay:
                     {
                         return m_filePath + LogNetManagment.LogFileHeadString + DateTime.Now.ToString("yyyyMMdd") + ".txt";
+                    }
+                case GenerateMode.ByEveryWeek:
+                    {
+                        GregorianCalendar gc = new GregorianCalendar( );
+                        int weekOfYear = gc.GetWeekOfYear( DateTime.Now, CalendarWeekRule.FirstDay, DayOfWeek.Monday );
+                        return m_filePath + LogNetManagment.LogFileHeadString + DateTime.Now.Year + "_W" + weekOfYear + ".txt";
                     }
                 case GenerateMode.ByEveryMonth:
                     {
