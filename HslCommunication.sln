@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "软件自动更新", "软�
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTool", "TestTool\TestTool.csproj", "{D68DEDE9-1610-4872-9AED-0E4F90D191EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunication_NetCore", "HslCommunication_NetCore\HslCommunication_NetCore.csproj", "{1FAACD87-F0F7-4A60-A276-83445C89F312}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunication_NetStandard", "HslCommunication_NetStandard\HslCommunication_NetStandard.csproj", "{309E5DDB-AC43-4C6E-824F-D66AA8027324}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{D68DEDE9-1610-4872-9AED-0E4F90D191EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D68DEDE9-1610-4872-9AED-0E4F90D191EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D68DEDE9-1610-4872-9AED-0E4F90D191EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1FAACD87-F0F7-4A60-A276-83445C89F312}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1FAACD87-F0F7-4A60-A276-83445C89F312}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1FAACD87-F0F7-4A60-A276-83445C89F312}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1FAACD87-F0F7-4A60-A276-83445C89F312}.Release|Any CPU.Build.0 = Release|Any CPU
+		{309E5DDB-AC43-4C6E-824F-D66AA8027324}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{309E5DDB-AC43-4C6E-824F-D66AA8027324}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{309E5DDB-AC43-4C6E-824F-D66AA8027324}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{309E5DDB-AC43-4C6E-824F-D66AA8027324}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
