@@ -27,6 +27,10 @@
 
 Install-Package HslCommunication
 
+## 运行环境
+* .Net Framework环境下：支持.Net 3.5及以上环境，功能最完善。
+* .Net Standard环境下：.Net 2.0以上，目前仅仅实现PLC读写，modbus tcp读写，日志记录。
+
 ## 联系作者
 * 技术支持QQ群：[592132877](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8)
 * 邮箱地址：hsl200909@163.com
