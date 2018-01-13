@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>HslCommunication</AssemblyName>
+    <RootNamespace>HslCommunication</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp2.0\HslCommunication.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Core\Net\" />
+    <Folder Include="Core\Security\" />
+    <Folder Include="Enthernet\" />
+    <Folder Include="LogNet\Logs\" />
+    <Folder Include="LogNet\View\" />
+    <Folder Include="ModBus\" />
+    <Folder Include="Profinet\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
+</Project>
