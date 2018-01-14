@@ -1,13 +1,13 @@
-﻿using System;
+﻿using HslCommunication.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using HslCommunication.Core;
 
 namespace HslCommunication.BasicFramework
 {
-
+    
     /*****************************************************************************
      * 
      *    一些类的基类，实现一些共同的基础功能
@@ -74,9 +74,9 @@ namespace HslCommunication.BasicFramework
                             LoadByString(decrypt(sr.ReadToEnd()));
                         }
                     }
-                    catch (Exception ex)
+                    catch(Exception ex)
                     {
-                        ILogNet?.WriteException(LogHeaderText, StringResources.FileLoadFailed, ex);
+                        ILogNet?.WriteException(LogHeaderText,StringResources.FileLoadFailed, ex);
                     }
                     finally
                     {
@@ -111,7 +111,7 @@ namespace HslCommunication.BasicFramework
                 }
                 catch (Exception ex)
                 {
-                    ILogNet?.WriteException(LogHeaderText, StringResources.FileSaveFailed, ex);
+                    ILogNet?.WriteException(LogHeaderText,StringResources.FileSaveFailed, ex);
                 }
                 finally
                 {
@@ -128,7 +128,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 日志记录类
         /// </summary>
-        public LogNet.ILogNet ILogNet { get; set; }
+        public LogNet.ILogNet ILogNet { get; set; } 
     }
 
 

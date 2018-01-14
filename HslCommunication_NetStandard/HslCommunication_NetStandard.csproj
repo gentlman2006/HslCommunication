@@ -8,7 +8,7 @@
     <Authors>Richard.Hu</Authors>
     <Company />
     <Product>HslCommunication</Product>
-    <Description>一个框架库，包含完善的网络通信及日志组件</Description>
+    <Description>个人工具库，包含了实际中碰到的各种常用的类，数据转化方法，可根据时间，文件大小，单文件存储的日志类，用于同步或异步网络通讯类，实现CS系统版本控制的类，注册码生成类，数据加密解密类，三菱及西门子PLC访问类，modbus tcp服务器及客户端类，版本类等基础功能</Description>
     <Copyright>Copyright © By Richard.Hu 2018</Copyright>
   </PropertyGroup>
 
@@ -19,6 +19,10 @@
   <ItemGroup>
     <Folder Include="LogNet\View\" />
     <Folder Include="Resources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1-beta3" />
   </ItemGroup>
 
 </Project>
