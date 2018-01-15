@@ -2330,6 +2330,30 @@ namespace HslCommunication.Core
         /// </summary>
         protected IPEndPoint serverEndPoint = null;
 
+        /// <summary>
+        /// 读取数据的时候指示超时检查时间，如果为负数，则不接收服务器的返回
+        /// </summary>
+        private int receiveBackTimeOut = 10000;
+
+        #endregion
+
+        #region Public Members
+
+        /// <summary>
+        /// 读取数据的时候指示超时检查时间，如果为负数，则不接收服务器的返回
+        /// </summary>
+        public int ReceiveBackTimeOut
+        {
+            get
+            {
+                return receiveBackTimeOut;
+            }
+            set
+            {
+                receiveBackTimeOut = value;
+            }
+        }
+
         #endregion
 
         #region Connect And Close
