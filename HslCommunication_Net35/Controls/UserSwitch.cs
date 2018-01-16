@@ -66,7 +66,7 @@ namespace HslCommunication.Controls
             e.Graphics.FillEllipse(SwitchStatus ? Brushes.LimeGreen:Brushes.Tomato, rect_mini);
 
             Rectangle rect_text = new Rectangle(-50, -radius - temp - 15, 100, 15);
-            e.Graphics.DrawString(SwitchStatus?"On":"Off", Font, SwitchStatus ? Brushes.LimeGreen : Brushes.Tomato, rect_text, centerFormat);
+            e.Graphics.DrawString(SwitchStatus? description[1] : description[0], Font, SwitchStatus ? Brushes.LimeGreen : Brushes.Tomato, rect_text, centerFormat);
 
             e.Graphics.ResetTransform();
         }
@@ -84,6 +84,7 @@ namespace HslCommunication.Controls
         private Color color_switch_foreground = Color.FromArgb(36, 36, 36);       // 按钮开关的前景色
         private Brush brush_switch_foreground = null;                             // 按钮开关的前景色画刷
         private StringFormat centerFormat = null;                                 // 居中显示的格式化文本
+        private string[] description = new string[2] { "Off", "On" };             // 两种开关状态的文本描述
 
         #endregion
 
@@ -183,6 +184,23 @@ namespace HslCommunication.Controls
                     switch_status = value;
                     Invalidate();
                     OnSwitchChanged?.Invoke(this, switch_status);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 获取或设置两种开关状态的文本描述，例如：new string[]{"Off","On"}
+        /// </summary>
+        [Browsable(false)]
+        public string[] SwitchStatusDescription
+        {
+            get { return description; }
+            set
+            {
+                if (value?.Length == 2)
+                {
+                    description = value;
                 }
             }
         }

@@ -37,21 +37,21 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="timeout">数据封送对象</param>
         /// <param name="millisecond">超时的时间</param>
-        internal static void ThreadPoolCheckConnect(HslTimeOut timeout, int millisecond)
+        internal static void ThreadPoolCheckConnect( HslTimeOut timeout, int millisecond )
         {
             while (!timeout.IsSuccessful)
             {
                 if ((DateTime.Now - timeout.StartTime).TotalMilliseconds > millisecond)
                 {
                     // 连接超时或是验证超时
-                    if (!timeout.IsSuccessful) timeout.WorkSocket?.Close();
+                    if (!timeout.IsSuccessful) timeout.WorkSocket?.Close( );
                     break;
                 }
-                Thread.Sleep(100);
+                Thread.Sleep( 100 );
             }
         }
 
-        internal static void ThreadPoolCheckTimeOut(object obj)
+        internal static void ThreadPoolCheckTimeOut( object obj )
         {
             if (obj is HslTimeOut timeout)
             {
@@ -62,8 +62,8 @@ namespace HslCommunication.Core
                         // 连接超时或是验证超时
                         if (!timeout.IsSuccessful)
                         {
-                            timeout.Operator?.Invoke();
-                            timeout.WorkSocket?.Close();
+                            timeout.Operator?.Invoke( );
+                            timeout.WorkSocket?.Close( );
                         }
                         break;
                     }
@@ -79,7 +79,7 @@ namespace HslCommunication.Core
         /// <param name="b1">第一个字节</param>
         /// <param name="b2">第二个字节</param>
         /// <returns></returns>
-        internal static bool IsTwoBytesEquel(byte[] b1, byte[] b2)
+        internal static bool IsTwoBytesEquel( byte[] b1, byte[] b2 )
         {
             if (b1 == null || b2 == null) return false;
             if (b1.Length != b2.Length) return false;
@@ -99,9 +99,9 @@ namespace HslCommunication.Core
         /// <param name="head">头指令</param>
         /// <param name="token">令牌</param>
         /// <returns></returns>
-        internal static bool CheckTokenEquel(byte[] head, Guid token)
+        internal static bool CheckTokenEquel( byte[] head, Guid token )
         {
-            return IsTwoBytesEquel(head, 12, token.ToByteArray(), 0, 16);
+            return IsTwoBytesEquel( head, 12, token.ToByteArray( ), 0, 16 );
         }
 
 
@@ -115,7 +115,7 @@ namespace HslCommunication.Core
         /// <param name="length">校验的长度</param>
         /// <returns>返回是否相等</returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        internal static bool IsTwoBytesEquel(byte[] b1, int start1, byte[] b2, int start2, int length)
+        internal static bool IsTwoBytesEquel( byte[] b1, int start1, byte[] b2, int start2, int length )
         {
             if (b1 == null || b2 == null) return false;
             for (int i = 0; i < length; i++)
@@ -140,9 +140,9 @@ namespace HslCommunication.Core
         /// <exception cref="SocketException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="System.Security.SecurityException"></exception>
-        public static byte[] ReadBytesFromSocket(Socket socket, int receive)
+        public static byte[] ReadBytesFromSocket( Socket socket, int receive )
         {
-            return ReadBytesFromSocket(socket, receive, null, false, false);
+            return ReadBytesFromSocket( socket, receive, null, false, false );
         }
 
 
@@ -159,7 +159,7 @@ namespace HslCommunication.Core
         /// <exception cref="SocketException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="System.Security.SecurityException"></exception>
-        public static byte[] ReadBytesFromSocket(Socket socket, int receive, Action<long, long> report, bool reportByPercent, bool response)
+        public static byte[] ReadBytesFromSocket( Socket socket, int receive, Action<long, long> report, bool reportByPercent, bool response )
         {
             byte[] bytes_receive = new byte[receive];
             int count_receive = 0;
@@ -168,7 +168,7 @@ namespace HslCommunication.Core
             {
                 // 分割成2KB来接收数据
                 int receive_length = (receive - count_receive) >= SocketBufferSize ? SocketBufferSize : (receive - count_receive);
-                count_receive += socket.Receive(bytes_receive, count_receive, receive_length, SocketFlags.None);
+                count_receive += socket.Receive( bytes_receive, count_receive, receive_length, SocketFlags.None );
                 if (reportByPercent)
                 {
                     long percentCurrent = (long)count_receive * 100 / receive;
@@ -176,16 +176,16 @@ namespace HslCommunication.Core
                     {
                         percent = percentCurrent;
                         // 报告进度
-                        report?.Invoke(count_receive, receive);
+                        report?.Invoke( count_receive, receive );
                     }
                 }
                 else
                 {
                     // 报告进度
-                    report?.Invoke(count_receive, receive);
+                    report?.Invoke( count_receive, receive );
                 }
                 // 回发进度
-                if (response) socket.Send(BitConverter.GetBytes((long)count_receive));
+                if (response) socket.Send( BitConverter.GetBytes( (long)count_receive ) );
             }
             return bytes_receive;
         }
@@ -204,7 +204,7 @@ namespace HslCommunication.Core
         /// <exception cref="SocketException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="System.Security.SecurityException"></exception>
-        internal static void WriteStreamFromSocket(Socket socket, Stream stream, long receive, Action<long, long> report, bool reportByPercent)
+        internal static void WriteStreamFromSocket( Socket socket, Stream stream, long receive, Action<long, long> report, bool reportByPercent )
         {
             byte[] buffer = new byte[SocketBufferSize];
             long count_receive = 0;
@@ -212,9 +212,9 @@ namespace HslCommunication.Core
             while (count_receive < receive)
             {
                 // 分割成4KB来接收数据
-                int current = socket.Receive(buffer, 0, SocketBufferSize, SocketFlags.None);
+                int current = socket.Receive( buffer, 0, SocketBufferSize, SocketFlags.None );
                 count_receive += current;
-                stream.Write(buffer, 0, current);
+                stream.Write( buffer, 0, current );
                 if (reportByPercent)
                 {
                     long percentCurrent = count_receive * 100 / receive;
@@ -222,16 +222,16 @@ namespace HslCommunication.Core
                     {
                         percent = percentCurrent;
                         // 报告进度
-                        report?.Invoke(count_receive, receive);
+                        report?.Invoke( count_receive, receive );
                     }
                 }
                 else
                 {
                     // 报告进度
-                    report?.Invoke(count_receive, receive);
+                    report?.Invoke( count_receive, receive );
                 }
                 // 回发进度
-                socket.Send(BitConverter.GetBytes(count_receive));
+                socket.Send( BitConverter.GetBytes( count_receive ) );
             }
             buffer = null;
         }
@@ -251,7 +251,7 @@ namespace HslCommunication.Core
         /// <exception cref="IOException"></exception>
         /// <exception cref="NotSupportedException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
-        internal static void WriteSocketFromStream(Socket socket, Stream stream, long length, Action<long, long> report, bool reportByPercent)
+        internal static void WriteSocketFromStream( Socket socket, Stream stream, long length, Action<long, long> report, bool reportByPercent )
         {
             byte[] buffer = new byte[SocketBufferSize];
             long count_send = 0;
@@ -260,11 +260,11 @@ namespace HslCommunication.Core
 
             while (count_send < length)
             {
-                int count = stream.Read(buffer, 0, SocketBufferSize);
+                int count = stream.Read( buffer, 0, SocketBufferSize );
                 count_send += count;
-                socket.Send(buffer, 0, count, SocketFlags.None);
+                socket.Send( buffer, 0, count, SocketFlags.None );
 
-                while (count_send != BitConverter.ToInt64(ReadBytesFromSocket(socket, 8), 0)) ;
+                while (count_send != BitConverter.ToInt64( ReadBytesFromSocket( socket, 8 ), 0 )) ;
 
                 long received = count_send;
 
@@ -275,13 +275,13 @@ namespace HslCommunication.Core
                     {
                         percent = percentCurrent;
                         // 报告进度
-                        report?.Invoke(received, length);
+                        report?.Invoke( received, length );
                     }
                 }
                 else
                 {
                     // 报告进度
-                    report?.Invoke(received, length);
+                    report?.Invoke( received, length );
                 }
 
                 // 双重接收验证
@@ -303,14 +303,14 @@ namespace HslCommunication.Core
         /// <param name="reportByPercent">是否按照百分比报告进度</param>
         /// <exception cref="SocketException"></exception>
         /// <exception cref="ObjectDisposedException"></exception>
-        internal static void CheckSendBytesReceived(Socket socket, long length, Action<long, long> report, bool reportByPercent)
+        internal static void CheckSendBytesReceived( Socket socket, long length, Action<long, long> report, bool reportByPercent )
         {
             long remoteNeedReceive = 0;
             long percent = 0;
             // 确认服务器的数据是否接收完成
             while (remoteNeedReceive < length)
             {
-                remoteNeedReceive = BitConverter.ToInt64(ReadBytesFromSocket(socket, 8), 0);
+                remoteNeedReceive = BitConverter.ToInt64( ReadBytesFromSocket( socket, 8 ), 0 );
                 if (reportByPercent)
                 {
                     long percentCurrent = remoteNeedReceive * 100 / length;
@@ -318,13 +318,13 @@ namespace HslCommunication.Core
                     {
                         percent = percentCurrent;
                         // 报告进度
-                        report?.Invoke(remoteNeedReceive, length);
+                        report?.Invoke( remoteNeedReceive, length );
                     }
                 }
                 else
                 {
                     // 报告进度
-                    report?.Invoke(remoteNeedReceive, length);
+                    report?.Invoke( remoteNeedReceive, length );
                 }
             }
         }
@@ -338,7 +338,7 @@ namespace HslCommunication.Core
         /// <param name="token">令牌</param>
         /// <param name="data">字节数据</param>
         /// <returns></returns>
-        public static byte[] CommandBytes(int command, int customer, Guid token, byte[] data)
+        public static byte[] CommandBytes( int command, int customer, Guid token, byte[] data )
         {
             byte[] _temp = null;
             int _zipped = HslCommunicationCode.Hsl_Protocol_NoZipped;
@@ -350,24 +350,24 @@ namespace HslCommunication.Core
             else
             {
                 // 加密
-                data = HslSecurity.ByteEncrypt(data);
+                data = HslSecurity.ByteEncrypt( data );
                 if (data.Length > 10240)
                 {
                     // 10K以上的数据，进行数据压缩
-                    data = HslZipped.CompressBytes(data);
+                    data = HslZipped.CompressBytes( data );
                     _zipped = HslCommunicationCode.Hsl_Protocol_Zipped;
                 }
                 _temp = new byte[HslCommunicationCode.HeadByteLength + data.Length];
                 _sendLength = data.Length;
             }
-            BitConverter.GetBytes(command).CopyTo(_temp, 0);
-            BitConverter.GetBytes(customer).CopyTo(_temp, 4);
-            BitConverter.GetBytes(_zipped).CopyTo(_temp, 8);
-            token.ToByteArray().CopyTo(_temp, 12);
-            BitConverter.GetBytes(_sendLength).CopyTo(_temp, 28);
+            BitConverter.GetBytes( command ).CopyTo( _temp, 0 );
+            BitConverter.GetBytes( customer ).CopyTo( _temp, 4 );
+            BitConverter.GetBytes( _zipped ).CopyTo( _temp, 8 );
+            token.ToByteArray( ).CopyTo( _temp, 12 );
+            BitConverter.GetBytes( _sendLength ).CopyTo( _temp, 28 );
             if (_sendLength > 0)
             {
-                Array.Copy(data, 0, _temp, 32, _sendLength);
+                Array.Copy( data, 0, _temp, 32, _sendLength );
             }
             return _temp;
         }
@@ -378,25 +378,25 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="head"></param>
         /// <param name="content"></param>
-        internal static byte[] CommandAnalysis(byte[] head, byte[] content)
+        internal static byte[] CommandAnalysis( byte[] head, byte[] content )
         {
             if (content != null)
             {
-                int _zipped = BitConverter.ToInt32(head, 8);
+                int _zipped = BitConverter.ToInt32( head, 8 );
                 // 先进行解压
                 if (_zipped == HslCommunicationCode.Hsl_Protocol_Zipped)
                 {
-                    content = HslZipped.Decompress(content);
+                    content = HslZipped.Decompress( content );
                 }
                 // 进行解密
-                return HslSecurity.ByteDecrypt(content);
+                return HslSecurity.ByteDecrypt( content );
             }
             else
             {
                 return null;
             }
         }
-        
+
 
         /// <summary>
         /// 获取发送字节数据的实际数据，带指令头
@@ -405,9 +405,9 @@ namespace HslCommunication.Core
         /// <param name="token"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        internal static byte[] CommandBytes(int customer, Guid token, byte[] data)
+        internal static byte[] CommandBytes( int customer, Guid token, byte[] data )
         {
-            return CommandBytes(HslCommunicationCode.Hsl_Protocol_User_Bytes, customer, token, data);
+            return CommandBytes( HslCommunicationCode.Hsl_Protocol_User_Bytes, customer, token, data );
         }
 
 
@@ -418,10 +418,10 @@ namespace HslCommunication.Core
         /// <param name="token"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        internal static byte[] CommandBytes(int customer, Guid token, string data)
+        internal static byte[] CommandBytes( int customer, Guid token, string data )
         {
-            if (data == null) return CommandBytes(HslCommunicationCode.Hsl_Protocol_User_String, customer, token, null);
-            else return CommandBytes(HslCommunicationCode.Hsl_Protocol_User_String, customer, token, Encoding.Unicode.GetBytes(data));
+            if (data == null) return CommandBytes( HslCommunicationCode.Hsl_Protocol_User_String, customer, token, null );
+            else return CommandBytes( HslCommunicationCode.Hsl_Protocol_User_String, customer, token, Encoding.Unicode.GetBytes( data ) );
         }
 
 
@@ -432,15 +432,15 @@ namespace HslCommunication.Core
         /// <param name="code"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        internal static byte[] GetBytesFromString(int code, string data)
+        internal static byte[] GetBytesFromString( int code, string data )
         {
-            int length = string.IsNullOrEmpty(data) ? 0 : Encoding.Unicode.GetBytes(data).Length;
+            int length = string.IsNullOrEmpty( data ) ? 0 : Encoding.Unicode.GetBytes( data ).Length;
             byte[] result = new byte[length + 8];
-            BitConverter.GetBytes(code).CopyTo(result, 0);
-            BitConverter.GetBytes(length).CopyTo(result, 4);
+            BitConverter.GetBytes( code ).CopyTo( result, 0 );
+            BitConverter.GetBytes( length ).CopyTo( result, 4 );
             if (length > 0)
             {
-                Encoding.Unicode.GetBytes(data).CopyTo(result, 8);
+                Encoding.Unicode.GetBytes( data ).CopyTo( result, 8 );
             }
             return result;
         }
@@ -474,11 +474,11 @@ namespace HslCommunication.Core
         /// 检查超时的子线程
         /// </summary>
         /// <param name="obj"></param>
-        internal void ThreadPoolCheckConnect(object obj)
+        internal void ThreadPoolCheckConnect( object obj )
         {
             if (obj is HslTimeOut timeout)
             {
-                NetSupport.ThreadPoolCheckConnect(timeout, ConnectTimeout);
+                NetSupport.ThreadPoolCheckConnect( timeout, ConnectTimeout );
             }
         }
 
@@ -507,13 +507,13 @@ namespace HslCommunication.Core
         /// <summary>
         /// 不带参数的委托
         /// </summary>
-        public delegate void IEDelegate();
+        public delegate void IEDelegate( );
         /// <summary>
         /// 带一个参数的委托
         /// </summary>
         /// <typeparam name="T1">T1</typeparam>
         /// <param name="object1"></param>
-        public delegate void IEDelegate<T1>(T1 object1);
+        public delegate void IEDelegate<T1>( T1 object1 );
         /// <summary>
         /// 带二个参数的委托
         /// </summary>
@@ -521,7 +521,7 @@ namespace HslCommunication.Core
         /// <typeparam name="T2">T2</typeparam>
         /// <param name="object1">object1</param>
         /// <param name="object2">object2</param>
-        public delegate void IEDelegate<T1, T2>(T1 object1, T2 object2);
+        public delegate void IEDelegate<T1, T2>( T1 object1, T2 object2 );
         /// <summary>
         /// 带三个参数的委托
         /// </summary>
@@ -531,7 +531,7 @@ namespace HslCommunication.Core
         /// <param name="object1">object1</param>
         /// <param name="object2">object2</param>
         /// <param name="object3">object3</param>
-        public delegate void IEDelegate<T1, T2, T3>(T1 object1, T2 object2, T3 object3);
+        public delegate void IEDelegate<T1, T2, T3>( T1 object1, T2 object2, T3 object3 );
 
 
         /// <summary>
@@ -575,24 +575,24 @@ namespace HslCommunication.Core
             )
         {
             // create the socket object
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            var timeout = new HslTimeOut()
+            socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
+            var timeout = new HslTimeOut( )
             {
                 WorkSocket = socket
             };
-            ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckConnect), timeout);
+            ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckConnect ), timeout );
 
             try
             {
-                socket.Connect(iPEndPoint);
+                socket.Connect( iPEndPoint );
                 timeout.IsSuccessful = true;
                 return true;
             }
             catch (Exception ex)
             {
-                result.Message = CombineExceptionString(StringResources.ConnectedFailed, ex.Message);
-                LogNet?.WriteError(LogHeaderText, CombineExceptionString(StringResources.ConnectedFailed, ex.Message));
-                socket?.Close();
+                result.Message = CombineExceptionString( StringResources.ConnectedFailed, ex.Message );
+                LogNet?.WriteError( LogHeaderText, CombineExceptionString( StringResources.ConnectedFailed, ex.Message ) );
+                socket?.Close( );
                 socket = null;
                 return false;
             }
@@ -636,15 +636,15 @@ namespace HslCommunication.Core
 
             try
             {
-                bytes = NetSupport.ReadBytesFromSocket(socket, length, receiveStatus, reportByPercent, response);
+                bytes = NetSupport.ReadBytesFromSocket( socket, length, receiveStatus, reportByPercent, response );
                 // 指示成功
                 // if (checkTimeOut) timeout.IsSuccessful = true;
             }
             catch (Exception ex)
             {
-                socket?.Close();
-                result.Message = CombineExceptionString(exceptionMessage, ex.Message);
-                LogNet?.WriteException(LogHeaderText, exceptionMessage, ex);
+                socket?.Close( );
+                result.Message = CombineExceptionString( exceptionMessage, ex.Message );
+                LogNet?.WriteException( LogHeaderText, exceptionMessage, ex );
                 bytes = null; // 这个内存清除的很重要
                 return false;
             }
@@ -668,13 +668,13 @@ namespace HslCommunication.Core
         {
             try
             {
-                socket.Send(send);
+                socket.Send( send );
             }
             catch (Exception ex)
             {
-                result.Message = CombineExceptionString(exceptionMessage, ex.Message);
-                LogNet?.WriteException(LogHeaderText, exceptionMessage, ex);
-                socket?.Close();
+                result.Message = CombineExceptionString( exceptionMessage, ex.Message );
+                LogNet?.WriteException( LogHeaderText, exceptionMessage, ex );
+                socket?.Close( );
                 send = null;
                 return false;
             }
@@ -701,14 +701,14 @@ namespace HslCommunication.Core
         {
             try
             {
-                NetSupport.CheckSendBytesReceived(socket, length, report, true);
+                NetSupport.CheckSendBytesReceived( socket, length, report, true );
                 return true;
             }
             catch (Exception ex)
             {
-                result.Message = CombineExceptionString(exceptionMessage, ex.Message);
-                LogNet?.WriteException(LogHeaderText, exceptionMessage, ex);
-                socket?.Close();
+                result.Message = CombineExceptionString( exceptionMessage, ex.Message );
+                LogNet?.WriteException( LogHeaderText, exceptionMessage, ex );
+                socket?.Close( );
                 return false;
             }
         }
@@ -729,15 +729,22 @@ namespace HslCommunication.Core
             OperateResult result
             )
         {
-            if (NetSupport.CheckTokenEquel(head, KeyToken))
+            if (NetSupport.CheckTokenEquel( head, KeyToken ))
             {
                 return true;
             }
             else
             {
                 result.Message = StringResources.TokenCheckFailed;
-                LogNet?.WriteWarn(LogHeaderText, StringResources.TokenCheckFailed + " Ip:" + socket.RemoteEndPoint.AddressFamily.ToString());
-                socket?.Close();
+                try
+                {
+                    LogNet?.WriteWarn( LogHeaderText, StringResources.TokenCheckFailed + " Ip:" + socket.RemoteEndPoint.AddressFamily.ToString( ) );
+                }
+                catch
+                {
+                    // 多半因为socket异常关系导致，不再记录日志
+                }
+                socket?.Close( );
                 head = null;
                 return false;
             }
@@ -764,17 +771,17 @@ namespace HslCommunication.Core
         {
             try
             {
-                using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                using (FileStream fs = new FileStream( filename, FileMode.Open, FileAccess.Read ))
                 {
-                    NetSupport.WriteSocketFromStream(socket, fs, filelength, report, true);
+                    NetSupport.WriteSocketFromStream( socket, fs, filelength, report, true );
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                socket?.Close();
-                LogNet?.WriteException(LogHeaderText, exceptionMessage, ex);
-                result.Message = CombineExceptionString(exceptionMessage, ex.Message);
+                socket?.Close( );
+                LogNet?.WriteException( LogHeaderText, exceptionMessage, ex );
+                result.Message = CombineExceptionString( exceptionMessage, ex.Message );
                 filelength = 0;
                 return false;
             }
@@ -802,18 +809,18 @@ namespace HslCommunication.Core
         {
             try
             {
-                using(FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
+                using (FileStream fs = new FileStream( filename, FileMode.Create, FileAccess.Write ))
                 {
-                    NetSupport.WriteStreamFromSocket(socket, fs, receive, report, true);
+                    NetSupport.WriteStreamFromSocket( socket, fs, receive, report, true );
                 }
-                
+
                 return true;
             }
             catch (Exception ex)
             {
-                result.Message = CombineExceptionString(exceptionMessage, ex.Message);
-                LogNet?.WriteException(LogHeaderText, exceptionMessage, ex);
-                socket?.Close();
+                result.Message = CombineExceptionString( exceptionMessage, ex.Message );
+                LogNet?.WriteException( LogHeaderText, exceptionMessage, ex );
+                socket?.Close( );
                 return false;
             }
         }
@@ -830,7 +837,7 @@ namespace HslCommunication.Core
         /// <param name="message"></param>
         /// <param name="exception"></param>
         /// <returns></returns>
-        protected string CombineExceptionString(string message, string exception)
+        protected string CombineExceptionString( string message, string exception )
         {
             return $"{message + Environment.NewLine}原因：{exception}";
         }
@@ -854,14 +861,14 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="stateOne">通信用的核心对象</param>
         /// <param name="content"></param>
-        internal void SendBytesAsync(AsyncStateOne stateOne, byte[] content)
+        internal void SendBytesAsync( AsyncStateOne stateOne, byte[] content )
         {
             if (content == null) return;
             try
             {
-                
+
                 // 启用另外一个套接字传送
-                AsyncStateSend state = new AsyncStateSend()
+                AsyncStateSend state = new AsyncStateSend( )
                 {
                     WorkSocket = stateOne.WorkSocket,
                     Content = content,
@@ -869,27 +876,27 @@ namespace HslCommunication.Core
                     HybirdLockSend = stateOne.HybirdLockSend,
                 };
 
-                state.HybirdLockSend.Enter();
+                state.HybirdLockSend.Enter( );
 
                 state.WorkSocket.BeginSend(
                     state.Content,
                     state.AlreadySendLength,
                     state.Content.Length - state.AlreadySendLength,
                     SocketFlags.None,
-                    new AsyncCallback(SendCallBack),
-                    state);
+                    new AsyncCallback( SendCallBack ),
+                    state );
             }
             catch (ObjectDisposedException ex)
             {
                 // 不操作
-                stateOne.HybirdLockSend.Leave();
+                stateOne.HybirdLockSend.Leave( );
             }
             catch (Exception ex)
             {
-                stateOne.HybirdLockSend.Leave();
-                if (!ex.Message.Contains(StringResources.SocketRemoteCloseException))
+                stateOne.HybirdLockSend.Leave( );
+                if (!ex.Message.Contains( StringResources.SocketRemoteCloseException ))
                 {
-                    LogNet?.WriteException(LogHeaderText, StringResources.SocketSendException, ex);
+                    LogNet?.WriteException( LogHeaderText, StringResources.SocketSendException, ex );
                 }
             }
         }
@@ -898,38 +905,38 @@ namespace HslCommunication.Core
         /// 发送回发方法
         /// </summary>
         /// <param name="ar"></param>
-        internal void SendCallBack(IAsyncResult ar)
+        internal void SendCallBack( IAsyncResult ar )
         {
             if (ar.AsyncState is AsyncStateSend stateone)
             {
                 try
                 {
-                    stateone.AlreadySendLength += stateone.WorkSocket.EndSend(ar);
+                    stateone.AlreadySendLength += stateone.WorkSocket.EndSend( ar );
                     if (stateone.AlreadySendLength < stateone.Content.Length)
                     {
                         // 继续发送
-                        stateone.WorkSocket.BeginSend(stateone.Content,
+                        stateone.WorkSocket.BeginSend( stateone.Content,
                         stateone.AlreadySendLength,
                         stateone.Content.Length - stateone.AlreadySendLength,
-                        SocketFlags.None, new AsyncCallback(SendCallBack), stateone);
+                        SocketFlags.None, new AsyncCallback( SendCallBack ), stateone );
                     }
                     else
                     {
-                        stateone.HybirdLockSend.Leave();
+                        stateone.HybirdLockSend.Leave( );
                         // 发送完成
                         stateone = null;
                     }
                 }
                 catch (ObjectDisposedException ex)
                 {
-                    stateone.HybirdLockSend.Leave();
+                    stateone.HybirdLockSend.Leave( );
                     // 不处理
                     stateone = null;
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException(LogHeaderText, StringResources.SocketEndSendException, ex);
-                    stateone.HybirdLockSend.Leave();
+                    LogNet?.WriteException( LogHeaderText, StringResources.SocketEndSendException, ex );
+                    stateone.HybirdLockSend.Leave( );
                     stateone = null;
                 }
             }
@@ -944,29 +951,37 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="receive">网络状态</param>
         /// <param name="isProcess">是否触发数据处理</param>
-        internal void ReBeginReceiveHead(AsyncStateOne receive, bool isProcess)
+        internal void ReBeginReceiveHead( AsyncStateOne receive, bool isProcess )
         {
-            byte[] head = receive.BytesHead, Content = receive.BytesContent;
-            receive.Clear();
-            receive.WorkSocket.BeginReceive(receive.BytesHead, receive.AlreadyReceivedHead, receive.BytesHead.Length - receive.AlreadyReceivedHead,
-                SocketFlags.None, new AsyncCallback(HeadReceiveCallback), receive);
-            // 检测是否需要数据处理
-            if (isProcess)
+            try
             {
-                // 校验令牌
-                if (NetSupport.CheckTokenEquel(head, KeyToken))
+                byte[] head = receive.BytesHead, Content = receive.BytesContent;
+                receive.Clear( );
+                receive.WorkSocket.BeginReceive( receive.BytesHead, receive.AlreadyReceivedHead, receive.BytesHead.Length - receive.AlreadyReceivedHead,
+                    SocketFlags.None, new AsyncCallback( HeadReceiveCallback ), receive );
+                // 检测是否需要数据处理
+                if (isProcess)
                 {
-                    Content = NetSupport.CommandAnalysis(head, Content);
-                    int protocol = BitConverter.ToInt32(head, 0);
-                    int customer = BitConverter.ToInt32(head, 4);
-                    // 转移到数据中心处理
-                    DataProcessingCenter(receive, protocol, customer, Content);
+                    // 校验令牌
+                    if (NetSupport.CheckTokenEquel( head, KeyToken ))
+                    {
+                        Content = NetSupport.CommandAnalysis( head, Content );
+                        int protocol = BitConverter.ToInt32( head, 0 );
+                        int customer = BitConverter.ToInt32( head, 4 );
+                        // 转移到数据中心处理
+                        DataProcessingCenter( receive, protocol, customer, Content );
+                    }
+                    else
+                    {
+                        // 应该关闭网络通信
+                        LogNet?.WriteWarn( LogHeaderText, StringResources.TokenCheckFailed );
+                    }
                 }
-                else
-                {
-                    // 应该关闭网络通信
-                    LogNet?.WriteWarn(LogHeaderText, StringResources.TokenCheckFailed);
-                }
+            }
+            catch(Exception ex)
+            {
+                SocketReceiveException( receive, ex );
+                LogNet?.WriteException( LogHeaderText, ex );
             }
         }
 
@@ -974,13 +989,13 @@ namespace HslCommunication.Core
         /// 指令头接收方法
         /// </summary>
         /// <param name="ar"></param>
-        internal void HeadReceiveCallback(IAsyncResult ar)
+        internal void HeadReceiveCallback( IAsyncResult ar )
         {
             if (ar.AsyncState is AsyncStateOne receive)
             {
                 try
                 {
-                    receive.AlreadyReceivedHead += receive.WorkSocket.EndReceive(ar);
+                    receive.AlreadyReceivedHead += receive.WorkSocket.EndReceive( ar );
                 }
                 catch (ObjectDisposedException ex)
                 {
@@ -990,40 +1005,40 @@ namespace HslCommunication.Core
                 catch (SocketException ex)
                 {
                     // 已经断开连接了
-                    SocketReceiveException(receive, ex);
-                    LogNet?.WriteException(LogHeaderText, ex);
+                    SocketReceiveException( receive, ex );
+                    LogNet?.WriteException( LogHeaderText, ex );
                     return;
                 }
                 catch (Exception ex)
                 {
                     // 其他乱七八糟的异常重新启用接收数据
-                    ReBeginReceiveHead(receive, false);
-                    LogNet?.WriteException(LogHeaderText, StringResources.SocketEndReceiveException, ex);
+                    ReBeginReceiveHead( receive, false );
+                    LogNet?.WriteException( LogHeaderText, StringResources.SocketEndReceiveException, ex );
                     return;
                 }
 
                 if (receive.AlreadyReceivedHead < receive.BytesHead.Length)
                 {
                     // 仍需要接收
-                    receive.WorkSocket.BeginReceive(receive.BytesHead, receive.AlreadyReceivedHead, receive.BytesHead.Length - receive.AlreadyReceivedHead,
-                        SocketFlags.None, new AsyncCallback(HeadReceiveCallback), receive);
+                    receive.WorkSocket.BeginReceive( receive.BytesHead, receive.AlreadyReceivedHead, receive.BytesHead.Length - receive.AlreadyReceivedHead,
+                        SocketFlags.None, new AsyncCallback( HeadReceiveCallback ), receive );
                 }
                 else
                 {
                     // 接收完毕，准备接收内容
-                    int receive_length = BitConverter.ToInt32(receive.BytesHead, receive.BytesHead.Length - 4);
+                    int receive_length = BitConverter.ToInt32( receive.BytesHead, receive.BytesHead.Length - 4 );
                     receive.BytesContent = new byte[receive_length];
 
                     if (receive_length > 0)
                     {
                         int receiveSize = (receive.BytesContent.Length - receive.AlreadyReceivedContent) > SegmentationLength ? SegmentationLength : (receive.BytesContent.Length - receive.AlreadyReceivedContent);
-                        receive.WorkSocket.BeginReceive(receive.BytesContent, receive.AlreadyReceivedContent, receiveSize,
-                            SocketFlags.None, new AsyncCallback(ContentReceiveCallback), receive);
+                        receive.WorkSocket.BeginReceive( receive.BytesContent, receive.AlreadyReceivedContent, receiveSize,
+                            SocketFlags.None, new AsyncCallback( ContentReceiveCallback ), receive );
                     }
                     else
                     {
                         // 处理数据并重新启动接收
-                        ReBeginReceiveHead(receive, true);
+                        ReBeginReceiveHead( receive, true );
                     }
                 }
             }
@@ -1035,7 +1050,7 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="receive"></param>
         /// <param name="ex"></param>
-        internal virtual void SocketReceiveException(AsyncStateOne receive, Exception ex)
+        internal virtual void SocketReceiveException( AsyncStateOne receive, Exception ex )
         {
 
         }
@@ -1045,13 +1060,13 @@ namespace HslCommunication.Core
         /// 数据内容接收方法
         /// </summary>
         /// <param name="ar"></param>
-        internal void ContentReceiveCallback(IAsyncResult ar)
+        internal void ContentReceiveCallback( IAsyncResult ar )
         {
             if (ar.AsyncState is AsyncStateOne receive)
             {
                 try
                 {
-                    receive.AlreadyReceivedContent += receive.WorkSocket.EndReceive(ar);
+                    receive.AlreadyReceivedContent += receive.WorkSocket.EndReceive( ar );
                 }
                 catch (ObjectDisposedException ex)
                 {
@@ -1061,15 +1076,15 @@ namespace HslCommunication.Core
                 catch (SocketException ex)
                 {
                     //已经断开连接了
-                    SocketReceiveException(receive, ex);
-                    LogNet?.WriteException(LogHeaderText, ex);
+                    SocketReceiveException( receive, ex );
+                    LogNet?.WriteException( LogHeaderText, ex );
                     return;
                 }
                 catch (Exception ex)
                 {
                     //其他乱七八糟的异常重新启用接收数据
-                    ReBeginReceiveHead(receive, false);
-                    LogNet?.WriteException(LogHeaderText, StringResources.SocketEndReceiveException, ex);
+                    ReBeginReceiveHead( receive, false );
+                    LogNet?.WriteException( LogHeaderText, StringResources.SocketEndReceiveException, ex );
                     return;
                 }
 
@@ -1077,12 +1092,12 @@ namespace HslCommunication.Core
                 {
                     int receiveSize = (receive.BytesContent.Length - receive.AlreadyReceivedContent) > SegmentationLength ? SegmentationLength : (receive.BytesContent.Length - receive.AlreadyReceivedContent);
                     //仍需要接收
-                    receive.WorkSocket.BeginReceive(receive.BytesContent, receive.AlreadyReceivedContent, receiveSize, SocketFlags.None, new AsyncCallback(ContentReceiveCallback), receive);
+                    receive.WorkSocket.BeginReceive( receive.BytesContent, receive.AlreadyReceivedContent, receiveSize, SocketFlags.None, new AsyncCallback( ContentReceiveCallback ), receive );
                 }
                 else
                 {
                     //处理数据并重新启动接收
-                    ReBeginReceiveHead(receive, true);
+                    ReBeginReceiveHead( receive, true );
                 }
 
             }
@@ -1115,7 +1130,7 @@ namespace HslCommunication.Core
             )
         {
             // 数据处理
-            send = NetSupport.CommandBytes(headcode, customer, KeyToken, send);
+            send = NetSupport.CommandBytes( headcode, customer, KeyToken, send );
 
             // 发送数据
             if (!SendBytesToSocket(
@@ -1182,7 +1197,7 @@ namespace HslCommunication.Core
             }
             else
             {
-                LogNet?.WriteError(LogHeaderText, failedString);
+                LogNet?.WriteError( LogHeaderText, failedString );
                 return false;
             }
         }
@@ -1206,7 +1221,7 @@ namespace HslCommunication.Core
             string failedString = null
             )
         {
-            byte[] data = string.IsNullOrEmpty(send) ? null : Encoding.Unicode.GetBytes(send);
+            byte[] data = string.IsNullOrEmpty( send ) ? null : Encoding.Unicode.GetBytes( send );
 
             if (!SendBaseAndCheckReceive(
                 socket,                                           // 套接字
@@ -1248,16 +1263,16 @@ namespace HslCommunication.Core
             )
         {
             // 发送文件名，大小，标签
-            FileInfo info = new FileInfo(filename);
+            FileInfo info = new FileInfo( filename );
 
-            if (!File.Exists(filename))
+            if (!File.Exists( filename ))
             {
                 // 如果文件不存在
-                if (!SendStringAndCheckReceive(socket, 0, "", result, null, failedString)) return false;
+                if (!SendStringAndCheckReceive( socket, 0, "", result, null, failedString )) return false;
                 else
                 {
                     result.Message = "找不到该文件，请重新确认文件！";
-                    socket?.Close();
+                    socket?.Close( );
                     return false;
                 }
             }
@@ -1271,10 +1286,10 @@ namespace HslCommunication.Core
                 { "FileUpload", new Newtonsoft.Json.Linq.JValue(fileupload) }
             };
 
-            if (!SendStringAndCheckReceive(socket, 1, json.ToString(), result, null, failedString)) return false;
+            if (!SendStringAndCheckReceive( socket, 1, json.ToString( ), result, null, failedString )) return false;
 
-            
-            if (!SendFileStreamToSocket(socket, filename, info.Length, result, sendReport, failedString))
+
+            if (!SendFileStreamToSocket( socket, filename, info.Length, result, sendReport, failedString ))
             {
                 return false;
             }
@@ -1320,18 +1335,18 @@ namespace HslCommunication.Core
                 { "FileUpload", new Newtonsoft.Json.Linq.JValue(fileupload) }
             };
 
-            if (!SendStringAndCheckReceive(socket, 1, json.ToString(), result, null, failedString)) return false;
+            if (!SendStringAndCheckReceive( socket, 1, json.ToString( ), result, null, failedString )) return false;
 
 
             try
             {
-                NetSupport.WriteSocketFromStream(socket, stream, stream.Length, sendReport, true);
+                NetSupport.WriteSocketFromStream( socket, stream, stream.Length, sendReport, true );
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                socket?.Close();
-                LogNet?.WriteException(LogHeaderText, failedString, ex);
-                result.Message = CombineExceptionString(failedString, ex.Message);
+                socket?.Close( );
+                LogNet?.WriteException( LogHeaderText, failedString, ex );
+                result.Message = CombineExceptionString( failedString, ex.Message );
                 return false;
             }
 
@@ -1370,7 +1385,7 @@ namespace HslCommunication.Core
             )
         {
             // 30秒超时接收验证
-            HslTimeOut hslTimeOut = new HslTimeOut()
+            HslTimeOut hslTimeOut = new HslTimeOut( )
             {
                 DelayTime = 30000,
                 IsSuccessful = false,
@@ -1378,7 +1393,7 @@ namespace HslCommunication.Core
                 WorkSocket = socket,
             };
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback(NetSupport.ThreadPoolCheckTimeOut), hslTimeOut);
+            ThreadPool.QueueUserWorkItem( new WaitCallback( NetSupport.ThreadPoolCheckTimeOut ), hslTimeOut );
 
             // 接收头
             if (!ReceiveBytesFromSocket(
@@ -1401,14 +1416,14 @@ namespace HslCommunication.Core
             hslTimeOut.IsSuccessful = true;
 
             // 检查令牌
-            if (!CheckTokenPermission(socket, head, KeyToken, result))
+            if (!CheckTokenPermission( socket, head, KeyToken, result ))
             {
                 content = null;
                 return false;
             }
 
             // 接收内容
-            int contentLength = BitConverter.ToInt32(head, 28);
+            int contentLength = BitConverter.ToInt32( head, 28 );
             if (!ReceiveBytesFromSocket(
                 socket,                                     // 套接字
                 out content,                                // 内容字节
@@ -1425,7 +1440,7 @@ namespace HslCommunication.Core
                 return false;
             }
 
-            content = NetSupport.CommandAnalysis(head, content);
+            content = NetSupport.CommandAnalysis( head, content );
             return true;
         }
 
@@ -1450,7 +1465,7 @@ namespace HslCommunication.Core
             string failedString = null
             )
         {
-            if (!ReceiveAndCheckBytes(socket, out byte[] head, out byte[] content, result, receiveReport, failedString))
+            if (!ReceiveAndCheckBytes( socket, out byte[] head, out byte[] content, result, receiveReport, failedString ))
             {
                 customer = 0;
                 receive = null;
@@ -1458,19 +1473,19 @@ namespace HslCommunication.Core
             }
 
             // check
-            if (BitConverter.ToInt32(head, 0) != HslCommunicationCode.Hsl_Protocol_User_String)
+            if (BitConverter.ToInt32( head, 0 ) != HslCommunicationCode.Hsl_Protocol_User_String)
             {
                 customer = 0;
                 receive = null;
                 result.Message = "数据头校验失败！";
-                LogNet?.WriteError(LogHeaderText, "数据头校验失败！");
-                socket?.Close();
+                LogNet?.WriteError( LogHeaderText, "数据头校验失败！" );
+                socket?.Close( );
                 return false;
             }
 
             // 分析数据
-            customer = BitConverter.ToInt32(head, 4);
-            receive = Encoding.Unicode.GetString(content);
+            customer = BitConverter.ToInt32( head, 4 );
+            receive = Encoding.Unicode.GetString( content );
 
             return true;
         }
@@ -1492,7 +1507,7 @@ namespace HslCommunication.Core
             string failedString = null
             )
         {
-            if (!ReceiveAndCheckBytes(socket, out byte[] head, out byte[] content, result, null, failedString))
+            if (!ReceiveAndCheckBytes( socket, out byte[] head, out byte[] content, result, null, failedString ))
             {
                 result = null;
                 customer = 0;
@@ -1501,18 +1516,18 @@ namespace HslCommunication.Core
             }
 
             // check
-            if (BitConverter.ToInt32(head, 0) != HslCommunicationCode.Hsl_Protocol_User_Bytes)
+            if (BitConverter.ToInt32( head, 0 ) != HslCommunicationCode.Hsl_Protocol_User_Bytes)
             {
                 customer = 0;
                 data = null;
                 result.Message = "数据头校验失败！";
-                LogNet?.WriteError(LogHeaderText, "数据头校验失败！");
-                socket?.Close();
+                LogNet?.WriteError( LogHeaderText, "数据头校验失败！" );
+                socket?.Close( );
                 return false;
             }
 
             // 分析数据
-            customer = BitConverter.ToInt32(head, 4);
+            customer = BitConverter.ToInt32( head, 4 );
             data = content;
 
             return true;
@@ -1541,7 +1556,7 @@ namespace HslCommunication.Core
             )
         {
             // 先接收文件头信息
-            if (!ReceiveStringFromSocket(socket, out int customer, out string filehead, result, null, failedString))
+            if (!ReceiveStringFromSocket( socket, out int customer, out string filehead, result, null, failedString ))
             {
                 filename = null;
                 size = 0;
@@ -1553,22 +1568,22 @@ namespace HslCommunication.Core
             // 判断文件是否存在
             if (customer == 0)
             {
-                LogNet?.WriteWarn(LogHeaderText, "对方文件不存在，无法接收！");
+                LogNet?.WriteWarn( LogHeaderText, "对方文件不存在，无法接收！" );
                 result.Message = StringResources.FileNotExist;
                 filename = null;
                 size = 0;
                 filetag = null;
                 fileupload = null;
-                socket?.Close();
+                socket?.Close( );
                 return false;
             }
 
             // 提取信息
-            Newtonsoft.Json.Linq.JObject json = Newtonsoft.Json.Linq.JObject.Parse(filehead);
-            filename = SoftBasic.GetValueFromJsonObject(json, "FileName", "");
-            size = SoftBasic.GetValueFromJsonObject(json, "FileSize", 0L);
-            filetag = SoftBasic.GetValueFromJsonObject(json, "FileTag", "");
-            fileupload = SoftBasic.GetValueFromJsonObject(json, "FileUpload", "");
+            Newtonsoft.Json.Linq.JObject json = Newtonsoft.Json.Linq.JObject.Parse( filehead );
+            filename = SoftBasic.GetValueFromJsonObject( json, "FileName", "" );
+            size = SoftBasic.GetValueFromJsonObject( json, "FileSize", 0L );
+            filetag = SoftBasic.GetValueFromJsonObject( json, "FileTag", "" );
+            fileupload = SoftBasic.GetValueFromJsonObject( json, "FileUpload", "" );
 
             return true;
         }
@@ -1644,7 +1659,7 @@ namespace HslCommunication.Core
             //fileupload = SoftBasic.GetValueFromJsonObject(json, "FileUpload", "");
 
             // 接收文件消息
-            if (!ReceiveFileSteamFromSocket(socket, savename, size, receiveReport, result, failedString))
+            if (!ReceiveFileSteamFromSocket( socket, savename, size, receiveReport, result, failedString ))
             {
                 return false;
             }
@@ -1691,16 +1706,16 @@ namespace HslCommunication.Core
                 return false;
             }
 
-            
+
             try
             {
-                NetSupport.WriteStreamFromSocket(socket, stream, size, receiveReport, true);
+                NetSupport.WriteStreamFromSocket( socket, stream, size, receiveReport, true );
                 return true;
             }
             catch (Exception ex)
             {
                 result.Message = ex.Message;
-                socket?.Close();
+                socket?.Close( );
                 return false;
             }
         }
@@ -1715,17 +1730,17 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        protected bool DeleteFileByName(string filename)
+        protected bool DeleteFileByName( string filename )
         {
             try
             {
-                if (!File.Exists(filename)) return true;
-                File.Delete(filename);
+                if (!File.Exists( filename )) return true;
+                File.Delete( filename );
                 return true;
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException(LogHeaderText, "delete file failed:" + filename, ex);
+                LogNet?.WriteException( LogHeaderText, "delete file failed:" + filename, ex );
                 return false;
             }
         }
@@ -1739,11 +1754,11 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="folder">文件夹名称</param>
         /// <returns></returns>
-        protected string PreprocessFolderName(string folder)
+        protected string PreprocessFolderName( string folder )
         {
-            if (folder.EndsWith(@"\"))
+            if (folder.EndsWith( @"\" ))
             {
-                return folder.Substring(0, folder.Length - 1);
+                return folder.Substring( 0, folder.Length - 1 );
             }
             else
             {
@@ -1763,7 +1778,7 @@ namespace HslCommunication.Core
         /// <param name="protocol">协议头</param>
         /// <param name="customer">用户自定义</param>
         /// <param name="content">数据内容</param>
-        internal virtual void DataProcessingCenter(AsyncStateOne receive, int protocol, int customer, byte[] content)
+        internal virtual void DataProcessingCenter( AsyncStateOne receive, int protocol, int customer, byte[] content )
         {
 
         }
@@ -1802,7 +1817,7 @@ namespace HslCommunication.Core
         /// 异步传入的连接申请请求
         /// </summary>
         /// <param name="iar"></param>
-        protected void AsyncAcceptCallback(IAsyncResult iar)
+        protected void AsyncAcceptCallback( IAsyncResult iar )
         {
             //还原传入的原始套接字
             if (iar.AsyncState is Socket server_socket)
@@ -1811,8 +1826,8 @@ namespace HslCommunication.Core
                 try
                 {
                     // 在原始套接字上调用EndAccept方法，返回新的套接字
-                    client = server_socket.EndAccept(iar);
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolLogin), client);
+                    client = server_socket.EndAccept( iar );
+                    ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolLogin ), client );
                 }
                 catch (ObjectDisposedException ex)
                 {
@@ -1822,8 +1837,8 @@ namespace HslCommunication.Core
                 catch (Exception ex)
                 {
                     // 有可能刚连接上就断开了，那就不管
-                    client?.Close();
-                    LogNet?.WriteException(LogHeaderText, StringResources.SocketAcceptCallbackException, ex);
+                    client?.Close( );
+                    LogNet?.WriteException( LogHeaderText, StringResources.SocketAcceptCallbackException, ex );
                 }
 
                 // 如果失败，尝试启动三次
@@ -1832,22 +1847,22 @@ namespace HslCommunication.Core
                 {
                     try
                     {
-                        server_socket.BeginAccept(new AsyncCallback(AsyncAcceptCallback), server_socket);
+                        server_socket.BeginAccept( new AsyncCallback( AsyncAcceptCallback ), server_socket );
                         break;
                     }
                     catch (Exception ex)
                     {
-                        Thread.Sleep(1000);
-                        LogNet?.WriteException(LogHeaderText, StringResources.SocketReAcceptCallbackException, ex);
+                        Thread.Sleep( 1000 );
+                        LogNet?.WriteException( LogHeaderText, StringResources.SocketReAcceptCallbackException, ex );
                         i++;
                     }
                 }
 
                 if (i >= 3)
                 {
-                    LogNet?.WriteError(LogHeaderText, StringResources.SocketReAcceptCallbackException);
+                    LogNet?.WriteError( LogHeaderText, StringResources.SocketReAcceptCallbackException );
                     // 抛出异常，终止应用程序
-                    throw new Exception(StringResources.SocketReAcceptCallbackException);
+                    throw new Exception( StringResources.SocketReAcceptCallbackException );
                 }
             }
         }
@@ -1856,17 +1871,17 @@ namespace HslCommunication.Core
         /// 用于登录的回调方法
         /// </summary>
         /// <param name="obj">socket对象</param>
-        protected virtual void ThreadPoolLogin(object obj)
+        protected virtual void ThreadPoolLogin( object obj )
         {
             Socket socket = obj as Socket;
-            socket?.Close();
+            socket?.Close( );
         }
 
 
         /// <summary>
         /// 服务器启动时额外的初始化信息
         /// </summary>
-        protected virtual void StartInitialization()
+        protected virtual void StartInitialization( )
         {
 
         }
@@ -1876,20 +1891,20 @@ namespace HslCommunication.Core
         /// 启动服务器的引擎
         /// </summary>
         /// <param name="port">指定一个端口号</param>
-        public virtual void ServerStart(int port)
+        public virtual void ServerStart( int port )
         {
             if (!IsStarted)
             {
-                StartInitialization();
+                StartInitialization( );
 
-                WorkSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                WorkSocket.Bind(new IPEndPoint(IPAddress.Any, port));
-                WorkSocket.Listen(500);//单次允许最后请求500个，足够小型系统应用了
-                WorkSocket.BeginAccept(new AsyncCallback(AsyncAcceptCallback), WorkSocket);
+                WorkSocket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
+                WorkSocket.Bind( new IPEndPoint( IPAddress.Any, port ) );
+                WorkSocket.Listen( 500 );//单次允许最后请求500个，足够小型系统应用了
+                WorkSocket.BeginAccept( new AsyncCallback( AsyncAcceptCallback ), WorkSocket );
                 IsStarted = true;
 
-                LogNet?.WriteNewLine();
-                LogNet?.WriteInfo(LogHeaderText, StringResources.NetEngineStart);
+                LogNet?.WriteNewLine( );
+                LogNet?.WriteInfo( LogHeaderText, StringResources.NetEngineStart );
             }
         }
 
@@ -1897,7 +1912,7 @@ namespace HslCommunication.Core
         /// <summary>
         /// 服务器关闭的时候需要做的事情
         /// </summary>
-        protected virtual void CloseAction()
+        protected virtual void CloseAction( )
         {
 
         }
@@ -1905,21 +1920,21 @@ namespace HslCommunication.Core
         /// <summary>
         /// 关闭服务器的引擎
         /// </summary>
-        public virtual void ServerClose()
+        public virtual void ServerClose( )
         {
             if (IsStarted)
             {
-                CloseAction();
-                WorkSocket?.Close();
+                CloseAction( );
+                WorkSocket?.Close( );
                 IsStarted = false;
-                LogNet?.WriteInfo(LogHeaderText, StringResources.NetEngineClose);
+                LogNet?.WriteInfo( LogHeaderText, StringResources.NetEngineClose );
             }
         }
 
     }
 
     #endregion
-    
+
     #region 文件服务器基类
 
 
@@ -1932,34 +1947,34 @@ namespace HslCommunication.Core
         /// <summary>
         /// 所有文件操作的词典锁
         /// </summary>
-        internal Dictionary<string, FileMarkId> m_dictionary_files_marks = new Dictionary<string, FileMarkId>();
+        internal Dictionary<string, FileMarkId> m_dictionary_files_marks = new Dictionary<string, FileMarkId>( );
         /// <summary>
         /// 词典的锁
         /// </summary>
-        private SimpleHybirdLock hybirdLock = new SimpleHybirdLock();
+        private SimpleHybirdLock hybirdLock = new SimpleHybirdLock( );
 
         /// <summary>
         /// 获取当前文件的读写锁，如果没有会自动创建
         /// </summary>
         /// <param name="filename">完整的文件路径</param>
         /// <returns>读写锁</returns>
-        internal FileMarkId GetFileMarksFromDictionaryWithFileName(string filename)
+        internal FileMarkId GetFileMarksFromDictionaryWithFileName( string filename )
         {
             FileMarkId fileMarkId = null;
-            hybirdLock.Enter();
+            hybirdLock.Enter( );
 
             // lock operator
-            if (m_dictionary_files_marks.ContainsKey(filename))
+            if (m_dictionary_files_marks.ContainsKey( filename ))
             {
                 fileMarkId = m_dictionary_files_marks[filename];
             }
             else
             {
-                fileMarkId = new FileMarkId(LogNet, filename);
-                m_dictionary_files_marks.Add(filename, fileMarkId);
+                fileMarkId = new FileMarkId( LogNet, filename );
+                m_dictionary_files_marks.Add( filename, fileMarkId );
             }
 
-            hybirdLock.Leave();
+            hybirdLock.Leave( );
             return fileMarkId;
         }
 
@@ -1991,7 +2006,7 @@ namespace HslCommunication.Core
             )
         {
             // 先接收文件名
-            if (!ReceiveStringFromSocket(socket, out command, out fileName, result, null, failedString))
+            if (!ReceiveStringFromSocket( socket, out command, out fileName, result, null, failedString ))
             {
                 factory = null;
                 group = null;
@@ -2000,7 +2015,7 @@ namespace HslCommunication.Core
             }
 
             // 接收Factory
-            if (!ReceiveStringFromSocket(socket, out int command1, out factory, result, null, failedString))
+            if (!ReceiveStringFromSocket( socket, out int command1, out factory, result, null, failedString ))
             {
                 group = null;
                 id = null;
@@ -2008,14 +2023,14 @@ namespace HslCommunication.Core
             }
 
             // 接收Group
-            if (!ReceiveStringFromSocket(socket, out int command2, out group, result, null, failedString))
+            if (!ReceiveStringFromSocket( socket, out int command2, out group, result, null, failedString ))
             {
                 id = null;
                 return false;
             }
 
             // 最后接收id
-            if (!ReceiveStringFromSocket(socket, out int command3, out id, result, null, failedString))
+            if (!ReceiveStringFromSocket( socket, out int command3, out id, result, null, failedString ))
             {
                 return false;
             }
@@ -2027,9 +2042,9 @@ namespace HslCommunication.Core
         /// 获取一个随机的文件名，由GUID码和随机数字组成
         /// </summary>
         /// <returns></returns>
-        protected string CreateRandomFileName()
+        protected string CreateRandomFileName( )
         {
-            return Guid.NewGuid().ToString("N") + m_random.Next(1000, 10000).ToString();
+            return Guid.NewGuid( ).ToString( "N" ) + m_random.Next( 1000, 10000 ).ToString( );
         }
 
         /// <summary>
@@ -2039,12 +2054,12 @@ namespace HslCommunication.Core
         /// <param name="group"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        protected string ReturnAbsoluteFilePath(string factory, string group, string id)
+        protected string ReturnAbsoluteFilePath( string factory, string group, string id )
         {
             string result = m_FilesDirectoryPath;
-            if (!string.IsNullOrEmpty(factory)) result += "\\" + factory;
-            if (!string.IsNullOrEmpty(group)) result += "\\" + group;
-            if (!string.IsNullOrEmpty(id)) result += "\\" + id;
+            if (!string.IsNullOrEmpty( factory )) result += "\\" + factory;
+            if (!string.IsNullOrEmpty( group )) result += "\\" + group;
+            if (!string.IsNullOrEmpty( id )) result += "\\" + id;
             return result;
         }
 
@@ -2057,9 +2072,9 @@ namespace HslCommunication.Core
         /// <param name="id"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        protected string ReturnAbsoluteFileName(string factory, string group, string id, string fileName)
+        protected string ReturnAbsoluteFileName( string factory, string group, string id, string fileName )
         {
-            return ReturnAbsoluteFilePath(factory, group, id) + "\\" + fileName;
+            return ReturnAbsoluteFilePath( factory, group, id ) + "\\" + fileName;
         }
 
 
@@ -2071,15 +2086,15 @@ namespace HslCommunication.Core
         /// <param name="id"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        protected string ReturnRelativeFileName(string factory, string group, string id ,string fileName)
+        protected string ReturnRelativeFileName( string factory, string group, string id, string fileName )
         {
             string result = "";
-            if (!string.IsNullOrEmpty(factory)) result += factory + "\\";
-            if (!string.IsNullOrEmpty(group)) result += group + "\\";
-            if (!string.IsNullOrEmpty(id)) result += id + "\\";
+            if (!string.IsNullOrEmpty( factory )) result += factory + "\\";
+            if (!string.IsNullOrEmpty( group )) result += group + "\\";
+            if (!string.IsNullOrEmpty( id )) result += id + "\\";
             return result + fileName;
         }
-        
+
 
         #endregion
 
@@ -2120,32 +2135,32 @@ namespace HslCommunication.Core
         /// <param name="fileNameOld"></param>
         /// <param name="fileNameNew"></param>
         /// <returns></returns>
-        protected bool MoveFileToNewFile(string fileNameOld, string fileNameNew)
+        protected bool MoveFileToNewFile( string fileNameOld, string fileNameNew )
         {
             try
             {
-                FileInfo info = new FileInfo(fileNameNew);
-                if (!Directory.Exists(info.DirectoryName))
+                FileInfo info = new FileInfo( fileNameNew );
+                if (!Directory.Exists( info.DirectoryName ))
                 {
-                    Directory.CreateDirectory(info.DirectoryName);
+                    Directory.CreateDirectory( info.DirectoryName );
                 }
 
-                if (File.Exists(fileNameNew))
+                if (File.Exists( fileNameNew ))
                 {
-                    File.Delete(fileNameNew);
+                    File.Delete( fileNameNew );
                 }
 
-                File.Move(fileNameOld, fileNameNew);
+                File.Move( fileNameOld, fileNameNew );
                 return true;
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException(LogHeaderText, "Move a file to new file failed:", ex);
+                LogNet?.WriteException( LogHeaderText, "Move a file to new file failed:", ex );
                 return false;
             }
         }
 
-        
+
 
         /// <summary>
         /// 删除文件并回发确认信息，如果结果异常，则结束通讯
@@ -2166,14 +2181,14 @@ namespace HslCommunication.Core
             while (times < 3)
             {
                 times++;
-                if (DeleteFileByName(fullname))
+                if (DeleteFileByName( fullname ))
                 {
                     customer = 1;
                     break;
                 }
                 else
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep( 500 );
                 }
             }
 
@@ -2184,7 +2199,7 @@ namespace HslCommunication.Core
                 "成功",                                                                // 字符串数据
                 result,                                                                // 结果数据对象
                 null,                                                                  // 不进行报告
-                "回发删除结果错误")                                                    // 发送错误时的数据
+                "回发删除结果错误" )                                                    // 发送错误时的数据
                 )
             {
                 return false;
@@ -2199,20 +2214,20 @@ namespace HslCommunication.Core
 
         #region Override Method
 
-       
+
 
         /// <summary>
         /// 服务器启动时的操作
         /// </summary>
-        protected override void StartInitialization()
+        protected override void StartInitialization( )
         {
-            if (string.IsNullOrEmpty(FilesDirectoryPath))
+            if (string.IsNullOrEmpty( FilesDirectoryPath ))
             {
-                throw new ArgumentNullException("FilesDirectoryPath", "No saved path is specified");
+                throw new ArgumentNullException( "FilesDirectoryPath", "No saved path is specified" );
             }
 
-            CheckFolderAndCreate(); 
-            base.StartInitialization();
+            CheckFolderAndCreate( );
+            base.StartInitialization( );
         }
 
         #endregion
@@ -2224,11 +2239,11 @@ namespace HslCommunication.Core
         /// <summary>
         /// 检查文件夹是否存在，不存在就创建
         /// </summary>
-        protected virtual void CheckFolderAndCreate()
+        protected virtual void CheckFolderAndCreate( )
         {
-            if (!Directory.Exists(FilesDirectoryPath))
+            if (!Directory.Exists( FilesDirectoryPath ))
             {
-                Directory.CreateDirectory(FilesDirectoryPath);
+                Directory.CreateDirectory( FilesDirectoryPath );
             }
         }
 
@@ -2242,7 +2257,7 @@ namespace HslCommunication.Core
         public string FilesDirectoryPath
         {
             get { return m_FilesDirectoryPath; }
-            set { m_FilesDirectoryPath = PreprocessFolderName(value); }
+            set { m_FilesDirectoryPath = PreprocessFolderName( value ); }
         }
 
 
@@ -2253,16 +2268,16 @@ namespace HslCommunication.Core
         /// <param name="group">第二大类</param>
         /// <param name="id">第三大类</param>
         /// <returns></returns>
-        public virtual string[] GetDirectoryFiles(string factory, string group, string id)
+        public virtual string[] GetDirectoryFiles( string factory, string group, string id )
         {
-            if (string.IsNullOrEmpty(FilesDirectoryPath)) return new string[0];
+            if (string.IsNullOrEmpty( FilesDirectoryPath )) return new string[0];
 
-            string absolutePath = ReturnAbsoluteFilePath(factory, group, id);
+            string absolutePath = ReturnAbsoluteFilePath( factory, group, id );
 
             // 如果文件夹不存在
-            if (!Directory.Exists(absolutePath)) return new string[0];
+            if (!Directory.Exists( absolutePath )) return new string[0];
             // 返回文件列表
-            return Directory.GetFiles(absolutePath);
+            return Directory.GetFiles( absolutePath );
         }
 
         /// <summary>
@@ -2272,16 +2287,16 @@ namespace HslCommunication.Core
         /// <param name="group">第二大类</param>
         /// <param name="id">第三大类</param>
         /// <returns></returns>
-        public string[] GetDirectories(string factory, string group, string id)
+        public string[] GetDirectories( string factory, string group, string id )
         {
-            if (string.IsNullOrEmpty(FilesDirectoryPath)) return new string[0];
+            if (string.IsNullOrEmpty( FilesDirectoryPath )) return new string[0];
 
-            string absolutePath = ReturnAbsoluteFilePath(factory, group, id);
+            string absolutePath = ReturnAbsoluteFilePath( factory, group, id );
 
             // 如果文件夹不存在
-            if (!Directory.Exists(absolutePath)) return new string[0];
+            if (!Directory.Exists( absolutePath )) return new string[0];
             // 返回文件列表
-            return Directory.GetDirectories(absolutePath);
+            return Directory.GetDirectories( absolutePath );
         }
 
         #endregion
@@ -2289,7 +2304,7 @@ namespace HslCommunication.Core
         #region Private Members
 
         private string m_FilesDirectoryPath = null;      // 文件的存储路径
-        private Random m_random = new Random();          // 随机生成的文件名
+        private Random m_random = new Random( );          // 随机生成的文件名
 
         #endregion
     }
@@ -2308,9 +2323,9 @@ namespace HslCommunication.Core
         /// <summary>
         /// 构造函数
         /// </summary>
-        public DoubleModeNetBase()
+        public DoubleModeNetBase( )
         {
-            serverInterfaceLock = new SimpleHybirdLock();
+            serverInterfaceLock = new SimpleHybirdLock( );
         }
 
         #endregion
@@ -2340,7 +2355,7 @@ namespace HslCommunication.Core
         #region Public Members
 
         /// <summary>
-        /// 读取数据的时候指示超时检查时间，如果为负数，则不接收服务器的返回
+        /// 读取数据的时候指示超时检查时间，默认10秒，如果为负数，则不接收服务器的返回
         /// </summary>
         public int ReceiveBackTimeOut
         {
@@ -2362,14 +2377,14 @@ namespace HslCommunication.Core
         /// 切换短连接模式到长连接模式，后面的每次请求都共享一个通道
         /// </summary>
         /// <returns>返回连接结果，如果失败的话，包含失败信息</returns>
-        public OperateResult ConnectServer()
+        public OperateResult ConnectServer( )
         {
             isSocketInitialization = true;
-            OperateResult result = new OperateResult();
+            OperateResult result = new OperateResult( );
 
-            WorkSocket?.Close();
+            WorkSocket?.Close( );
 
-            if (!CreateSocketAndConnect(out Socket socket, GetIPEndPoint(), result))
+            if (!CreateSocketAndConnect( out Socket socket, GetIPEndPoint( ), result ))
             {
                 // 创建失败
                 socket = null;
@@ -2380,20 +2395,20 @@ namespace HslCommunication.Core
                 WorkSocket = socket;
 
                 // 发送初始化数据
-                if (!InitilizationOnConnect(socket, result))
+                if (!InitilizationOnConnect( socket, result ))
                 {
                     // 初始化失败，重新标记连接失败
-                    WorkSocket?.Close();
-                    LogNet?.WriteDebug(LogHeaderText, "Initializate Connection Failed !");
+                    WorkSocket?.Close( );
+                    LogNet?.WriteDebug( LogHeaderText, "Initializate Connection Failed !" );
                 }
                 else
                 {
                     // 初始化成功
                     result.IsSuccess = true;
-                    LogNet?.WriteDebug(LogHeaderText, StringResources.NetEngineStart);
+                    LogNet?.WriteDebug( LogHeaderText, StringResources.NetEngineStart );
                 }
             }
-            
+
             return result;
         }
 
@@ -2403,18 +2418,18 @@ namespace HslCommunication.Core
         /// <summary>
         /// 在长连接模式下，断开服务器的连接，并切换到短连接模式
         /// </summary>
-        public OperateResult ConnectClose()
+        public OperateResult ConnectClose( )
         {
-            OperateResult result = new OperateResult();
+            OperateResult result = new OperateResult( );
             isSocketInitialization = false;
 
             // 额外操作
-            result.IsSuccess = ExtraOnDisconnect(WorkSocket, result);
+            result.IsSuccess = ExtraOnDisconnect( WorkSocket, result );
             // 关闭信息
-            WorkSocket?.Close();
+            WorkSocket?.Close( );
             WorkSocket = null;
 
-            LogNet?.WriteDebug(LogHeaderText, StringResources.NetEngineClose);
+            LogNet?.WriteDebug( LogHeaderText, StringResources.NetEngineClose );
             return result;
         }
 
@@ -2429,10 +2444,10 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="read">结果对象</param>
         /// <returns></returns>
-        protected OperateResult<bool> GetBoolResultFromBytes(OperateResult<byte[]> read)
+        protected OperateResult<bool> GetBoolResultFromBytes( OperateResult<byte[]> read )
         {
             if (read == null) return null;
-            OperateResult<bool> result = new OperateResult<bool>();
+            OperateResult<bool> result = new OperateResult<bool>( );
             if (read.IsSuccess)
             {
                 result.Content = read.Content[0] != 0x00;
@@ -2448,11 +2463,11 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="read">结果对象</param>
         /// <returns></returns>
-        protected OperateResult<byte> GetByteResultFromBytes(OperateResult<byte[]> read)
+        protected OperateResult<byte> GetByteResultFromBytes( OperateResult<byte[]> read )
         {
             if (read == null) return null;
-            OperateResult<byte> result = new OperateResult<byte>();
-            if(read.IsSuccess)
+            OperateResult<byte> result = new OperateResult<byte>( );
+            if (read.IsSuccess)
             {
                 result.Content = read.Content[0];
             }
@@ -2469,14 +2484,14 @@ namespace HslCommunication.Core
         /// <param name="read">结果对象</param>
         /// <param name="reverse">是否需要反转结果</param>
         /// <returns></returns>
-        protected OperateResult<short> GetInt16ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        protected OperateResult<short> GetInt16ResultFromBytes( OperateResult<byte[]> read, bool reverse = false )
         {
             if (read == null) return null;
-            OperateResult<short> result = new OperateResult<short>();
+            OperateResult<short> result = new OperateResult<short>( );
             if (read.IsSuccess)
             {
-                if (reverse) Array.Reverse(read.Content);
-                result.Content = BitConverter.ToInt16(read.Content, 0);
+                if (reverse) Array.Reverse( read.Content );
+                result.Content = BitConverter.ToInt16( read.Content, 0 );
             }
             result.IsSuccess = read.IsSuccess;
             result.Message = read.Message;
@@ -2492,13 +2507,13 @@ namespace HslCommunication.Core
         /// <param name="read">结果对象</param>
         /// <param name="reverse">是否需要反转结果</param>
         /// <returns></returns>
-        protected OperateResult<ushort> GetUInt16ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        protected OperateResult<ushort> GetUInt16ResultFromBytes( OperateResult<byte[]> read, bool reverse = false )
         {
-            OperateResult<ushort> result = new OperateResult<ushort>();
+            OperateResult<ushort> result = new OperateResult<ushort>( );
             if (read.IsSuccess)
             {
-                if (reverse) Array.Reverse(read.Content);
-                result.Content = BitConverter.ToUInt16(read.Content, 0);
+                if (reverse) Array.Reverse( read.Content );
+                result.Content = BitConverter.ToUInt16( read.Content, 0 );
             }
             result.IsSuccess = read.IsSuccess;
             result.Message = read.Message;
@@ -2514,13 +2529,13 @@ namespace HslCommunication.Core
         /// <param name="read">结果对象</param>
         /// <param name="reverse">是否需要反转结果</param>
         /// <returns></returns>
-        protected OperateResult<int> GetInt32ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        protected OperateResult<int> GetInt32ResultFromBytes( OperateResult<byte[]> read, bool reverse = false )
         {
-            OperateResult<int> result = new OperateResult<int>();
+            OperateResult<int> result = new OperateResult<int>( );
             if (read.IsSuccess)
             {
-                if (reverse) Array.Reverse(read.Content);
-                result.Content = BitConverter.ToInt32(read.Content, 0);
+                if (reverse) Array.Reverse( read.Content );
+                result.Content = BitConverter.ToInt32( read.Content, 0 );
             }
             result.IsSuccess = read.IsSuccess;
             result.Message = read.Message;
@@ -2535,77 +2550,13 @@ namespace HslCommunication.Core
         /// <param name="read">结果对象</param>
         /// <param name="reverse">是否需要反转结果</param>
         /// <returns></returns>
-        protected OperateResult<uint> GetUInt32ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        protected OperateResult<uint> GetUInt32ResultFromBytes( OperateResult<byte[]> read, bool reverse = false )
         {
-            OperateResult<uint> result = new OperateResult<uint>();
+            OperateResult<uint> result = new OperateResult<uint>( );
             if (read.IsSuccess)
             {
-                if (reverse) Array.Reverse(read.Content);
-                result.Content = BitConverter.ToUInt32(read.Content, 0);
-            }
-            result.IsSuccess = read.IsSuccess;
-            result.Message = read.Message;
-            result.ErrorCode = read.ErrorCode;
-
-            return result;
-        }
-
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="read">结果对象</param>
-        /// <param name="reverse">是否需要反转结果</param>
-        /// <returns></returns>
-        protected OperateResult<long> GetInt64ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
-        {
-            OperateResult<long> result = new OperateResult<long>();
-            if (read.IsSuccess)
-            {
-                if (reverse) Array.Reverse(read.Content);
-                result.Content = BitConverter.ToInt64(read.Content, 0);
-            }
-            result.IsSuccess = read.IsSuccess;
-            result.Message = read.Message;
-            result.ErrorCode = read.ErrorCode;
-
-            return result;
-        }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="read">结果对象</param>
-        /// <param name="reverse">是否需要反转结果</param>
-        /// <returns></returns>
-        protected OperateResult<ulong> GetUInt64ResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
-        {
-            OperateResult<ulong> result = new OperateResult<ulong>();
-            if (read.IsSuccess)
-            {
-                if (reverse) Array.Reverse(read.Content);
-                result.Content = BitConverter.ToUInt64(read.Content, 0);
-            }
-            result.IsSuccess = read.IsSuccess;
-            result.Message = read.Message;
-            result.ErrorCode = read.ErrorCode;
-
-            return result;
-        }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="read">结果对象</param>
-        /// <param name="reverse">是否需要反转结果</param>
-        /// <returns></returns>
-        protected OperateResult<float> GetFloatResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
-        {
-            OperateResult<float> result = new OperateResult<float>();
-            if (read.IsSuccess)
-            {
-                if (reverse) Array.Reverse(read.Content);
-                result.Content = BitConverter.ToSingle(read.Content, 0);
+                if (reverse) Array.Reverse( read.Content );
+                result.Content = BitConverter.ToUInt32( read.Content, 0 );
             }
             result.IsSuccess = read.IsSuccess;
             result.Message = read.Message;
@@ -2621,13 +2572,77 @@ namespace HslCommunication.Core
         /// <param name="read">结果对象</param>
         /// <param name="reverse">是否需要反转结果</param>
         /// <returns></returns>
-        protected OperateResult<double> GetDoubleResultFromBytes(OperateResult<byte[]> read, bool reverse = false)
+        protected OperateResult<long> GetInt64ResultFromBytes( OperateResult<byte[]> read, bool reverse = false )
         {
-            OperateResult<double> result = new OperateResult<double>();
+            OperateResult<long> result = new OperateResult<long>( );
             if (read.IsSuccess)
             {
-                if (reverse) Array.Reverse(read.Content);
-                result.Content = BitConverter.ToDouble(read.Content, 0);
+                if (reverse) Array.Reverse( read.Content );
+                result.Content = BitConverter.ToInt64( read.Content, 0 );
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<ulong> GetUInt64ResultFromBytes( OperateResult<byte[]> read, bool reverse = false )
+        {
+            OperateResult<ulong> result = new OperateResult<ulong>( );
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse( read.Content );
+                result.Content = BitConverter.ToUInt64( read.Content, 0 );
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<float> GetFloatResultFromBytes( OperateResult<byte[]> read, bool reverse = false )
+        {
+            OperateResult<float> result = new OperateResult<float>( );
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse( read.Content );
+                result.Content = BitConverter.ToSingle( read.Content, 0 );
+            }
+            result.IsSuccess = read.IsSuccess;
+            result.Message = read.Message;
+            result.ErrorCode = read.ErrorCode;
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="read">结果对象</param>
+        /// <param name="reverse">是否需要反转结果</param>
+        /// <returns></returns>
+        protected OperateResult<double> GetDoubleResultFromBytes( OperateResult<byte[]> read, bool reverse = false )
+        {
+            OperateResult<double> result = new OperateResult<double>( );
+            if (read.IsSuccess)
+            {
+                if (reverse) Array.Reverse( read.Content );
+                result.Content = BitConverter.ToDouble( read.Content, 0 );
             }
             result.IsSuccess = read.IsSuccess;
             result.Message = read.Message;
@@ -2641,12 +2656,12 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="read">结果对象</param>
         /// <returns></returns>
-        protected OperateResult<string> GetStringResultFromBytes(OperateResult<byte[]> read)
+        protected OperateResult<string> GetStringResultFromBytes( OperateResult<byte[]> read )
         {
-            OperateResult<string> result = new OperateResult<string>();
+            OperateResult<string> result = new OperateResult<string>( );
             if (read.IsSuccess)
             {
-                result.Content = Encoding.ASCII.GetString(read.Content);
+                result.Content = Encoding.ASCII.GetString( read.Content );
             }
             result.IsSuccess = read.IsSuccess;
             result.Message = read.Message;
@@ -2666,7 +2681,7 @@ namespace HslCommunication.Core
         /// <param name="socket">网络套接字</param>
         /// <param name="result">结果数据对象</param>
         /// <returns></returns>
-        protected virtual bool InitilizationOnConnect(Socket socket, OperateResult result)
+        protected virtual bool InitilizationOnConnect( Socket socket, OperateResult result )
         {
             return true;
         }
@@ -2677,7 +2692,7 @@ namespace HslCommunication.Core
         /// <param name="socket">网络套接字</param>
         /// <param name="result">结果对象</param>
         /// <returns></returns>
-        protected virtual bool ExtraOnDisconnect(Socket socket, OperateResult result)
+        protected virtual bool ExtraOnDisconnect( Socket socket, OperateResult result )
         {
             return true;
         }
@@ -2692,7 +2707,7 @@ namespace HslCommunication.Core
         /// 获取最终连接的网络点
         /// </summary>
         /// <returns></returns>
-        protected virtual IPEndPoint GetIPEndPoint()
+        protected virtual IPEndPoint GetIPEndPoint( )
         {
             return serverEndPoint;
         }
@@ -2702,15 +2717,15 @@ namespace HslCommunication.Core
         /// 获取主要工作的网络服务
         /// </summary>
         /// <returns></returns>
-        protected Socket GetWorkSocket(out OperateResult connect)
+        protected Socket GetWorkSocket( out OperateResult connect )
         {
             if (WorkSocket == null || !WorkSocket.Connected)
             {
-                connect = ConnectServer();
+                connect = ConnectServer( );
             }
             else
             {
-                connect = new OperateResult()
+                connect = new OperateResult( )
                 {
                     IsSuccess = true,
                 };
@@ -2724,19 +2739,19 @@ namespace HslCommunication.Core
         /// <param name="socket">新生成的网络请求</param>
         /// <param name="result">结果信息</param>
         /// <returns></returns>
-        protected bool CreateSocketByDoubleMode(out Socket socket, OperateResult result)
+        protected bool CreateSocketByDoubleMode( out Socket socket, OperateResult result )
         {
             if (!isSocketInitialization)
             {
                 // 短连接模式，重新创建网络连接
-                if (!CreateSocketAndConnect(out socket, GetIPEndPoint(), result))
+                if (!CreateSocketAndConnect( out socket, GetIPEndPoint( ), result ))
                 {
                     socket = null;
                     return false;
                 }
 
                 // 连接后初始化操作，如有需要，在派生类中要重写
-                if(!InitilizationOnConnect(socket, result))
+                if (!InitilizationOnConnect( socket, result ))
                 {
                     return false;
                 }
@@ -2746,7 +2761,7 @@ namespace HslCommunication.Core
             else
             {
                 // 长连接模式，重新利用原先的套接字，如果这个套接字被Close了，会重新连接，如果仍是失败，下次调用重新连接
-                socket = GetWorkSocket(out OperateResult connect);
+                socket = GetWorkSocket( out OperateResult connect );
                 if (!connect.IsSuccess)
                 {
                     result.Message = connect.Message;
@@ -2764,7 +2779,7 @@ namespace HslCommunication.Core
         /// <param name="response"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        protected virtual bool ReceiveResponse(Socket socket, out byte[] response, OperateResult result)
+        protected virtual bool ReceiveResponse( Socket socket, out byte[] response, OperateResult result )
         {
             response = null;
             return true;
@@ -2778,50 +2793,59 @@ namespace HslCommunication.Core
         /// <param name="receive"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        protected bool SendCommandAndReceiveResponse(byte[] send, out byte[] receive, OperateResult result)
+        protected bool SendCommandAndReceiveResponse( byte[] send, out byte[] receive, OperateResult result )
         {
             // string str = SoftBasic.ByteToHexString(send, ' ');
 
-            serverInterfaceLock.Enter();                        // 进入读取的锁
+            serverInterfaceLock.Enter( );                        // 进入读取的锁
 
             // 创建或重复利用一个网络接收器
-            if (!CreateSocketByDoubleMode(out Socket socket, result))
+            if (!CreateSocketByDoubleMode( out Socket socket, result ))
             {
-                serverInterfaceLock.Leave();
+                serverInterfaceLock.Leave( );
                 receive = null;
                 return false;
             }
-            
+
             // 发送数据到网络服务
-            if (!SendBytesToSocket(socket, send, result))
+            if (!SendBytesToSocket( socket, send, result ))
             {
-                serverInterfaceLock.Leave();
+                serverInterfaceLock.Leave( );
                 receive = null;
                 return false;
             }
 
-            // 进行10秒接收超时的机制
-            HslTimeOut hslTimeOut = new HslTimeOut
+            // 判断是否需要进行接收服务器的返回
+            if (ReceiveBackTimeOut >= 0)
             {
-                WorkSocket = socket,
-                DelayTime = 10000                       // 10秒内必须接收到数据
-            };
-            ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckConnect), hslTimeOut);
+                // 进行10秒接收超时的机制
+                HslTimeOut hslTimeOut = new HslTimeOut
+                {
+                    WorkSocket = socket,
+                    DelayTime = ReceiveBackTimeOut                                                       // 10秒内必须接收到数据
+                };
+                ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckConnect ), hslTimeOut );
 
-            if (!ReceiveResponse(socket, out byte[] response, result))
-            {
-                serverInterfaceLock.Leave();
-                receive = null;
-                hslTimeOut.IsSuccessful = true;
-                return false;
+                if (!ReceiveResponse( socket, out byte[] response, result ))
+                {
+                    serverInterfaceLock.Leave( );
+                    receive = null;
+                    hslTimeOut.IsSuccessful = true;
+                    return false;
+                }
+                hslTimeOut.IsSuccessful = true;                                                         // 退出超时的算法
+                receive = response;                                                                     // 接收到数据
             }
-            hslTimeOut.IsSuccessful = true;                     // 退出超时的算法
+            else
+            {
+                receive = null;
+            }
 
-            receive = response;                                 // 接收到数据
-            if (!isSocketInitialization) socket.Close();       // 如果是短连接就关闭连接
 
-            serverInterfaceLock.Leave();                        // 离开读取的锁
-            
+            if (!isSocketInitialization) socket.Close( );                                                // 如果是短连接就关闭连接
+
+            serverInterfaceLock.Leave( );                                                                // 离开读取的锁
+
             return true;
         }
 
@@ -2835,11 +2859,11 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="send">发送的原始字节数据</param>
         /// <returns></returns>
-        public OperateResult<byte[]> ReadFromServerCore(byte[] send)
+        public OperateResult<byte[]> ReadFromServerCore( byte[] send )
         {
-            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            OperateResult<byte[]> result = new OperateResult<byte[]>( );
 
-            if (!SendCommandAndReceiveResponse(send, out byte[] response, result))
+            if (!SendCommandAndReceiveResponse( send, out byte[] response, result ))
             {
                 // 失败
                 return result;
@@ -2865,15 +2889,15 @@ namespace HslCommunication.Core
         /// <param name="data"></param>
         /// <param name="reverse"></param>
         /// <returns></returns>
-        protected byte[] GetBytesFromArray(short[] data, bool reverse)
+        protected byte[] GetBytesFromArray( short[] data, bool reverse )
         {
             if (data == null) return null;
 
             byte[] buffer = new byte[data.Length * 2];
             for (int i = 0; i < data.Length; i++)
             {
-                byte[] temp = BitConverter.GetBytes(data[i]);
-                if(reverse)
+                byte[] temp = BitConverter.GetBytes( data[i] );
+                if (reverse)
                 {
                     buffer[2 * i + 1] = temp[0];
                     buffer[2 * i + 0] = temp[1];
@@ -2894,15 +2918,15 @@ namespace HslCommunication.Core
         /// <param name="data"></param>
         /// <param name="reverse"></param>
         /// <returns></returns>
-        protected byte[] GetBytesFromArray(ushort[] data, bool reverse)
+        protected byte[] GetBytesFromArray( ushort[] data, bool reverse )
         {
             if (data == null) return null;
 
             byte[] buffer = new byte[data.Length * 2];
             for (int i = 0; i < data.Length; i++)
             {
-                byte[] temp = BitConverter.GetBytes(data[i]);
-                if(reverse)
+                byte[] temp = BitConverter.GetBytes( data[i] );
+                if (reverse)
                 {
                     buffer[2 * i + 1] = temp[0];
                     buffer[2 * i + 0] = temp[1];
@@ -2923,15 +2947,15 @@ namespace HslCommunication.Core
         /// <param name="data"></param>
         /// <param name="reverse"></param>
         /// <returns></returns>
-        protected byte[] GetBytesFromArray(int[] data, bool reverse)
+        protected byte[] GetBytesFromArray( int[] data, bool reverse )
         {
             if (data == null) return null;
 
             byte[] buffer = new byte[data.Length * 4];
             for (int i = 0; i < data.Length; i++)
             {
-                byte[] temp = BitConverter.GetBytes(data[i]);
-                if(reverse)
+                byte[] temp = BitConverter.GetBytes( data[i] );
+                if (reverse)
                 {
                     buffer[4 * i + 3] = temp[0];
                     buffer[4 * i + 2] = temp[1];
@@ -2957,15 +2981,15 @@ namespace HslCommunication.Core
         /// <param name="data"></param>
         /// <param name="reverse"></param>
         /// <returns></returns>
-        protected byte[] GetBytesFromArray(uint[] data, bool reverse)
+        protected byte[] GetBytesFromArray( uint[] data, bool reverse )
         {
             if (data == null) return null;
 
             byte[] buffer = new byte[data.Length * 4];
             for (int i = 0; i < data.Length; i++)
             {
-                byte[] temp = BitConverter.GetBytes(data[i]);
-                if(reverse)
+                byte[] temp = BitConverter.GetBytes( data[i] );
+                if (reverse)
                 {
                     buffer[4 * i + 3] = temp[0];
                     buffer[4 * i + 2] = temp[1];
@@ -2990,15 +3014,15 @@ namespace HslCommunication.Core
         /// <param name="data"></param>
         /// <param name="reverse"></param>
         /// <returns></returns>
-        protected byte[] GetBytesFromArray(float[] data, bool reverse)
+        protected byte[] GetBytesFromArray( float[] data, bool reverse )
         {
             if (data == null) return null;
 
             byte[] buffer = new byte[data.Length * 4];
             for (int i = 0; i < data.Length; i++)
             {
-                byte[] temp = BitConverter.GetBytes(data[i]);
-                if(reverse)
+                byte[] temp = BitConverter.GetBytes( data[i] );
+                if (reverse)
                 {
                     buffer[4 * i + 3] = temp[0];
                     buffer[4 * i + 2] = temp[1];
@@ -3023,15 +3047,15 @@ namespace HslCommunication.Core
         /// <param name="data"></param>
         /// <param name="reverse"></param>
         /// <returns></returns>
-        protected byte[] GetBytesFromArray(long[] data, bool reverse)
+        protected byte[] GetBytesFromArray( long[] data, bool reverse )
         {
             if (data == null) return null;
 
             byte[] buffer = new byte[data.Length * 8];
             for (int i = 0; i < data.Length; i++)
             {
-                byte[] temp = BitConverter.GetBytes(data[i]);
-                if(reverse)
+                byte[] temp = BitConverter.GetBytes( data[i] );
+                if (reverse)
                 {
                     buffer[8 * i + 7] = temp[0];
                     buffer[8 * i + 6] = temp[1];
@@ -3064,15 +3088,15 @@ namespace HslCommunication.Core
         /// <param name="data"></param>
         /// <param name="reverse"></param>
         /// <returns></returns>
-        protected byte[] GetBytesFromArray(ulong[] data, bool reverse)
+        protected byte[] GetBytesFromArray( ulong[] data, bool reverse )
         {
             if (data == null) return null;
 
             byte[] buffer = new byte[data.Length * 8];
             for (int i = 0; i < data.Length; i++)
             {
-                byte[] temp = BitConverter.GetBytes(data[i]);
-                if(reverse)
+                byte[] temp = BitConverter.GetBytes( data[i] );
+                if (reverse)
                 {
                     buffer[8 * i + 7] = temp[0];
                     buffer[8 * i + 6] = temp[1];
@@ -3105,15 +3129,15 @@ namespace HslCommunication.Core
         /// <param name="data"></param>
         /// <param name="reverse"></param>
         /// <returns></returns>
-        protected byte[] GetBytesFromArray(double[] data, bool reverse)
+        protected byte[] GetBytesFromArray( double[] data, bool reverse )
         {
             if (data == null) return null;
 
             byte[] buffer = new byte[data.Length * 8];
             for (int i = 0; i < data.Length; i++)
             {
-                byte[] temp = BitConverter.GetBytes(data[i]);
-                if(reverse)
+                byte[] temp = BitConverter.GetBytes( data[i] );
+                if (reverse)
                 {
                     buffer[8 * i + 7] = temp[0];
                     buffer[8 * i + 6] = temp[1];

@@ -19,6 +19,8 @@ namespace TestTool.TestForm
 
         private void FormControlCollection_Load(object sender, EventArgs e)
         {
+            userSwitch1.SwitchStatusDescription = new string[] { "测试关", "测试开" };
+
             Random random = new Random();
             HslCommunication.Controls.UserPieChart[] charts = new HslCommunication.Controls.UserPieChart[2];
             charts[0] = userPieChart1;
