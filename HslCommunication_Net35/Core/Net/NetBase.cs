@@ -736,7 +736,14 @@ namespace HslCommunication.Core
             else
             {
                 result.Message = StringResources.TokenCheckFailed;
-                LogNet?.WriteWarn( LogHeaderText, StringResources.TokenCheckFailed + " Ip:" + socket.RemoteEndPoint.AddressFamily.ToString( ) );
+                try
+                {
+                    LogNet?.WriteWarn( LogHeaderText, StringResources.TokenCheckFailed + " Ip:" + socket.RemoteEndPoint.AddressFamily.ToString( ) );
+                }
+                catch
+                {
+                    // 多半因为socket异常关系导致，不再记录日志
+                }
                 socket?.Close( );
                 head = null;
                 return false;
@@ -946,27 +953,35 @@ namespace HslCommunication.Core
         /// <param name="isProcess">是否触发数据处理</param>
         internal void ReBeginReceiveHead( AsyncStateOne receive, bool isProcess )
         {
-            byte[] head = receive.BytesHead, Content = receive.BytesContent;
-            receive.Clear( );
-            receive.WorkSocket.BeginReceive( receive.BytesHead, receive.AlreadyReceivedHead, receive.BytesHead.Length - receive.AlreadyReceivedHead,
-                SocketFlags.None, new AsyncCallback( HeadReceiveCallback ), receive );
-            // 检测是否需要数据处理
-            if (isProcess)
+            try
             {
-                // 校验令牌
-                if (NetSupport.CheckTokenEquel( head, KeyToken ))
+                byte[] head = receive.BytesHead, Content = receive.BytesContent;
+                receive.Clear( );
+                receive.WorkSocket.BeginReceive( receive.BytesHead, receive.AlreadyReceivedHead, receive.BytesHead.Length - receive.AlreadyReceivedHead,
+                    SocketFlags.None, new AsyncCallback( HeadReceiveCallback ), receive );
+                // 检测是否需要数据处理
+                if (isProcess)
                 {
-                    Content = NetSupport.CommandAnalysis( head, Content );
-                    int protocol = BitConverter.ToInt32( head, 0 );
-                    int customer = BitConverter.ToInt32( head, 4 );
-                    // 转移到数据中心处理
-                    DataProcessingCenter( receive, protocol, customer, Content );
+                    // 校验令牌
+                    if (NetSupport.CheckTokenEquel( head, KeyToken ))
+                    {
+                        Content = NetSupport.CommandAnalysis( head, Content );
+                        int protocol = BitConverter.ToInt32( head, 0 );
+                        int customer = BitConverter.ToInt32( head, 4 );
+                        // 转移到数据中心处理
+                        DataProcessingCenter( receive, protocol, customer, Content );
+                    }
+                    else
+                    {
+                        // 应该关闭网络通信
+                        LogNet?.WriteWarn( LogHeaderText, StringResources.TokenCheckFailed );
+                    }
                 }
-                else
-                {
-                    // 应该关闭网络通信
-                    LogNet?.WriteWarn( LogHeaderText, StringResources.TokenCheckFailed );
-                }
+            }
+            catch(Exception ex)
+            {
+                SocketReceiveException( receive, ex );
+                LogNet?.WriteException( LogHeaderText, ex );
             }
         }
 
