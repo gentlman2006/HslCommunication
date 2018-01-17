@@ -44,7 +44,7 @@ Install-Package HslCommunication
 * [日志记录功能](http://www.cnblogs.com/dathlin/p/7691693.html)
 * [同步网络通讯功能](http://www.cnblogs.com/dathlin/p/7697782.html)
 * [文件管理引擎](http://www.cnblogs.com/dathlin/p/7746113.html)
-* 异步网络通讯功能
+* [异步网络通讯功能](http://www.cnblogs.com/dathlin/p/8097897.html)
 * [三菱及西门子PLC访问](http://www.cnblogs.com/dathlin/p/7469679.html)
 * 邮件功能使用
 * [流水号生成器](http://www.cnblogs.com/dathlin/p/7811489.html)
@@ -64,6 +64,8 @@ Install-Package HslCommunication
 * 基于本组件开发的一个西门子PLC后台读取显示数据，并推送给在线客户端显示实时曲线的示例项目。[https://github.com/dathlin/RemoteMonitor](https://github.com/dathlin/RemoteMonitor)
 
 * 基于本组件开发的一个文件管理引擎，实现服务器端文件存储，客户端进行文件上传，下载，删除，查看文件信息等等。[https://github.com/dathlin/FileManagment](https://github.com/dathlin/FileManagment)
+
+* 基于本组件开发的一个局域网多人聊天的程序，支持在线客户端信息查看，服务器强制关闭客户端。[https://github.com/dathlin/NetChatRoom](https://github.com/dathlin/NetChatRoom)
 
 ## 代码贡献
 热烈欢迎对本项目的代码提出改进意见，可以发起Pull Request，对于代码量贡献较多的小伙伴，会有额外的组件使用权，并在特别感谢里写明。
