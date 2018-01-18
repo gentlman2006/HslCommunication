@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sharp7.cs" />
     <Compile Include="TestForm\FormControlCollection.cs">
       <SubType>Form</SubType>
     </Compile>

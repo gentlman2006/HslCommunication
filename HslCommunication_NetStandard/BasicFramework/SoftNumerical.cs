@@ -23,6 +23,9 @@ namespace HslCommunication.BasicFramework
     /// </summary>
     public sealed class SoftNumericalOrder : SoftFileSaveBase
     {
+
+        #region Constructor
+
         /// <summary>
         /// 实例化一个流水号生成的对象
         /// </summary>
@@ -52,6 +55,9 @@ namespace HslCommunication.BasicFramework
 
         }
 
+        #endregion
+
+        #region Private Member
         
         /// <summary>
         /// 当前的生成序列号
@@ -69,6 +75,12 @@ namespace HslCommunication.BasicFramework
         /// 流水号数字应该显示的长度
         /// </summary>
         private int NumberLength = 5;
+
+        #endregion
+
+        #region Public Method
+        
+
         /// <summary>
         /// 获取流水号的值
         /// </summary>
@@ -77,6 +89,8 @@ namespace HslCommunication.BasicFramework
         {
             return CurrentIndex.ToString();
         }
+
+
         /// <summary>
         /// 加载流水号
         /// </summary>
@@ -112,6 +126,7 @@ namespace HslCommunication.BasicFramework
                 return TextHead + DateTime.Now.ToString(TimeFormate) + number.ToString().PadLeft(NumberLength, '0');
             }
         }
+
         /// <summary>
         /// 获取流水号数据
         /// </summary>
@@ -131,7 +146,18 @@ namespace HslCommunication.BasicFramework
             }
         }
 
-
+        /// <summary>
+        /// 单纯的获取数字形式的流水号
+        /// </summary>
+        /// <returns></returns>
+        public long GetLongOrder()
+        {
+            long number = Interlocked.Increment( ref CurrentIndex );
+            AsyncCoordinator.StartOperaterInfomation( );
+            return number;
+        }
+        
+        #endregion
 
         #region 高性能存储块
 
