@@ -17,36 +17,36 @@ namespace HslCommunication.Controls
         /// <summary>
         /// 实例化一个信号灯控件的对象
         /// </summary>
-        public UserLantern()
+        public UserLantern( )
         {
-            InitializeComponent();
+            InitializeComponent( );
 
             DoubleBuffered = true;
-            brush_lantern_background = new SolidBrush(color_lantern_background);
-            pen_lantern_background = new Pen(color_lantern_background, 2f);
+            brush_lantern_background = new SolidBrush( color_lantern_background );
+            pen_lantern_background = new Pen( color_lantern_background, 2f );
         }
 
-        private void UserLantern_Load(object sender, EventArgs e)
+        private void UserLantern_Load( object sender, EventArgs e )
         {
 
         }
 
-        private void UserLantern_Paint(object sender, PaintEventArgs e)
+        private void UserLantern_Paint( object sender, PaintEventArgs e )
         {
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            Point center = GetCenterPoint();
-            e.Graphics.TranslateTransform(center.X, center.Y);
+            Point center = GetCenterPoint( );
+            e.Graphics.TranslateTransform( center.X, center.Y );
 
             int radius = (center.X - 5);
             if (radius < 5) return;
 
-            Rectangle rectangle_larger = new Rectangle(-radius - 4, -radius - 4, 2 * radius + 8, 2 * radius + 8);
-            Rectangle rectangle = new Rectangle(-radius, -radius, 2 * radius, 2 * radius);
+            Rectangle rectangle_larger = new Rectangle( -radius - 4, -radius - 4, 2 * radius + 8, 2 * radius + 8 );
+            Rectangle rectangle = new Rectangle( -radius, -radius, 2 * radius, 2 * radius );
 
-            e.Graphics.DrawEllipse(pen_lantern_background, rectangle_larger);
-            e.Graphics.FillEllipse(brush_lantern_background, rectangle);
+            e.Graphics.DrawEllipse( pen_lantern_background, rectangle_larger );
+            e.Graphics.FillEllipse( brush_lantern_background, rectangle );
         }
 
         #region Private Member
@@ -62,10 +62,10 @@ namespace HslCommunication.Controls
         /// <summary>
         /// 获取或设置开关按钮的背景色
         /// </summary>
-        [Browsable(true)]
-        [Description("获取或设置信号灯的背景色")]
-        [Category("外观")]
-        [DefaultValue(typeof(Color), "LimeGreen")]
+        [Browsable( true )]
+        [Description( "获取或设置信号灯的背景色" )]
+        [Category( "外观" )]
+        [DefaultValue( typeof( Color ), "LimeGreen" )]
         public Color LanternBackground
         {
             get
@@ -75,11 +75,11 @@ namespace HslCommunication.Controls
             set
             {
                 color_lantern_background = value;
-                brush_lantern_background?.Dispose();
-                pen_lantern_background?.Dispose();
-                brush_lantern_background = new SolidBrush(color_lantern_background);
-                pen_lantern_background = new Pen(color_lantern_background, 2f);
-                Invalidate();
+                brush_lantern_background?.Dispose( );
+                pen_lantern_background?.Dispose( );
+                brush_lantern_background = new SolidBrush( color_lantern_background );
+                pen_lantern_background = new Pen( color_lantern_background, 2f );
+                Invalidate( );
             }
         }
 
@@ -87,15 +87,15 @@ namespace HslCommunication.Controls
 
         #region Private Method
 
-        private Point GetCenterPoint()
+        private Point GetCenterPoint( )
         {
             if (Height > Width)
             {
-                return new Point(Width / 2, Width / 2);
+                return new Point( (Width - 1) / 2, (Width - 1) / 2 );
             }
             else
             {
-                return new Point(Height / 2, Height / 2);
+                return new Point( (Height - 1) / 2, (Height - 1) / 2 );
             }
         }
 
