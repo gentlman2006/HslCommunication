@@ -140,10 +140,7 @@ namespace TestTool
                 data.Add(random.Next(100, 999).ToString());
                 ints.Add(random.Next(0, 5));
             }
-
-            userPieChart1.SetDataSource(
-                data.ToArray(),
-                ints.ToArray());
+            
         }
 
         private void userButton11_Click(object sender, EventArgs e)
@@ -156,7 +153,6 @@ namespace TestTool
         {
             if (int.TryParse(textBox2.Text, out int value))
             {
-                userVerticalProgress1.Value = value;
             }
         }
 

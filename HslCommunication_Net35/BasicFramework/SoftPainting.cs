@@ -187,6 +187,19 @@ namespace HslCommunication.BasicFramework
             return height - (value - min) * 1.0f / (max - min) * height;
         }
 
+        /// <summary>
+        /// 计算绘图时的相对偏移值
+        /// </summary>
+        /// <param name="max">0-100分的最大值，就是指准备绘制的最大值</param>
+        /// <param name="min">0-100分的最小值，就是指准备绘制的最小值</param>
+        /// <param name="height">实际绘图区域的高度</param>
+        /// <param name="value">需要绘制数据的当前值</param>
+        /// <returns>相对于0的位置，还需要增加上面的偏值</returns>
+        public static float ComputePaintLocationY( float max, float min, int height, float value )
+        {
+            return height - (value - min) / (max - min) * height;
+        }
+
 
         /// <summary>
         /// 绘制坐标系中的刻度线

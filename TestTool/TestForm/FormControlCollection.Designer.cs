@@ -46,7 +46,6 @@
             this.userLantern1 = new HslCommunication.Controls.UserLantern();
             this.userGaugeChart3 = new HslCommunication.Controls.UserGaugeChart();
             this.userGaugeChart2 = new HslCommunication.Controls.UserGaugeChart();
-            this.userGaugeChart1 = new HslCommunication.Controls.UserGaugeChart();
             this.userPieChart2 = new HslCommunication.Controls.UserPieChart();
             this.userPieChart1 = new HslCommunication.Controls.UserPieChart();
             this.userVerticalProgress6 = new HslCommunication.Controls.UserVerticalProgress();
@@ -59,6 +58,7 @@
             this.userButton3 = new HslCommunication.Controls.UserButton();
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.userButton1 = new HslCommunication.Controls.UserButton();
+            this.userGaugeChart1 = new HslCommunication.Controls.UserGaugeChart();
             this.SuspendLayout();
             // 
             // label1
@@ -174,6 +174,9 @@
             this.userSwitch2.Size = new System.Drawing.Size(197, 204);
             this.userSwitch2.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
             this.userSwitch2.SwitchStatus = true;
+            this.userSwitch2.SwitchStatusDescription = new string[] {
+        "Off",
+        "On"};
             this.userSwitch2.TabIndex = 26;
             // 
             // userSwitch1
@@ -186,6 +189,9 @@
             this.userSwitch1.Name = "userSwitch1";
             this.userSwitch1.Size = new System.Drawing.Size(197, 204);
             this.userSwitch1.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
+            this.userSwitch1.SwitchStatusDescription = new string[] {
+        "Off",
+        "On"};
             this.userSwitch1.TabIndex = 25;
             // 
             // userLantern2
@@ -228,17 +234,6 @@
             this.userGaugeChart2.TabIndex = 19;
             this.userGaugeChart2.UnitText = "km/H";
             this.userGaugeChart2.Value = 60D;
-            // 
-            // userGaugeChart1
-            // 
-            this.userGaugeChart1.BackColor = System.Drawing.Color.Transparent;
-            this.userGaugeChart1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart1.Location = new System.Drawing.Point(44, 354);
-            this.userGaugeChart1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userGaugeChart1.Name = "userGaugeChart1";
-            this.userGaugeChart1.Size = new System.Drawing.Size(380, 207);
-            this.userGaugeChart1.TabIndex = 18;
-            this.userGaugeChart1.Value = 60D;
             // 
             // userPieChart2
             // 
@@ -382,6 +377,17 @@
             this.userButton1.TabIndex = 0;
             this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
+            // userGaugeChart1
+            // 
+            this.userGaugeChart1.BackColor = System.Drawing.Color.Transparent;
+            this.userGaugeChart1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart1.Location = new System.Drawing.Point(12, 354);
+            this.userGaugeChart1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userGaugeChart1.Name = "userGaugeChart1";
+            this.userGaugeChart1.Size = new System.Drawing.Size(380, 207);
+            this.userGaugeChart1.TabIndex = 18;
+            this.userGaugeChart1.Value = 60D;
+            // 
             // FormControlCollection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -446,7 +452,6 @@
         private HslCommunication.Controls.UserPieChart userPieChart1;
         private HslCommunication.Controls.UserPieChart userPieChart2;
         private System.Windows.Forms.Label label6;
-        private HslCommunication.Controls.UserGaugeChart userGaugeChart1;
         private HslCommunication.Controls.UserGaugeChart userGaugeChart2;
         private HslCommunication.Controls.UserGaugeChart userGaugeChart3;
         private System.Windows.Forms.Label label7;
@@ -458,5 +463,6 @@
         private System.Windows.Forms.Label label9;
         private HslCommunication.Controls.UserGaugeChart userGaugeChart4;
         private System.Windows.Forms.Label label10;
+        private HslCommunication.Controls.UserGaugeChart userGaugeChart1;
     }
 }
