@@ -210,6 +210,23 @@ namespace TestTool
             form.ShowDialog();
             form.Dispose();
         }
+
+
+        private float[] GetV(int count)
+        {
+            float[] values = new float[count];
+            for (int i = 0; i < count; i++)
+            {
+                values[i] = random.Next(101);
+            }
+            return values;
+        }
+
+        private void userButton17_Click(object sender, EventArgs e)
+        {
+            userCurve1.AddCurve("123", GetV(100));
+            userCurve1.AddCurve("456", GetV(100));
+        }
     }
 
     public class AA

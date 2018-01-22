@@ -48,6 +48,7 @@
             this.userButton3 = new HslCommunication.Controls.UserButton();
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.userButton1 = new HslCommunication.Controls.UserButton();
+            this.userButton17 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
@@ -80,9 +81,9 @@
             // userCurve1
             // 
             this.userCurve1.BackColor = System.Drawing.Color.White;
-            this.userCurve1.Location = new System.Drawing.Point(70, 488);
+            this.userCurve1.Location = new System.Drawing.Point(87, 485);
             this.userCurve1.Name = "userCurve1";
-            this.userCurve1.Size = new System.Drawing.Size(600, 296);
+            this.userCurve1.Size = new System.Drawing.Size(699, 310);
             this.userCurve1.TabIndex = 21;
             // 
             // userButton16
@@ -309,11 +310,26 @@
             this.userButton1.UIText = "PLC网络测试";
             this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
+            // userButton17
+            // 
+            this.userButton17.BackColor = System.Drawing.Color.Transparent;
+            this.userButton17.CustomerInformation = "";
+            this.userButton17.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton17.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton17.Location = new System.Drawing.Point(807, 485);
+            this.userButton17.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton17.Name = "userButton17";
+            this.userButton17.Size = new System.Drawing.Size(143, 33);
+            this.userButton17.TabIndex = 22;
+            this.userButton17.UIText = "曲线测试";
+            this.userButton17.Click += new System.EventHandler(this.userButton17_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1203, 815);
+            this.Controls.Add(this.userButton17);
             this.Controls.Add(this.userCurve1);
             this.Controls.Add(this.userButton16);
             this.Controls.Add(this.userButton15);
@@ -364,6 +380,7 @@
         private HslCommunication.Controls.UserButton userButton15;
         private HslCommunication.Controls.UserButton userButton16;
         private HslCommunication.Controls.UserCurve userCurve1;
+        private HslCommunication.Controls.UserButton userButton17;
     }
 }
 

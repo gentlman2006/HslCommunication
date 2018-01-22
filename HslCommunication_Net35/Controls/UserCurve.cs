@@ -69,8 +69,9 @@ namespace HslCommunication.Controls
         private float value_Min = 0;                        // 坐标的最小值
         private int value_Segment = 5;                      // 纵轴的片段分割
         private bool value_IsAbscissaStrech = false;        // 指示横坐标是否填充满整个坐标系
+        private bool value_IsRenderDashLine = true;         // 是否显示虚线的信息
         private bool value_IsRenderAbscissaText = false;    // 指示是否显示横轴的文本信息
-        private int value_IntervalAbscissaText = 100;        // 指示显示横轴文本的间隔数据
+        private int value_IntervalAbscissaText = 100;       // 指示显示横轴文本的间隔数据
         private Random random = null;                       // 获取随机颜色使用
 
         #endregion
@@ -147,7 +148,6 @@ namespace HslCommunication.Controls
         private Brush brush_deep = null;
 
         private Pen pen_normal = null;                    // 绘制极轴和分段符的坐标线
-        private Pen pen_deep = null;
         private Pen pen_dash = null;                      // 绘制图形的虚线
 
         private Color color_normal = Color.DeepPink;
@@ -191,8 +191,8 @@ namespace HslCommunication.Controls
                 new Point(width_totle - leftRight, upDowm - 8)
             } );
             // 绘制倒三角
-            BasicFramework.SoftPainting.PaintTriangle( g, brush_deep, new Point( leftRight - 1, upDowm - 8 ), 8, BasicFramework.GraphDirection.Upward );
-            BasicFramework.SoftPainting.PaintTriangle( g, brush_deep, new Point( width_totle - leftRight, upDowm - 8 ), 8, BasicFramework.GraphDirection.Upward );
+            BasicFramework.SoftPainting.PaintTriangle( g, brush_deep, new Point( leftRight - 1, upDowm - 8 ), 4, BasicFramework.GraphDirection.Upward );
+            BasicFramework.SoftPainting.PaintTriangle( g, brush_deep, new Point( width_totle - leftRight, upDowm - 8 ), 4, BasicFramework.GraphDirection.Upward );
 
             // 绘制刻度线，以及刻度文本
             for (int i = 0; i <= value_Segment; i++)
@@ -217,6 +217,62 @@ namespace HslCommunication.Controls
             }
 
 
+            // 绘制线条
+            if(value_IsAbscissaStrech)
+            {
+                // 横坐标充满图形
+                foreach(var line in data_list.Values)
+                {
+                    if (line.Data?.Length > 1)
+                    {
+                        float offect = (width_totle - leftRight * 2) * 1.0f / (line.Data.Length - 1);
+                        // 点数大于1的时候才绘制
+                        PointF[] points = new PointF[line.Data.Length];
+                        for (int i = 0; i < line.Data.Length; i++)
+                        {
+                            points[i].X = leftRight + i * offect;
+                            points[i].Y = BasicFramework.SoftPainting.ComputePaintLocationY(line.ValueMax, line.ValueMin, (heigh_totle - upDowm - upDowm), line.Data[i]) + upDowm;
+                        }
+
+                        using (Pen penTmp = new Pen(line.LineColor, line.LineThickness))
+                        {
+                            g.DrawLines(penTmp, points);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // 横坐标对应图形
+                foreach (var line in data_list.Values)
+                {
+                    if (line.Data?.Length > 1)
+                    {
+                        int countTmp = width_totle - 2 * leftRight + 1;
+                        // 点数大于1的时候才绘制
+                        PointF[] points = new PointF[line.Data.Length];
+                        for (int i = 0; i < line.Data.Length; i++)
+                        {
+                            if (i <= countTmp)
+                            {
+                                points[i].X = leftRight + i;
+                                points[i].Y = BasicFramework.SoftPainting.ComputePaintLocationY(line.ValueMax, line.ValueMin, (heigh_totle - upDowm - upDowm), line.Data[i]) + upDowm;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        using (Pen penTmp = new Pen(line.LineColor, line.LineThickness))
+                        {
+                            g.DrawLines(penTmp, points);
+                        }
+                    }
+                }
+            }
+
+
             End:
             pen_normal.Dispose( );
             pen_dash.Dispose( );
@@ -236,9 +292,23 @@ namespace HslCommunication.Controls
     internal class HslCurveItem
     {
         /// <summary>
+        /// 实例化一个对象
+        /// </summary>
+        public HslCurveItem()
+        {
+            LineThickness = 1.0f;
+        }
+
+
+        /// <summary>
         /// 数据
         /// </summary>
         public float[] Data { get; set; }
+
+        /// <summary>
+        /// 线条的宽度
+        /// </summary>
+        public float LineThickness { get; set; } 
 
         /// <summary>
         /// 曲线颜色

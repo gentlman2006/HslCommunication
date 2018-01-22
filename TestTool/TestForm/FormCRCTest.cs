@@ -44,5 +44,24 @@ namespace TestTool.TestForm
             bool result = HslCommunication.Serial.SoftCRC16.CheckCRC16(data, 0x80, 0x05);
             textBox1.AppendText(result.ToString() + Environment.NewLine);
         }
+
+        private void userButton5_Click(object sender, EventArgs e)
+        {
+            byte[] data = new byte[] { 0x01, 0x06, 0x00, 0x0C, 0x01, 0xDD, 0x88 };
+            bool result = HslCommunication.Serial.SoftCRC16.CheckCRC16(data);
+            if(result)
+            {
+                // 计数器清零成功
+            }
+            else
+            {
+                // 计数器清零失败
+            }
+
+
+            data = new byte[] { 0x01, 0x03, 0x00, 0x01, 0x30, 0x18 };
+            bool result2 = HslCommunication.Serial.SoftCRC16.CheckCRC16(data);
+            ;
+        }
     }
 }
