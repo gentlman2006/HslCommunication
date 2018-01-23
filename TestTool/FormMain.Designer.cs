@@ -31,6 +31,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.userButton17 = new HslCommunication.Controls.UserButton();
             this.userCurve1 = new HslCommunication.Controls.UserCurve();
             this.userButton16 = new HslCommunication.Controls.UserButton();
             this.userButton15 = new HslCommunication.Controls.UserButton();
@@ -48,13 +49,12 @@
             this.userButton3 = new HslCommunication.Controls.UserButton();
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.userButton1 = new HslCommunication.Controls.UserButton();
-            this.userButton17 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("宋体", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox1.Location = new System.Drawing.Point(396, 434);
+            this.textBox1.Location = new System.Drawing.Point(380, 309);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(767, 30);
             this.textBox1.TabIndex = 2;
@@ -78,12 +78,27 @@
             this.textBox2.TabIndex = 14;
             this.textBox2.Text = "0";
             // 
+            // userButton17
+            // 
+            this.userButton17.BackColor = System.Drawing.Color.Transparent;
+            this.userButton17.CustomerInformation = "";
+            this.userButton17.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton17.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton17.Location = new System.Drawing.Point(800, 410);
+            this.userButton17.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton17.Name = "userButton17";
+            this.userButton17.Size = new System.Drawing.Size(143, 33);
+            this.userButton17.TabIndex = 22;
+            this.userButton17.UIText = "曲线测试";
+            this.userButton17.Click += new System.EventHandler(this.userButton17_Click);
+            // 
             // userCurve1
             // 
-            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
-            this.userCurve1.Location = new System.Drawing.Point(87, 485);
+            this.userCurve1.BackColor = System.Drawing.Color.Transparent;
+            this.userCurve1.ColorLinesAndText = System.Drawing.Color.ForestGreen;
+            this.userCurve1.Location = new System.Drawing.Point(51, 410);
             this.userCurve1.Name = "userCurve1";
-            this.userCurve1.Size = new System.Drawing.Size(700, 318);
+            this.userCurve1.Size = new System.Drawing.Size(700, 333);
             this.userCurve1.TabIndex = 21;
             // 
             // userButton16
@@ -120,7 +135,7 @@
             this.userButton14.CustomerInformation = "";
             this.userButton14.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton14.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton14.Location = new System.Drawing.Point(710, 394);
+            this.userButton14.Location = new System.Drawing.Point(694, 269);
             this.userButton14.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton14.Name = "userButton14";
             this.userButton14.Size = new System.Drawing.Size(143, 33);
@@ -176,7 +191,7 @@
             this.userButton10.CustomerInformation = "";
             this.userButton10.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton10.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton10.Location = new System.Drawing.Point(1020, 394);
+            this.userButton10.Location = new System.Drawing.Point(1004, 269);
             this.userButton10.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton10.Name = "userButton10";
             this.userButton10.Size = new System.Drawing.Size(143, 33);
@@ -260,7 +275,7 @@
             this.userButton4.CustomerInformation = "";
             this.userButton4.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton4.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton4.Location = new System.Drawing.Point(545, 394);
+            this.userButton4.Location = new System.Drawing.Point(529, 269);
             this.userButton4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton4.Name = "userButton4";
             this.userButton4.Size = new System.Drawing.Size(143, 33);
@@ -288,7 +303,7 @@
             this.userButton2.CustomerInformation = "";
             this.userButton2.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton2.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton2.Location = new System.Drawing.Point(396, 394);
+            this.userButton2.Location = new System.Drawing.Point(380, 269);
             this.userButton2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton2.Name = "userButton2";
             this.userButton2.Size = new System.Drawing.Size(143, 33);
@@ -310,25 +325,11 @@
             this.userButton1.UIText = "PLC网络测试";
             this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
-            // userButton17
-            // 
-            this.userButton17.BackColor = System.Drawing.Color.Transparent;
-            this.userButton17.CustomerInformation = "";
-            this.userButton17.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton17.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton17.Location = new System.Drawing.Point(807, 485);
-            this.userButton17.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton17.Name = "userButton17";
-            this.userButton17.Size = new System.Drawing.Size(143, 33);
-            this.userButton17.TabIndex = 22;
-            this.userButton17.UIText = "曲线测试";
-            this.userButton17.Click += new System.EventHandler(this.userButton17_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1203, 815);
+            this.ClientSize = new System.Drawing.Size(1234, 770);
             this.Controls.Add(this.userButton17);
             this.Controls.Add(this.userCurve1);
             this.Controls.Add(this.userButton16);

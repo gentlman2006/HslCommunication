@@ -168,6 +168,9 @@
     <EmbeddedResource Include="TestForm\FormCRCTest.resx">
       <DependentUpon>FormCRCTest.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TestForm\FormCurve.resx">
+      <DependentUpon>FormCurve.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormFileTest.resx">
       <DependentUpon>FormFileTest.cs</DependentUpon>
     </EmbeddedResource>
