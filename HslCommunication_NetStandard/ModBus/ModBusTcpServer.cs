@@ -810,6 +810,14 @@ namespace HslCommunication.ModBus
                     return;
                 }
 
+                if (state.HeadByteReceivedLength == 0)
+                {
+                    // 断开连接
+                    state.WorkSocket?.Close( );
+                    state = null;
+                    LogNet?.WriteDebug( LogHeaderText, "Received Bytes, Closed Connection" );
+                    return;
+                }
 
                 if (state.HeadByteReceivedLength < state.HeadByte.Length)
                 {

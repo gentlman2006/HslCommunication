@@ -224,8 +224,8 @@ namespace TestTool
 
         private void userButton17_Click(object sender, EventArgs e)
         {
-            userCurve1.AddCurve("123", GetV(100));
-            userCurve1.AddCurve("456", GetV(100));
+            userCurve1.SetCurve("123", GetV(100));
+            userCurve1.SetCurve("456", GetV(100));
         }
     }
 

@@ -45,10 +45,10 @@ namespace TestTool.TestForm
 
             // 此处示例程序的机器码为：2E4C8EB0EBB8C4551C49AC277
             // 直接进行判断，允不允许运行
-            if (!softAuthorize.CheckAuthorize("B384A9552ACFABF3CF839FB8A7CEAB123A264457BA0C176AE13F412CDD76C338", AuthorizeEncrypted))
+            //if (!softAuthorize.CheckAuthorize("B384A9552ACFABF3CF839FB8A7CEAB123A264457BA0C176AE13F412CDD76C338", AuthorizeEncrypted))
             {
                 // 检测授权失败
-                Close();
+                // Close();
             }
 
 
@@ -65,13 +65,13 @@ namespace TestTool.TestForm
         private string AuthorizeEncrypted(string origin)
         {
             // 此处使用了组件支持的DES对称加密技术
-            return HslCommunication.BasicFramework.SoftSecurity.MD5Encrypt(origin, "12345678");
+            return HslCommunication.BasicFramework.SoftSecurity.MD5Encrypt(origin, "zxcvBNMM" );
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             // 生成注册码
-            textBox2.Text = AuthorizeEncrypted(softAuthorize.GetMachineCodeString());
+            textBox2.Text = AuthorizeEncrypted(textBox1.Text);
             // 测试的注册码
             // B384A9552ACFABF3CF839FB8A7CEAB123A264457BA0C176AE13F412CDD76C338
         }

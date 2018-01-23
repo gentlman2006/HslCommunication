@@ -80,10 +80,10 @@
             // 
             // userCurve1
             // 
-            this.userCurve1.BackColor = System.Drawing.Color.White;
+            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
             this.userCurve1.Location = new System.Drawing.Point(87, 485);
             this.userCurve1.Name = "userCurve1";
-            this.userCurve1.Size = new System.Drawing.Size(699, 310);
+            this.userCurve1.Size = new System.Drawing.Size(700, 318);
             this.userCurve1.TabIndex = 21;
             // 
             // userButton16
