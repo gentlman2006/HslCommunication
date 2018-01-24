@@ -34,7 +34,7 @@ namespace HslCommunication.Controls
         /// <summary>
         /// 实例化一个曲线显示的控件
         /// </summary>
-        public UserCurve()
+        public UserCurve( )
         {
             InitializeComponent( );
             DoubleBuffered = true;
@@ -64,6 +64,9 @@ namespace HslCommunication.Controls
             font_size9 = new Font( "宋体", 9 );
             font_size12 = new Font( "宋体", 12 );
             InitializationColor( );
+            pen_dash = new Pen( color_deep );
+            pen_dash.DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
+            pen_dash.DashPattern = new float[] { 5, 5 };
         }
 
         #endregion
@@ -76,8 +79,11 @@ namespace HslCommunication.Controls
 
         #region Private Member
 
-        private float value_Max = 100;                      // 坐标的最大值
-        private float value_Min = 0;                        // 坐标的最小值
+        private float value_max_left = 100;                 // 左坐标的最大值
+        private float value_min_left = 0;                   // 左坐标的最小值
+        private float value_max_right = 100;                // 右坐标的最大值
+        private float value_min_right = 0;                  // 右坐标的最小值
+
         private int value_Segment = 5;                      // 纵轴的片段分割
         private bool value_IsAbscissaStrech = false;        // 指示横坐标是否填充满整个坐标系
         private bool value_IsRenderDashLine = true;         // 是否显示虚线的信息
@@ -107,17 +113,17 @@ namespace HslCommunication.Controls
         /// 获取或设置图形的纵坐标的最大值，该值必须大于最小值
         /// </summary>
         [Category( "外观" )]
-        [Description( "获取或设置图形的纵坐标的最大值，该值必须大于最小值" )]
+        [Description( "获取或设置图形的左纵坐标的最大值，该值必须大于最小值" )]
         [Browsable( true )]
         [DefaultValue( 100f )]
-        public float ValueMax
+        public float ValueMaxLeft
         {
-            get { return value_Max; }
+            get { return value_max_left; }
             set
             {
-                if (value > value_Min)
+                if (value > value_min_left)
                 {
-                    value_Max = value;
+                    value_max_left = value;
                     Invalidate( );
                 }
             }
@@ -127,22 +133,61 @@ namespace HslCommunication.Controls
         /// 获取或设置图形的纵坐标的最小值，该值必须小于最大值
         /// </summary>
         [Category( "外观" )]
-        [Description( "获取或设置图形的纵坐标的最小值，该值必须小于最大值" )]
+        [Description( "获取或设置图形的左纵坐标的最小值，该值必须小于最大值" )]
         [Browsable( true )]
         [DefaultValue( 0f )]
-        public float ValueMin
+        public float ValueMinLeft
         {
-            get { return value_Min; }
+            get { return value_min_left; }
             set
             {
-                if (value < value_Max)
+                if (value < value_max_left)
                 {
-                    value_Min = value;
+                    value_min_left = value;
                     Invalidate( );
                 }
             }
         }
 
+        /// <summary>
+        /// 获取或设置图形的纵坐标的最大值，该值必须大于最小值
+        /// </summary>
+        [Category( "外观" )]
+        [Description( "获取或设置图形的右纵坐标的最大值，该值必须大于最小值" )]
+        [Browsable( true )]
+        [DefaultValue( 100f )]
+        public float ValueMaxRight
+        {
+            get { return value_max_right; }
+            set
+            {
+                if (value > value_min_right)
+                {
+                    value_max_right = value;
+                    Invalidate( );
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置图形的纵坐标的最小值，该值必须小于最大值
+        /// </summary>
+        [Category( "外观" )]
+        [Description( "获取或设置图形的右纵坐标的最小值，该值必须小于最大值" )]
+        [Browsable( true )]
+        [DefaultValue( 0f )]
+        public float ValueMinRight
+        {
+            get { return value_min_right; }
+            set
+            {
+                if (value < value_max_right)
+                {
+                    value_min_right = value;
+                    Invalidate( );
+                }
+            }
+        }
 
         /// <summary>
         /// 获取或设置图形的纵轴分段数
@@ -215,16 +260,33 @@ namespace HslCommunication.Controls
             }
         }
 
-        private void InitializationColor()
+
+        /// <summary>
+        /// 获取或设置虚线的颜色
+        /// </summary>
+        [Category( "外观" )]
+        [Description( "获取或设置虚线的颜色" )]
+        [Browsable( true )]
+        [DefaultValue( typeof( Color ), "Gray" )]
+        public Color ColorDashLines
+        {
+            get { return color_dash; }
+            set
+            {
+                color_dash = value;
+                pen_dash?.Dispose( );
+                pen_dash = new Pen( color_dash );
+                pen_dash.DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
+                pen_dash.DashPattern = new float[] { 5, 5 };
+                Invalidate( );
+            }
+        }
+
+        private void InitializationColor( )
         {
             pen_normal?.Dispose( );
-            pen_dash?.Dispose( );
             brush_deep?.Dispose( );
-
             pen_normal = new Pen( color_deep );
-            pen_dash = new Pen( color_deep );
-            pen_dash.DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
-            pen_dash.DashPattern = new float[] { 5, 5 };
             brush_deep = new SolidBrush( color_deep );
         }
 
@@ -232,40 +294,91 @@ namespace HslCommunication.Controls
 
         #region Public Method
 
-
         /// <summary>
-        /// 新增或修改一条指定关键字的曲线数据，使用指定的数据，颜色随机，线条宽度为1
+        /// 新增或修改一条指定关键字的左参考系曲线数据，需要指定数据，颜色随机，没有数据上限，线条宽度为1
         /// </summary>
         /// <param name="key">曲线关键字</param>
         /// <param name="data"></param>
-        public void SetCurve( string key, float[] data )
+        public void SetLeftCurve( string key, float[] data )
         {
-            SetCurve( key, data, Color.FromArgb( random.Next( 256 ), random.Next( 256 ), random.Next( 256 ) ) );
+            SetLeftCurve( key, data, Color.FromArgb( random.Next( 256 ), random.Next( 256 ), random.Next( 256 ) ) );
         }
 
         /// <summary>
-        /// 新增或修改一条指定关键字的曲线数据，使用指定的数据，颜色，线条宽度为1
+        /// 新增或修改一条指定关键字的左参考系曲线数据，需要指定数据，颜色，没有数据上限，线条宽度为1
         /// </summary>
         /// <param name="key">曲线关键字</param>
         /// <param name="data"></param>
         /// <param name="lineColor"></param>
-        public void SetCurve( string key, float[] data, Color lineColor )
+        public void SetLeftCurve( string key, float[] data, Color lineColor )
         {
-            SetCurve( key, data, lineColor, 1f );
+            SetLeftCurve( key, data, lineColor, -1 );
         }
 
         /// <summary>
-        /// 新增或修改一条指定关键字的曲线数据，使用指定的数据，颜色，线条宽度
+        /// 新增或修改一条指定关键字的左参考系曲线数据，需要指定数据，颜色，强制最大的数据上限，线条宽度为1
         /// </summary>
         /// <param name="key">曲线关键字</param>
         /// <param name="data"></param>
         /// <param name="lineColor"></param>
-        /// <param name="thickness"></param>
-        public void SetCurve( string key, float[] data, Color lineColor, float thickness )
+        /// <param name="countMax"></param>
+        public void SetLeftCurve( string key, float[] data, Color lineColor, int countMax )
+        {
+            SetCurve( key, true, data, lineColor, countMax, 1f );
+        }
+
+
+        /// <summary>
+        /// 新增或修改一条指定关键字的右参考系曲线数据，需要指定数据，颜色随机，没有数据上限，线条宽度为1
+        /// </summary>
+        /// <param name="key">曲线关键字</param>
+        /// <param name="data"></param>
+        public void SetRightCurve( string key, float[] data )
+        {
+            SetRightCurve( key, data, Color.FromArgb( random.Next( 256 ), random.Next( 256 ), random.Next( 256 ) ) );
+        }
+
+        /// <summary>
+        /// 新增或修改一条指定关键字的右参考系曲线数据，需要指定数据，颜色，没有数据上限，线条宽度为1
+        /// </summary>
+        /// <param name="key">曲线关键字</param>
+        /// <param name="data"></param>
+        /// <param name="lineColor"></param>
+        public void SetRightCurve( string key, float[] data, Color lineColor )
+        {
+            SetRightCurve( key, data, lineColor, -1 );
+        }
+
+        /// <summary>
+        /// 新增或修改一条指定关键字的右参考系曲线数据，需要指定数据，颜色，强制最大的数据上限，线条宽度为1
+        /// </summary>
+        /// <param name="key">曲线关键字</param>
+        /// <param name="data"></param>
+        /// <param name="lineColor"></param>
+        /// <param name="countMax"></param>
+        public void SetRightCurve( string key, float[] data, Color lineColor, int countMax )
+        {
+            SetCurve( key, false, data, lineColor, countMax, 1f );
+        }
+
+        /// <summary>
+        /// 新增或修改一条指定关键字的曲线数据，需要指定参考系及数据，颜色，线条宽度
+        /// </summary>
+        /// <param name="key">曲线关键字</param>
+        /// <param name="isLeft">是否以左侧坐标轴为参照系</param>
+        /// <param name="data">数据</param>
+        /// <param name="lineColor">线条颜色</param>
+        /// <param name="countMax">强制数据总量，-1为不限制，仅在拉伸模式下有用</param>
+        /// <param name="thickness">线条宽度</param>
+        public void SetCurve( string key, bool isLeft, float[] data, Color lineColor, int countMax, float thickness )
         {
             if (data_list.ContainsKey( key ))
             {
                 data_list[key].Data = data;
+                //data_list[key].LineColor = lineColor;
+                //data_list[key].LineThickness = thickness;
+                //data_list[key].DataCountMax = countMax;
+                //data_list[key].IsLeftFrame = isLeft;
             }
             else
             {
@@ -274,8 +387,8 @@ namespace HslCommunication.Controls
                     Data = data,
                     LineThickness = thickness,
                     LineColor = lineColor,
-                    ValueMax = value_Max,
-                    ValueMin = value_Min
+                    IsLeftFrame = isLeft,
+                    DataCountMax = countMax
                 } );
             }
 
@@ -323,16 +436,30 @@ namespace HslCommunication.Controls
                     if (value_IsAbscissaStrech)
                     {
                         // 填充玩整个图形的情况
-                        float[] tmp = new float[curve.Data.Length + values.Length];
-                        for (int i = 0; i < curve.Data.Length; i++)
+                        if (curve.DataCountMax > 1 && curve.Data.Length >= curve.DataCountMax)
                         {
-                            tmp[i] = curve.Data[i];
+                            for (int i = 0; i < curve.Data.Length - values.Length; i++)
+                            {
+                                curve.Data[i] = curve.Data[i + 1];
+                            }
+                            for (int i = 0; i < values.Length; i++)
+                            {
+                                curve.Data[curve.Data.Length - values.Length + i] = values[i];
+                            }
                         }
-                        for (int i = 0; i < values.Length; i++)
+                        else
                         {
-                            tmp[tmp.Length - values.Length + i] = values[i];
+                            float[] tmp = new float[curve.Data.Length + values.Length];
+                            for (int i = 0; i < curve.Data.Length; i++)
+                            {
+                                tmp[i] = curve.Data[i];
+                            }
+                            for (int i = 0; i < values.Length; i++)
+                            {
+                                tmp[tmp.Length - values.Length + i] = values[i];
+                            }
+                            curve.Data = tmp;
                         }
-                        curve.Data = tmp;
                     }
                     else
                     {
@@ -448,7 +575,8 @@ namespace HslCommunication.Controls
         private Pen pen_dash = null;                      // 绘制图形的虚线
 
         private Color color_normal = Color.DeepPink;      // 文本的颜色
-        private Color color_deep = Color.DimGray;         // 坐标轴以及虚线的颜色
+        private Color color_deep = Color.DimGray;         // 坐标轴及数字文本的信息
+        private Color color_dash = Color.Gray;            // 虚线的颜色
 
         private StringFormat format_left = null;          // 靠左对齐的文本
         private StringFormat format_right = null;         // 靠右对齐的文本
@@ -464,8 +592,6 @@ namespace HslCommunication.Controls
             {
                 g.Clear( BackColor );
             }
-
-
 
 
             int width_totle = Width;
@@ -489,15 +615,18 @@ namespace HslCommunication.Controls
             // 绘制刻度线，以及刻度文本
             for (int i = 0; i <= value_Segment; i++)
             {
-                float valueTmp = i * (value_Max - value_Min) / value_Segment + value_Min;
-                float paintTmp = BasicFramework.SoftPainting.ComputePaintLocationY( value_Max, value_Min, (heigh_totle - upDowm - upDowm), valueTmp );
+                // 左坐标轴
+                float valueTmpLeft = i * (value_max_left - value_min_left) / value_Segment + value_min_left;
+                float paintTmp = BasicFramework.SoftPainting.ComputePaintLocationY( value_max_left, value_min_left, (heigh_totle - upDowm - upDowm), valueTmpLeft );
                 g.DrawLine( pen_normal, leftRight - 4, paintTmp + upDowm, leftRight - 1, paintTmp + upDowm );
                 RectangleF rectTmp = new RectangleF( 0, paintTmp - 9 + upDowm, leftRight - 4, 20 );
-                g.DrawString( valueTmp.ToString( ), font_size9, brush_deep, rectTmp, format_right );
+                g.DrawString( valueTmpLeft.ToString( ), font_size9, brush_deep, rectTmp, format_right );
 
+                // 右坐标轴
+                float valueTmpRight = i * (value_max_right - value_min_right) / value_Segment + value_min_right;
                 g.DrawLine( pen_normal, width_totle - leftRight + 1, paintTmp + upDowm, width_totle - leftRight + 4, paintTmp + upDowm );
                 rectTmp.Location = new PointF( width_totle - leftRight + 4, paintTmp - 9 + upDowm );
-                g.DrawString( valueTmp.ToString( ), font_size9, brush_deep, rectTmp, format_left );
+                g.DrawString( valueTmpRight.ToString( ), font_size9, brush_deep, rectTmp, format_left );
 
                 if (i > 0 && value_IsRenderDashLine) g.DrawLine( pen_dash, leftRight, paintTmp + upDowm, width_totle - leftRight, paintTmp + upDowm );
             }
@@ -520,13 +649,25 @@ namespace HslCommunication.Controls
                 {
                     if (line.Data?.Length > 1)
                     {
-                        float offect = (width_totle - leftRight * 2) * 1.0f / (line.Data.Length - 1);
+                        float offect = 0;
+                        if (line.DataCountMax > 1)
+                        {
+                            offect = (width_totle - leftRight * 2) * 1.0f / (line.DataCountMax - 1);
+                        }
+                        else
+                        {
+                            offect = (width_totle - leftRight * 2) * 1.0f / (line.Data.Length - 1);
+                        }
+
                         // 点数大于1的时候才绘制
                         PointF[] points = new PointF[line.Data.Length];
                         for (int i = 0; i < line.Data.Length; i++)
                         {
                             points[i].X = leftRight + i * offect;
-                            points[i].Y = BasicFramework.SoftPainting.ComputePaintLocationY( line.ValueMax, line.ValueMin, (heigh_totle - upDowm - upDowm), line.Data[i] ) + upDowm;
+                            points[i].Y = BasicFramework.SoftPainting.ComputePaintLocationY(
+                                line.IsLeftFrame ? value_max_left : value_max_right,
+                                line.IsLeftFrame ? value_min_left : value_min_right,
+                                (heigh_totle - upDowm - upDowm), line.Data[i] ) + upDowm;
                         }
 
                         using (Pen penTmp = new Pen( line.LineColor, line.LineThickness ))
@@ -552,7 +693,10 @@ namespace HslCommunication.Controls
                             for (int i = 0; i < line.Data.Length; i++)
                             {
                                 points[i].X = leftRight + i;
-                                points[i].Y = BasicFramework.SoftPainting.ComputePaintLocationY( line.ValueMax, line.ValueMin, (heigh_totle - upDowm - upDowm), line.Data[i] ) + upDowm;
+                                points[i].Y = BasicFramework.SoftPainting.ComputePaintLocationY(
+                                    line.IsLeftFrame ? value_max_left : value_max_right,
+                                    line.IsLeftFrame ? value_min_left : value_min_right,
+                                    (heigh_totle - upDowm - upDowm), line.Data[i] ) + upDowm;
                             }
                         }
                         else
@@ -561,7 +705,10 @@ namespace HslCommunication.Controls
                             for (int i = 0; i < points.Length; i++)
                             {
                                 points[i].X = leftRight + i;
-                                points[i].Y = BasicFramework.SoftPainting.ComputePaintLocationY( line.ValueMax, line.ValueMin, (heigh_totle - upDowm - upDowm), line.Data[i + line.Data.Length - countTmp] ) + upDowm;
+                                points[i].Y = BasicFramework.SoftPainting.ComputePaintLocationY(
+                                    line.IsLeftFrame ? value_max_left : value_max_right,
+                                    line.IsLeftFrame ? value_min_left : value_min_right,
+                                    (heigh_totle - upDowm - upDowm), line.Data[i + line.Data.Length - countTmp] ) + upDowm;
                             }
                         }
 
@@ -578,6 +725,10 @@ namespace HslCommunication.Controls
 
         #endregion
 
+        private void UserCurve_SizeChanged( object sender, EventArgs e )
+        {
+            Invalidate( );
+        }
     }
 
 
@@ -589,9 +740,11 @@ namespace HslCommunication.Controls
         /// <summary>
         /// 实例化一个对象
         /// </summary>
-        public HslCurveItem()
+        public HslCurveItem( )
         {
             LineThickness = 1.0f;
+            DataCountMax = -1;
+            IsLeftFrame = true;
         }
 
 
@@ -611,14 +764,14 @@ namespace HslCommunication.Controls
         public Color LineColor { get; set; }
 
         /// <summary>
-        /// 最大值
+        /// 是否左侧参考系，True为左侧，False为右侧
         /// </summary>
-        public float ValueMax { get; set; }
+        public bool IsLeftFrame { get; set; }
 
         /// <summary>
-        /// 最小值
+        /// 强制最大的数据量上限，仅在拉伸模式下有用
         /// </summary>
-        public float ValueMin { get; set; }
+        public int DataCountMax { get; set; }
 
     }
 }

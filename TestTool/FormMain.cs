@@ -224,8 +224,14 @@ namespace TestTool
 
         private void userButton17_Click(object sender, EventArgs e)
         {
-            userCurve1.SetCurve("123", GetV(100));
-            userCurve1.SetCurve("456", GetV(100));
+            userCurve1.SetLeftCurve( "123", GetV( 100 ), Color.DodgerBlue );
+        }
+
+        private void userButton18_Click( object sender, EventArgs e )
+        {
+            TestForm.FormCurve form = new TestForm.FormCurve( );
+            form.ShowDialog( );
+            form.Dispose( );
         }
     }
 

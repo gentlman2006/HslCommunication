@@ -37,6 +37,7 @@
             this.BackColor = System.Drawing.Color.Transparent;
             this.Name = "UserCurve";
             this.Size = new System.Drawing.Size(615, 296);
+            this.SizeChanged += new System.EventHandler(this.UserCurve_SizeChanged);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.UserCurve_Paint);
             this.ResumeLayout(false);
 
