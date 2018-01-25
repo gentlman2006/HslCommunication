@@ -72,3 +72,6 @@ Install-Package HslCommunication
 
 ## 特别感谢
 * 混合锁及可序列化异常类，读写锁，并发模型部分代码及思路参考《CLR Via C#》，感谢作者Jeffrey Richter
+
+## 控件集合实示例图
+![控件图](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/controls.png)
