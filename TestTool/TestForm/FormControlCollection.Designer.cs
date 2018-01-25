@@ -59,12 +59,16 @@
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.userButton1 = new HslCommunication.Controls.UserButton();
             this.userGaugeChart1 = new HslCommunication.Controls.UserGaugeChart();
+            this.userCurve1 = new HslCommunication.Controls.UserCurve();
+            this.userCurve2 = new HslCommunication.Controls.UserCurve();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(59, 56);
+            this.label1.Location = new System.Drawing.Point(14, 55);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 3;
@@ -73,7 +77,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(183, 56);
+            this.label2.Location = new System.Drawing.Point(134, 55);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 12);
             this.label2.TabIndex = 4;
@@ -82,7 +86,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(320, 56);
+            this.label3.Location = new System.Drawing.Point(271, 55);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 12);
             this.label3.TabIndex = 5;
@@ -91,7 +95,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1058, 276);
+            this.label4.Location = new System.Drawing.Point(791, 218);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(53, 12);
             this.label4.TabIndex = 7;
@@ -100,7 +104,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(59, 327);
+            this.label5.Location = new System.Drawing.Point(14, 307);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(281, 12);
             this.label5.TabIndex = 14;
@@ -109,7 +113,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(1045, 688);
+            this.label6.Location = new System.Drawing.Point(1155, 214);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(149, 12);
             this.label6.TabIndex = 17;
@@ -118,7 +122,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(42, 781);
+            this.label7.Location = new System.Drawing.Point(31, 822);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(281, 12);
             this.label7.TabIndex = 21;
@@ -127,7 +131,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(664, 185);
+            this.label8.Location = new System.Drawing.Point(504, 136);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(185, 12);
             this.label8.TabIndex = 24;
@@ -136,7 +140,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(652, 441);
+            this.label9.Location = new System.Drawing.Point(380, 369);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(155, 12);
             this.label9.TabIndex = 27;
@@ -145,7 +149,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(1063, 781);
+            this.label10.Location = new System.Drawing.Point(1276, 822);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(173, 12);
             this.label10.TabIndex = 29;
@@ -155,7 +159,7 @@
             // 
             this.userGaugeChart4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
             this.userGaugeChart4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart4.Location = new System.Drawing.Point(702, 624);
+            this.userGaugeChart4.Location = new System.Drawing.Point(444, 641);
             this.userGaugeChart4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart4.Name = "userGaugeChart4";
             this.userGaugeChart4.PointerColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
@@ -168,7 +172,7 @@
             this.userSwitch2.BackColor = System.Drawing.Color.Transparent;
             this.userSwitch2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.userSwitch2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userSwitch2.Location = new System.Drawing.Point(793, 249);
+            this.userSwitch2.Location = new System.Drawing.Point(521, 177);
             this.userSwitch2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userSwitch2.Name = "userSwitch2";
             this.userSwitch2.Size = new System.Drawing.Size(197, 204);
@@ -184,7 +188,7 @@
             this.userSwitch1.BackColor = System.Drawing.Color.Transparent;
             this.userSwitch1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.userSwitch1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userSwitch1.Location = new System.Drawing.Point(590, 249);
+            this.userSwitch1.Location = new System.Drawing.Point(318, 177);
             this.userSwitch1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userSwitch1.Name = "userSwitch1";
             this.userSwitch1.Size = new System.Drawing.Size(197, 204);
@@ -198,28 +202,28 @@
             // 
             this.userLantern2.BackColor = System.Drawing.Color.Transparent;
             this.userLantern2.LanternBackground = System.Drawing.Color.Tomato;
-            this.userLantern2.Location = new System.Drawing.Point(813, 56);
+            this.userLantern2.Location = new System.Drawing.Point(603, 10);
             this.userLantern2.Name = "userLantern2";
-            this.userLantern2.Size = new System.Drawing.Size(133, 104);
+            this.userLantern2.Size = new System.Drawing.Size(86, 71);
             this.userLantern2.TabIndex = 23;
             // 
             // userLantern1
             // 
             this.userLantern1.BackColor = System.Drawing.Color.Transparent;
-            this.userLantern1.Location = new System.Drawing.Point(654, 22);
+            this.userLantern1.Location = new System.Drawing.Point(477, 10);
             this.userLantern1.Name = "userLantern1";
-            this.userLantern1.Size = new System.Drawing.Size(150, 150);
+            this.userLantern1.Size = new System.Drawing.Size(122, 107);
             this.userLantern1.TabIndex = 22;
             // 
             // userGaugeChart3
             // 
             this.userGaugeChart3.BackColor = System.Drawing.Color.Transparent;
             this.userGaugeChart3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart3.Location = new System.Drawing.Point(430, 521);
+            this.userGaugeChart3.Location = new System.Drawing.Point(417, 389);
             this.userGaugeChart3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart3.Name = "userGaugeChart3";
             this.userGaugeChart3.PointerColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.userGaugeChart3.Size = new System.Drawing.Size(306, 272);
+            this.userGaugeChart3.Size = new System.Drawing.Size(217, 226);
             this.userGaugeChart3.TabIndex = 20;
             this.userGaugeChart3.Value = 60D;
             // 
@@ -227,7 +231,7 @@
             // 
             this.userGaugeChart2.BackColor = System.Drawing.Color.Transparent;
             this.userGaugeChart2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart2.Location = new System.Drawing.Point(25, 569);
+            this.userGaugeChart2.Location = new System.Drawing.Point(12, 599);
             this.userGaugeChart2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart2.Name = "userGaugeChart2";
             this.userGaugeChart2.Size = new System.Drawing.Size(399, 207);
@@ -240,7 +244,7 @@
             this.userPieChart2.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userPieChart2.IsRenderPercent = true;
-            this.userPieChart2.Location = new System.Drawing.Point(1008, 484);
+            this.userPieChart2.Location = new System.Drawing.Point(1249, 10);
             this.userPieChart2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart2.Name = "userPieChart2";
             this.userPieChart2.Size = new System.Drawing.Size(200, 200);
@@ -251,7 +255,7 @@
             this.userPieChart1.BackColor = System.Drawing.Color.Transparent;
             this.userPieChart1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userPieChart1.IsRenderPercent = true;
-            this.userPieChart1.Location = new System.Drawing.Point(1008, 307);
+            this.userPieChart1.Location = new System.Drawing.Point(988, 13);
             this.userPieChart1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userPieChart1.Name = "userPieChart1";
             this.userPieChart1.Size = new System.Drawing.Size(200, 200);
@@ -261,11 +265,11 @@
             // 
             this.userVerticalProgress6.BackColor = System.Drawing.Color.Blue;
             this.userVerticalProgress6.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userVerticalProgress6.Location = new System.Drawing.Point(253, 156);
+            this.userVerticalProgress6.Location = new System.Drawing.Point(217, 110);
             this.userVerticalProgress6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userVerticalProgress6.Name = "userVerticalProgress6";
             this.userVerticalProgress6.ProgressStyle = HslCommunication.Controls.ProgressStyle.Horizontal;
-            this.userVerticalProgress6.Size = new System.Drawing.Size(312, 50);
+            this.userVerticalProgress6.Size = new System.Drawing.Size(229, 29);
             this.userVerticalProgress6.TabIndex = 13;
             this.userVerticalProgress6.Value = 80;
             // 
@@ -273,11 +277,11 @@
             // 
             this.userVerticalProgress5.BackColor = System.Drawing.SystemColors.Control;
             this.userVerticalProgress5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userVerticalProgress5.Location = new System.Drawing.Point(253, 98);
+            this.userVerticalProgress5.Location = new System.Drawing.Point(217, 81);
             this.userVerticalProgress5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userVerticalProgress5.Name = "userVerticalProgress5";
             this.userVerticalProgress5.ProgressStyle = HslCommunication.Controls.ProgressStyle.Horizontal;
-            this.userVerticalProgress5.Size = new System.Drawing.Size(312, 50);
+            this.userVerticalProgress5.Size = new System.Drawing.Size(229, 28);
             this.userVerticalProgress5.TabIndex = 12;
             this.userVerticalProgress5.Value = 50;
             // 
@@ -286,7 +290,7 @@
             this.userVerticalProgress4.BackColor = System.Drawing.SystemColors.Control;
             this.userVerticalProgress4.BorderColor = System.Drawing.Color.Blue;
             this.userVerticalProgress4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userVerticalProgress4.Location = new System.Drawing.Point(205, 98);
+            this.userVerticalProgress4.Location = new System.Drawing.Point(169, 81);
             this.userVerticalProgress4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userVerticalProgress4.Name = "userVerticalProgress4";
             this.userVerticalProgress4.Size = new System.Drawing.Size(42, 216);
@@ -297,7 +301,7 @@
             // 
             this.userVerticalProgress3.BackColor = System.Drawing.SystemColors.Control;
             this.userVerticalProgress3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userVerticalProgress3.Location = new System.Drawing.Point(157, 98);
+            this.userVerticalProgress3.Location = new System.Drawing.Point(121, 81);
             this.userVerticalProgress3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userVerticalProgress3.Name = "userVerticalProgress3";
             this.userVerticalProgress3.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
@@ -310,7 +314,7 @@
             this.userVerticalProgress2.BackColor = System.Drawing.SystemColors.Control;
             this.userVerticalProgress2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userVerticalProgress2.IsTextRender = false;
-            this.userVerticalProgress2.Location = new System.Drawing.Point(109, 98);
+            this.userVerticalProgress2.Location = new System.Drawing.Point(73, 81);
             this.userVerticalProgress2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userVerticalProgress2.Name = "userVerticalProgress2";
             this.userVerticalProgress2.Size = new System.Drawing.Size(42, 216);
@@ -321,10 +325,10 @@
             // 
             this.userVerticalProgress1.BackColor = System.Drawing.SystemColors.Control;
             this.userVerticalProgress1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userVerticalProgress1.Location = new System.Drawing.Point(61, 98);
+            this.userVerticalProgress1.Location = new System.Drawing.Point(16, 81);
             this.userVerticalProgress1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userVerticalProgress1.Name = "userVerticalProgress1";
-            this.userVerticalProgress1.Size = new System.Drawing.Size(42, 216);
+            this.userVerticalProgress1.Size = new System.Drawing.Size(51, 216);
             this.userVerticalProgress1.TabIndex = 8;
             this.userVerticalProgress1.Value = 50;
             // 
@@ -333,9 +337,9 @@
             this.userClock1.BackColor = System.Drawing.Color.Transparent;
             this.userClock1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("userClock1.BackgroundImage")));
             this.userClock1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userClock1.Location = new System.Drawing.Point(969, 12);
+            this.userClock1.Location = new System.Drawing.Point(727, 10);
             this.userClock1.Name = "userClock1";
-            this.userClock1.Size = new System.Drawing.Size(239, 261);
+            this.userClock1.Size = new System.Drawing.Size(186, 220);
             this.userClock1.TabIndex = 6;
             // 
             // userButton3
@@ -345,7 +349,7 @@
             this.userButton3.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton3.Enabled = false;
             this.userButton3.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton3.Location = new System.Drawing.Point(322, 13);
+            this.userButton3.Location = new System.Drawing.Point(273, 13);
             this.userButton3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton3.Name = "userButton3";
             this.userButton3.Size = new System.Drawing.Size(131, 39);
@@ -357,7 +361,7 @@
             this.userButton2.CustomerInformation = "";
             this.userButton2.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton2.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton2.Location = new System.Drawing.Point(185, 13);
+            this.userButton2.Location = new System.Drawing.Point(136, 12);
             this.userButton2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton2.Name = "userButton2";
             this.userButton2.Selected = true;
@@ -370,7 +374,7 @@
             this.userButton1.CustomerInformation = "";
             this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton1.Location = new System.Drawing.Point(61, 13);
+            this.userButton1.Location = new System.Drawing.Point(12, 12);
             this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton1.Name = "userButton1";
             this.userButton1.Size = new System.Drawing.Size(118, 39);
@@ -388,11 +392,55 @@
             this.userGaugeChart1.TabIndex = 18;
             this.userGaugeChart1.Value = 60D;
             // 
+            // userCurve1
+            // 
+            this.userCurve1.BackColor = System.Drawing.Color.Transparent;
+            this.userCurve1.Location = new System.Drawing.Point(748, 272);
+            this.userCurve1.Name = "userCurve1";
+            this.userCurve1.Size = new System.Drawing.Size(440, 200);
+            this.userCurve1.TabIndex = 30;
+            this.userCurve1.ValueMaxLeft = 200F;
+            this.userCurve1.ValueMaxRight = 200F;
+            // 
+            // userCurve2
+            // 
+            this.userCurve2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
+            this.userCurve2.ColorDashLines = System.Drawing.Color.DimGray;
+            this.userCurve2.ColorLinesAndText = System.Drawing.Color.Gray;
+            this.userCurve2.Location = new System.Drawing.Point(748, 516);
+            this.userCurve2.Name = "userCurve2";
+            this.userCurve2.Size = new System.Drawing.Size(457, 226);
+            this.userCurve2.TabIndex = 31;
+            this.userCurve2.ValueMaxLeft = 200F;
+            this.userCurve2.ValueMaxRight = 5F;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(877, 475);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(209, 12);
+            this.label11.TabIndex = 32;
+            this.label11.Text = "曲线控件，此处只显示简单的一条曲线";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(832, 762);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(323, 12);
+            this.label12.TabIndex = 33;
+            this.label12.Text = "曲线控件，相对复杂的显示，2种坐标系，多条曲线同时显示";
+            // 
             // FormControlCollection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1248, 802);
+            this.ClientSize = new System.Drawing.Size(1461, 843);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.userCurve2);
+            this.Controls.Add(this.userCurve1);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.userGaugeChart4);
             this.Controls.Add(this.label9);
@@ -464,5 +512,9 @@
         private HslCommunication.Controls.UserGaugeChart userGaugeChart4;
         private System.Windows.Forms.Label label10;
         private HslCommunication.Controls.UserGaugeChart userGaugeChart1;
+        private HslCommunication.Controls.UserCurve userCurve1;
+        private HslCommunication.Controls.UserCurve userCurve2;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
     }
 }

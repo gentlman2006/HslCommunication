@@ -374,6 +374,7 @@ namespace HslCommunication.Controls
         {
             if (data_list.ContainsKey( key ))
             {
+                if (data == null) data = new float[] { };
                 data_list[key].Data = data;
                 //data_list[key].LineColor = lineColor;
                 //data_list[key].LineThickness = thickness;
@@ -382,6 +383,7 @@ namespace HslCommunication.Controls
             }
             else
             {
+                if (data == null) data = new float[] { };
                 data_list.Add( key, new HslCurveItem( )
                 {
                     Data = data,

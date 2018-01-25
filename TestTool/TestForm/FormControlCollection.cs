@@ -57,6 +57,33 @@ namespace TestTool.TestForm
                 userPieChart1.IsRenderSmall = true;
                 userPieChart2.IsRenderSmall = true;
             }
+
+
+            Random random = new Random( );
+
+            float[] data = new float[300];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = random.Next( 201 );
+            }
+
+            userCurve1.SetLeftCurve( "A", data, Color.DodgerBlue );
+
+
+            userCurve2.SetLeftCurve( "A", new float[] { }, Color.Tomato );            // 温度1
+            userCurve2.SetLeftCurve( "B", new float[] { }, Color.DodgerBlue );        // 温度2
+            userCurve2.SetRightCurve( "C", new float[] { }, Color.LimeGreen );         // 压力1
+            userCurve2.SetRightCurve( "D", new float[] { }, Color.Orchid );            // 压力2
+
+            Timer timer = new Timer( );
+            timer.Interval = 100;
+            timer.Tick += ( sender1, e1 ) =>
+            {
+                userCurve2.AddCurveData(
+                    new string[] { "A", "B", "C", "D" },
+                    new float[] { random.Next( 160, 181 ), random.Next( 150, 171 ), (float)random.NextDouble( ) * 2.5f + 1, (float)random.NextDouble( ) * 1f } );
+            };
+            timer.Start( );
         }
     }
 }
