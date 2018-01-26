@@ -79,7 +79,7 @@ namespace TestTool.TestForm
             userCurve1.SetLeftCurve( "A", new float[] { }, Color.Tomato );            // 温度1
             userCurve1.SetLeftCurve( "B", new float[] { }, Color.DodgerBlue );        // 温度2
             userCurve1.SetRightCurve( "C", new float[] { }, Color.LimeGreen );         // 压力1
-            userCurve1.SetRightCurve( "D", new float[] { }, Color.Purple );            // 压力2
+            userCurve1.SetRightCurve( "D", new float[] { }, Color.Orchid );            // 压力2
         }
 
         private void userButton5_Click( object sender, EventArgs e )
@@ -93,6 +93,33 @@ namespace TestTool.TestForm
                     new float[] { random.Next( 160, 181 ), random.Next( 150, 171 ), (float)random.NextDouble( ) * 2.5f + 1, (float)random.NextDouble( ) * 1f } );
             };
             timer.Start( );
+        }
+
+        private void userButton6_Click( object sender, EventArgs e )
+        {
+            // 辅助线新增
+            if(float.TryParse(textBox1.Text,out float value))
+            {
+                userCurve1.AddLeftAuxiliary( value ,Color.Chocolate);
+            }
+        }
+
+        private void userButton7_Click( object sender, EventArgs e )
+        {
+            // 辅助线移除
+            if (float.TryParse( textBox1.Text, out float value ))
+            {
+                userCurve1.RemoveAuxiliary( value );
+            }
+        }
+
+        private void userButton8_Click( object sender, EventArgs e )
+        {
+            // 右辅助新增
+            if (float.TryParse( textBox1.Text, out float value ))
+            {
+                userCurve1.AddRightAuxiliary( value , Color.Yellow );
+            }
         }
     }
 }

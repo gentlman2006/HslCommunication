@@ -40,6 +40,7 @@ namespace HslCommunication.Controls
             DoubleBuffered = true;
             random = new Random( );
             data_list = new Dictionary<string, HslCurveItem>( );
+            auxiliary_lines = new List<AuxiliaryLine>( );
 
             format_left = new StringFormat
             {
@@ -558,6 +559,113 @@ namespace HslCommunication.Controls
 
         #endregion
 
+        #region Auxiliary Line
+
+        // 辅助线的信息，允许自定义辅助线信息，来标注特殊的线条
+
+        private List<AuxiliaryLine> auxiliary_lines;               // 所有辅助线的列表
+
+        /// <summary>
+        /// 新增一条左侧的辅助线，使用默认的文本颜色
+        /// </summary>
+        /// <param name="value">数据值</param>
+        public void AddLeftAuxiliary( float value )
+        {
+            AddLeftAuxiliary( value, ColorLinesAndText );
+        }
+
+        /// <summary>
+        /// 新增一条左侧的辅助线，使用指定的颜色
+        /// </summary>
+        /// <param name="value">数据值</param>
+        /// <param name="lineColor">线条颜色</param>
+        public void AddLeftAuxiliary( float value, Color lineColor )
+        {
+            AddLeftAuxiliary( value, lineColor, 1f );
+        }
+
+        /// <summary>
+        /// 新增一条左侧的辅助线
+        /// </summary>
+        /// <param name="value">数据值</param>
+        /// <param name="lineColor">线条颜色</param>
+        /// <param name="lineThickness">线条宽度</param>
+        public void AddLeftAuxiliary( float value, Color lineColor, float lineThickness )
+        {
+            AddAuxiliary( value, lineColor, lineThickness, true );
+        }
+
+
+        /// <summary>
+        /// 新增一条右侧的辅助线，使用默认的文本颜色
+        /// </summary>
+        /// <param name="value">数据值</param>
+        public void AddRightAuxiliary( float value )
+        {
+            AddRightAuxiliary( value, ColorLinesAndText );
+        }
+
+        /// <summary>
+        /// 新增一条右侧的辅助线，使用指定的颜色
+        /// </summary>
+        /// <param name="value">数据值</param>
+        /// <param name="lineColor">线条颜色</param>
+        public void AddRightAuxiliary( float value, Color lineColor )
+        {
+            AddRightAuxiliary( value, lineColor, 1f );
+        }
+
+
+        /// <summary>
+        /// 新增一条右侧的辅助线
+        /// </summary>
+        /// <param name="value">数据值</param>
+        /// <param name="lineColor">线条颜色</param>
+        /// <param name="lineThickness">线条宽度</param>
+        public void AddRightAuxiliary( float value, Color lineColor, float lineThickness )
+        {
+            AddAuxiliary( value, lineColor, lineThickness, false );
+        }
+
+
+        private void AddAuxiliary( float value, Color lineColor, float lineThickness, bool isLeft )
+        {
+            auxiliary_lines.Add( new AuxiliaryLine( )
+            {
+                Value = value,
+                LineColor = lineColor,
+                PenDash = new Pen( lineColor )
+                {
+                    DashStyle = System.Drawing.Drawing2D.DashStyle.Custom,
+                    DashPattern = new float[] { 5, 5 }
+                },
+                IsLeftFrame = isLeft,
+                LineThickness = lineThickness,
+                LineTextBrush = new SolidBrush( lineColor ),
+            } );
+            Invalidate( );
+        }
+
+        /// <summary>
+        /// 移除所有的指定值的辅助曲线，包括左边的和右边的
+        /// </summary>
+        /// <param name="value"></param>
+        public void RemoveAuxiliary(float value)
+        {
+            int removeCount = 0;
+            for (int i = auxiliary_lines.Count - 1; i >= 0; i--)
+            {
+                if(auxiliary_lines[i].Value == value)
+                {
+                    auxiliary_lines.RemoveAt( i );
+                    removeCount++;
+                }
+            }
+            if (removeCount > 0) Invalidate( );
+        }
+
+        #endregion
+
         #region Private Method
 
 
@@ -614,23 +722,39 @@ namespace HslCommunication.Controls
             BasicFramework.SoftPainting.PaintTriangle( g, brush_deep, new Point( leftRight - 1, upDowm - 8 ), 4, BasicFramework.GraphDirection.Upward );
             BasicFramework.SoftPainting.PaintTriangle( g, brush_deep, new Point( width_totle - leftRight, upDowm - 8 ), 4, BasicFramework.GraphDirection.Upward );
 
+            // 计算所有辅助线的实际值
+            for (int i = 0; i < auxiliary_lines.Count; i++)
+            {
+                if (auxiliary_lines[i].IsLeftFrame)
+                {
+                    auxiliary_lines[i].PaintValue = BasicFramework.SoftPainting.ComputePaintLocationY( value_max_left, value_min_left, (heigh_totle - upDowm - upDowm), auxiliary_lines[i].Value ) + upDowm;
+                }
+                else
+                {
+                    auxiliary_lines[i].PaintValue = BasicFramework.SoftPainting.ComputePaintLocationY( value_max_right, value_min_right, (heigh_totle - upDowm - upDowm), auxiliary_lines[i].Value ) + upDowm;
+                }
+            }
+
             // 绘制刻度线，以及刻度文本
             for (int i = 0; i <= value_Segment; i++)
             {
-                // 左坐标轴
                 float valueTmpLeft = i * (value_max_left - value_min_left) / value_Segment + value_min_left;
-                float paintTmp = BasicFramework.SoftPainting.ComputePaintLocationY( value_max_left, value_min_left, (heigh_totle - upDowm - upDowm), valueTmpLeft );
-                g.DrawLine( pen_normal, leftRight - 4, paintTmp + upDowm, leftRight - 1, paintTmp + upDowm );
-                RectangleF rectTmp = new RectangleF( 0, paintTmp - 9 + upDowm, leftRight - 4, 20 );
-                g.DrawString( valueTmpLeft.ToString( ), font_size9, brush_deep, rectTmp, format_right );
+                float paintTmp = BasicFramework.SoftPainting.ComputePaintLocationY( value_max_left, value_min_left, (heigh_totle - upDowm - upDowm), valueTmpLeft ) + upDowm;
+                if (IsNeedPaintDash( paintTmp ))
+                {
+                    // 左坐标轴
+                    g.DrawLine( pen_normal, leftRight - 4, paintTmp, leftRight - 1, paintTmp );
+                    RectangleF rectTmp = new RectangleF( 0, paintTmp - 9, leftRight - 4, 20 );
+                    g.DrawString( valueTmpLeft.ToString( ), font_size9, brush_deep, rectTmp, format_right );
 
-                // 右坐标轴
-                float valueTmpRight = i * (value_max_right - value_min_right) / value_Segment + value_min_right;
-                g.DrawLine( pen_normal, width_totle - leftRight + 1, paintTmp + upDowm, width_totle - leftRight + 4, paintTmp + upDowm );
-                rectTmp.Location = new PointF( width_totle - leftRight + 4, paintTmp - 9 + upDowm );
-                g.DrawString( valueTmpRight.ToString( ), font_size9, brush_deep, rectTmp, format_left );
+                    // 右坐标轴
+                    float valueTmpRight = i * (value_max_right - value_min_right) / value_Segment + value_min_right;
+                    g.DrawLine( pen_normal, width_totle - leftRight + 1, paintTmp, width_totle - leftRight + 4, paintTmp );
+                    rectTmp.Location = new PointF( width_totle - leftRight + 4, paintTmp - 9 );
+                    g.DrawString( valueTmpRight.ToString( ), font_size9, brush_deep, rectTmp, format_left );
 
-                if (i > 0 && value_IsRenderDashLine) g.DrawLine( pen_dash, leftRight, paintTmp + upDowm, width_totle - leftRight, paintTmp + upDowm );
+                    if (i > 0 && value_IsRenderDashLine) g.DrawLine( pen_dash, leftRight, paintTmp, width_totle - leftRight, paintTmp );
+                }
             }
 
             // 绘制纵向虚线信息
@@ -640,6 +764,25 @@ namespace HslCommunication.Controls
                 {
                     g.DrawLine( pen_dash, i, upDowm, i, heigh_totle - upDowm - 1 );
                 }
+            }
+
+            // 绘制辅助线信息
+            for (int i = 0; i < auxiliary_lines.Count; i++)
+            {
+                if(auxiliary_lines[i].IsLeftFrame)
+                {
+                    // 左坐标轴
+                    g.DrawLine( auxiliary_lines[i].PenDash, leftRight - 4, auxiliary_lines[i].PaintValue, leftRight - 1, auxiliary_lines[i].PaintValue );
+                    RectangleF rectTmp = new RectangleF( 0, auxiliary_lines[i].PaintValue - 9, leftRight - 4, 20 );
+                    g.DrawString( auxiliary_lines[i].Value.ToString( ), font_size9, auxiliary_lines[i].LineTextBrush, rectTmp, format_right );
+                }
+                else
+                {
+                    g.DrawLine( auxiliary_lines[i].PenDash, width_totle - leftRight + 1, auxiliary_lines[i].PaintValue, width_totle - leftRight + 4, auxiliary_lines[i].PaintValue );
+                    RectangleF rectTmp = new RectangleF( width_totle - leftRight + 4, auxiliary_lines[i].PaintValue - 9, leftRight - 4, 20 );
+                    g.DrawString( auxiliary_lines[i].Value.ToString( ), font_size9, auxiliary_lines[i].LineTextBrush, rectTmp, format_left );
+                }
+                g.DrawLine( auxiliary_lines[i].PenDash, leftRight, auxiliary_lines[i].PaintValue, width_totle - leftRight, auxiliary_lines[i].PaintValue );
             }
 
 
@@ -725,12 +868,34 @@ namespace HslCommunication.Controls
 
         }
 
+
+        private bool IsNeedPaintDash( float paintValue )
+        {
+            // 遍历所有的数据组
+            for (int i = 0; i < auxiliary_lines.Count; i++)
+            {
+                if (Math.Abs( auxiliary_lines[i].PaintValue - paintValue ) < font_size9.Height)
+                {
+                    // 与辅助线冲突，不需要绘制
+                    return false;
+                }
+            }
+
+            // 需要绘制虚线
+            return true;
+        }
+    
+
         #endregion
+
+        #region Size Changed
 
         private void UserCurve_SizeChanged( object sender, EventArgs e )
         {
             Invalidate( );
         }
+
+        #endregion
     }
 
 
@@ -775,5 +940,88 @@ namespace HslCommunication.Controls
         /// </summary>
         public int DataCountMax { get; set; }
 
+    }
+
+    /// <summary>
+    /// 辅助线对象
+    /// </summary>
+    internal class AuxiliaryLine : IDisposable
+    {
+        /// <summary>
+        /// 实际的数据值
+        /// </summary>
+        public float Value { get; set; }
+
+        /// <summary>
+        /// 实际的数据绘制
+        /// </summary>
+        public float PaintValue { get; set; }
+
+        /// <summary>
+        /// 辅助线的颜色
+        /// </summary>
+        public Color LineColor { get; set; }
+
+        /// <summary>
+        /// 辅助线的画笔资源
+        /// </summary>
+        public Pen PenDash { get; set; }
+
+        /// <summary>
+        /// 辅助线的宽度
+        /// </summary>
+        public float LineThickness { get; set; }
+
+        /// <summary>
+        /// 辅助线文本的画刷
+        /// </summary>
+        public Brush LineTextBrush { get; set; }
+
+        /// <summary>
+        /// 是否左侧参考系，True为左侧，False为右侧
+        /// </summary>
+        public bool IsLeftFrame { get; set; }
+
+        #region IDisposable Support
+
+        private bool disposedValue = false; // 要检测冗余调用
+
+        protected virtual void Dispose( bool disposing )
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: 释放托管状态(托管对象)。
+                    PenDash?.Dispose( );
+                }
+
+                // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
+                // TODO: 将大型字段设置为 null。
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
+        // ~AuxiliaryLine() {
+        //   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
+        //   Dispose(false);
+        // }
+
+        // 添加此代码以正确实现可处置模式。
+
+        /// <summary>
+        /// 释放内存信息
+        /// </summary>
+        public void Dispose( )
+        {
+            // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
+            Dispose( true );
+            // TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
+            // GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }
