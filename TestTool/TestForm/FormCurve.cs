@@ -90,7 +90,7 @@ namespace TestTool.TestForm
             {
                 userCurve1.AddCurveData(
                     new string[] { "A", "B", "C", "D" },
-                    new float[] { random.Next( 160, 181 ), random.Next( 150, 171 ), (float)random.NextDouble( ) * 2.5f + 1, (float)random.NextDouble( ) * 1f } );
+                    new float[] { random.Next( 176, 181 ), random.Next( 160, 171 ), (float)random.NextDouble( ) * 0.2f + 2, (float)random.NextDouble( ) * 0.4f } );
             };
             timer.Start( );
         }
