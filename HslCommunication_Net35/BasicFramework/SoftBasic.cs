@@ -97,6 +97,67 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
+        #region 数组处理方法
+
+        /// <summary>
+        /// 一个通用的数组新增个数方法，会自动判断越界情况
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="data"></param>
+        /// <param name="max"></param>
+        public static void AddArrayData<T>( ref T[] array, T[] data, int max )
+        {
+            if (data == null) return;           // 数据为空
+            if (data.Length == 0) return;       // 数据长度为空
+
+            if (array.Length == max)
+            {
+                for (int i = 0; i < array.Length - data.Length; i++)
+                {
+                    array[i] = array[i + 1];
+                }
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    array[array.Length - data.Length + i] = data[i];
+                }
+            }
+            else
+            {
+                if ((array.Length + data.Length) > max)
+                {
+                    T[] tmp = new T[max];
+                    for (int i = 0; i < (max - data.Length); i++)
+                    {
+                        tmp[i] = array[i + (array.Length - max + data.Length)];
+                    }
+                    for (int i = 0; i < data.Length; i++)
+                    {
+                        tmp[tmp.Length - data.Length + i] = data[i];
+                    }
+                    // 更新数据
+                    array = tmp;
+                }
+                else
+                {
+                    T[] tmp = new T[array.Length + data.Length];
+                    for (int i = 0; i < array.Length; i++)
+                    {
+                        tmp[i] = array[i];
+                    }
+                    for (int i = 0; i < data.Length; i++)
+                    {
+                        tmp[tmp.Length - data.Length + i] = data[i];
+                    }
+
+                    array = tmp;
+                }
+            }
+        }
+
+        #endregion
+
         #region 枚举相关块
 
 

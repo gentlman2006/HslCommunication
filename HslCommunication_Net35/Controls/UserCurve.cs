@@ -89,6 +89,7 @@ namespace HslCommunication.Controls
         private bool value_IsAbscissaStrech = false;        // 指示横坐标是否填充满整个坐标系
         private bool value_IsRenderDashLine = true;         // 是否显示虚线的信息
         private bool value_IsRenderAbscissaText = false;    // 指示是否显示横轴的文本信息
+        private string textFormat = "HH:mm";                // 时间文本的信息
         private int value_IntervalAbscissaText = 100;       // 指示显示横轴文本的间隔数据
         private Random random = null;                       // 获取随机颜色使用
 
@@ -283,6 +284,24 @@ namespace HslCommunication.Controls
             }
         }
 
+
+        /// <summary>
+        /// 获取或设置纵向虚线的分隔情况，单位为多少个数据
+        /// </summary>
+        [Category( "外观" )]
+        [Description( "获取或设置纵向虚线的分隔情况，单位为多少个数据" )]
+        [Browsable( true )]
+        [DefaultValue( 100 )]
+        public int IntervalAbscissaText
+        {
+            get { return value_IntervalAbscissaText; }
+            set
+            {
+                value_IntervalAbscissaText = value;
+                Invalidate( );
+            }
+        }
+
         private void InitializationColor( )
         {
             pen_normal?.Dispose( );
@@ -377,10 +396,6 @@ namespace HslCommunication.Controls
             {
                 if (data == null) data = new float[] { };
                 data_list[key].Data = data;
-                //data_list[key].LineColor = lineColor;
-                //data_list[key].LineThickness = thickness;
-                //data_list[key].DataCountMax = countMax;
-                //data_list[key].IsLeftFrame = isLeft;
             }
             else
             {
@@ -393,6 +408,8 @@ namespace HslCommunication.Controls
                     IsLeftFrame = isLeft,
                     DataCountMax = countMax
                 } );
+
+                if (data_text == null) data_text = new string[data.Length];
             }
 
             // 重绘图形
@@ -419,6 +436,8 @@ namespace HslCommunication.Controls
 
 
         // ======================================================================================================
+
+
 
         /// <summary>
         /// 新增指定关键字曲线的一个数据，注意该关键字的曲线必须存在，否则无效
@@ -478,6 +497,16 @@ namespace HslCommunication.Controls
                             {
                                 curve.Data[curve.Data.Length - values.Length + i] = values[i];
                             }
+
+                            // 追加横轴文本
+                            for (int i = 0; i < data_text.Length - values.Length; i++)
+                            {
+                                data_text[i] = data_text[i + 1];
+                            }
+                            for (int i = 0; i < values.Length; i++)
+                            {
+                                data_text[i] = DateTime.Now.ToString( textFormat );
+                            }
                         }
                         else if (curve.Data.Length < length)
                         {
@@ -485,15 +514,20 @@ namespace HslCommunication.Controls
                             if ((curve.Data.Length + values.Length) > length)
                             {
                                 float[] tmp = new float[length];
+                                string[] textTmp = new string[length];
                                 for (int i = 0; i < (length - values.Length); i++)
                                 {
                                     tmp[i] = curve.Data[i + (curve.Data.Length - length + values.Length)];
+                                    textTmp[i] = data_text[i + (curve.Data.Length - length + values.Length)];
                                 }
                                 for (int i = 0; i < values.Length; i++)
                                 {
                                     tmp[tmp.Length - values.Length + i] = values[i];
+                                    textTmp[tmp.Length - values.Length + i] = DateTime.Now.ToString( textFormat );
                                 }
+
                                 curve.Data = tmp;
+                                data_text = textTmp;
                             }
                             else
                             {
@@ -506,6 +540,7 @@ namespace HslCommunication.Controls
                                 {
                                     tmp[tmp.Length - values.Length + i] = values[i];
                                 }
+
                                 curve.Data = tmp;
                             }
                         }
@@ -514,6 +549,11 @@ namespace HslCommunication.Controls
                     if (isUpdateUI) Invalidate( );
                 }
             }
+        }
+
+        private void AddCurveTime( )
+        {
+
         }
 
         /// <summary>
@@ -650,13 +690,14 @@ namespace HslCommunication.Controls
         /// 移除所有的指定值的辅助曲线，包括左边的和右边的
         /// </summary>
         /// <param name="value"></param>
-        public void RemoveAuxiliary(float value)
+        public void RemoveAuxiliary( float value )
         {
             int removeCount = 0;
             for (int i = auxiliary_lines.Count - 1; i >= 0; i--)
             {
-                if(auxiliary_lines[i].Value == value)
+                if (auxiliary_lines[i].Value == value)
                 {
+                    auxiliary_lines[i].Dispose( );
                     auxiliary_lines.RemoveAt( i );
                     removeCount++;
                 }
@@ -760,16 +801,28 @@ namespace HslCommunication.Controls
             // 绘制纵向虚线信息
             if (value_IsRenderDashLine)
             {
-                for (int i = leftRight + value_IntervalAbscissaText; i < width_totle - leftRight; i += value_IntervalAbscissaText)
+                if (value_IsAbscissaStrech)
                 {
-                    g.DrawLine( pen_dash, i, upDowm, i, heigh_totle - upDowm - 1 );
+                    // 拉伸模式下
+                    for (int i = leftRight + value_IntervalAbscissaText; i < width_totle - leftRight; i += value_IntervalAbscissaText)
+                    {
+                        g.DrawLine( pen_dash, i, upDowm, i, heigh_totle - upDowm - 1 );
+                    }
+                }
+                else
+                {
+                    // 普通模式下
+                    for (int i = leftRight + value_IntervalAbscissaText; i < width_totle - leftRight; i += value_IntervalAbscissaText)
+                    {
+                        g.DrawLine( pen_dash, i, upDowm, i, heigh_totle - upDowm - 1 );
+                    }
                 }
             }
 
             // 绘制辅助线信息
             for (int i = 0; i < auxiliary_lines.Count; i++)
             {
-                if(auxiliary_lines[i].IsLeftFrame)
+                if (auxiliary_lines[i].IsLeftFrame)
                 {
                     // 左坐标轴
                     g.DrawLine( auxiliary_lines[i].PenDash, leftRight - 4, auxiliary_lines[i].PaintValue, leftRight - 1, auxiliary_lines[i].PaintValue );
@@ -784,7 +837,6 @@ namespace HslCommunication.Controls
                 }
                 g.DrawLine( auxiliary_lines[i].PenDash, leftRight, auxiliary_lines[i].PaintValue, width_totle - leftRight, auxiliary_lines[i].PaintValue );
             }
-
 
             // 绘制线条
             if (value_IsAbscissaStrech)
@@ -884,7 +936,7 @@ namespace HslCommunication.Controls
             // 需要绘制虚线
             return true;
         }
-    
+
 
         #endregion
 
@@ -994,6 +1046,7 @@ namespace HslCommunication.Controls
                 {
                     // TODO: 释放托管状态(托管对象)。
                     PenDash?.Dispose( );
+                    LineTextBrush.Dispose( );
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
