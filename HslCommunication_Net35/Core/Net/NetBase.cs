@@ -2843,7 +2843,6 @@ namespace HslCommunication.Core
 
 
             if (!isSocketInitialization) socket.Close( );                                                // 如果是短连接就关闭连接
-
             serverInterfaceLock.Leave( );                                                                // 离开读取的锁
 
             return true;

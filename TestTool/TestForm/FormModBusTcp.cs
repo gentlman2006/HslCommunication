@@ -115,7 +115,7 @@ namespace TestTool.TestForm
 
         private void userButton2_Click(object sender, EventArgs e)
         {
-            byte[] data = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes("00 00 00 00 00 06 00 03 00 00 00 03");
+            byte[] data = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(textBox3.Text);
 
             HslCommunication.OperateResult<byte[]> read = busTcpClient.ReadFromServerCore(data);
             if (read.IsSuccess)
@@ -253,7 +253,7 @@ namespace TestTool.TestForm
         }
 
 
-        private ModBusTcpClient busTcpClient = new ModBusTcpClient("192.168.1.195", 502, 0xFF);   // 站号255
+        private ModBusTcpClient busTcpClient = new ModBusTcpClient("127.0.0.1", 51234, 0xFF);   // 站号255
 
 
 
@@ -363,31 +363,45 @@ namespace TestTool.TestForm
 
         private void userButton5_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(textBox6.Text))
-            {
-                short value = short.Parse(textBox6.Text);
-                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
-                if (!busTcpClient.WriteOneRegister(0, value).IsSuccess)
-                    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "失败" + Environment.NewLine);
+            //if (!string.IsNullOrEmpty(textBox6.Text))
+            //{
+            //    short value = short.Parse(textBox6.Text);
+            //    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
+            //    if (!busTcpClient.WriteOneRegister(0, value).IsSuccess)
+            //        textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "失败" + Environment.NewLine);
 
-                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
-                HslCommunication.OperateResult<short> read = busTcpClient.ReadShortRegister(30);
+            //    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
+            //    HslCommunication.OperateResult<short> read = busTcpClient.ReadShortRegister(30);
 
-                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
+            //    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
 
-                System.Threading.Thread.Sleep(10);
-                if (read.Content == value)
-                {
-                    busTcpClient.WriteOneRegister(0, 0);
-                    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
-                }
-                else
-                {
-                    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "失败" + Environment.NewLine);
-                }
+            //    System.Threading.Thread.Sleep(10);
+            //    if (read.Content == value)
+            //    {
+            //        busTcpClient.WriteOneRegister(0, 0);
+            //        textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + Environment.NewLine);
+            //    }
+            //    else
+            //    {
+            //        textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "失败" + Environment.NewLine);
+            //    }
 
-                textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + busTcpClient.ReadBoolCoil(0).Content + Environment.NewLine);
-            }
+            //    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + busTcpClient.ReadBoolCoil(0).Content + Environment.NewLine);
+            //}
+
+            float[] data = new float[] { 1.2f, 123.45f, 6f };
+            busTcpClient.WriteRegister( 123, data );
+
+            float read1 = busTcpClient.ReadFloatRegister( 123 ).Content;
+            float read2 = busTcpClient.ReadFloatRegister( 125 ).Content;
+            float read3 = busTcpClient.ReadFloatRegister( 127 ).Content;
+
+            short[] data_short = new short[] { 123, 235, 26778 };
+            busTcpClient.WriteRegister( 123, data_short );
+            short read4 = busTcpClient.ReadShortRegister( 123 ).Content;
+            short read5 = busTcpClient.ReadShortRegister( 124 ).Content;
+            short read6 = busTcpClient.ReadShortRegister( 125 ).Content;
+            ;
         }
 
         private void userButton6_Click(object sender, EventArgs e)

@@ -58,8 +58,8 @@ namespace TestTool.TestForm
                 data2[i] = (float)random.NextDouble( ) * 5;
             }
 
-            userCurve1.SetLeftCurve( "A", new float[0], Color.DodgerBlue, 300 );
-            userCurve1.SetRightCurve( "B", new float[0], Color.Tomato, 300 );
+            userCurve1.SetLeftCurve( "A", new float[0], Color.DodgerBlue );
+            userCurve1.SetRightCurve( "B", new float[0], Color.Tomato );
         }
 
         private void userButton2_Click( object sender, EventArgs e )
