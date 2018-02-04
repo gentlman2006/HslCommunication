@@ -926,15 +926,6 @@ namespace HslCommunication.ModBus
                             Array.Copy(buffer, 0, copy, 9, buffer.Length);
                             break;
                         }
-                    case 0x02:
-                        {
-                            // 离散值读取，本服务器无效
-                            copy = new byte[9];
-                            Array.Copy(data, 0, copy, 0, 8);
-                            copy[4] = 0x00;
-                            copy[5] = 0x03;
-                            break;
-                        }
                     case 0x03:
                         {
                             // 寄存器读取
@@ -1025,11 +1016,12 @@ namespace HslCommunication.ModBus
                         }
                     default:
                         {
-                            if (IsStarted) LogNet?.WriteWarn(LogHeaderText, "Unknown Function Code:" + data[7]);
-                            copy = new byte[12];
-                            Array.Copy(data, 0, copy, 0, 12);
+                            copy = new byte[9];
+                            Array.Copy( data, 0, copy, 0, 8 );
                             copy[4] = 0x00;
-                            copy[5] = 0x06;
+                            copy[5] = 0x03;
+                            copy[7] = (byte)(data[7] + 0x80);
+                            copy[8] = 0x01;  // 不支持的功能码
                             break;
                         }
                 }

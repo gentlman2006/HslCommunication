@@ -85,7 +85,7 @@ namespace TestTool.TestForm
         private void userButton5_Click( object sender, EventArgs e )
         {
             Timer timer = new Timer( );
-            timer.Interval = 100;
+            timer.Interval = 300;
             timer.Tick += ( sender1, e1 ) =>
             {
                 userCurve1.AddCurveData(
@@ -120,6 +120,38 @@ namespace TestTool.TestForm
             {
                 userCurve1.AddRightAuxiliary( value , Color.Yellow );
             }
+        }
+
+        private float[] GetRandomValueByCount(int count)
+        {
+            float[] data = new float[count];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = (float)random.NextDouble( ) * 200;
+            }
+            return data;
+        }
+
+        private void userButton9_Click( object sender, EventArgs e )
+        {
+            string[] text = new string[]
+            {
+                "一月",
+                "二月",
+                "三月",
+                "四月",
+                "五月",
+                "六月",
+                "七月",
+                "八月",
+                "九月",
+                "十月",
+                "十一月",
+                "十二月"
+            };
+            userCurve1.SetCurveText( text );
+            userCurve1.SetLeftCurve( "A", GetRandomValueByCount( 12 ), Color.Tomato );            // 每个月的效率
+            userCurve1.SetLeftCurve( "B", GetRandomValueByCount( 12 ), Color.DodgerBlue );        // 每个月的效益
         }
     }
 }

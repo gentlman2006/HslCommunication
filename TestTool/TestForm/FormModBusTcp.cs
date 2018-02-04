@@ -389,19 +389,23 @@ namespace TestTool.TestForm
             //    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + busTcpClient.ReadBoolCoil(0).Content + Environment.NewLine);
             //}
 
-            float[] data = new float[] { 1.2f, 123.45f, 6f };
-            busTcpClient.WriteRegister( 123, data );
+            //float[] data = new float[] { 1.2f, 123.45f, 6f };
+            //busTcpClient.WriteRegister( 123, data );
 
-            float read1 = busTcpClient.ReadFloatRegister( 123 ).Content;
-            float read2 = busTcpClient.ReadFloatRegister( 125 ).Content;
-            float read3 = busTcpClient.ReadFloatRegister( 127 ).Content;
+            //float read1 = busTcpClient.ReadFloatRegister( 123 ).Content;
+            //float read2 = busTcpClient.ReadFloatRegister( 125 ).Content;
+            //float read3 = busTcpClient.ReadFloatRegister( 127 ).Content;
 
-            short[] data_short = new short[] { 123, 235, 26778 };
-            busTcpClient.WriteRegister( 123, data_short );
-            short read4 = busTcpClient.ReadShortRegister( 123 ).Content;
-            short read5 = busTcpClient.ReadShortRegister( 124 ).Content;
-            short read6 = busTcpClient.ReadShortRegister( 125 ).Content;
+            //short[] data_short = new short[] { 123, 235, 26778 };
+            //busTcpClient.WriteRegister( 123, data_short );
+            //short read4 = busTcpClient.ReadShortRegister( 123 ).Content;
+            //short read5 = busTcpClient.ReadShortRegister( 124 ).Content;
+            //short read6 = busTcpClient.ReadShortRegister( 125 ).Content;
             ;
+
+
+            // 西门子PLC的modbus tcp数据测试
+
         }
 
         private void userButton6_Click(object sender, EventArgs e)

@@ -233,6 +233,13 @@ namespace TestTool
             form.ShowDialog( );
             form.Dispose( );
         }
+
+        private void userButton19_Click( object sender, EventArgs e )
+        {
+            TestForm.FormSimenceModbusTcp form = new TestForm.FormSimenceModbusTcp( );
+            form.ShowDialog( );
+            form.Dispose( );
+        }
     }
 
     public class AA

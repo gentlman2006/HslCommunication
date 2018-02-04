@@ -87,10 +87,10 @@ namespace HslCommunication.Controls
 
         private int value_Segment = 5;                      // 纵轴的片段分割
         private bool value_IsAbscissaStrech = false;        // 指示横坐标是否填充满整个坐标系
-        private int value_StrechDataCountMax = 300;               // 拉伸模式下的最大数据量
+        private int value_StrechDataCountMax = 300;         // 拉伸模式下的最大数据量
         private bool value_IsRenderDashLine = true;         // 是否显示虚线的信息
         private bool value_IsRenderAbscissaText = false;    // 指示是否显示横轴的文本信息
-        private string textFormat = "HH:mm:ss";             // 时间文本的信息
+        private string textFormat = "HH:mm";             // 时间文本的信息
         private int value_IntervalAbscissaText = 100;       // 指示显示横轴文本的间隔数据
         private Random random = null;                       // 获取随机颜色使用
 
@@ -240,6 +240,7 @@ namespace HslCommunication.Controls
             set
             {
                 value_StrechDataCountMax = value;
+                Invalidate( );
             }
         }
 
@@ -320,6 +321,19 @@ namespace HslCommunication.Controls
             }
         }
 
+        /// <summary>
+        /// 获取或设置实时数据新增时文本相对应于时间的格式化字符串，默认HH:mm
+        /// </summary>
+        [Category( "外观" )]
+        [Description( "获取或设置实时数据新增时文本相对应于时间的格式化字符串，默认HH:mm" )]
+        [Browsable( true )]
+        [DefaultValue( "HH:mm" )]
+        public string TextAddFormat
+        {
+            get { return textFormat; }
+            set { textFormat = value; }
+        }
+
         private void InitializationColor( )
         {
             pen_normal?.Dispose( );
@@ -333,14 +347,28 @@ namespace HslCommunication.Controls
         #region Public Method
 
         /// <summary>
+        /// 设置曲线的横坐标文本，适用于显示一些固定的曲线信息
+        /// </summary>
+        /// <param name="descriptions">应该和曲线的点数一致</param>
+        public void SetCurveText(string[] descriptions)
+        {
+            data_text = descriptions;
+
+            // 重绘图形
+            Invalidate( );
+        }
+
+
+        /// <summary>
         /// 新增或修改一条指定关键字的左参考系曲线数据，需要指定数据，颜色随机，没有数据上限，线条宽度为1
         /// </summary>
         /// <param name="key">曲线关键字</param>
-        /// <param name="data"></param>
+        /// <param name="data">曲线的具体数据</param>
         public void SetLeftCurve( string key, float[] data )
         {
             SetLeftCurve( key, data, Color.FromArgb( random.Next( 256 ), random.Next( 256 ), random.Next( 256 ) ) );
         }
+        
 
         /// <summary>
         /// 新增或修改一条指定关键字的左参考系曲线数据，需要指定数据，颜色，没有数据上限，线条宽度为1
@@ -350,7 +378,7 @@ namespace HslCommunication.Controls
         /// <param name="lineColor"></param>
         public void SetLeftCurve( string key, float[] data, Color lineColor )
         {
-            SetLeftCurve( key, data, lineColor );
+            SetCurve( key, true, data, lineColor, 1f );
         }
 
         /// <summary>
@@ -371,7 +399,7 @@ namespace HslCommunication.Controls
         /// <param name="lineColor"></param>
         public void SetRightCurve( string key, float[] data, Color lineColor )
         {
-            SetRightCurve( key, data, lineColor);
+            SetCurve( key, false, data, lineColor, 1f );
         }
 
 
@@ -424,7 +452,16 @@ namespace HslCommunication.Controls
         }
 
 
-
+        /// <summary>
+        /// 移除指定关键字的曲线
+        /// </summary>
+        public void RemoveAllCurve( )
+        {
+            int count = data_list.Count;
+            data_list.Clear( );
+            // 重绘图形
+            if (count > 0) Invalidate( );
+        }
 
 
         // ======================================================================================================
@@ -434,13 +471,12 @@ namespace HslCommunication.Controls
         /// <summary>
         /// 新增指定关键字曲线的一个数据，注意该关键字的曲线必须存在，否则无效
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">新增曲线的关键字</param>
         /// <param name="values"></param>
         /// <param name="isUpdateUI">是否刷新界面</param>
         private void AddCurveData( string key, float[] values, bool isUpdateUI )
         {
             if (values?.Length < 1) return;                              // 没有传入数据
-            int length = value_count_max;                                // 获取最大数据量
 
             if (data_list.ContainsKey( key ))
             {
@@ -455,7 +491,7 @@ namespace HslCommunication.Controls
                     else
                     {
                         // 指定点的情况，必然存在最大值情况
-                        BasicFramework.SoftBasic.AddArrayData( ref curve.Data, values, length );
+                        BasicFramework.SoftBasic.AddArrayData( ref curve.Data, values, value_count_max );
                     }
 
                     if (isUpdateUI) Invalidate( );
@@ -463,6 +499,7 @@ namespace HslCommunication.Controls
             }
         }
 
+        // 新增曲线的时间节点
         private void AddCurveTime( int count )
         {
             if (data_text == null) return;
@@ -475,7 +512,7 @@ namespace HslCommunication.Controls
 
             if(value_IsAbscissaStrech)
             {
-
+                BasicFramework.SoftBasic.AddArrayData( ref data_text, values, value_StrechDataCountMax );
             }
             else
             {
@@ -640,6 +677,19 @@ namespace HslCommunication.Controls
             if (removeCount > 0) Invalidate( );
         }
 
+
+        /// <summary>
+        /// 移除所有的辅助线
+        /// </summary>
+        public void RemoveAllAuxiliary( )
+        {
+            int removeCount = auxiliary_lines.Count;
+            auxiliary_lines.Clear( );
+
+            if (removeCount > 0) Invalidate( );
+        }
+
+
         #endregion
 
         #region Private Method
@@ -738,15 +788,42 @@ namespace HslCommunication.Controls
             {
                 if (value_IsAbscissaStrech)
                 {
-                    // 拉伸模式下
-                    for (int i = leftRight + value_IntervalAbscissaText; i < width_totle - leftRight; i += value_IntervalAbscissaText)
+                    // 拉伸模式下，因为错位是均匀的，所以根据数据来显示
+                    float offect = (width_totle - leftRight * 2) * 1.0f / (value_StrechDataCountMax - 1);
+                    int dataCount = CalculateDataCountByOffect( offect );
+                    for (int i = 0; i < value_StrechDataCountMax; i += dataCount)
                     {
-                        g.DrawLine( pen_dash, i, upDowm, i, heigh_totle - upDowm - 1 );
+                        if (i > 0 && i < value_StrechDataCountMax - 1)
+                        {
+                            g.DrawLine( pen_dash, i * offect + leftRight, upDowm, i * offect + leftRight, heigh_totle - upDowm - 1 );
+                        }
+
+                        if (data_text != null)
+                        {
+                            if (i < data_text.Length && ((i * offect + leftRight) < (data_text.Length - 1) * offect + leftRight -40 ))
+                            {
+                                Rectangle rec = new Rectangle( (int)(i * offect), heigh_totle - upDowm + 1, 100, upDowm );
+                                g.DrawString( data_text[i], font_size9, brush_deep, rec, format_center );
+                            }
+                        }
+                    }
+
+                    if (data_text?.Length > 1)
+                    {
+                        if (data_text.Length < value_StrechDataCountMax)
+                        {
+                            // 绘制最前端的虚线
+                            g.DrawLine( pen_dash, (data_text.Length - 1) * offect + leftRight, upDowm, (data_text.Length - 1) * offect + leftRight, heigh_totle - upDowm - 1 );
+                        }
+
+                        Rectangle rec = new Rectangle( (int)((data_text.Length - 1) * offect + leftRight) - leftRight, heigh_totle - upDowm + 1, 100, upDowm );
+                        g.DrawString( data_text[data_text.Length - 1], font_size9, brush_deep, rec, format_center );
                     }
                 }
                 else
                 {
-                    // 普通模式下
+                    int countTmp = width_totle - 2 * leftRight + 1;
+                    // 普通模式下绘制图形
                     for (int i = leftRight; i < width_totle - leftRight; i += value_IntervalAbscissaText)
                     {
                         if (i != leftRight)
@@ -756,21 +833,41 @@ namespace HslCommunication.Controls
 
                         if (data_text != null)
                         {
+                            int right_limit = countTmp > data_text.Length ? data_text.Length : countTmp;
+
                             if ((i - leftRight) < data_text.Length)
                             {
-                                int countTmp = width_totle - 2 * leftRight + 1;
-                                // 点数大于1的时候才绘制
-                                if (data_text.Length <= countTmp)
+                                if ((right_limit - (i - leftRight)) > 40)
                                 {
-                                    Rectangle rec = new Rectangle( i - 50, heigh_totle - upDowm + 1, 100, upDowm );
-                                    g.DrawString( data_text[i - leftRight], font_size9, brush_deep, rec, format_center );
-                                }
-                                else
-                                {
-                                    Rectangle rec = new Rectangle( i - 50, heigh_totle - upDowm + 1, 100, upDowm );
-                                    g.DrawString( data_text[i - leftRight + data_text.Length - countTmp], font_size9, brush_deep, rec, format_center );
+                                    // 点数大于1的时候才绘制
+                                    if (data_text.Length <= countTmp)
+                                    {
+                                        Rectangle rec = new Rectangle( i - leftRight, heigh_totle - upDowm + 1, 100, upDowm );
+                                        g.DrawString( data_text[i - leftRight], font_size9, brush_deep, rec, format_center );
+                                    }
+                                    else
+                                    {
+                                        Rectangle rec = new Rectangle( i - leftRight, heigh_totle - upDowm + 1, 100, upDowm );
+                                        g.DrawString( data_text[i - leftRight + data_text.Length - countTmp], font_size9, brush_deep, rec, format_center );
+                                    }
                                 }
                             }
+                        }
+                    }
+
+                    if (data_text?.Length > 1)
+                    {
+                        if (data_text.Length < countTmp)
+                        {
+                            // 绘制最前端的虚线
+                            g.DrawLine( pen_dash, (data_text.Length + leftRight - 1), upDowm, (data_text.Length + leftRight - 1), heigh_totle - upDowm - 1 );
+                            Rectangle rec = new Rectangle( (data_text.Length + leftRight - 1) - leftRight, heigh_totle - upDowm + 1, 100, upDowm );
+                            g.DrawString( data_text[data_text.Length - 1], font_size9, brush_deep, rec, format_center );
+                        }
+                        else
+                        {
+                            Rectangle rec = new Rectangle( width_totle - leftRight - leftRight, heigh_totle - upDowm + 1, 100, upDowm );
+                            g.DrawString( data_text[data_text.Length - countTmp], font_size9, brush_deep, rec, format_center );
                         }
                     }
                 }
@@ -886,6 +983,12 @@ namespace HslCommunication.Controls
             return true;
         }
 
+        private int CalculateDataCountByOffect(float offect)
+        {
+            if (offect > 40) return 1;
+            offect = 40f / offect;
+            return (int)Math.Ceiling( offect );
+        }
 
         #endregion
 

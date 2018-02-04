@@ -12,7 +12,6 @@ using HslCommunication.BasicFramework;
 using HslCommunication.LogNet;
 using HslCommunication.Core;
 
-
 namespace HslCommunication.Enthernet
 {
     /*****************************************************************************
@@ -451,7 +450,40 @@ namespace HslCommunication.Enthernet
         {
             return DownloadFileBase(factory, group, id, fileName, processReport, stream);
         }
-        
+
+        /// <summary>
+        /// 下载服务器的文件到本地的数据流中
+        /// </summary>
+        /// <param name="fileName">文件名称，带后缀</param>
+        /// <param name="factory">第一大类</param>
+        /// <param name="group">第二大类</param>
+        /// <param name="id">第三大类</param>
+        /// <param name="processReport">下载的进度报告</param>
+        /// <param name="bitmap">内存文件</param>
+        /// <returns></returns>
+        public OperateResult DownloadFile(
+            string fileName,
+            string factory,
+            string group,
+            string id,
+            Action<long, long> processReport,
+            out Bitmap bitmap
+            )
+        {
+            MemoryStream stream = new MemoryStream();
+            OperateResult result = DownloadFileBase(factory, group, id, fileName, processReport, stream);
+            if(result.IsSuccess)
+            {
+                bitmap = new Bitmap(stream);
+            }
+            else
+            {
+                bitmap = null;
+                result.IsSuccess = false;
+            }
+            stream.Dispose();
+            return result;
+        }
 
 
         #endregion
@@ -508,7 +540,36 @@ namespace HslCommunication.Enthernet
             return UploadFileBase(stream, serverName, factory, group, id, fileTag, fileUpload, processReport);
         }
 
-
+        /// <summary>
+        /// 上传内存图片到服务器操作
+        /// </summary>
+        /// <param name="bitmap">内存图片，不能为空</param>
+        /// <param name="serverName">服务器存储的文件名称，带后缀</param>
+        /// <param name="factory">第一大类</param>
+        /// <param name="group">第二大类</param>
+        /// <param name="id">第三大类</param>
+        /// <param name="fileTag">文件的额外描述</param>
+        /// <param name="fileUpload">文件的上传人</param>
+        /// <param name="processReport">上传的进度报告</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public OperateResult UploadFile(
+            Bitmap bitmap,
+            string serverName,
+            string factory,
+            string group,
+            string id,
+            string fileTag,
+            string fileUpload,
+            Action<long, long> processReport)
+        {
+            MemoryStream stream = new MemoryStream();
+            if(bitmap.RawFormat != null) bitmap.Save(stream, bitmap.RawFormat);
+            else bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Bmp);
+            OperateResult result = UploadFileBase(stream, serverName, factory, group, id, fileTag, fileUpload, processReport);
+            stream.Dispose();
+            return result;
+        }
 
 
         #endregion
@@ -697,7 +758,7 @@ namespace HslCommunication.Enthernet
     
 
     /// <summary>
-    /// 文件管理类服务器，负责服务器所有分类文件的管理，仅仅负责本地文件的存储
+    /// 文件管理类服务器，负责服务器所有分类文件的管理，特点是不支持文件附加数据，但是支持直接访问文件名
     /// </summary>
     public sealed class AdvancedFileServer : FileServerBase
     {

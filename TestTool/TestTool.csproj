@@ -135,6 +135,12 @@
     <Compile Include="TestForm\FormSeqTest.Designer.cs">
       <DependentUpon>FormSeqTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestForm\FormSimenceModbusTcp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm\FormSimenceModbusTcp.Designer.cs">
+      <DependentUpon>FormSimenceModbusTcp.cs</DependentUpon>
+    </Compile>
     <Compile Include="TestForm\FormSwitchControls.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -194,6 +200,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormSeqTest.resx">
       <DependentUpon>FormSeqTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestForm\FormSimenceModbusTcp.resx">
+      <DependentUpon>FormSimenceModbusTcp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormSwitchControls.resx">
       <DependentUpon>FormSwitchControls.cs</DependentUpon>

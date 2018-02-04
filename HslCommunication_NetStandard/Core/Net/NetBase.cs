@@ -2331,24 +2331,21 @@ namespace HslCommunication.Core
         #endregion
 
         #region Protect Members
-
-        /// <summary>
-        /// 与服务器交互时候的网络锁
-        /// </summary>
-        protected SimpleHybirdLock serverInterfaceLock;
-        /// <summary>
-        /// 指示连接模式，false为短连接请求，true为长连接请求
-        /// </summary>
-        protected bool isSocketInitialization = false;
+        
         /// <summary>
         /// 服务器的连接端口
         /// </summary>
         protected IPEndPoint serverEndPoint = null;
+        
 
-        /// <summary>
-        /// 读取数据的时候指示超时检查时间，如果为负数，则不接收服务器的返回
-        /// </summary>
-        private int receiveBackTimeOut = 10000;
+        #endregion
+
+        #region Private Members
+
+        private int receiveBackTimeOut = 10000;                   // 读取数据的时候指示超时检查时间，如果为负数，则不接收服务器的返回
+        private bool isCommunicationError = false;                // 指示上次通信的时候是否发生了通信错误
+        private SimpleHybirdLock serverInterfaceLock;             // 与服务器交互时候的网络锁
+        private bool isSocketInitialization = false;              // 指示连接模式，false为短连接请求，true为长连接请求
 
         #endregion
 
@@ -2382,6 +2379,7 @@ namespace HslCommunication.Core
             isSocketInitialization = true;
             OperateResult result = new OperateResult( );
 
+            // 重新连接之前，先将旧的数据进行清空
             WorkSocket?.Close( );
 
             if (!CreateSocketAndConnect( out Socket socket, GetIPEndPoint( ), result ))
@@ -2436,7 +2434,7 @@ namespace HslCommunication.Core
 
         #endregion
 
-        #region Read Data From Server
+        #region Operate Result Transfer
 
 
         /// <summary>
@@ -2672,7 +2670,7 @@ namespace HslCommunication.Core
 
         #endregion
 
-        #region Virtual Method
+        #region Extra Ini And Close
 
 
         /// <summary>
@@ -2719,7 +2717,7 @@ namespace HslCommunication.Core
         /// <returns></returns>
         protected Socket GetWorkSocket( out OperateResult connect )
         {
-            if (WorkSocket == null || !WorkSocket.Connected)
+            if (WorkSocket == null || isCommunicationError)
             {
                 connect = ConnectServer( );
             }
@@ -2787,7 +2785,7 @@ namespace HslCommunication.Core
 
 
         /// <summary>
-        /// 发送网数据到网络上去，并接收来自网络的反馈，接收反馈超时时间，5秒钟
+        /// 发送网数据到网络上去，并接收来自网络的反馈，接收反馈超时时间
         /// </summary>
         /// <param name="send"></param>
         /// <param name="receive"></param>
@@ -2802,6 +2800,7 @@ namespace HslCommunication.Core
             // 创建或重复利用一个网络接收器
             if (!CreateSocketByDoubleMode( out Socket socket, result ))
             {
+                isCommunicationError = true;
                 serverInterfaceLock.Leave( );
                 receive = null;
                 return false;
@@ -2810,6 +2809,7 @@ namespace HslCommunication.Core
             // 发送数据到网络服务
             if (!SendBytesToSocket( socket, send, result ))
             {
+                isCommunicationError = true;
                 serverInterfaceLock.Leave( );
                 receive = null;
                 return false;
@@ -2828,6 +2828,7 @@ namespace HslCommunication.Core
 
                 if (!ReceiveResponse( socket, out byte[] response, result ))
                 {
+                    isCommunicationError = true;
                     serverInterfaceLock.Leave( );
                     receive = null;
                     hslTimeOut.IsSuccessful = true;
@@ -2841,9 +2842,8 @@ namespace HslCommunication.Core
                 receive = null;
             }
 
-
+            isCommunicationError = false;
             if (!isSocketInitialization) socket.Close( );                                                // 如果是短连接就关闭连接
-
             serverInterfaceLock.Leave( );                                                                // 离开读取的锁
 
             return true;

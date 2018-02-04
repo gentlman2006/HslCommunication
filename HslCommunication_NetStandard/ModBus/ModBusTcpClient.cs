@@ -98,6 +98,23 @@ namespace HslCommunication.ModBus
 
         #region Private Method
 
+        /// <summary>
+        /// 通过错误码来获取到对应的文本消息
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        private string GetDescriptionByErrorCode( byte code )
+        {
+            switch (code)
+            {
+                case 0x01: return "不支持该功能码";
+                case 0x02: return "越界";
+                case 0x03: return "寄存器数量超出范围";
+                case 0x04: return "读写异常";
+                default: return "未知异常";
+            }
+        }
+
         // 获取消息id，每条指令都递增一
         private ushort GetMessageId()
         {
@@ -340,6 +357,25 @@ namespace HslCommunication.ModBus
 
         #endregion
 
+        #region Read Write Core
+
+        private OperateResult<byte[]> CheckModbusTcpResponse( byte[] send )
+        {
+            OperateResult<byte[]> result = ReadFromServerCore( send );
+            if(result.IsSuccess)
+            {
+                if ((send[7] + 0x80) == result.Content[7])
+                {
+                    // 发生了错误
+                    result.IsSuccess = false;
+                    result.Message = GetDescriptionByErrorCode( result.Content[8] );
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
         #region Customer Support
 
         /// <summary>
@@ -397,7 +433,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public OperateResult WriteOneCoil(ushort address, bool value)
         {
-            return ReadFromServerCore(BuildWriteOneCoil(address, value));
+            return CheckModbusTcpResponse(BuildWriteOneCoil(address, value));
         }
 
         /// <summary>
@@ -408,7 +444,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public OperateResult WriteOneRegister(ushort address, short value)
         {
-            return ReadFromServerCore(BuildWriteOneRegister(address, BitConverter.GetBytes(value)));
+            return CheckModbusTcpResponse( BuildWriteOneRegister(address, BitConverter.GetBytes(value)));
         }
 
         /// <summary>
@@ -419,7 +455,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public OperateResult WriteOneRegister(ushort address, ushort value)
         {
-            return ReadFromServerCore(BuildWriteOneRegister(address, BitConverter.GetBytes(value)));
+            return CheckModbusTcpResponse( BuildWriteOneRegister(address, BitConverter.GetBytes(value)));
         }
 
         /// <summary>
@@ -431,7 +467,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         public OperateResult WriteOneRegister(ushort address, byte High, byte Low)
         {
-            return ReadFromServerCore(BuildWriteOneRegister(address, new byte[] { Low, High }));
+            return CheckModbusTcpResponse( BuildWriteOneRegister(address, new byte[] { Low, High }));
         }
 
 
@@ -447,7 +483,7 @@ namespace HslCommunication.ModBus
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 2040) throw new ArgumentOutOfRangeException("value", "长度不能大于2040。");
-            return ReadFromServerCore(BuildWriteCoil(address, value));
+            return CheckModbusTcpResponse( BuildWriteCoil(address, value));
         }
 
         /// <summary>
@@ -460,7 +496,7 @@ namespace HslCommunication.ModBus
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 255) throw new ArgumentOutOfRangeException("value", "长度不能大于255。");
-            return ReadFromServerCore(BuildWriteRegister(address, value));
+            return CheckModbusTcpResponse( BuildWriteRegister(address, value));
         }
 
 
@@ -490,7 +526,7 @@ namespace HslCommunication.ModBus
             if (value.Length > 128) throw new ArgumentOutOfRangeException("value", "长度不能大于128。");
 
 
-            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+            return CheckModbusTcpResponse( BuildWriteRegister(address, GetBytesFromArray(value, true)));
         }
 
         /// <summary>
@@ -515,7 +551,7 @@ namespace HslCommunication.ModBus
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 128) throw new ArgumentOutOfRangeException("value", "长度不能大于128。");
             
-            return ReadFromServerCore(BuildWriteRegister(address, GetBytesFromArray(value, true)));
+            return CheckModbusTcpResponse( BuildWriteRegister(address, GetBytesFromArray(value, true)));
         }
 
 
@@ -532,7 +568,7 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
-        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写多个寄存器的int数组，寄存器的个数不能大于63个，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">int数组</param>
@@ -540,9 +576,9 @@ namespace HslCommunication.ModBus
         public OperateResult WriteRegister(ushort address, int[] value)
         {
             if (value == null) throw new ArgumentNullException("value");
-            if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于64。");
+            if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于63。");
 
-            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 4));
+            return CheckModbusTcpResponse( BuildWriteRegister( address, BytesTransform( GetBytesFromArray( value, true ), 4 ) ) );
         }
 
 
@@ -559,7 +595,7 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
-        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写多个寄存器的uint数组，寄存器的个数不能大于63个，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">uint数组</param>
@@ -567,14 +603,14 @@ namespace HslCommunication.ModBus
         public OperateResult WriteRegister(ushort address, uint[] value)
         {
             if (value == null) throw new ArgumentNullException("value");
-            if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于64。");
+            if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于63。");
 
-            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 4));
+            return CheckModbusTcpResponse( BuildWriteRegister( address, BytesTransform( GetBytesFromArray( value, true ), 4 ) ) );
         }
 
 
         /// <summary>
-        /// 写uint到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写uint到寄存器，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">uint数据</param>
@@ -586,7 +622,7 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
-        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写多个寄存器的float数组，数组的长度不能大于63个，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">float数组</param>
@@ -594,13 +630,13 @@ namespace HslCommunication.ModBus
         public OperateResult WriteRegister(ushort address, float[] value)
         {
             if (value == null) throw new ArgumentNullException("value");
-            if (value.Length > 64) throw new ArgumentOutOfRangeException("value", "长度不能大于64。");
+            if (value.Length > 63) throw new ArgumentOutOfRangeException("value", "长度不能大于63。");
 
-            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 4));
+            return CheckModbusTcpResponse( BuildWriteRegister( address, BytesTransform( GetBytesFromArray( value, true ), 4 ) ) );
         }
 
         /// <summary>
-        /// 写float到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写float到寄存器，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">float数据</param>
@@ -612,7 +648,7 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
-        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写多个寄存器的double数组，数组的长度不能大于31，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">double数组</param>
@@ -620,13 +656,13 @@ namespace HslCommunication.ModBus
         public OperateResult WriteRegister(ushort address, double[] value)
         {
             if (value == null) throw new ArgumentNullException("value");
-            if (value.Length > 32) throw new ArgumentOutOfRangeException("value", "长度不能大于32。");
+            if (value.Length > 31) throw new ArgumentOutOfRangeException("value", "长度不能大于31。");
 
-            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 8));
+            return CheckModbusTcpResponse( BuildWriteRegister( address, BytesTransform( GetBytesFromArray( value, true ), 8 ) ) );
         }
 
         /// <summary>
-        /// 写double到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写double到寄存器，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">double数据</param>
@@ -639,7 +675,7 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
-        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写多个寄存器的long数组，数组最大为31个长度，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">long数组</param>
@@ -647,13 +683,13 @@ namespace HslCommunication.ModBus
         public OperateResult WriteRegister(ushort address, long[] value)
         {
             if (value == null) throw new ArgumentNullException("value");
-            if (value.Length > 32) throw new ArgumentOutOfRangeException("value", "长度不能大于32。");
+            if (value.Length > 31) throw new ArgumentOutOfRangeException("value", "长度不能大于31。");
 
-            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 8));
+            return CheckModbusTcpResponse( BuildWriteRegister( address, BytesTransform( GetBytesFromArray( value, true ), 8 ) ) );
         }
 
         /// <summary>
-        /// 写long到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写long到寄存器，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">long数据</param>
@@ -665,7 +701,7 @@ namespace HslCommunication.ModBus
 
         
         /// <summary>
-        /// 写多个寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写多个寄存器的ulong数组，寄存器的个数不能大于31个，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">ulong数组</param>
@@ -673,13 +709,13 @@ namespace HslCommunication.ModBus
         public OperateResult WriteRegister(ushort address, ulong[] value)
         {
             if (value == null) throw new ArgumentNullException("value");
-            if (value.Length > 32) throw new ArgumentOutOfRangeException("value", "长度不能大于32。");
+            if (value.Length > 32) throw new ArgumentOutOfRangeException("value", "长度不能大于31。");
 
-            return ReadFromServerCore(BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 8));
+            return CheckModbusTcpResponse( BytesTransform(BuildWriteRegister(address, GetBytesFromArray(value, true)), 8));
         }
 
         /// <summary>
-        /// 写ulong到寄存器，寄存器的个数不能大于128个，对应功能码0x10
+        /// 写ulong到寄存器，对应功能码0x10
         /// </summary>
         /// <param name="address">写入的起始地址</param>
         /// <param name="value">ulong数据</param>
@@ -705,7 +741,7 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         private OperateResult<byte[]> ReadModBusBase(ModBusFunctionMask function, ushort address, ushort length)
         {
-            OperateResult<byte[]> resultBytes = ReadFromServerCore(BuildReadCommand(function, address, length));
+            OperateResult<byte[]> resultBytes = CheckModbusTcpResponse( BuildReadCommand(function, address, length));
             if (resultBytes.IsSuccess)
             {
                 // 二次数据处理
@@ -714,12 +750,6 @@ namespace HslCommunication.ModBus
                     byte[] buffer = new byte[resultBytes.Content.Length - 9];
                     Array.Copy(resultBytes.Content, 9, buffer, 0, buffer.Length);
                     resultBytes.Content = buffer;
-                }
-                else
-                {
-                    // 数据异常
-                    resultBytes.IsSuccess = false;
-                    resultBytes.Message = "数据异常";
                 }
             }
             return resultBytes;

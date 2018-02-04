@@ -164,6 +164,7 @@
     <Compile Include="LogNet\Logs\LogNetSingle.cs" />
     <Compile Include="Core\Net\NetBase.cs" />
     <Compile Include="Core\Types\OperateResult.cs" />
+    <Compile Include="ModBus\IModbusMessage.cs" />
     <Compile Include="ModBus\ModBusTcpClient.cs" />
     <Compile Include="ModBus\ModBusTcpServer.cs" />
     <Compile Include="Core\Types\IDataTransfer.cs" />

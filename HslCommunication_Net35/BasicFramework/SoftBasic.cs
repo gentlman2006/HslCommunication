@@ -100,12 +100,12 @@ namespace HslCommunication.BasicFramework
         #region 数组处理方法
 
         /// <summary>
-        /// 一个通用的数组新增个数方法，会自动判断越界情况
+        /// 一个通用的数组新增个数方法，会自动判断越界情况，越界的情况下，会自动的截断或是填充
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="data"></param>
-        /// <param name="max"></param>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <param name="array">原数据</param>
+        /// <param name="data">等待新增的数据</param>
+        /// <param name="max">原数据的最大值</param>
         public static void AddArrayData<T>( ref T[] array, T[] data, int max )
         {
             if (data == null) return;           // 数据为空

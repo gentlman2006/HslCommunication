@@ -758,7 +758,7 @@ namespace HslCommunication.Enthernet
     
 
     /// <summary>
-    /// 文件管理类服务器，负责服务器所有分类文件的管理，仅仅负责本地文件的存储
+    /// 文件管理类服务器，负责服务器所有分类文件的管理，特点是不支持文件附加数据，但是支持直接访问文件名
     /// </summary>
     public sealed class AdvancedFileServer : FileServerBase
     {
