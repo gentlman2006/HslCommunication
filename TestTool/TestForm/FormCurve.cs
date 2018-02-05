@@ -21,27 +21,17 @@ namespace TestTool.TestForm
 
         private void userButton1_Click( object sender, EventArgs e )
         {
-            float[] data = new float[300];
-            for (int i = 0; i < data.Length; i++)
-            {
-                data[i] = random.Next( 201 );
-            }
-
-            userCurve1.SetLeftCurve( "A", data, Color.DodgerBlue );
+            userCurve1.SetLeftCurve( "A", GetRandomValueByCount( 300, 0, 200 ), Color.DodgerBlue );
         }
 
 
         private void userButton3_Click( object sender, EventArgs e )
         {
             // 假设你的data数组已经更新了
-            float[] data = new float[300];
-            for (int i = 0; i < data.Length; i++)
-            {
-                data[i] = random.Next( 100, 201 );
-            }
+
             // 之前已经给A指定过颜色了，以后后续的数据更新不需要重新指定，指定了也无效
             // 如果需要重新设置颜色，或是线宽，需要先RemoveCurve，然后重新创建曲线信息
-            userCurve1.SetLeftCurve( "A", data );
+            userCurve1.SetLeftCurve( "A", GetRandomValueByCount( 300, 100, 200 ) );
         }
 
         private void Test()
@@ -64,12 +54,14 @@ namespace TestTool.TestForm
 
         private void userButton2_Click( object sender, EventArgs e )
         {
+            userCurve1.SetLeftCurve( "A", new float[0], Color.Tomato );
             Timer timer = new Timer( );
             timer.Interval = 100;
             timer.Tick += ( sender1, e1 ) =>
             {
+                userCurve1.AddCurveData( "A", random.Next( 50, 201 ) );
                 // userCurve1.AddCurveData( "A", random.Next( 101 ) );
-                userCurve1.AddCurveData( new string[] { "A", "B" }, new float[] { random.Next( 101 ), (float)random.NextDouble( ) * 3 } );
+                // userCurve1.AddCurveData( new string[] { "A", "B" }, new float[] { random.Next( 101 ), (float)random.NextDouble( ) * 3 } );
             };
             timer.Start( );
         }
@@ -85,12 +77,12 @@ namespace TestTool.TestForm
         private void userButton5_Click( object sender, EventArgs e )
         {
             Timer timer = new Timer( );
-            timer.Interval = 300;
+            timer.Interval = 100;
             timer.Tick += ( sender1, e1 ) =>
             {
                 userCurve1.AddCurveData(
                     new string[] { "A", "B", "C", "D" },
-                    new float[] { random.Next( 176, 181 ), random.Next( 160, 171 ), (float)random.NextDouble( ) * 0.2f + 2, (float)random.NextDouble( ) * 0.4f } );
+                    new float[] { random.Next( 160, 181 ), random.Next( 150, 171 ), (float)random.NextDouble( ) * 2.5f + 1, (float)random.NextDouble( ) * 1f } );
             };
             timer.Start( );
         }
@@ -102,6 +94,7 @@ namespace TestTool.TestForm
             {
                 userCurve1.AddLeftAuxiliary( value ,Color.Chocolate);
             }
+            userCurve1.AddLeftAuxiliary( 192, Color.Red );
         }
 
         private void userButton7_Click( object sender, EventArgs e )
@@ -122,18 +115,19 @@ namespace TestTool.TestForm
             }
         }
 
-        private float[] GetRandomValueByCount(int count)
+        private float[] GetRandomValueByCount( int count, float min, float max )
         {
             float[] data = new float[count];
             for (int i = 0; i < data.Length; i++)
             {
-                data[i] = (float)random.NextDouble( ) * 200;
+                data[i] = (float)random.NextDouble( ) * (max - min) + min;
             }
             return data;
         }
 
         private void userButton9_Click( object sender, EventArgs e )
         {
+            // 模拟的数据
             string[] text = new string[]
             {
                 "一月",
@@ -150,8 +144,38 @@ namespace TestTool.TestForm
                 "十二月"
             };
             userCurve1.SetCurveText( text );
-            userCurve1.SetLeftCurve( "A", GetRandomValueByCount( 12 ), Color.Tomato );            // 每个月的效率
-            userCurve1.SetLeftCurve( "B", GetRandomValueByCount( 12 ), Color.DodgerBlue );        // 每个月的效益
+            userCurve1.SetLeftCurve( "A", GetRandomValueByCount( 12, 0, 200 ), Color.Tomato );            // 每个月用户1的销售金额
+            userCurve1.SetLeftCurve( "B", GetRandomValueByCount( 12, 0, 200 ), Color.DodgerBlue );            // 每个月用户2的销售金额
+
+            userCurve1.SetRightCurve( "C", GetRandomValueByCount( 12, 3, 6 ), Color.LimeGreen );
+            userCurve1.SetRightCurve( "D", GetRandomValueByCount( 12, 3, 6 ), Color.Orchid );
+        }
+
+        private void userButton10_Click( object sender, EventArgs e )
+        {
+            // 模拟的数据
+            string[] text = new string[]
+            {
+                "一月",
+                "二月",
+                "三月",
+                "四月",
+                "五月",
+                "六月",
+                "七月",
+                "八月",
+                "九月",
+                "十月",
+                "十一月",
+                "十二月"
+            };
+
+            float[] data = GetRandomValueByCount( 12, 40, 150 );
+            userCurve1.ValueMaxLeft = (float)Math.Ceiling( data.Max( ) );// 向上取整
+            userCurve1.ValueMinLeft = (float)Math.Floor( data.Min( ) );// 向下取整
+
+            userCurve1.SetCurveText( text );
+            userCurve1.SetLeftCurve( "A", data, Color.Tomato );            // 每个月用户1的销售金额
         }
     }
 }

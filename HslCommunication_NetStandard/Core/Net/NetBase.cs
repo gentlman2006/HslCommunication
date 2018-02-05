@@ -2212,6 +2212,13 @@ namespace HslCommunication.Core
 
         #endregion
 
+        #region File Upload Event
+
+        // 文件的上传事件
+
+
+        #endregion
+
         #region Override Method
 
 
