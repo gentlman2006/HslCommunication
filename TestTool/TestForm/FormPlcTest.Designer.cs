@@ -40,6 +40,7 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.userButton5 = new HslCommunication.Controls.UserButton();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.userButton24 = new HslCommunication.Controls.UserButton();
             this.userButton23 = new HslCommunication.Controls.UserButton();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.userButton21 = new HslCommunication.Controls.UserButton();
@@ -57,7 +58,7 @@
             this.userButton8 = new HslCommunication.Controls.UserButton();
             this.userButton9 = new HslCommunication.Controls.UserButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.userButton24 = new HslCommunication.Controls.UserButton();
+            this.userButton25 = new HslCommunication.Controls.UserButton();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -216,6 +217,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.userButton25);
             this.tabPage3.Controls.Add(this.userButton24);
             this.tabPage3.Controls.Add(this.userButton23);
             this.tabPage3.Controls.Add(this.textBox2);
@@ -240,6 +242,20 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "西门子S7协议";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // userButton24
+            // 
+            this.userButton24.BackColor = System.Drawing.Color.Transparent;
+            this.userButton24.CustomerInformation = "";
+            this.userButton24.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton24.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton24.Location = new System.Drawing.Point(959, 7);
+            this.userButton24.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton24.Name = "userButton24";
+            this.userButton24.Size = new System.Drawing.Size(73, 28);
+            this.userButton24.TabIndex = 21;
+            this.userButton24.UIText = "M0读取";
+            this.userButton24.Click += new System.EventHandler(this.userButton24_Click);
             // 
             // userButton23
             // 
@@ -471,19 +487,19 @@
             this.textBox1.Size = new System.Drawing.Size(1048, 242);
             this.textBox1.TabIndex = 1;
             // 
-            // userButton24
+            // userButton25
             // 
-            this.userButton24.BackColor = System.Drawing.Color.Transparent;
-            this.userButton24.CustomerInformation = "";
-            this.userButton24.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton24.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton24.Location = new System.Drawing.Point(959, 7);
-            this.userButton24.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton24.Name = "userButton24";
-            this.userButton24.Size = new System.Drawing.Size(73, 28);
-            this.userButton24.TabIndex = 21;
-            this.userButton24.UIText = "M0读取";
-            this.userButton24.Click += new System.EventHandler(this.userButton24_Click);
+            this.userButton25.BackColor = System.Drawing.Color.Transparent;
+            this.userButton25.CustomerInformation = "";
+            this.userButton25.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton25.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton25.Location = new System.Drawing.Point(597, 43);
+            this.userButton25.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton25.Name = "userButton25";
+            this.userButton25.Size = new System.Drawing.Size(140, 28);
+            this.userButton25.TabIndex = 22;
+            this.userButton25.UIText = "订货号读取";
+            this.userButton25.Click += new System.EventHandler(this.userButton25_Click);
             // 
             // FormPlcTest
             // 
@@ -537,5 +553,6 @@
         private HslCommunication.Controls.UserButton userButton23;
         private System.Windows.Forms.TextBox textBox2;
         private HslCommunication.Controls.UserButton userButton24;
+        private HslCommunication.Controls.UserButton userButton25;
     }
 }

@@ -349,8 +349,8 @@ namespace HslCommunication.Profinet
 
             switch (siemens)
             {
-                case SiemensPLCS.S1200: plcHead1[18] = 0; break;
-                case SiemensPLCS.S300: plcHead1[18] = 2; break;
+                case SiemensPLCS.S1200: plcHead1[21] = 0; break;
+                case SiemensPLCS.S300: plcHead1[21] = 2; break;
                 default: plcHead1[18] = 0; break;
             }
         }
@@ -717,20 +717,7 @@ namespace HslCommunication.Profinet
 
 
         #endregion
-
-        #region Public Method
-
-        /// <summary>
-        /// 可以手动设置PLC类型，用来测试原本不支持的数据访问功能
-        /// </summary>
-        /// <param name="type"></param>
-        public void SetPlcType(byte type)
-        {
-            plcHead1[18] = type;
-        }
-
-        #endregion
-
+        
         #region Private Method
 
 
@@ -932,6 +919,36 @@ namespace HslCommunication.Profinet
             return WriteIntoPLC(address, data.ToSource());
         }
 
+
+        #endregion
+
+        #region Read OrderNumber
+
+        /// <summary>
+        /// 从PLC读取订货号信息
+        /// </summary>
+        /// <returns></returns>
+        public OperateResult<string> ReadOrderNumber( )
+        {
+            OperateResult<string> result = new OperateResult<string>( );
+            OperateResult<byte[]> read = ReadFromServerCore( plcOrderNumber );
+            if(read.IsSuccess)
+            {
+                if(read.Content.Length > 100)
+                {
+                    result.IsSuccess = true;
+                    result.Content = Encoding.ASCII.GetString( read.Content, 71, 20 );
+                }
+            }
+
+            if(!result.IsSuccess)
+            {
+                result.Message = read.Message;
+                result.ErrorCode = read.ErrorCode;
+            }
+
+            return result;
+        }
 
         #endregion
 
@@ -1677,17 +1694,17 @@ namespace HslCommunication.Profinet
                 0x00,  // 09 该参数未使用
                 0x01,  // 10 
                 0x00,  // 11
-                0xC1,  // 12
-                0x02,  // 13
-                0x10,  // 14
-                0x00,  // 15
-                0xC2,  // 16
-                0x02,  // 17
-                0x03,  // 18
-                0x01,  // 19 指示cpu
-                0xC0,  // 20
+                0xC0,  // 12
+                0x01,  // 13
+                0x0A,  // 14
+                0xC1,  // 15
+                0x02,  // 16
+                0x01,  // 17
+                0x00,  // 18
+                0xC2,  // 19 指示cpu
+                0x02,  // 20
                 0x01,  // 21
-                0x0A   // 22
+                0x00   // 22
         };
 
         private byte[] plcHead2 = new byte[25]
@@ -1703,8 +1720,8 @@ namespace HslCommunication.Profinet
                 0x01,
                 0x00,
                 0x00,
-                0xCC,
-                0xC1,
+                0x04,
+                0x00,
                 0x00,
                 0x08,
                 0x00,
@@ -1715,9 +1732,48 @@ namespace HslCommunication.Profinet
                 0x01,
                 0x00,
                 0x01,
-                0x03,
-                0xC0
+                0x01,
+                0xE0
         };
+
+
+        private byte[] plcOrderNumber = new byte[]
+        {
+            0x03,
+            0x00,
+            0x00,
+            0x21,
+            0x02,
+            0xF0,
+            0x80,
+            0x32,
+            0x07,
+            0x00,
+            0x00,
+            0x00,
+            0x01,
+            0x00,
+            0x08,
+            0x00,
+            0x08,
+            0x00,
+            0x01,
+            0x12,
+            0x04,
+            0x11,
+            0x44,
+            0x01,
+            0x00,
+            0xFF,
+            0x09,
+            0x00,
+            0x04,
+            0x00,
+            0x11,
+            0x00,
+            0x00
+        };
+
         private SiemensPLCS CurrentPlc = SiemensPLCS.S1200;
         
         #endregion

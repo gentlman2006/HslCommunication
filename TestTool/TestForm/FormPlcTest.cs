@@ -346,20 +346,6 @@ namespace TestTool.TestForm
         private void userButton11_Click(object sender, EventArgs e)
         {
             // 1500PLC测试代码
-
-            int type = 2;
-            while (type < 256)
-            {
-                siemensTcpNet.SetPlcType((byte)type);
-                OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC("M100", 5);
-                if (read.IsSuccess)
-                {
-                    MessageBox.Show("访问成功！1500PLC TYPE:" + type);
-                    break;
-                }
-                type++;
-            }
-
         }
 
 
@@ -604,6 +590,20 @@ namespace TestTool.TestForm
             }
         }
 
+        private void userButton25_Click( object sender, EventArgs e )
+        {
+            // 订货号读取
+            OperateResult<string> read = siemensTcpNet.ReadOrderNumber( );
+            if (read.IsSuccess)
+            {
+                TextBoxAppendStringLine( read.Content );
+            }
+            else
+            {
+                MessageBox.Show( read.ToMessageShowString( ) );
+            }
+        }
+
         private void userButton13_Click(object sender, EventArgs e)
         {
             OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC("M116", 10);
@@ -761,5 +761,7 @@ namespace TestTool.TestForm
             }
 
         }
+
+
     }
 }
