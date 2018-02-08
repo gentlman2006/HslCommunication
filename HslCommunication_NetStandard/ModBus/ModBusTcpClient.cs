@@ -369,6 +369,7 @@ namespace HslCommunication.ModBus
                     // 发生了错误
                     result.IsSuccess = false;
                     result.Message = GetDescriptionByErrorCode( result.Content[8] );
+                    result.ErrorCode = result.Content[8];
                 }
             }
             return result;

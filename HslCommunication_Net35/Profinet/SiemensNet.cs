@@ -326,6 +326,10 @@ namespace HslCommunication.Profinet
         /// 300系列
         /// </summary>
         S300 = 2,
+        /// <summary>
+        /// 1500系列PLC
+        /// </summary>
+        S1500 = 3,
     }
 
     /// <summary>
@@ -351,6 +355,7 @@ namespace HslCommunication.Profinet
             {
                 case SiemensPLCS.S1200: plcHead1[21] = 0; break;
                 case SiemensPLCS.S300: plcHead1[21] = 2; break;
+                case SiemensPLCS.S1500: plcHead1[21] = 0; break;
                 default: plcHead1[18] = 0; break;
             }
         }

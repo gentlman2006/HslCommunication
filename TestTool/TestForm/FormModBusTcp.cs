@@ -102,7 +102,7 @@ namespace TestTool.TestForm
         {
             comboBox1.DataSource = HslCommunication.BasicFramework.SoftBasic.GetEnumValues<HslCommunication.ModBus.ModBusFunctionMask>();
 
-            // busTcpClient.ConnectServer();
+            busTcpClient.ConnectServer();
         }
 
         private void FormModBusTcp_FormClosing(object sender, FormClosingEventArgs e)
@@ -356,8 +356,17 @@ namespace TestTool.TestForm
         {
             if (!string.IsNullOrEmpty(textBox6.Text))
             {
-                HslCommunication.OperateResult result = busTcpClient.WriteOneRegister(0, short.Parse(textBox6.Text));
+                HslCommunication.OperateResult result = busTcpClient.WriteOneRegister( ushort.Parse( textBox6.Text ), short.Parse(textBox7.Text));
                 MessageBox.Show(result.IsSuccess ? "写入成功！" : "写入失败");
+            }
+        }
+
+        private void userButton5_Click_1( object sender, EventArgs e )
+        {
+            if (!string.IsNullOrEmpty( textBox6.Text ))
+            {
+                HslCommunication.OperateResult<short> read = busTcpClient.ReadShortRegister( ushort.Parse( textBox6.Text ));
+                MessageBox.Show( read.IsSuccess ? read.Content.ToString() : "读取失败" );
             }
         }
 
@@ -447,7 +456,7 @@ namespace TestTool.TestForm
         private void userButton8_Click_1(object sender, EventArgs e)
         {
             // 写入数据
-            tcpServer.WriteRegister(100, (short)12345);
+            tcpServer.WriteRegister(40003, (short)12345);
         }
 
         private void userButton7_Click(object sender, EventArgs e)
@@ -480,5 +489,7 @@ namespace TestTool.TestForm
             tcpServer.WriteRegister(100, 123.456d);      // 写入double值
 
         }
+
+
     }
 }

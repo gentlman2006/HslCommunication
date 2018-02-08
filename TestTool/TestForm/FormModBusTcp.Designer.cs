@@ -39,7 +39,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
-            this.userButton5 = new HslCommunication.Controls.UserButton();
             this.userButton4 = new HslCommunication.Controls.UserButton();
             this.userButton3 = new HslCommunication.Controls.UserButton();
             this.userButton2 = new HslCommunication.Controls.UserButton();
@@ -49,6 +48,8 @@
             this.userButton8 = new HslCommunication.Controls.UserButton();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.userButton5 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
@@ -98,7 +99,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(273, 301);
+            this.label2.Location = new System.Drawing.Point(224, 301);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(41, 12);
             this.label2.TabIndex = 6;
@@ -107,7 +108,7 @@
             // textBox4
             // 
             this.textBox4.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox4.Location = new System.Drawing.Point(320, 294);
+            this.textBox4.Location = new System.Drawing.Point(271, 294);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(117, 26);
             this.textBox4.TabIndex = 7;
@@ -115,7 +116,7 @@
             // textBox5
             // 
             this.textBox5.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox5.Location = new System.Drawing.Point(494, 294);
+            this.textBox5.Location = new System.Drawing.Point(445, 294);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(117, 26);
             this.textBox5.TabIndex = 9;
@@ -123,7 +124,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(447, 301);
+            this.label3.Location = new System.Drawing.Point(398, 301);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(41, 12);
             this.label3.TabIndex = 8;
@@ -145,30 +146,17 @@
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(71, 294);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(196, 24);
+            this.comboBox1.Size = new System.Drawing.Size(142, 24);
             this.comboBox1.TabIndex = 11;
             // 
             // textBox6
             // 
             this.textBox6.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox6.Location = new System.Drawing.Point(898, 239);
+            this.textBox6.Location = new System.Drawing.Point(810, 239);
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(117, 26);
             this.textBox6.TabIndex = 14;
-            // 
-            // userButton5
-            // 
-            this.userButton5.BackColor = System.Drawing.Color.Transparent;
-            this.userButton5.CustomerInformation = "";
-            this.userButton5.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton5.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton5.Location = new System.Drawing.Point(908, 272);
-            this.userButton5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton5.Name = "userButton5";
-            this.userButton5.Size = new System.Drawing.Size(107, 25);
-            this.userButton5.TabIndex = 15;
-            this.userButton5.UIText = "测试";
-            this.userButton5.Click += new System.EventHandler(this.userButton5_Click);
+            this.textBox6.Text = "40003";
             // 
             // userButton4
             // 
@@ -176,7 +164,7 @@
             this.userButton4.CustomerInformation = "";
             this.userButton4.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton4.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton4.Location = new System.Drawing.Point(785, 240);
+            this.userButton4.Location = new System.Drawing.Point(810, 301);
             this.userButton4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton4.Name = "userButton4";
             this.userButton4.Size = new System.Drawing.Size(107, 25);
@@ -190,7 +178,7 @@
             this.userButton3.CustomerInformation = "";
             this.userButton3.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton3.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton3.Location = new System.Drawing.Point(617, 295);
+            this.userButton3.Location = new System.Drawing.Point(573, 295);
             this.userButton3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton3.Name = "userButton3";
             this.userButton3.Size = new System.Drawing.Size(107, 25);
@@ -232,7 +220,7 @@
             this.userButton6.CustomerInformation = "";
             this.userButton6.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton6.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton6.Location = new System.Drawing.Point(773, 295);
+            this.userButton6.Location = new System.Drawing.Point(686, 295);
             this.userButton6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton6.Name = "userButton6";
             this.userButton6.Size = new System.Drawing.Size(107, 25);
@@ -286,17 +274,41 @@
             this.label6.TabIndex = 20;
             this.label6.Text = "label6";
             // 
+            // textBox7
+            // 
+            this.textBox7.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.textBox7.Location = new System.Drawing.Point(810, 271);
+            this.textBox7.Name = "textBox7";
+            this.textBox7.Size = new System.Drawing.Size(117, 26);
+            this.textBox7.TabIndex = 21;
+            this.textBox7.Text = "12345";
+            // 
+            // userButton5
+            // 
+            this.userButton5.BackColor = System.Drawing.Color.Transparent;
+            this.userButton5.CustomerInformation = "";
+            this.userButton5.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton5.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton5.Location = new System.Drawing.Point(923, 300);
+            this.userButton5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton5.Name = "userButton5";
+            this.userButton5.Size = new System.Drawing.Size(107, 25);
+            this.userButton5.TabIndex = 22;
+            this.userButton5.UIText = "单寄存器读取";
+            this.userButton5.Click += new System.EventHandler(this.userButton5_Click_1);
+            // 
             // FormModBusTcp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1027, 619);
+            this.Controls.Add(this.userButton5);
+            this.Controls.Add(this.textBox7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.userButton8);
             this.Controls.Add(this.userButton7);
             this.Controls.Add(this.userButton6);
-            this.Controls.Add(this.userButton5);
             this.Controls.Add(this.textBox6);
             this.Controls.Add(this.userButton4);
             this.Controls.Add(this.userButton3);
@@ -338,11 +350,12 @@
         private HslCommunication.Controls.UserButton userButton3;
         private HslCommunication.Controls.UserButton userButton4;
         private System.Windows.Forms.TextBox textBox6;
-        private HslCommunication.Controls.UserButton userButton5;
         private HslCommunication.Controls.UserButton userButton6;
         private HslCommunication.Controls.UserButton userButton7;
         private HslCommunication.Controls.UserButton userButton8;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox textBox7;
+        private HslCommunication.Controls.UserButton userButton5;
     }
 }
