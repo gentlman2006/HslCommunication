@@ -2380,7 +2380,7 @@ namespace HslCommunication.Core
         /// <summary>
         /// 切换短连接模式到长连接模式，后面的每次请求都共享一个通道
         /// </summary>
-        /// <returns>返回连接结果，如果失败的话，包含失败信息</returns>
+        /// <returns>返回连接结果，如果失败的话（也即IsSuccess为False），包含失败信息</returns>
         public OperateResult ConnectServer( )
         {
             isSocketInitialization = true;
@@ -2423,6 +2423,7 @@ namespace HslCommunication.Core
         /// <summary>
         /// 在长连接模式下，断开服务器的连接，并切换到短连接模式
         /// </summary>
+        /// <returns>关闭连接，不需要查看IsSuccess属性查看</returns>
         public OperateResult ConnectClose( )
         {
             OperateResult result = new OperateResult( );
@@ -2865,7 +2866,7 @@ namespace HslCommunication.Core
         /// 读写服务器的核心方法，直接发送基础报文，接收服务器的报文返回，可用于测试报文是否正确及二次扩展成自己的API
         /// </summary>
         /// <param name="send">发送的原始字节数据</param>
-        /// <returns></returns>
+        /// <returns>读取结果，如果失败，还带有失败信息</returns>
         public OperateResult<byte[]> ReadFromServerCore( byte[] send )
         {
             OperateResult<byte[]> result = new OperateResult<byte[]>( );
