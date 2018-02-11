@@ -867,7 +867,7 @@ namespace HslCommunication.Controls
                         else
                         {
                             Rectangle rec = new Rectangle( width_totle - leftRight - leftRight, heigh_totle - upDowm + 1, 100, upDowm );
-                            g.DrawString( data_text[data_text.Length - countTmp], font_size9, brush_deep, rec, format_center );
+                            g.DrawString( data_text[data_text.Length - 1], font_size9, brush_deep, rec, format_center );
                         }
                     }
                 }
