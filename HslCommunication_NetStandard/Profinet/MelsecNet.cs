@@ -621,6 +621,16 @@ namespace HslCommunication.Profinet
             return GetInt64ResultFromBytes(ReadFromPLC(address, 4), false);
         }
 
+        /// <summary>
+        /// 读取指定地址的ulong数据，针对数据类型W，D，R
+        /// </summary>
+        /// <param name="address">起始地址的字符串形式</param>
+        /// <returns></returns>
+        public OperateResult<ulong> ReadULongFromPLC( string address )
+        {
+            return GetUInt64ResultFromBytes( ReadFromPLC( address, 4 ), false );
+        }
+
 
         /// <summary>
         /// 读取指定地址的double数据，针对数据类型W，D，R
@@ -1154,6 +1164,58 @@ namespace HslCommunication.Profinet
                 return result;
             }
             return WriteIntoPLC(type, startAddress, new long[] { data });
+        }
+
+        #endregion
+
+        #region Write ULong[]
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为long数组
+        /// </summary>
+        /// <param name="type">写入的数据类型</param>
+        /// <param name="address">初始地址</param>
+        /// <param name="data">double数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC( MelsecDataType type, ushort address, ulong[] data )
+        {
+            byte[] temp = GetBytesFromArray( data, false );
+            return WriteIntoPLC( type, address, temp );
+        }
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为long数组
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">double数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC( string address, ulong[] data )
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>( );
+            if (!AnalysisAddress( address, out MelsecDataType type, out ushort startAddress, result ))
+            {
+                return result;
+            }
+            return WriteIntoPLC( type, startAddress, data );
+        }
+
+        /// <summary>
+        /// 向PLC写入数据，针对D和W的方式，数据格式为long数据
+        /// </summary>
+        /// <param name="address">初始地址的字符串表示形式</param>
+        /// <param name="data">double数组</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>结果</returns>
+        public OperateResult WriteIntoPLC( string address, ulong data )
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>( );
+            if (!AnalysisAddress( address, out MelsecDataType type, out ushort startAddress, result ))
+            {
+                return result;
+            }
+            return WriteIntoPLC( type, startAddress, new ulong[] { data } );
         }
 
         #endregion
