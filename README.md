@@ -20,7 +20,7 @@
 使用请遵循LGPL-3.0协议说明，除了协议中已经规定的内容外，附加下面三个条款（与原协议如有冲突以附加条款为准）：
 
 * 允许用户使用本工具库（从NuGet下载）集成到自己的项目中作为闭源软件一部分，只需要声明版权出处并出具一份LGPL-3.0的授权协议即可。
-* 禁止对源代码做出修改，禁止复制中间的代码及参考思路开发出类似的组件库。
+* 禁止复制中间的代码及参考思路开发出类似的组件库。
 * 源代码仅作为个人学习使用。
 
 ## NuGet安装
@@ -47,7 +47,7 @@ Install-Package HslCommunication
 * [文件管理引擎](http://www.cnblogs.com/dathlin/p/7746113.html)
 * [异步网络通讯功能](http://www.cnblogs.com/dathlin/p/8097897.html)
 * [三菱及西门子PLC访问](http://www.cnblogs.com/dathlin/p/7469679.html)
-* 邮件功能使用
+* [邮件功能使用](http://www.cnblogs.com/dathlin/p/8463613.html)
 * [流水号生成器](http://www.cnblogs.com/dathlin/p/7811489.html)
 * [软件注册码功能](http://www.cnblogs.com/dathlin/p/7832315.html)
 * [ModBus Tcp服务器开发](http://www.cnblogs.com/dathlin/p/7782315.html)
@@ -67,6 +67,8 @@ Install-Package HslCommunication
 * 基于本组件开发的一个文件管理引擎，实现服务器端文件存储，客户端进行文件上传，下载，删除，查看文件信息等等。[https://github.com/dathlin/FileManagment](https://github.com/dathlin/FileManagment)
 
 * 基于本组件开发的一个局域网多人聊天的程序，支持在线客户端信息查看，服务器强制关闭客户端。[https://github.com/dathlin/NetChatRoom](https://github.com/dathlin/NetChatRoom)
+
+* 基于本组件开发的一个西门子，三菱，Modbus-Tcp的通讯测试工具，方便的进行读写测试，不需要额外的编写代码。[https://github.com/dathlin/HslCommunicationDemo](https://github.com/dathlin/HslCommunicationDemo)
 
 ## 代码贡献
 热烈欢迎对本项目的代码提出改进意见，可以发起Pull Request，对于代码量贡献较多的小伙伴，会有额外的组件使用权，并在特别感谢里写明。

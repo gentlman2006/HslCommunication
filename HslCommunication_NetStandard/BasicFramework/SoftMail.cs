@@ -105,6 +105,7 @@ namespace HslCommunication.BasicFramework
                 $"{Environment.NewLine}堆栈：{ex.StackTrace}" +
                 $"{Environment.NewLine}方式：{ex.TargetSite.Name}";
         }
+
         /// <summary>
         /// 发生BUG至邮件地址，需要提前指定发送地址，否则失败
         /// </summary>
@@ -114,6 +115,7 @@ namespace HslCommunication.BasicFramework
         {
             return SendMail(ex, "");
         }
+
         /// <summary>
         /// 发送邮件至地址，需要提前指定发送地址，否则失败
         /// </summary>
@@ -124,6 +126,20 @@ namespace HslCommunication.BasicFramework
         {
             return SendMail(MailSendAddress, subject, body);
         }
+
+        /// <summary>
+        /// 发送邮件至地址，需要提前指定发送地址，否则失败
+        /// </summary>
+        /// <param name="subject">邮件主题</param>
+        /// <param name="body">邮件内容</param>
+        /// <param name="isHtml">是否是html格式化文本</param>
+        /// <returns>是否发送成功，内容不正确会被视为垃圾邮件</returns>
+        public bool SendMail(string subject, string body, bool isHtml)
+        {
+            return SendMail(MailSendAddress, subject, body, isHtml);
+        }
+
+
         /// <summary>
         /// 发生BUG至邮件地址，需要提前指定发送地址，否则失败
         /// </summary>
@@ -136,6 +152,7 @@ namespace HslCommunication.BasicFramework
             return SendMail(MailSendAddress, "BUG提交", string.IsNullOrEmpty(addtion) ? GetExceptionMail(ex) :
                 $"用户：{addtion}{Environment.NewLine}" + GetExceptionMail(ex));
         }
+
         /// <summary>
         /// 发送邮件的方法，默认发送别名，优先级，是否HTML
         /// </summary>
@@ -145,7 +162,20 @@ namespace HslCommunication.BasicFramework
         /// <returns>是否发送成功，内容不正确会被视为垃圾邮件</returns>
         public bool SendMail(string addr_to, string subject, string body)
         {
-            return SendMail(MailFromAddress, "邮件发送系统", new string[] { addr_to }, subject, body, MailPriority.Normal, false);
+            return SendMail(addr_to, subject, body, false);
+        }
+
+        /// <summary>
+        /// 发送邮件的方法，默认发送别名，优先级，是否HTML
+        /// </summary>
+        /// <param name="addr_to">接收地址</param>
+        /// <param name="subject">邮件主题</param>
+        /// <param name="body">邮件内容</param>
+        /// <param name="isHtml">是否是html格式的内容</param>
+        /// <returns>是否发送成功，内容不正确会被视为垃圾邮件</returns>
+        public bool SendMail(string addr_to, string subject, string body, bool isHtml)
+        {
+            return SendMail(MailFromAddress, "邮件发送系统", new string[] { addr_to }, subject, body, MailPriority.Normal, isHtml);
         }
 
         /// <summary>

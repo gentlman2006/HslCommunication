@@ -179,6 +179,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "FormSimenceModbusTcp";
             this.Text = "FormSimenceModbusTcp";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSimenceModbusTcp_FormClosing);
             this.Load += new System.EventHandler(this.FormSimenceModbusTcp_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

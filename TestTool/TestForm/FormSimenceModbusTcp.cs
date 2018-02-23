@@ -129,5 +129,10 @@ namespace TestTool.TestForm
             label_success.Text = readSuccess.ToString( );
             label_failed.Text = readFailed.ToString( );
         }
+
+        private void FormSimenceModbusTcp_FormClosing( object sender, FormClosingEventArgs e )
+        {
+
+        }
     }
 }

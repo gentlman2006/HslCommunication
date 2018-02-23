@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
+using HslCommunication.BasicFramework;
 
 namespace TestTool
 {
@@ -239,6 +240,14 @@ namespace TestTool
             TestForm.FormSimenceModbusTcp form = new TestForm.FormSimenceModbusTcp( );
             form.ShowDialog( );
             form.Dispose( );
+        }
+
+        private void userButton20_Click(object sender, EventArgs e)
+        {
+            // 邮件发送
+            SoftMail.MailSystem163.MailSendAddress = "hsl200909@163.com";
+
+            SoftMail.MailSystem163.SendMail("重要消息", "<div style=\"background: blue\">测试文本</div>", true);
         }
     }
 
