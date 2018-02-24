@@ -245,9 +245,7 @@ namespace TestTool
         private void userButton20_Click(object sender, EventArgs e)
         {
             // 邮件发送
-            SoftMail.MailSystem163.MailSendAddress = "hsl200909@163.com";
-
-            SoftMail.MailSystem163.SendMail("重要消息", "<div style=\"background: blue\">测试文本</div>", true);
+            SoftMail.MailSystem163.SendMail( "hsl200909@163.com", "重要信息", "这是一条重要的文本" );
         }
     }
 

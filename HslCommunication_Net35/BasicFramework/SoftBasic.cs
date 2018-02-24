@@ -448,6 +448,72 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
+        #region byte[]数组和short,ushort相互转化
+
+        /// <summary>
+        /// 从byte数组中提取出short数组，并指定是否需要高地位置换
+        /// </summary>
+        /// <param name="InBytes"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        public static short[] ByteToShortArray( byte[] InBytes, bool reverse )
+        {
+            if (InBytes == null) return null;
+
+            short[] array = new short[InBytes.Length / 2];
+            for (int i = 0; i < array.Length; i++)
+            {
+                byte[] temp = new byte[2];
+
+                if (reverse)
+                {
+                    temp[0] = InBytes[2 * i + 1];
+                    temp[1] = InBytes[2 * i + 0];
+                }
+                else
+                {
+                    temp[0] = InBytes[2 * i + 0];
+                    temp[1] = InBytes[2 * i + 1];
+                }
+                array[i] = BitConverter.ToInt16( temp, 2 );
+            }
+
+            return array;
+        }
+
+        /// <summary>
+        /// 从byte数组中提取出ushort数组，并指定是否需要高地位置换
+        /// </summary>
+        /// <param name="InBytes"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        public static ushort[] ByteToUShortArray( byte[] InBytes, bool reverse )
+        {
+            if (InBytes == null) return null;
+
+            ushort[] array = new ushort[InBytes.Length / 2];
+            for (int i = 0; i < array.Length; i++)
+            {
+                byte[] temp = new byte[2];
+
+                if (reverse)
+                {
+                    temp[0] = InBytes[2 * i + 1];
+                    temp[1] = InBytes[2 * i + 0];
+                }
+                else
+                {
+                    temp[0] = InBytes[2 * i + 0];
+                    temp[1] = InBytes[2 * i + 1];
+                }
+                array[i] = BitConverter.ToUInt16( temp, 2 );
+            }
+
+            return array;
+        }
+
+        #endregion
+
         #region 基础框架块
 
         /// <summary>

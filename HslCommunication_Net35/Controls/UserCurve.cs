@@ -90,10 +90,10 @@ namespace HslCommunication.Controls
         private int value_StrechDataCountMax = 300;         // 拉伸模式下的最大数据量
         private bool value_IsRenderDashLine = true;         // 是否显示虚线的信息
         private bool value_IsRenderAbscissaText = false;    // 指示是否显示横轴的文本信息
-        private string textFormat = "HH:mm";             // 时间文本的信息
+        private string textFormat = "HH:mm";                // 时间文本的信息
         private int value_IntervalAbscissaText = 100;       // 指示显示横轴文本的间隔数据
         private Random random = null;                       // 获取随机颜色使用
-
+        private string value_title = string.Empty;          // 图表的标题
 
 
         private int leftRight = 50;

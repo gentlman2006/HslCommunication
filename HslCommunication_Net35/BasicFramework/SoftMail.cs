@@ -154,7 +154,7 @@ namespace HslCommunication.BasicFramework
         }
 
         /// <summary>
-        /// 发送邮件的方法，默认发送别名，优先级，是否HTML
+        /// 发送邮件的方法，需要指定接收地址，主题及内容
         /// </summary>
         /// <param name="addr_to">接收地址</param>
         /// <param name="subject">邮件主题</param>
