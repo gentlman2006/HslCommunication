@@ -330,6 +330,10 @@ namespace HslCommunication.Profinet
         /// 1500系列PLC
         /// </summary>
         S1500 = 3,
+        /// <summary>
+        /// 200的smart系列
+        /// </summary>
+        S200Smart = 4,
     }
 
     /// <summary>
@@ -356,6 +360,63 @@ namespace HslCommunication.Profinet
                 case SiemensPLCS.S1200: plcHead1[21] = 0; break;
                 case SiemensPLCS.S300: plcHead1[21] = 2; break;
                 case SiemensPLCS.S1500: plcHead1[21] = 0; break;
+                case SiemensPLCS.S200Smart:
+                    {
+                        plcHead1 = new byte[22]
+                        {
+                            0x03,  // 01 RFC1006 Header             
+                            0x00,  // 02 通常为 0             
+                            0x00,  // 03 数据长度，高位            
+                            0x16,  // 04 数据长度，地位           
+                            0x11,  // 05 连接类型0x11:tcp  0x12 ISO-on-TCP               
+                            0xE0,  // 06 主动建立连接              
+                            0x00,  // 07 本地接口ID               
+                            0x00,  // 08 主动连接时为0              
+                            0x00,  // 09 该参数未使用              
+                            0x01,  // 10            
+                            0x00,  // 11          
+                            0xC1,  // 12           
+                            0x02,  // 13          
+                            0x10,  // 14             
+                            0x00,  // 15            
+                            0xC2,  // 16             
+                            0x02,  // 17           
+                            0x03,  // 18            
+                            0x00,  // 19 指示cpu     
+                            0xC0,  // 20              
+                            0x01,  // 21            
+                            0x0A   // 22       
+                        };
+                        plcHead2 = new byte[25]
+                        {
+                            0x03,
+                            0x00,
+                            0x00,
+                            0x19,
+                            0x02,
+                            0xF0,
+                            0x80,
+                            0x32,
+                            0x01,
+                            0x00,
+                            0x00,
+                            0xCC,
+                            0xC1,
+                            0x00,
+                            0x08,
+                            0x00,
+                            0x00,
+                            0xF0,  // 设置通讯      
+                            0x00,
+                            0x00,
+                            0x01,
+                            0x00,
+                            0x01,
+                            0x03,
+                            0xC0
+                        };
+                        break;
+                    }
                 default: plcHead1[18] = 0; break;
             }
         }
