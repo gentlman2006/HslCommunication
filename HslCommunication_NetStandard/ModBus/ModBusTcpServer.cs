@@ -1123,13 +1123,12 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 在数据变更后，进行触发是否产生订阅
         /// </summary>
-        /// <param name="address"></param>
+        /// <param name="address">数据地址</param>
         /// <param name="before"></param>
         /// <param name="after"></param>
         private void OnRegisterBeforWrite(ushort address, short before, short after)
         {
             subcriptionHybirdLock.Enter();
-
             for (int i = 0; i < subscriptions.Count; i++)
             {
                 if (subscriptions[i].Address == address)
@@ -1139,10 +1138,8 @@ namespace HslCommunication.ModBus
                     {
                         subscriptions[i].SetChangeValue(before, after);
                     }
-                    break;
                 }
             }
-
             subcriptionHybirdLock.Leave();
         }
 

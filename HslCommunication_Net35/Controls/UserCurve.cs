@@ -93,7 +93,7 @@ namespace HslCommunication.Controls
         private string textFormat = "HH:mm";                // 时间文本的信息
         private int value_IntervalAbscissaText = 100;       // 指示显示横轴文本的间隔数据
         private Random random = null;                       // 获取随机颜色使用
-        private string value_title = string.Empty;          // 图表的标题
+        private string value_title = "";                    // 图表的标题
 
 
         private int leftRight = 50;
@@ -331,8 +331,23 @@ namespace HslCommunication.Controls
         public string TextAddFormat
         {
             get { return textFormat; }
-            set { textFormat = value; }
+            set { textFormat = value; Invalidate(); }
         }
+
+
+        /// <summary>
+        /// 获取或设置图标的标题信息
+        /// </summary>
+        [Category("外观")]
+        [Description("获取或设置图标的标题信息")]
+        [Browsable(true)]
+        [DefaultValue("")]
+        public string Title
+        {
+            get { return value_title; }
+            set { value_title = value; Invalidate(); }
+        }
+
 
         private void InitializationColor( )
         {
@@ -743,6 +758,12 @@ namespace HslCommunication.Controls
                 new Point(width_totle - leftRight, heigh_totle - upDowm),
                 new Point(width_totle - leftRight, upDowm - 8)
             } );
+
+            // 绘制图表的标题
+            if(!string.IsNullOrEmpty(value_title))
+            {
+                g.DrawString(value_title, font_size9, brush_deep, new Rectangle(0, 0, width_totle - 1, 20), format_center);
+            }
 
             // 绘制倒三角
             BasicFramework.SoftPainting.PaintTriangle( g, brush_deep, new Point( leftRight - 1, upDowm - 8 ), 4, BasicFramework.GraphDirection.Upward );

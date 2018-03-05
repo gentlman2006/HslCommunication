@@ -42,7 +42,7 @@ namespace TestTool.TestForm
                 // 创建一个数据订阅
                 ModBusMonitorAddress monitorAddress = new ModBusMonitorAddress()
                 {
-                    Address = 0x01
+                    Address = 0x02
                 };
                 monitorAddress.OnWrite += MonitorAddress_OnWrite;
                 monitorAddress.OnChange += MonitorAddress_OnChange;
@@ -54,7 +54,7 @@ namespace TestTool.TestForm
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<ModBusMonitorAddress, short, short>(MonitorAddress_OnChange), monitor, before, after);
+                BeginInvoke(new Action<ModBusMonitorAddress, short, short>(MonitorAddress_OnChange), monitor, before, after);
                 return;
             }
 
@@ -65,7 +65,7 @@ namespace TestTool.TestForm
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<ModBusMonitorAddress, short>(MonitorAddress_OnWrite), monitor, value);
+                BeginInvoke(new Action<ModBusMonitorAddress, short>(MonitorAddress_OnWrite), monitor, value);
                 return;
             }
 
@@ -463,7 +463,7 @@ namespace TestTool.TestForm
 
         private void userButton7_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(tcpServer.ReadDoubleRegister(ushort.Parse(textBox8.Text)).ToString());
+            MessageBox.Show(tcpServer.ReadShortRegister(ushort.Parse(textBox8.Text)).ToString());
         }
 
 

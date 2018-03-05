@@ -1264,12 +1264,37 @@ namespace HslCommunication.Profinet
         }
 
 
-
+        ///// <summary>
+        ///// 读取多个DB块字节(超过协议报文222字节限制会自动处理)
+        ///// </summary>
+        ///// <param name="DB">DB块地址,例如DB1</param>
+        ///// <param name="numBytes">要读的字节数</param>
+        ///// <param name="startByteAdr">起始地址</param>
+        ///// <returns></returns>
+        //public OperateResult<byte[]> ReadMultipleBytes( string DB, int numBytes, int startByteAdr = 0 )
+        //{
+        //    OperateResult<byte[]> result = new OperateResult<byte[]>( );
+        //    int index = startByteAdr;
+        //    List<byte> resultBytes = new List<byte>( );
+        //    while (numBytes > 0)
+        //    {
+        //        string db = String.Format( "{0}.{1}", DB, index.ToString( ) );
+        //        int maxToRead = Math.Min( numBytes, 200 );
+        //        OperateResult<byte[]> read = ReadFromPLC( db, (ushort)maxToRead );
+        //        if (read == null)
+        //            return new OperateResult<byte[]>( );
+        //        resultBytes.AddRange( read.Content );
+        //        numBytes -= maxToRead;
+        //        index += maxToRead;
+        //    }
+        //    result.Content = resultBytes.ToArray( );
+        //    return result;
+        //}
 
         #endregion
 
         #region Write Base
-        
+
 
         /// <summary>
         /// 将数据写入到PLC数据，地址格式为I100，Q100，DB20.100，M100，以字节为单位
