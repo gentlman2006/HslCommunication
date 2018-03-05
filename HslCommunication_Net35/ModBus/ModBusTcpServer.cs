@@ -155,7 +155,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址</param>
         /// <param name="length">数据长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>byte数组值</returns>
         public byte[] ReadRegister(ushort address, ushort length)
         {
             byte[] buffer = new byte[length * 2];
@@ -170,11 +170,11 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
-        /// 读取一个寄存器的值
+        /// 读取一个寄存器的值，返回类型short
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>short值</returns>
         public short ReadShortRegister(ushort address)
         {
             byte[] buffer = new byte[2];
@@ -191,7 +191,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址</param>
         /// <param name="length">读取的short长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>short数组值</returns>
         public short[] ReadShortRegister(ushort address, ushort length)
         {
             short[] result = new short[length];
@@ -203,11 +203,11 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
-        /// 读取一个寄存器的值
+        /// 读取一个寄存器的值，返回类型为ushort
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>ushort值</returns>
         public ushort ReadUShortRegister(ushort address)
         {
             byte[] buffer = new byte[2];
@@ -224,7 +224,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址</param>
         /// <param name="length">读取长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>ushort数组</returns>
         public ushort[] ReadUShortRegister(ushort address, ushort length)
         {
             ushort[] result = new ushort[length];
@@ -240,15 +240,15 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>int值</returns>
         public int ReadIntRegister(ushort address)
         {
             byte[] buffer = new byte[4];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address * 2 + 3];
-            buffer[1] = Register[address * 2 + 2];
-            buffer[2] = Register[address * 2 + 1];
-            buffer[3] = Register[address * 2 + 0];
+            buffer[0] = Register[address * 2 + 1];
+            buffer[1] = Register[address * 2 + 0];
+            buffer[2] = Register[address * 2 + 3];
+            buffer[3] = Register[address * 2 + 2];
             hybirdLockRegister.Leave();
             return BitConverter.ToInt32(buffer, 0);
         }
@@ -260,7 +260,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>int数组</returns>
         public int[] ReadIntRegister(ushort address, ushort length)
         {
             int[] result = new int[length];
@@ -282,10 +282,10 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[4];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address * 2 + 3];
-            buffer[1] = Register[address * 2 + 2];
-            buffer[2] = Register[address * 2 + 1];
-            buffer[3] = Register[address * 2 + 0];
+            buffer[0] = Register[address * 2 + 1];
+            buffer[1] = Register[address * 2 + 0];
+            buffer[2] = Register[address * 2 + 3];
+            buffer[3] = Register[address * 2 + 2];
             hybirdLockRegister.Leave();
             return BitConverter.ToUInt32(buffer, 0);
         }
@@ -318,10 +318,10 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[4];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address * 2 + 3];
-            buffer[1] = Register[address * 2 + 2];
-            buffer[2] = Register[address * 2 + 1];
-            buffer[3] = Register[address * 2 + 0];
+            buffer[0] = Register[address * 2 + 1];
+            buffer[1] = Register[address * 2 + 0];
+            buffer[2] = Register[address * 2 + 3];
+            buffer[3] = Register[address * 2 + 2];
             hybirdLockRegister.Leave();
             return BitConverter.ToSingle(buffer, 0);
         }
@@ -354,14 +354,14 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[8];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address * 2 + 7];
-            buffer[1] = Register[address * 2 + 6];
-            buffer[2] = Register[address * 2 + 5];
-            buffer[3] = Register[address * 2 + 4];
-            buffer[4] = Register[address * 2 + 3];
-            buffer[5] = Register[address * 2 + 2];
-            buffer[6] = Register[address * 2 + 1];
-            buffer[7] = Register[address * 2 + 0];
+            buffer[0] = Register[address * 2 + 1];
+            buffer[1] = Register[address * 2 + 0];
+            buffer[2] = Register[address * 2 + 3];
+            buffer[3] = Register[address * 2 + 2];
+            buffer[4] = Register[address * 2 + 5];
+            buffer[5] = Register[address * 2 + 4];
+            buffer[6] = Register[address * 2 + 7];
+            buffer[7] = Register[address * 2 + 6];
             hybirdLockRegister.Leave();
             return BitConverter.ToInt64(buffer, 0);
         }
@@ -394,14 +394,14 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[8];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address * 2 + 7];
-            buffer[1] = Register[address * 2 + 6];
-            buffer[2] = Register[address * 2 + 5];
-            buffer[3] = Register[address * 2 + 4];
-            buffer[4] = Register[address * 2 + 3];
-            buffer[5] = Register[address * 2 + 2];
-            buffer[6] = Register[address * 2 + 1];
-            buffer[7] = Register[address * 2 + 0];
+            buffer[0] = Register[address * 2 + 1];
+            buffer[1] = Register[address * 2 + 0];
+            buffer[2] = Register[address * 2 + 3];
+            buffer[3] = Register[address * 2 + 2];
+            buffer[4] = Register[address * 2 + 5];
+            buffer[5] = Register[address * 2 + 4];
+            buffer[6] = Register[address * 2 + 7];
+            buffer[7] = Register[address * 2 + 6];
             hybirdLockRegister.Leave();
             return BitConverter.ToUInt64(buffer, 0);
         }
@@ -434,14 +434,14 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = new byte[8];
             hybirdLockRegister.Enter();
-            buffer[0] = Register[address * 2 + 7];
-            buffer[1] = Register[address * 2 + 6];
-            buffer[2] = Register[address * 2 + 5];
-            buffer[3] = Register[address * 2 + 4];
-            buffer[4] = Register[address * 2 + 3];
-            buffer[5] = Register[address * 2 + 2];
-            buffer[6] = Register[address * 2 + 1];
-            buffer[7] = Register[address * 2 + 0];
+            buffer[0] = Register[address * 2 + 1];
+            buffer[1] = Register[address * 2 + 0];
+            buffer[2] = Register[address * 2 + 3];
+            buffer[3] = Register[address * 2 + 2];
+            buffer[4] = Register[address * 2 + 5];
+            buffer[5] = Register[address * 2 + 4];
+            buffer[6] = Register[address * 2 + 7];
+            buffer[7] = Register[address * 2 + 6];
             hybirdLockRegister.Leave();
             return BitConverter.ToDouble(buffer, 0);
         }
@@ -563,10 +563,10 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = BitConverter.GetBytes(data);
             hybirdLockRegister.Enter();
-            Register[address * 2 + 3] = buffer[0];
-            Register[address * 2 + 2] = buffer[1];
-            Register[address * 2 + 1] = buffer[2];
-            Register[address * 2 + 0] = buffer[3];
+            Register[address * 2 + 0] = buffer[1];
+            Register[address * 2 + 1] = buffer[0];
+            Register[address * 2 + 2] = buffer[3];
+            Register[address * 2 + 3] = buffer[2];
             hybirdLockRegister.Leave();
         }
 
@@ -594,10 +594,10 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = BitConverter.GetBytes(data);
             hybirdLockRegister.Enter();
-            Register[address * 2 + 3] = buffer[0];
-            Register[address * 2 + 2] = buffer[1];
-            Register[address * 2 + 1] = buffer[2];
-            Register[address * 2 + 0] = buffer[3];
+            Register[address * 2 + 0] = buffer[1];
+            Register[address * 2 + 1] = buffer[0];
+            Register[address * 2 + 2] = buffer[3];
+            Register[address * 2 + 3] = buffer[2];
             hybirdLockRegister.Leave();
         }
 
@@ -626,10 +626,10 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = BitConverter.GetBytes(data);
             hybirdLockRegister.Enter();
-            Register[address * 2 + 3] = buffer[0];
-            Register[address * 2 + 2] = buffer[1];
-            Register[address * 2 + 1] = buffer[2];
-            Register[address * 2 + 0] = buffer[3];
+            Register[address * 2 + 0] = buffer[1];
+            Register[address * 2 + 1] = buffer[0];
+            Register[address * 2 + 2] = buffer[3];
+            Register[address * 2 + 3] = buffer[2];
             hybirdLockRegister.Leave();
         }
 
@@ -657,14 +657,14 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = BitConverter.GetBytes(data);
             hybirdLockRegister.Enter();
-            Register[address * 2 + 7] = buffer[0];
-            Register[address * 2 + 6] = buffer[1];
-            Register[address * 2 + 5] = buffer[2];
-            Register[address * 2 + 4] = buffer[3];
-            Register[address * 2 + 3] = buffer[4];
-            Register[address * 2 + 2] = buffer[5];
-            Register[address * 2 + 1] = buffer[6];
-            Register[address * 2 + 0] = buffer[7];
+            Register[address * 2 + 0] = buffer[1];
+            Register[address * 2 + 1] = buffer[0];
+            Register[address * 2 + 2] = buffer[3];
+            Register[address * 2 + 3] = buffer[2];
+            Register[address * 2 + 4] = buffer[5];
+            Register[address * 2 + 5] = buffer[4];
+            Register[address * 2 + 6] = buffer[7];
+            Register[address * 2 + 7] = buffer[6];
             hybirdLockRegister.Leave();
         }
 
@@ -693,14 +693,14 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = BitConverter.GetBytes(data);
             hybirdLockRegister.Enter();
-            Register[address * 2 + 7] = buffer[0];
-            Register[address * 2 + 6] = buffer[1];
-            Register[address * 2 + 5] = buffer[2];
-            Register[address * 2 + 4] = buffer[3];
-            Register[address * 2 + 3] = buffer[4];
-            Register[address * 2 + 2] = buffer[5];
-            Register[address * 2 + 1] = buffer[6];
-            Register[address * 2 + 0] = buffer[7];
+            Register[address * 2 + 0] = buffer[1];
+            Register[address * 2 + 1] = buffer[0];
+            Register[address * 2 + 2] = buffer[3];
+            Register[address * 2 + 3] = buffer[2];
+            Register[address * 2 + 4] = buffer[5];
+            Register[address * 2 + 5] = buffer[4];
+            Register[address * 2 + 6] = buffer[7];
+            Register[address * 2 + 7] = buffer[6];
             hybirdLockRegister.Leave();
         }
 
@@ -729,14 +729,14 @@ namespace HslCommunication.ModBus
         {
             byte[] buffer = BitConverter.GetBytes(data);
             hybirdLockRegister.Enter();
-            Register[address * 2 + 7] = buffer[0];
-            Register[address * 2 + 6] = buffer[1];
-            Register[address * 2 + 5] = buffer[2];
-            Register[address * 2 + 4] = buffer[3];
-            Register[address * 2 + 3] = buffer[4];
-            Register[address * 2 + 2] = buffer[5];
-            Register[address * 2 + 1] = buffer[6];
-            Register[address * 2 + 0] = buffer[7];
+            Register[address * 2 + 0] = buffer[1];
+            Register[address * 2 + 1] = buffer[0];
+            Register[address * 2 + 2] = buffer[3];
+            Register[address * 2 + 3] = buffer[2];
+            Register[address * 2 + 4] = buffer[5];
+            Register[address * 2 + 5] = buffer[4];
+            Register[address * 2 + 6] = buffer[7];
+            Register[address * 2 + 7] = buffer[6];
             hybirdLockRegister.Leave();
         }
 
@@ -788,8 +788,7 @@ namespace HslCommunication.ModBus
 
 
         #endregion
-
-
+        
         #region Private Method
 
 
@@ -997,6 +996,9 @@ namespace HslCommunication.ModBus
                             int address = data[8] * 256 + data[9];
                             int length = data[10] * 256 + data[11];
                             byte[] buffer = new byte[data.Length - 13];
+
+                            // 为了使服务器的数据订阅更加的准确，决定将设计改为等待所有的数据写入完成后，再统一触发订阅，2018年3月4日 20:56:47
+                            MonitorAddress[] addresses = new MonitorAddress[length];
                             for (int i = 0; i < length; i++)
                             {
                                 if ((2 * i + 14) < data.Length)
@@ -1005,9 +1007,21 @@ namespace HslCommunication.ModBus
                                     WriteRegister((ushort)(address + i), data[2 * i + 13], data[2 * i + 14]);
                                     short ValueNew = ReadShortRegister((ushort)(address + i));
                                     // 触发写入请求
-                                    OnRegisterBeforWrite((ushort)(address + i), ValueOld, ValueNew);
+                                    addresses[i] = new MonitorAddress()
+                                    {
+                                        Address = (ushort)(address + i),
+                                        ValueOrigin = ValueOld,
+                                        ValueNew = ValueNew
+                                    };
                                 }
                             }
+
+                            // 所有数据都更改完成后，再触发消息
+                            for (int i = 0; i < addresses.Length; i++)
+                            {
+                                OnRegisterBeforWrite(addresses[i].Address, addresses[i].ValueOrigin, addresses[i].ValueNew);
+                            }
+
                             copy = new byte[12];
                             Array.Copy(data, 0, copy, 0, 12);
                             copy[4] = 0x00;
@@ -1136,6 +1150,26 @@ namespace HslCommunication.ModBus
 
     }
 
+    /// <summary>
+    /// 监视使用的数据缓存
+    /// </summary>
+    internal struct MonitorAddress
+    {
+        /// <summary>
+        /// 地址
+        /// </summary>
+        public ushort Address;
+
+        /// <summary>
+        /// 原有的值
+        /// </summary>
+        public short ValueOrigin;
+
+        /// <summary>
+        /// 新的值
+        /// </summary>
+        public short ValueNew;
+    }
 
     /// <summary>
     /// 服务器端提供的数据监视服务
@@ -1146,10 +1180,12 @@ namespace HslCommunication.ModBus
         /// 本次数据监视的地址
         /// </summary>
         public ushort Address { get; set; }
+
         /// <summary>
         /// 数据写入时触发的事件
         /// </summary>
         public event Action<ModBusMonitorAddress, short> OnWrite;
+
         /// <summary>
         /// 数据改变时触发的事件
         /// </summary>

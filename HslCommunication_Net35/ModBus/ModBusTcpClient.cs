@@ -526,8 +526,14 @@ namespace HslCommunication.ModBus
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 128) throw new ArgumentOutOfRangeException("value", "长度不能大于128。");
 
-
-            return CheckModbusTcpResponse( BuildWriteRegister(address, GetBytesFromArray(value, true)));
+            if (value.Length == 1)
+            {
+                return WriteOneRegister( address, value[0] );
+            }
+            else
+            {
+                return CheckModbusTcpResponse( BuildWriteRegister( address, GetBytesFromArray( value, true ) ) );
+            }
         }
 
         /// <summary>
@@ -551,8 +557,15 @@ namespace HslCommunication.ModBus
         {
             if (value == null) throw new ArgumentNullException("value");
             if (value.Length > 128) throw new ArgumentOutOfRangeException("value", "长度不能大于128。");
-            
-            return CheckModbusTcpResponse( BuildWriteRegister(address, GetBytesFromArray(value, true)));
+
+            if (value.Length == 1)
+            {
+                return WriteOneRegister( address, value[0] );
+            }
+            else
+            {
+                return CheckModbusTcpResponse( BuildWriteRegister( address, GetBytesFromArray( value, true ) ) );
+            }
         }
 
 

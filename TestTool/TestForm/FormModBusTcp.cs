@@ -34,7 +34,7 @@ namespace TestTool.TestForm
             {
                 m_IsModBusStart = true;
                 tcpServer = new ModBusTcpServer(); // 实例化服务器接收对象
-                tcpServer.LogNet = new HslCommunication.LogNet.LogNetSingle(Application.StartupPath + @"\Logs\log.txt"); // 设置日志文件
+                tcpServer.LogNet = busTcpClient.LogNet; // 设置日志文件
                 tcpServer.OnDataReceived += TcpServer_OnDataReceived; // 关联数据接收方法
                 tcpServer.ServerStart(51234); // 绑定端口
                 timer.Start(); // 启动服务
@@ -102,6 +102,8 @@ namespace TestTool.TestForm
         {
             comboBox1.DataSource = HslCommunication.BasicFramework.SoftBasic.GetEnumValues<HslCommunication.ModBus.ModBusFunctionMask>();
 
+
+            busTcpClient.LogNet = new HslCommunication.LogNet.LogNetSingle(Application.StartupPath + @"\Logs\log.txt");
             busTcpClient.ConnectServer();
         }
 
@@ -356,7 +358,7 @@ namespace TestTool.TestForm
         {
             if (!string.IsNullOrEmpty(textBox6.Text))
             {
-                HslCommunication.OperateResult result = busTcpClient.WriteOneRegister( ushort.Parse( textBox6.Text ), short.Parse(textBox7.Text));
+                HslCommunication.OperateResult result = busTcpClient.WriteRegister( ushort.Parse( textBox6.Text ), short.Parse(textBox7.Text));
                 MessageBox.Show(result.IsSuccess ? "写入成功！" : "写入失败");
             }
         }
@@ -461,7 +463,7 @@ namespace TestTool.TestForm
 
         private void userButton7_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(tcpServer.ReadShortRegister(100).ToString());
+            MessageBox.Show(tcpServer.ReadDoubleRegister(ushort.Parse(textBox8.Text)).ToString());
         }
 
 

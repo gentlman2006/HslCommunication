@@ -2348,7 +2348,10 @@ namespace HslCommunication.Core
             }
             set
             {
-                receiveBackTimeOut = value;
+                if (receiveBackTimeOut < 0 || receiveBackTimeOut >= 200)
+                {
+                    receiveBackTimeOut = value;
+                }
             }
         }
 
@@ -2780,7 +2783,7 @@ namespace HslCommunication.Core
         /// <returns></returns>
         protected bool SendCommandAndReceiveResponse( byte[] send, out byte[] receive, OperateResult result )
         {
-            // string str = SoftBasic.ByteToHexString(send, ' ');
+            string str = SoftBasic.ByteToHexString(send, ' ');
 
             serverInterfaceLock.Enter( );                        // 进入读取的锁
 
