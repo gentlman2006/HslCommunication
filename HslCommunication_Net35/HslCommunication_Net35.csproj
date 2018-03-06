@@ -182,7 +182,7 @@
     <Compile Include="Serial\CRCSupport.cs" />
     <Compile Include="Serial\SerialCommunicationBase.cs" />
     <Compile Include="StringResources.cs" />
-    <Compile Include="Core\Security\zipped.cs" />
+    <Compile Include="BasicFramework\SoftZipped.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="BasicFramework\FormAuthorAdvertisement.resx">

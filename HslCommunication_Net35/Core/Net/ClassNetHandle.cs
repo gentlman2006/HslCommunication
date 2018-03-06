@@ -32,7 +32,7 @@ namespace HslCommunication
         /// <summary>
         /// 赋值操作，可以直接赋值int数据
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">int数值</param>
         public static implicit operator NetHandle(int value)
         {
             return new NetHandle(value);
@@ -41,7 +41,7 @@ namespace HslCommunication
         /// <summary>
         /// 也可以赋值给int数据
         /// </summary>
-        /// <param name="netHandle"></param>
+        /// <param name="netHandle">netHandle对象</param>
         public static implicit operator int(NetHandle netHandle)
         {
             return netHandle.m_CodeValue;
@@ -56,7 +56,7 @@ namespace HslCommunication
         /// </summary>
         /// <param name="netHandle1">第一个数</param>
         /// <param name="netHandle2">第二个数</param>
-        /// <returns></returns>
+        /// <returns>等于返回<c>True</c>，否则<c>False</c></returns>
         public static bool operator == (NetHandle netHandle1, NetHandle netHandle2)
         {
             return netHandle1.CodeValue == netHandle2.CodeValue;
@@ -65,9 +65,9 @@ namespace HslCommunication
         /// <summary>
         /// 判断是否不相等
         /// </summary>
-        /// <param name="netHandle1"></param>
-        /// <param name="netHandle2"></param>
-        /// <returns></returns>
+        /// <param name="netHandle1">第一个对象</param>
+        /// <param name="netHandle2">第二个对象</param>
+        /// <returns>等于返回<c>False</c>，否则<c>True</c></returns>
         public static bool operator != (NetHandle netHandle1, NetHandle netHandle2)
         {
             return netHandle1.CodeValue != netHandle2.CodeValue;
@@ -76,9 +76,9 @@ namespace HslCommunication
         /// <summary>
         /// 两个数值相加
         /// </summary>
-        /// <param name="netHandle1"></param>
-        /// <param name="netHandle2"></param>
-        /// <returns></returns>
+        /// <param name="netHandle1">第一个对象param>
+        /// <param name="netHandle2">第二个对象param>
+        /// <returns>返回两个指令的和</returns>
         public static NetHandle operator + (NetHandle netHandle1, NetHandle netHandle2)
         {
             return new NetHandle(netHandle1.CodeValue + netHandle2.CodeValue);
@@ -87,9 +87,9 @@ namespace HslCommunication
         /// <summary>
         /// 两个数值相减
         /// </summary>
-        /// <param name="netHandle1"></param>
-        /// <param name="netHandle2"></param>
-        /// <returns></returns>
+        /// <param name="netHandle1">第一个对象param>
+        /// <param name="netHandle2">第二个对象param>
+        /// <returns>返回两个指令的差</returns>
         public static NetHandle operator - (NetHandle netHandle1, NetHandle netHandle2)
         {
             return new NetHandle(netHandle1.CodeValue - netHandle2.CodeValue);
@@ -98,9 +98,9 @@ namespace HslCommunication
         /// <summary>
         /// 判断是否小于另一个数值
         /// </summary>
-        /// <param name="netHandle1"></param>
-        /// <param name="netHandle2"></param>
-        /// <returns></returns>
+        /// <param name="netHandle1">第一个对象param>
+        /// <param name="netHandle2">第二个对象param>
+        /// <returns>小于则返回<c>True</c>，否则返回<c>False</c></returns>
         public static bool operator < (NetHandle netHandle1, NetHandle netHandle2)
         {
             return netHandle1.CodeValue < netHandle2.CodeValue;
@@ -109,9 +109,9 @@ namespace HslCommunication
         /// <summary>
         /// 判断是否大于另一个数值
         /// </summary>
-        /// <param name="netHandle1"></param>
-        /// <param name="netHandle2"></param>
-        /// <returns></returns>
+        /// <param name="netHandle1">第一个对象param>
+        /// <param name="netHandle2">第二个对象param>
+        /// <returns>大于则返回<c>True</c>，否则返回<c>False</c></returns>
         public static bool operator > (NetHandle netHandle1, NetHandle netHandle2)
         {
             return netHandle1.CodeValue > netHandle2.CodeValue;
@@ -125,6 +125,7 @@ namespace HslCommunication
         /// <summary>
         /// 初始化一个暗号对象
         /// </summary>
+        /// <param name="value">使用一个默认的数值进行初始化</param>
         public NetHandle(int value)
         {
             m_CodeMajor = 0;
@@ -213,7 +214,7 @@ namespace HslCommunication
         /// <summary>
         /// 获取完整的暗号数据
         /// </summary>
-        /// <returns></returns>
+        /// <returns>返回暗号的字符串表示形式</returns>
         public override string ToString()
         {
             return m_CodeValue.ToString();
@@ -223,7 +224,7 @@ namespace HslCommunication
         /// 判断两个实例是否相同
         /// </summary>
         /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <returns>相同返回<c>True</c>，否则返回<c>False</c></returns>
         public override bool Equals(object obj)
         {
             if (obj is NetHandle headCode)

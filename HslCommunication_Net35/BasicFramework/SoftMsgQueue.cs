@@ -19,7 +19,7 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         public SoftMsgQueue()
         {
-            LogHeaderText = "SoftMsgQueue<T>";
+            LogHeaderText = "SoftMsgQueue<" + typeof(T).ToString() + ">";
         }
 
         #endregion

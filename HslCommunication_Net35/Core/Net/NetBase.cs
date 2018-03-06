@@ -333,7 +333,7 @@ namespace HslCommunication.Core
                 if (data.Length > 10240)
                 {
                     // 10K以上的数据，进行数据压缩
-                    data = HslZipped.CompressBytes( data );
+                    data = SoftZipped.CompressBytes( data );
                     _zipped = HslCommunicationCode.Hsl_Protocol_Zipped;
                 }
                 _temp = new byte[HslCommunicationCode.HeadByteLength + data.Length];
@@ -365,7 +365,7 @@ namespace HslCommunication.Core
                 // 先进行解压
                 if (_zipped == HslCommunicationCode.Hsl_Protocol_Zipped)
                 {
-                    content = HslZipped.Decompress( content );
+                    content = SoftZipped.Decompress( content );
                 }
                 // 进行解密
                 return HslSecurity.ByteDecrypt( content );
