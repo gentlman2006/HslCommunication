@@ -215,8 +215,9 @@ namespace HslCommunication.BasicFramework
                     SoftMailSendFailedCount = 0;
                     return true;
                 }
-                catch
+                catch(Exception ex)
                 {
+                    Console.WriteLine( SoftBasic.GetExceptionMessage( ex ) );
                     SoftMailSendFailedCount++;
                     return false;
                 }

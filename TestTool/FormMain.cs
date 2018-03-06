@@ -9,97 +9,98 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using HslCommunication.BasicFramework;
+using System.Net.Mail;
 
 namespace TestTool
 {
     public partial class FormMain : Form
     {
-        public FormMain()
+        public FormMain( )
         {
-            InitializeComponent();
+            InitializeComponent( );
         }
 
-        private void userButton1_Click(object sender, EventArgs e)
+        private void userButton1_Click( object sender, EventArgs e )
         {
-            using (TestTool.TestForm.FormPlcTest form = new TestForm.FormPlcTest())
+            using (TestTool.TestForm.FormPlcTest form = new TestForm.FormPlcTest( ))
             {
-                form.ShowDialog();
+                form.ShowDialog( );
             }
         }
 
-        private void userButton2_Click(object sender, EventArgs e)
+        private void userButton2_Click( object sender, EventArgs e )
         {
-            textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(HslCommunication.Core.NetSupport.CommandBytes(1001,
-                new HslCommunication.NetHandle(1, 1, 21), new Guid("1275BB9A-14B2-4A96-9673-B0AF0463D474"), null));
+            textBox1.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString( HslCommunication.Core.NetSupport.CommandBytes( 1001,
+                new HslCommunication.NetHandle( 1, 1, 21 ), new Guid( "1275BB9A-14B2-4A96-9673-B0AF0463D474" ), null ) );
         }
 
-        private void userButton3_Click(object sender, EventArgs e)
+        private void userButton3_Click( object sender, EventArgs e )
         {
-            using (TestTool.TestForm.FormModBusTcp form = new TestForm.FormModBusTcp())
+            using (TestTool.TestForm.FormModBusTcp form = new TestForm.FormModBusTcp( ))
             {
-                Hide();
-                form.ShowDialog();
-                Show();
+                Hide( );
+                form.ShowDialog( );
+                Show( );
             }
         }
 
-        private void userButton4_Click(object sender, EventArgs e)
+        private void userButton4_Click( object sender, EventArgs e )
         {
-            textBox1.Text = DateTime.Now.Ticks.ToString() ;
+            textBox1.Text = DateTime.Now.Ticks.ToString( );
         }
 
-        private void userButton5_Click(object sender, EventArgs e)
+        private void userButton5_Click( object sender, EventArgs e )
         {
-            using (TestTool.TestForm.FormJsonTest form = new TestForm.FormJsonTest())
+            using (TestTool.TestForm.FormJsonTest form = new TestForm.FormJsonTest( ))
             {
-                form.ShowDialog();
+                form.ShowDialog( );
             }
         }
 
-        private void userButton6_Click(object sender, EventArgs e)
+        private void userButton6_Click( object sender, EventArgs e )
         {
-            using (TestTool.TestForm.FormSeqTest fst = new TestForm.FormSeqTest())
+            using (TestTool.TestForm.FormSeqTest fst = new TestForm.FormSeqTest( ))
             {
-                fst.ShowDialog();
+                fst.ShowDialog( );
             }
         }
 
-        private void userButton7_Click(object sender, EventArgs e)
+        private void userButton7_Click( object sender, EventArgs e )
         {
-            using (TestTool.TestForm.FormCRCTest fst = new TestForm.FormCRCTest())
+            using (TestTool.TestForm.FormCRCTest fst = new TestForm.FormCRCTest( ))
             {
-                fst.ShowDialog();
+                fst.ShowDialog( );
             }
         }
 
-        private void userButton8_Click(object sender, EventArgs e)
+        private void userButton8_Click( object sender, EventArgs e )
         {
-            using (TestTool.TestForm.FormRegisterTest form = new TestForm.FormRegisterTest())
+            using (TestTool.TestForm.FormRegisterTest form = new TestForm.FormRegisterTest( ))
             {
-                form.ShowDialog();
+                form.ShowDialog( );
             }
         }
 
-        private void userButton9_Click(object sender, EventArgs e)
+        private void userButton9_Click( object sender, EventArgs e )
         {
-            using (TestTool.TestForm.FormFileTest form = new TestForm.FormFileTest())
+            using (TestTool.TestForm.FormFileTest form = new TestForm.FormFileTest( ))
             {
-                form.ShowDialog();
+                form.ShowDialog( );
             }
         }
 
-        private void userButton10_Click(object sender, EventArgs e)
+        private void userButton10_Click( object sender, EventArgs e )
         {
-            textBox1.Text = random.Next(10000000).ToString(); 
+            textBox1.Text = random.Next( 10000000 ).ToString( );
             return;
-            HslCommunication.OperateResult<string> result = GetInformation("D:\\123.txt");
-            if(result.IsSuccess)
+            HslCommunication.OperateResult<string> result = GetInformation( "D:\\123.txt" );
+            if (result.IsSuccess)
             {
-                MessageBox.Show(result.Content);
+                MessageBox.Show( result.Content );
             }
             else
             {
-                MessageBox.Show("读取失败：" + result.Message);
+                MessageBox.Show( "读取失败：" + result.Message );
             }
         }
 
@@ -109,19 +110,19 @@ namespace TestTool
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        private HslCommunication.OperateResult<string> GetInformation(string fileName)
+        private HslCommunication.OperateResult<string> GetInformation( string fileName )
         {
-            HslCommunication.OperateResult<string> result = new HslCommunication.OperateResult<string>();
+            HslCommunication.OperateResult<string> result = new HslCommunication.OperateResult<string>( );
 
             try
             {
-                using (System.IO.StreamReader sr = new System.IO.StreamReader(fileName, Encoding.UTF8))
+                using (System.IO.StreamReader sr = new System.IO.StreamReader( fileName, Encoding.UTF8 ))
                 {
-                    result.Content = sr.ReadToEnd();
+                    result.Content = sr.ReadToEnd( );
                     result.IsSuccess = true;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 result.Message = ex.Message;
             }
@@ -129,43 +130,43 @@ namespace TestTool
             return result;
         }
 
-        Random random = new Random();
-        private void button1_Click(object sender, EventArgs e)
+        Random random = new Random( );
+        private void button1_Click( object sender, EventArgs e )
         {
-            textBox1.Text = random.Next(10000000).ToString();
+            textBox1.Text = random.Next( 10000000 ).ToString( );
 
-            List<string> data = new List<string>();
-            List<int> ints = new List<int>();
+            List<string> data = new List<string>( );
+            List<int> ints = new List<int>( );
             for (int i = 0; i < 8; i++)
             {
-                data.Add(random.Next(100, 999).ToString());
-                ints.Add(random.Next(0, 5));
+                data.Add( random.Next( 100, 999 ).ToString( ) );
+                ints.Add( random.Next( 0, 5 ) );
             }
-            
+
         }
 
-        private void userButton11_Click(object sender, EventArgs e)
+        private void userButton11_Click( object sender, EventArgs e )
         {
             userButton10.Enabled = false;
             button1.Enabled = false;
         }
 
-        private void userButton12_Click(object sender, EventArgs e)
+        private void userButton12_Click( object sender, EventArgs e )
         {
-            if (int.TryParse(textBox2.Text, out int value))
+            if (int.TryParse( textBox2.Text, out int value ))
             {
             }
         }
 
-        private void userButton13_Click(object sender, EventArgs e)
+        private void userButton13_Click( object sender, EventArgs e )
         {
             // 日志查看器
             //using (HslCommunication.LogNet.FormLogNetView form = new HslCommunication.LogNet.FormLogNetView())
             //{
             //    form.ShowDialog();
             //}
-            TestForm.FormLogNetTest form = new TestForm.FormLogNetTest();
-            form.ShowDialog();
+            TestForm.FormLogNetTest form = new TestForm.FormLogNetTest( );
+            form.ShowDialog( );
         }
 
 
@@ -175,55 +176,55 @@ namespace TestTool
 
 
 
-        private void userButton14_Click(object sender, EventArgs e)
+        private void userButton14_Click( object sender, EventArgs e )
         {
-            string json = JObject.FromObject(new AA()
+            string json = JObject.FromObject( new AA( )
             {
                 asdasdasdasd = "123123123",
                 adasdasd = 1234,
-            }).ToString();
+            } ).ToString( );
 
 
-            AA aa = GetT<AA>(json);
+            AA aa = GetT<AA>( json );
             ;
         }
 
-        private T GetT<T>(string json)
+        private T GetT<T>( string json )
         {
-            JObject jObject = JObject.Parse(json);
-            string dataType = jObject["DataType"].ToObject<string>();
+            JObject jObject = JObject.Parse( json );
+            string dataType = jObject["DataType"].ToObject<string>( );
 
-            Type type = Type.GetType("TestTool."+dataType);
-            object obj = jObject.ToObject(type);
+            Type type = Type.GetType( "TestTool." + dataType );
+            object obj = jObject.ToObject( type );
             return (T)obj;
         }
 
-        private void userButton15_Click(object sender, EventArgs e)
+        private void userButton15_Click( object sender, EventArgs e )
         {
-            TestForm.FormControls form = new TestForm.FormControls();
-            form.ShowDialog();
-            form.Dispose();
+            TestForm.FormControls form = new TestForm.FormControls( );
+            form.ShowDialog( );
+            form.Dispose( );
         }
 
-        private void userButton16_Click(object sender, EventArgs e)
+        private void userButton16_Click( object sender, EventArgs e )
         {
-            TestForm.FormControlCollection form = new TestForm.FormControlCollection();
-            form.ShowDialog();
-            form.Dispose();
+            TestForm.FormControlCollection form = new TestForm.FormControlCollection( );
+            form.ShowDialog( );
+            form.Dispose( );
         }
 
 
-        private float[] GetV(int count)
+        private float[] GetV( int count )
         {
             float[] values = new float[count];
             for (int i = 0; i < count; i++)
             {
-                values[i] = random.Next(101);
+                values[i] = random.Next( 101 );
             }
             return values;
         }
 
-        private void userButton17_Click(object sender, EventArgs e)
+        private void userButton17_Click( object sender, EventArgs e )
         {
             userCurve1.SetLeftCurve( "123", GetV( 100 ), Color.DodgerBlue );
         }
@@ -242,10 +243,27 @@ namespace TestTool
             form.Dispose( );
         }
 
-        private void userButton20_Click(object sender, EventArgs e)
+        private void userButton20_Click( object sender, EventArgs e )
         {
             // 邮件发送
-            SoftMail.MailSystem163.SendMail( "hsl200909@163.com", "重要信息", "这是一条重要的文本" );
+            // SoftMail.MailSystem163.SendMail( "hsl200909@163.com", "重要信息", "这是一条重要的文本" );
+            SoftMail MailSystem163 = new SoftMail(
+            mail =>
+            {
+                mail.Host = "mail.jinkosolar.com";//使用163的SMTP服务器发送邮件
+                mail.UseDefaultCredentials = true;
+                mail.EnableSsl = true;
+                mail.Port = 465;
+                mail.DeliveryMethod = SmtpDeliveryMethod.Network;
+                mail.Credentials = new System.Net.NetworkCredential( "mes_notice", "TPYdga9=" );//密码zxcvbnm1234
+            },
+            "mes_notice@jinkosolar.com",
+            "hsl200909@163.com"
+            );
+
+            bool send = MailSystem163.SendMail( "测试", "随便一条数据" );
+            if (send) MessageBox.Show( "发送成功！" );
+            else MessageBox.Show( "发送失败！" );
         }
     }
 
