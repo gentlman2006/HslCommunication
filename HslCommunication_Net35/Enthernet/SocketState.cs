@@ -121,7 +121,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 指令头缓存
         /// </summary>
-        internal byte[] BytesHead { get; set; } = new byte[HslCommunicationCode.HeadByteLength];
+        internal byte[] BytesHead { get; set; } = new byte[HslProtocol.HeadByteLength];
         /// <summary>
         /// 已经接收的指令头长度
         /// </summary>
@@ -140,7 +140,7 @@ namespace HslCommunication.Enthernet
         /// </summary>
         internal void Clear()
         {
-            BytesHead = new byte[HslCommunicationCode.HeadByteLength];
+            BytesHead = new byte[HslProtocol.HeadByteLength];
             AlreadyReceivedHead = 0;
             BytesContent = null;
             AlreadyReceivedContent = 0;

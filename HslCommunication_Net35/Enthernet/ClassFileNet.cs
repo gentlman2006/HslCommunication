@@ -128,7 +128,7 @@ namespace HslCommunication.Enthernet
             // 发送操作指令
             if (!SendStringAndCheckReceive(
                 socket,
-                HslCommunicationCode.Hsl_Protocol_File_Delete,
+                HslProtocol.ProtocolFileDelete,
                 fileName,
                 result,
                 null,
@@ -198,7 +198,7 @@ namespace HslCommunication.Enthernet
             // 发送操作指令
             if (!SendStringAndCheckReceive(
                 socket,
-                HslCommunicationCode.Hsl_Protocol_File_Download,
+                HslProtocol.ProtocolFileDownload,
                 fileName,
                 result,
                 null,
@@ -305,7 +305,7 @@ namespace HslCommunication.Enthernet
             // 上传操作暗号的文件名
             if (!SendStringAndCheckReceive(
                 socket,
-                HslCommunicationCode.Hsl_Protocol_File_Upload,
+                HslProtocol.ProtocolFileUpload,
                 serverName,
                 result,
                 null,
@@ -648,7 +648,7 @@ namespace HslCommunication.Enthernet
         {
             return DownloadStringArrays(
                 out fileNames,
-                HslCommunicationCode.Hsl_Protocol_File_Directory_Files,
+                HslProtocol.ProtocolFileDirectoryFiles,
                 factory,
                 group,
                 id
@@ -677,7 +677,7 @@ namespace HslCommunication.Enthernet
         {
             return DownloadStringArrays(
                 out folders,
-                HslCommunicationCode.Hsl_Protocol_File_Directories,
+                HslProtocol.ProtocolFileDirectories,
                 factory,
                 group,
                 id);
@@ -809,7 +809,7 @@ namespace HslCommunication.Enthernet
 
                 // 操作分流
 
-                if (customer == HslCommunicationCode.Hsl_Protocol_File_Download)
+                if (customer == HslProtocol.ProtocolFileDownload)
                 {
                     string fullFileName = ReturnAbsoluteFileName(Factory, Group, Identify, fileName);
 
@@ -825,7 +825,7 @@ namespace HslCommunication.Enthernet
                     }
                     socket?.Close();
                 }
-                else if (customer == HslCommunicationCode.Hsl_Protocol_File_Upload)
+                else if (customer == HslProtocol.ProtocolFileUpload)
                 {
                     string tempFileName = FilesDirectoryPathTemp + "\\" + CreateRandomFileName();
 
@@ -868,7 +868,7 @@ namespace HslCommunication.Enthernet
                         LogNet?.WriteInfo(LogHeaderText,StringResources.FileUploadFailed + ":" + relativeName);
                     }
                 }
-                else if (customer == HslCommunicationCode.Hsl_Protocol_File_Delete)
+                else if (customer == HslProtocol.ProtocolFileDelete)
                 {
                     string fullFileName = ReturnAbsoluteFileName(Factory, Group, Identify, fileName);
 
@@ -889,7 +889,7 @@ namespace HslCommunication.Enthernet
 
                     if (deleteResult) LogNet?.WriteInfo(LogHeaderText,StringResources.FileDeleteSuccess + ":" + fullFileName);
                 }
-                else if (customer == HslCommunicationCode.Hsl_Protocol_File_Directory_Files)
+                else if (customer == HslProtocol.ProtocolFileDirectoryFiles)
                 {
                     List<GroupFileItem> fileNames = new List<GroupFileItem>();
                     foreach (var m in GetDirectoryFiles(Factory, Group, Identify))
@@ -905,7 +905,7 @@ namespace HslCommunication.Enthernet
                     Newtonsoft.Json.Linq.JArray jArray = Newtonsoft.Json.Linq.JArray.FromObject(fileNames.ToArray());
                     if (SendStringAndCheckReceive(
                         socket,
-                        HslCommunicationCode.Hsl_Protocol_File_Directory_Files,
+                        HslProtocol.ProtocolFileDirectoryFiles,
                         jArray.ToString(),
                         result,
                         null,
@@ -914,7 +914,7 @@ namespace HslCommunication.Enthernet
                         socket?.Close();
                     }
                 }
-                else if (customer == HslCommunicationCode.Hsl_Protocol_File_Directories)
+                else if (customer == HslProtocol.ProtocolFileDirectories)
                 {
                     List<string> folders = new List<string>();
                     foreach (var m in GetDirectories(Factory, Group, Identify))
@@ -926,7 +926,7 @@ namespace HslCommunication.Enthernet
                     Newtonsoft.Json.Linq.JArray jArray = Newtonsoft.Json.Linq.JArray.FromObject(folders.ToArray());
                     if (SendStringAndCheckReceive(
                         socket,
-                        HslCommunicationCode.Hsl_Protocol_File_Directory_Files,
+                        HslProtocol.ProtocolFileDirectoryFiles,
                         jArray.ToString(),
                         result,
                         null,
@@ -1264,7 +1264,7 @@ namespace HslCommunication.Enthernet
 
                 string relativeName = ReturnRelativeFileName(Factory, Group, Identify, fileName);
 
-                if (customer == HslCommunicationCode.Hsl_Protocol_File_Download)
+                if (customer == HslProtocol.ProtocolFileDownload)
                 {
                     // 先获取文件的真实名称
                     string guidName = TransformFactFileName(Factory, Group, Identify, fileName);
@@ -1293,7 +1293,7 @@ namespace HslCommunication.Enthernet
                     // 关闭连接
                     socket?.Close();
                 }
-                else if (customer == HslCommunicationCode.Hsl_Protocol_File_Upload)
+                else if (customer == HslProtocol.ProtocolFileUpload)
                 {
                     string fullFileName = ReturnAbsoluteFileName(Factory, Group, Identify, fileName);
                     // 上传文件
@@ -1329,7 +1329,7 @@ namespace HslCommunication.Enthernet
                         LogNet?.WriteInfo(LogHeaderText,StringResources.FileUploadFailed + ":" + relativeName);
                     }
                 }
-                else if (customer == HslCommunicationCode.Hsl_Protocol_File_Delete)
+                else if (customer == HslProtocol.ProtocolFileDelete)
                 {
                     string fullFileName = ReturnAbsoluteFileName(Factory, Group, Identify, fileName);
 
@@ -1354,13 +1354,13 @@ namespace HslCommunication.Enthernet
 
                     LogNet?.WriteInfo(LogHeaderText,StringResources.FileDeleteSuccess + ":" + relativeName);
                 }
-                else if (customer == HslCommunicationCode.Hsl_Protocol_File_Directory_Files)
+                else if (customer == HslProtocol.ProtocolFileDirectoryFiles)
                 {
                     GroupFileContainer fileManagment = GetGroupFromFilePath(ReturnAbsoluteFilePath(Factory, Group, Identify));
 
                     if (SendStringAndCheckReceive(
                         socket,
-                        HslCommunicationCode.Hsl_Protocol_File_Directory_Files,
+                        HslProtocol.ProtocolFileDirectoryFiles,
                         fileManagment.JsonArrayContent,
                         result,
                         null,
@@ -1369,7 +1369,7 @@ namespace HslCommunication.Enthernet
                         socket?.Close();
                     }
                 }
-                else if (customer == HslCommunicationCode.Hsl_Protocol_File_Directories)
+                else if (customer == HslProtocol.ProtocolFileDirectories)
                 {
                     List<string> folders = new List<string>();
                     foreach (var m in GetDirectories(Factory, Group, Identify))
@@ -1381,7 +1381,7 @@ namespace HslCommunication.Enthernet
                     Newtonsoft.Json.Linq.JArray jArray = Newtonsoft.Json.Linq.JArray.FromObject(folders.ToArray());
                     if (SendStringAndCheckReceive(
                         socket,
-                        HslCommunicationCode.Hsl_Protocol_File_Directory_Files,
+                        HslProtocol.ProtocolFileDirectoryFiles,
                         jArray.ToString(),
                         result,
                         null,

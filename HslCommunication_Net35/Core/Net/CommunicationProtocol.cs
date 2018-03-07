@@ -18,7 +18,7 @@ namespace HslCommunication
     /// <summary>
     /// 用于本程序集访问通信的暗号说明
     /// </summary>
-    internal class HslCommunicationCode
+    internal class HslProtocol
     {
         /// <summary>
         /// 规定所有的网络传输指令头都为32字节
@@ -29,19 +29,19 @@ namespace HslCommunication
         /// <summary>
         /// 用于心跳程序的暗号信息
         /// </summary>
-        internal const int Hsl_Protocol_Check_Secends = 1;
+        internal const int ProtocolCheckSecends = 1;
         /// <summary>
         /// 客户端退出消息
         /// </summary>
-        internal const int Hsl_Protocol_Client_Quit = 2;
+        internal const int ProtocolClientQuit = 2;
         /// <summary>
         /// 因为客户端达到上限而拒绝登录
         /// </summary>
-        internal const int Hsl_Protocol_Client_Refuse_Login = 3;
+        internal const int ProtocolClientRefuseLogin = 3;
         /// <summary>
         /// 允许客户端登录到服务器
         /// </summary>
-        internal const int Hsl_Protocol_Client_Allow_Login = 4;
+        internal const int ProtocolClientAllowLogin = 4;
 
 
 
@@ -49,19 +49,19 @@ namespace HslCommunication
         /// <summary>
         /// 说明发送的只是文本信息
         /// </summary>
-        internal const int Hsl_Protocol_User_String = 1001;
+        internal const int ProtocolUserString = 1001;
         /// <summary>
         /// 发送的数据就是普通的字节数组
         /// </summary>
-        internal const int Hsl_Protocol_User_Bytes = 1002;
+        internal const int ProtocolUserBytes = 1002;
         /// <summary>
         /// 发送的数据就是普通的图片数据
         /// </summary>
-        internal const int Hsl_Protocol_User_Bitmap = 1003;
+        internal const int ProtocolUserBitmap = 1003;
         /// <summary>
         /// 发送的数据是一条异常的数据，字符串为异常消息
         /// </summary>
-        internal const int Hsl_Protocol_User_Exception = 1004;
+        internal const int ProtocolUserException = 1004;
 
 
 
@@ -69,35 +69,35 @@ namespace HslCommunication
         /// <summary>
         /// 请求文件下载的暗号
         /// </summary>
-        internal const int Hsl_Protocol_File_Download = 2001;
+        internal const int ProtocolFileDownload = 2001;
         /// <summary>
         /// 请求文件上传的暗号
         /// </summary>
-        internal const int Hsl_Protocol_File_Upload = 2002;
+        internal const int ProtocolFileUpload = 2002;
         /// <summary>
         /// 请求删除文件的暗号
         /// </summary>
-        internal const int Hsl_Protocol_File_Delete = 2003;
+        internal const int ProtocolFileDelete = 2003;
         /// <summary>
         /// 文件校验成功
         /// </summary>
-        internal const int Hsl_Protocol_File_Check_Right = 2004;
+        internal const int ProtocolFileCheckRight = 2004;
         /// <summary>
         /// 文件校验失败
         /// </summary>
-        internal const int Hsl_Protocol_File_Check_Error = 2005;
+        internal const int ProtocolFileCheckError = 2005;
         /// <summary>
         /// 文件保存失败
         /// </summary>
-        internal const int Hsl_Protocol_File_Save_Error = 2006;
+        internal const int ProtocolFileSaveError = 2006;
         /// <summary>
         /// 请求文件列表的暗号
         /// </summary>
-        internal const int Hsl_Protocol_File_Directory_Files = 2007;
+        internal const int ProtocolFileDirectoryFiles = 2007;
         /// <summary>
         /// 请求子文件的列表暗号
         /// </summary>
-        internal const int Hsl_Protocol_File_Directories = 2008;
+        internal const int ProtocolFileDirectories = 2008;
 
 
 
@@ -105,11 +105,11 @@ namespace HslCommunication
         /// <summary>
         /// 不压缩数据字节
         /// </summary>
-        internal const int Hsl_Protocol_NoZipped = 3001;
+        internal const int ProtocolNoZipped = 3001;
         /// <summary>
         /// 压缩数据字节
         /// </summary>
-        internal const int Hsl_Protocol_Zipped  = 3002;
+        internal const int ProtocolZipped  = 3002;
 
         
     }

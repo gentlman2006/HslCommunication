@@ -120,7 +120,7 @@
       <DependentUpon>UserVerticalProgress.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\Net\ClassNetHandle.cs" />
-    <Compile Include="Core\Net\CommunicationCode.cs" />
+    <Compile Include="Core\Net\CommunicationProtocol.cs" />
     <Compile Include="Controls\UserButton.cs">
       <SubType>UserControl</SubType>
     </Compile>

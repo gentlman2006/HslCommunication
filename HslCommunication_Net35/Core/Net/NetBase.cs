@@ -320,11 +320,11 @@ namespace HslCommunication.Core
         public static byte[] CommandBytes( int command, int customer, Guid token, byte[] data )
         {
             byte[] _temp = null;
-            int _zipped = HslCommunicationCode.Hsl_Protocol_NoZipped;
+            int _zipped = HslProtocol.ProtocolNoZipped;
             int _sendLength = 0;
             if (data == null)
             {
-                _temp = new byte[HslCommunicationCode.HeadByteLength];
+                _temp = new byte[HslProtocol.HeadByteLength];
             }
             else
             {
@@ -334,9 +334,9 @@ namespace HslCommunication.Core
                 {
                     // 10K以上的数据，进行数据压缩
                     data = SoftZipped.CompressBytes( data );
-                    _zipped = HslCommunicationCode.Hsl_Protocol_Zipped;
+                    _zipped = HslProtocol.ProtocolZipped;
                 }
-                _temp = new byte[HslCommunicationCode.HeadByteLength + data.Length];
+                _temp = new byte[HslProtocol.HeadByteLength + data.Length];
                 _sendLength = data.Length;
             }
             BitConverter.GetBytes( command ).CopyTo( _temp, 0 );
@@ -363,7 +363,7 @@ namespace HslCommunication.Core
             {
                 int _zipped = BitConverter.ToInt32( head, 8 );
                 // 先进行解压
-                if (_zipped == HslCommunicationCode.Hsl_Protocol_Zipped)
+                if (_zipped == HslProtocol.ProtocolZipped)
                 {
                     content = SoftZipped.Decompress( content );
                 }
@@ -386,7 +386,7 @@ namespace HslCommunication.Core
         /// <returns></returns>
         internal static byte[] CommandBytes( int customer, Guid token, byte[] data )
         {
-            return CommandBytes( HslCommunicationCode.Hsl_Protocol_User_Bytes, customer, token, data );
+            return CommandBytes( HslProtocol.ProtocolUserBytes, customer, token, data );
         }
 
 
@@ -399,8 +399,8 @@ namespace HslCommunication.Core
         /// <returns></returns>
         internal static byte[] CommandBytes( int customer, Guid token, string data )
         {
-            if (data == null) return CommandBytes( HslCommunicationCode.Hsl_Protocol_User_String, customer, token, null );
-            else return CommandBytes( HslCommunicationCode.Hsl_Protocol_User_String, customer, token, Encoding.Unicode.GetBytes( data ) );
+            if (data == null) return CommandBytes( HslProtocol.ProtocolUserString, customer, token, null );
+            else return CommandBytes( HslProtocol.ProtocolUserString, customer, token, Encoding.Unicode.GetBytes( data ) );
         }
 
 
@@ -1124,7 +1124,7 @@ namespace HslCommunication.Core
             }
 
             // 确认对方是否接收完成
-            int remoteReceive = send.Length - HslCommunicationCode.HeadByteLength;
+            int remoteReceive = send.Length - HslProtocol.HeadByteLength;
 
             if (!CheckRomoteReceived(
                 socket,                                                // 套接字
@@ -1164,7 +1164,7 @@ namespace HslCommunication.Core
         {
             if (SendBaseAndCheckReceive(
                 socket,                                           // 套接字
-                HslCommunicationCode.Hsl_Protocol_User_Bytes,     // 指示字节数组
+                HslProtocol.ProtocolUserBytes,     // 指示字节数组
                 customer,                                         // 用户数据
                 send,                                             // 发送数据，该数据还要经过处理
                 result,                                           // 结果消息对象
@@ -1204,7 +1204,7 @@ namespace HslCommunication.Core
 
             if (!SendBaseAndCheckReceive(
                 socket,                                           // 套接字
-                HslCommunicationCode.Hsl_Protocol_User_String,    // 指示字符串数据
+                HslProtocol.ProtocolUserString,    // 指示字符串数据
                 customer,                                         // 用户数据
                 data,                                             // 字符串的数据
                 result,                                           // 结果消息对象
@@ -1378,7 +1378,7 @@ namespace HslCommunication.Core
             if (!ReceiveBytesFromSocket(
                 socket,                                     // 套接字
                 out head,                                   // 接收的头指令
-                HslCommunicationCode.HeadByteLength,        // 头指令长度
+                HslProtocol.HeadByteLength,        // 头指令长度
                 result,                                     // 结果消息对象
                 null,                                       // 不报告进度
                 false,                                      // 报告是否按照百分比报告
@@ -1452,7 +1452,7 @@ namespace HslCommunication.Core
             }
 
             // check
-            if (BitConverter.ToInt32( head, 0 ) != HslCommunicationCode.Hsl_Protocol_User_String)
+            if (BitConverter.ToInt32( head, 0 ) != HslProtocol.ProtocolUserString)
             {
                 customer = 0;
                 receive = null;
@@ -1495,7 +1495,7 @@ namespace HslCommunication.Core
             }
 
             // check
-            if (BitConverter.ToInt32( head, 0 ) != HslCommunicationCode.Hsl_Protocol_User_Bytes)
+            if (BitConverter.ToInt32( head, 0 ) != HslProtocol.ProtocolUserBytes)
             {
                 customer = 0;
                 data = null;

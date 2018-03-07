@@ -92,19 +92,19 @@ namespace HslCommunication.Enthernet
                     //马上开始重新接收，提供性能保障
                     RefreshReceive();
                     //处理数据
-                    if (received >= HslCommunicationCode.HeadByteLength)
+                    if (received >= HslProtocol.HeadByteLength)
                     {
                         //检测令牌
                         if (NetSupport.IsTwoBytesEquel(state.BytesContent, 12, KeyToken.ToByteArray(), 0, 16))
                         {
                             state.IpEndPoint = (IPEndPoint)state.UdpEndPoint;
-                            int contentLength = BitConverter.ToInt32(state.BytesContent, HslCommunicationCode.HeadByteLength - 4);
-                            if (contentLength == received - HslCommunicationCode.HeadByteLength)
+                            int contentLength = BitConverter.ToInt32(state.BytesContent, HslProtocol.HeadByteLength - 4);
+                            if (contentLength == received - HslProtocol.HeadByteLength)
                             {
-                                byte[] head = new byte[HslCommunicationCode.HeadByteLength];
+                                byte[] head = new byte[HslProtocol.HeadByteLength];
                                 byte[] content = new byte[contentLength];
 
-                                Array.Copy(state.BytesContent, 0, head, 0, HslCommunicationCode.HeadByteLength);
+                                Array.Copy(state.BytesContent, 0, head, 0, HslProtocol.HeadByteLength);
                                 if (contentLength > 0)
                                 {
                                     Array.Copy(state.BytesContent, 32, content, 0, contentLength);
@@ -241,11 +241,11 @@ namespace HslCommunication.Enthernet
         internal override void DataProcessingCenter(AsyncStateOne receive, int protocol, int customer, byte[] content)
         {
             LogNet?.WriteDebug(LogHeaderText,"Protocol:" + protocol + " customer:" + customer + " ip:" + receive.GetRemoteEndPoint().Address.ToString());
-            if (protocol == HslCommunicationCode.Hsl_Protocol_User_Bytes)
+            if (protocol == HslProtocol.ProtocolUserBytes)
             {
                 AcceptByte?.Invoke(receive, customer, content);
             }
-            else if (protocol == HslCommunicationCode.Hsl_Protocol_User_String)
+            else if (protocol == HslProtocol.ProtocolUserString)
             {
                 //接收到文本数据
                 string str = Encoding.Unicode.GetString(content);

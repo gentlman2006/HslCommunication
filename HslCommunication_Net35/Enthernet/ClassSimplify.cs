@@ -66,7 +66,7 @@ namespace HslCommunication.Enthernet
         {
             var result = new OperateResult<string>();
             var data = string.IsNullOrEmpty(send) ? new byte[0] : Encoding.Unicode.GetBytes(send);
-            var temp = ReadFromServerBase(HslCommunicationCode.Hsl_Protocol_User_String, customer, data, sendStatus, receiveStatus);
+            var temp = ReadFromServerBase(HslProtocol.ProtocolUserString, customer, data, sendStatus, receiveStatus);
             result.IsSuccess = temp.IsSuccess;
             result.ErrorCode = temp.ErrorCode;
             result.Message = temp.Message;
@@ -94,7 +94,7 @@ namespace HslCommunication.Enthernet
             Action<long, long> receiveStatus = null
             )
         {
-            return ReadFromServerBase(HslCommunicationCode.Hsl_Protocol_User_Bytes, customer, send, sendStatus, receiveStatus);
+            return ReadFromServerBase(HslProtocol.ProtocolUserBytes, customer, send, sendStatus, receiveStatus);
         }
 
         /// <summary>
@@ -261,12 +261,12 @@ namespace HslCommunication.Enthernet
         {
             LogNet?.WriteDebug(LogHeaderText, "Protocol:" + protocol + " customer:" + customer + " ip:" + receive.GetRemoteEndPoint().Address.ToString());
             //接收数据完成，进行事件通知，优先进行解密操作
-            if (protocol == HslCommunicationCode.Hsl_Protocol_User_Bytes)
+            if (protocol == HslProtocol.ProtocolUserBytes)
             {
                 //字节数据
                 OnReceivedBytesEvent(receive, customer, content);
             }
-            else if (protocol == HslCommunicationCode.Hsl_Protocol_User_String)
+            else if (protocol == HslProtocol.ProtocolUserString)
             {
                 //字符串数据
                 OnReceiveStringEvent(receive, customer, Encoding.Unicode.GetString(content));

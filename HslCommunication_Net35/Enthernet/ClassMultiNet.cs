@@ -438,23 +438,23 @@ namespace HslCommunication.Enthernet
         /// <param name="content"></param>
         internal override void DataProcessingCenter(AsyncStateOne receive, int protocol, int customer, byte[] content)
         {
-            if (protocol == HslCommunicationCode.Hsl_Protocol_Check_Secends)
+            if (protocol == HslProtocol.ProtocolCheckSecends)
             {
                 BitConverter.GetBytes(DateTime.Now.Ticks).CopyTo(content, 8);
-                SendBytes(receive, NetSupport.CommandBytes(HslCommunicationCode.Hsl_Protocol_Check_Secends, customer, KeyToken, content));
+                SendBytes(receive, NetSupport.CommandBytes(HslProtocol.ProtocolCheckSecends, customer, KeyToken, content));
                 receive.HeartTime = DateTime.Now;
             }
-            else if (protocol == HslCommunicationCode.Hsl_Protocol_Client_Quit)
+            else if (protocol == HslProtocol.ProtocolClientQuit)
             {
                 TcpStateDownLine(receive, true);
             }
-            else if (protocol == HslCommunicationCode.Hsl_Protocol_User_Bytes)
+            else if (protocol == HslProtocol.ProtocolUserBytes)
             {
                 //接收到字节数据
                 AcceptByte?.Invoke(receive, customer, content);
                 // LogNet?.WriteDebug(LogHeaderText, "Protocol:" + protocol + " customer:" + customer + " name:" + receive.LoginAlias);
             }
-            else if (protocol == HslCommunicationCode.Hsl_Protocol_User_String)
+            else if (protocol == HslProtocol.ProtocolUserString)
             {
                 //接收到文本数据
                 string str = Encoding.Unicode.GetString(content);
@@ -613,7 +613,7 @@ namespace HslCommunication.Enthernet
         {
             IsQuie = true;
             if (Is_Client_Start)
-                SendBytes(stateone, NetSupport.CommandBytes(HslCommunicationCode.Hsl_Protocol_Client_Quit, 0, KeyToken, null));
+                SendBytes(stateone, NetSupport.CommandBytes(HslProtocol.ProtocolClientQuit, 0, KeyToken, null));
 
             thread_heart_check?.Abort();
             Is_Client_Start = false;
@@ -716,7 +716,7 @@ namespace HslCommunication.Enthernet
             // SendBytes(stateone, CommunicationCode.CommandBytes(CommunicationCode.Hsl_Protocol_Check_Secends));
             byte[] bytesTemp = new byte[16];
             BitConverter.GetBytes(DateTime.Now.Ticks).CopyTo(bytesTemp, 0);
-            SendBytes(stateone, NetSupport.CommandBytes(HslCommunicationCode.Hsl_Protocol_Check_Secends, 0, KeyToken, bytesTemp));
+            SendBytes(stateone, NetSupport.CommandBytes(HslProtocol.ProtocolCheckSecends, 0, KeyToken, bytesTemp));
 
 
             stateone.HeartTime = DateTime.Now;
@@ -823,7 +823,7 @@ namespace HslCommunication.Enthernet
         /// <param name="content"></param>
         internal override void DataProcessingCenter(AsyncStateOne receive, int protocol, int customer, byte[] content)
         {
-            if (protocol == HslCommunicationCode.Hsl_Protocol_Check_Secends)
+            if (protocol == HslProtocol.ProtocolCheckSecends)
             {
                 DateTime dt = new DateTime(BitConverter.ToInt64(content, 0));
                 ServerTime = new DateTime(BitConverter.ToInt64(content, 8));
@@ -831,16 +831,16 @@ namespace HslCommunication.Enthernet
                 stateone.HeartTime = DateTime.Now;
                 // MessageAlerts?.Invoke("心跳时间：" + DateTime.Now.ToString());
             }
-            else if (protocol == HslCommunicationCode.Hsl_Protocol_Client_Quit)
+            else if (protocol == HslProtocol.ProtocolClientQuit)
             {
                 // 申请了退出
             }
-            else if (protocol == HslCommunicationCode.Hsl_Protocol_User_Bytes)
+            else if (protocol == HslProtocol.ProtocolUserBytes)
             {
                 // 接收到字节数据
                 AcceptByte?.Invoke(stateone, customer, content);
             }
-            else if (protocol == HslCommunicationCode.Hsl_Protocol_User_String)
+            else if (protocol == HslProtocol.ProtocolUserString)
             {
                 // 接收到文本数据
                 string str = Encoding.Unicode.GetString(content);
@@ -867,7 +867,7 @@ namespace HslCommunication.Enthernet
                 {
                     byte[] send = new byte[16];
                     BitConverter.GetBytes(DateTime.Now.Ticks).CopyTo(send, 0);
-                    SendBytes(stateone, NetSupport.CommandBytes(HslCommunicationCode.Hsl_Protocol_Check_Secends, 0, KeyToken, send));
+                    SendBytes(stateone, NetSupport.CommandBytes(HslProtocol.ProtocolCheckSecends, 0, KeyToken, send));
                     double timeSpan = (DateTime.Now - stateone.HeartTime).TotalSeconds;
                     if (timeSpan > 1 * 8)//8次没有收到失去联系
                     {
