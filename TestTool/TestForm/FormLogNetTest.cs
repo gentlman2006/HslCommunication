@@ -22,8 +22,26 @@ namespace TestTool.TestForm
             // 该source可以是本地读取的文件，也可以是网络发送过来的数据
             //string source = Encoding.UTF8.GetString(System.IO.File.ReadAllBytes("123.txt"));   // 传入路径
             //logNetAnalysisControl1.SetLogNetSource(source);
+
+            logNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
         }
 
+        private void LogNet_BeforeSaveToFile( object sender, HslCommunication.LogNet.HslEventArgs e )
+        {
+            // 显示日志信息
+            if (IsHandleCreated && InvokeRequired)
+            {
+                BeginInvoke( new Action<object, HslCommunication.LogNet.HslEventArgs>( LogNet_BeforeSaveToFile ), sender, e );
+                return;
+            }
+
+            textBox1.AppendText( FormatLogInfo( e.HslMessage ) );
+        }
+
+        private string FormatLogInfo( HslCommunication.LogNet.HslMessageItem item )
+        {
+            return $"[{item.Degree}] {item.Time.ToString( "yyyy-MM-dd HH:mm:ss.fff" )} Thread[{item.ThreadId.ToString( "D2" )}] {item.Text}{Environment.NewLine}";
+        }
 
         private HslCommunication.LogNet.ILogNet logNet = new HslCommunication.LogNet.LogNetSingle(Application.StartupPath + "\\Logs\\123.txt");
         

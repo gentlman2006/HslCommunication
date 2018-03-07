@@ -30,13 +30,14 @@
         {
             this.logNetAnalysisControl1 = new HslCommunication.LogNet.LogNetAnalysisControl();
             this.userButton1 = new HslCommunication.Controls.UserButton();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // logNetAnalysisControl1
             // 
             this.logNetAnalysisControl1.Location = new System.Drawing.Point(3, 12);
             this.logNetAnalysisControl1.Name = "logNetAnalysisControl1";
-            this.logNetAnalysisControl1.Size = new System.Drawing.Size(752, 542);
+            this.logNetAnalysisControl1.Size = new System.Drawing.Size(778, 283);
             this.logNetAnalysisControl1.TabIndex = 0;
             // 
             // userButton1
@@ -53,17 +54,28 @@
             this.userButton1.UIText = "测试";
             this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(9, 309);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox1.Size = new System.Drawing.Size(772, 243);
+            this.textBox1.TabIndex = 2;
+            // 
             // FormLogNetTest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(918, 564);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.userButton1);
             this.Controls.Add(this.logNetAnalysisControl1);
             this.Name = "FormLogNetTest";
             this.Text = "FormLogNetTest";
             this.Load += new System.EventHandler(this.FormLogNetTest_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -71,5 +83,6 @@
 
         private HslCommunication.LogNet.LogNetAnalysisControl logNetAnalysisControl1;
         private HslCommunication.Controls.UserButton userButton1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
