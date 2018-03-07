@@ -319,15 +319,7 @@ namespace HslCommunication.LogNet
             {
                 // 需要记录数据
                 HslMessageItem item = GetHslMessageItem(degree, text);
-
-                HslEventArgs args = new HslEventArgs()
-                {
-                    HslMessage = item,
-                };
-
                 AddItemToCache(item);
-                // 触发事件
-                OnBeforeSaveToFile(args);
             }
 
         }
@@ -387,6 +379,9 @@ namespace HslCommunication.LogNet
                     sw = new StreamWriter(LogSaveFileName, true, Encoding.UTF8);
                     while (current != null)
                     {
+                        // 触发事件
+                        OnBeforeSaveToFile( new HslEventArgs( ) { HslMessage = current } );
+
                         sw.Write(HslMessageFormate(current));
                         sw.Write(Environment.NewLine);
                         current = GetAndRemoveLogItem();
