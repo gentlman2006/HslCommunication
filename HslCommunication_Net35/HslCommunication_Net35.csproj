@@ -133,7 +133,9 @@
     <Compile Include="Controls\UserClock.designer.cs">
       <DependentUpon>UserClock.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\Net\INetMessage.cs" />
     <Compile Include="Core\Net\NetworkBase.cs" />
+    <Compile Include="Core\Net\NetworkClientBase.cs" />
     <Compile Include="Core\Thread\ThreadLock.cs" />
     <Compile Include="Core\Types\HslPieItem.cs" />
     <Compile Include="Enthernet\ClassDeviceNet.cs" />

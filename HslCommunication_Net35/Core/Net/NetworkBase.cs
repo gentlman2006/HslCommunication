@@ -20,7 +20,7 @@ using System.Threading;
 
 
 
-namespace HslCommunication.Core.Net
+namespace HslCommunication.Core
 {
     /// <summary>
     /// 本系统所有网络类的基类，该类为抽象类，无法进行实例化
@@ -34,7 +34,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         public NetworkBase( )
         {
-
+            Token = Guid.Empty;
         }
 
         #endregion
@@ -46,6 +46,11 @@ namespace HslCommunication.Core.Net
         /// </summary>
         public ILogNet LogNet { get; set; }
 
+        /// <summary>
+        /// 网络类的身份令牌
+        /// </summary>
+        public Guid Token { get; set; }
+
         #endregion
 
         #region Potect Member
@@ -54,45 +59,68 @@ namespace HslCommunication.Core.Net
         /// 通讯类的核心套接字
         /// </summary>
         protected Socket CoreSocket = null;
-
-        /// <summary>
-        /// 通讯过程中的头子节的长度
-        /// </summary>
-        protected int ProtocolHeadBytesLength = 32;
+        
 
         #endregion
-
-
-        #region Reveive Contect
-
-        /// <summary>
-        /// 从当前的头子节文件中提取出接下来需要接收的数据长度
-        /// </summary>
-        /// <param name="headBytes">需要传入的头子节数据</param>
-        /// <returns>返回接下来的数据内容长度</returns>
-        protected virtual long GetContentLengthByHeadBytes( byte[] headBytes )
-        {
-            return BitConverter.ToInt32( headBytes, 0 );
-        }
-
+        
+        #region Reveive Content
+        
 
         /// <summary>
         /// 接收一条完成的数据，使用异步接收完成，包含了指令头信息
         /// </summary>
         /// <param name="socket">已经打开的网络套接字</param>
-        /// <param name="report"></param>
-        /// <param name="isReportBack"></param>
         /// <returns></returns>
-        protected OperateResult<byte[], byte[]> ReceiveMessage( Socket socket, Action<long, long> report, bool isReportBack )
+        protected OperateResult<TNetMessage> ReceiveMessage<TNetMessage>( Socket socket ) where TNetMessage : INetMessage,new()
         {
-          
+            TNetMessage netMsg = new TNetMessage();
+            OperateResult<TNetMessage> result = new OperateResult<TNetMessage>();
 
+            // 接收指令头
+            OperateResult<byte[]> headResult = Receive(socket, netMsg.ProtocolHeadBytesLength);
+            if(!headResult.IsSuccess)
+            {
+                socket.Close();
+                result.CopyErrorFromOther(headResult);
+                return result;
+            }
+
+            netMsg.HeadBytes = headResult.Content;
+            
+            if(!netMsg.CheckHeadBytesLegal(Token.ToByteArray()))
+            {
+                // 令牌校验失败
+                socket.Close();
+                LogNet?.WriteError(ToString(), StringResources.TokenCheckFailed);
+                result.Message = StringResources.TokenCheckFailed;
+                return result;
+            }
+
+            int contentLength = netMsg.GetContentLengthByHeadBytes();
+            if (contentLength == 0)
+            {
+                netMsg.ContentBytes = new byte[0];
+            }
+            else
+            {
+                OperateResult<byte[]> contentResult = Receive(socket, contentLength);
+                if (!headResult.IsSuccess)
+                {
+                    socket.Close();
+                    result.CopyErrorFromOther(contentResult);
+                    return result;
+                }
+            }
+            
+            result.Content = netMsg;
+            result.IsSuccess = true;
+            return result;
         }
 
 
 
 
-        private OperateResult<byte[]> Receive(Socket client, int length)
+        private OperateResult<byte[]> Receive(Socket socket, int length)
         {
             var result = new OperateResult<byte[]>();
             var receiveDone = new ManualResetEvent(false);
@@ -101,25 +129,52 @@ namespace HslCommunication.Core.Net
             try
             {
                 state.WaitDone = receiveDone;
-                state.WorkSocket = client;
+                state.WorkSocket = socket;
 
                 // Begin receiving the data from the remote device.
-                client.BeginReceive(state.Buffer, state.AlreadyDealLength,
+                socket.BeginReceive(state.Buffer, state.AlreadyDealLength,
                     state.DataLength - state.AlreadyDealLength, SocketFlags.None,
                     new AsyncCallback(ReceiveCallback), state);
             }
             catch (Exception ex)
             {
                 // 发生了错误，直接返回
-                LogNet?.WriteException("Receive", ex);
+                LogNet?.WriteException(ToString(), ex);
                 result.Message = ex.Message;
                 receiveDone.Close();
                 return result;
             }
 
+
+            
             // 等待接收完成，或是发生异常
             receiveDone.WaitOne();
+            receiveDone.Close();
 
+
+
+            // 接收数据失败
+            if(state.IsError)
+            {
+                result.Message = state.ErrerMsg;
+                return result;
+            }
+
+
+            // 远程关闭了连接
+            if (state.IsClose)
+            {
+                result.Message = "远程关闭了连接";
+                return result;
+            }
+
+
+            // 正常接收到数据
+            result.Content = state.Buffer;
+            result.IsSuccess = true;
+            state.Clear();
+            state = null;
+            return result;
         }
 
 
@@ -139,7 +194,7 @@ namespace HslCommunication.Core.Net
                         state.AlreadyDealLength += bytesRead;
                         if (state.AlreadyDealLength < state.DataLength)
                         {
-                            // Get the rest of the data.
+                            // 获取接下来的所有的数据
                             client.BeginReceive(state.Buffer, state.AlreadyDealLength,
                                 state.DataLength - state.AlreadyDealLength, SocketFlags.None,
                                 new AsyncCallback(ReceiveCallback), state);
@@ -152,25 +207,43 @@ namespace HslCommunication.Core.Net
                     }
                     else
                     {
-                        // 关闭了数据发送，断开连接
-                        if (state.sb.Length > 1)
-                        {
-                            response = state.sb.ToString();
-                        }
-                        // Signal that all bytes have been received.
-                        receiveDone.Set();
+                        // 对方关闭了网络通讯
+                        state.IsClose = true;
+                        state.WaitDone.Set();
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    sta
-                    Console.WriteLine(e.ToString());
+                    state.IsError = true;
+                    LogNet?.WriteException(ToString(), ex);
+                    state.ErrerMsg = ex.Message;
+                    state.WaitDone.Set();
                 }
             }
         }
 
 
+
         #endregion
+
+        #region Send Content
+
+        private OperateResult Send(Socket socket, byte[] data)
+        {
+            return new OperateResult();
+        }
+
+
+        #endregion
+
+        /// <summary>
+        /// 获取字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "NetworkBase";
+        }
 
     }
 
@@ -191,48 +264,45 @@ namespace HslCommunication.Core.Net
 
         public StateObject(int length)
         {
-            dataLength = length;
+            DataLength = length;
             Buffer = new byte[length];
         }
-
-
+        
         #endregion
-
-
-
-        #region Private Member
-
-        private int dataLength = 32;
-        private ManualResetEvent waitDone = null;
-
-        #endregion
+        
 
 
         #region Public Member
 
-        public int DataLength
-        {
-            get { return dataLength; }
-        }
-
-
+        public int DataLength { get; } = 32;
+        
 
         public int AlreadyDealLength { get; set; }
 
-        public ManualResetEvent WaitDone
-        {
-            get { return waitDone; }
-            set { waitDone = value; }
-        }
+        public ManualResetEvent WaitDone { get; set; }
 
         public byte[] Buffer { get; set; }
 
 
         public Socket WorkSocket { get; set; }
 
-        public bool isError = false;
+        public bool IsError { get; set; }
+
+        public bool IsClose { get; set; }
 
         public string ErrerMsg { get; set; }
+
+        #endregion
+
+        #region Public Method
+
+        public void Clear()
+        {
+            IsError = false;
+            IsClose = false;
+            AlreadyDealLength = 0;
+            Buffer = null;
+        }
 
         #endregion
 

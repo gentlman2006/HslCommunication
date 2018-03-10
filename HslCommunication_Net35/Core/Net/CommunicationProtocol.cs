@@ -103,6 +103,10 @@ namespace HslCommunication
         /// 请求子文件的列表暗号
         /// </summary>
         internal const int ProtocolFileDirectories = 2008;
+        /// <summary>
+        /// 进度返回暗号
+        /// </summary>
+        internal const int ProtocolProgressReport = 2009;
 
 
 

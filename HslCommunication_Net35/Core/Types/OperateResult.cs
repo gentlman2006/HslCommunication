@@ -62,6 +62,24 @@ namespace HslCommunication
         }
 
 
+        /// <summary>
+        /// 从另一个结果类中拷贝错误信息
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="result"></param>
+        public void CopyErrorFromOther<TResult>(TResult result) where TResult : OperateResult
+        {
+            if (result != null)
+            {
+                ErrorCode = result.ErrorCode;
+                CustomerCode = result.CustomerCode;
+                Message = result.Message;
+                Tag = result.Tag;
+            }
+            
+        }
+
+
     }
 
     /// <summary>
