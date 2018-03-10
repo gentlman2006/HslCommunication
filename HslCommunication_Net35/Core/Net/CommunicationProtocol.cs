@@ -25,6 +25,11 @@ namespace HslCommunication
         /// </summary>
         internal const int HeadByteLength = 32;
 
+        /// <summary>
+        /// 所有网络通信中的缓冲池数据信息
+        /// </summary>
+        internal const int ProtocolBufferSize = 1024;
+
 
         /// <summary>
         /// 用于心跳程序的暗号信息

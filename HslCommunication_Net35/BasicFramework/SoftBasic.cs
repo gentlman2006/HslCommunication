@@ -158,6 +158,59 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
+        #region 数组比较
+
+        /// <summary>
+        /// 判断两个字节的指定部分是否相同
+        /// </summary>
+        /// <param name="b1">第一个字节</param>
+        /// <param name="start1">第一个字节的起始位置</param>
+        /// <param name="b2">第二个字节</param>
+        /// <param name="start2">第二个字节的起始位置</param>
+        /// <param name="length">校验的长度</param>
+        /// <returns>返回是否相等</returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        public static bool IsTwoBytesEquel(byte[] b1, int start1, byte[] b2, int start2, int length)
+        {
+            if (b1 == null || b2 == null) return false;
+            for (int i = 0; i < length; i++)
+            {
+                if (b1[i + start1] != b2[i + start2])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        /// <summary>
+        /// 判断两个数据的令牌是否相等
+        /// </summary>
+        /// <param name="head">字节数据</param>
+        /// <param name="token">GUID数据</param>
+        /// <returns>返回是否相等</returns>
+        public static bool IsByteTokenEquel(byte[] head, Guid token)
+        {
+            return IsTwoBytesEquel(head, 12, token.ToByteArray(), 0, 16);
+        }
+
+
+        /// <summary>
+        /// 判断两个数据的令牌是否相等
+        /// </summary>
+        /// <param name="token1">第一个令牌</param>
+        /// <param name="token2">第二个令牌</param>
+        /// <returns>返回是否相等</returns>
+        public static bool IsTwoTokenEquel(Guid token1, Guid token2)
+        {
+            return IsTwoBytesEquel(token1.ToByteArray(), 0, token2.ToByteArray(), 0, 16);
+        }
+
+
+
+        #endregion
+
         #region 枚举相关块
 
 
