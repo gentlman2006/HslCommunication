@@ -50,4 +50,6 @@ namespace HslCommunication.Core
         byte[] ContentBytes { get; set; }
 
     }
+    
+
 }

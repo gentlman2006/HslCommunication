@@ -65,8 +65,8 @@ namespace HslCommunication
         /// <summary>
         /// 从另一个结果类中拷贝错误信息
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="result"></param>
+        /// <typeparam name="TResult">支持结果类及派生类</typeparam>
+        /// <param name="result">结果类及派生类的对象</param>
         public void CopyErrorFromOther<TResult>(TResult result) where TResult : OperateResult
         {
             if (result != null)
@@ -79,6 +79,24 @@ namespace HslCommunication
             
         }
 
+        #region Static Method
+
+
+        /// <summary>
+        /// 创建并返回一个成功的结果对象
+        /// </summary>
+        /// <returns></returns>
+        public static OperateResult CreateSuccessResult()
+        {
+            return new OperateResult()
+            {
+                IsSuccess = true,
+                Message = "success"
+            };
+        }
+
+
+        #endregion
 
     }
 

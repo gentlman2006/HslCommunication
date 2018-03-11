@@ -601,6 +601,20 @@ namespace HslCommunication.BasicFramework
 
 
         #endregion
+
+        #region 获取唯一的一串字符串
+
+        /// <summary>
+        /// 获取一串唯一的随机字符串，长度为20，由Guid码和4位数的随机数组成，保证字符串的唯一性
+        /// </summary>
+        /// <returns>随机字符串数据</returns>
+        public static string GetUniqueStringByGuidAndRandom()
+        {
+            Random random = new Random();
+            return Guid.NewGuid().ToString("N") + random.Next(1000, 10000);
+        }
+
+        #endregion
     }
 
 }
