@@ -14,6 +14,9 @@ namespace HslCommunication
      *    
      *    时间：2017年11月20日 11:43:57
      *    更新：废除原先的2个结果派生类，新增10个泛型派生类，来满足绝大多数的场景使用
+     *    
+     *    时间：2018年3月11日 22:08:08
+     *    更新：新增一些静态方法来方便的获取带有参数的成功对象，新增快速复制错误信息的方法
      * 
      *******************************************************************************/
 
@@ -85,16 +88,99 @@ namespace HslCommunication
         /// <summary>
         /// 创建并返回一个成功的结果对象
         /// </summary>
-        /// <returns></returns>
+        /// <returns>成功的结果对象</returns>
         public static OperateResult CreateSuccessResult()
         {
             return new OperateResult()
             {
                 IsSuccess = true,
-                Message = "success"
+                Message = StringResources.SuccessText,
             };
         }
 
+        /// <summary>
+        /// 创建并返回一个成功的结果对象，并带有一个参数对象
+        /// </summary>
+        /// <typeparam name="T">参数类型</typeparam>
+        /// <param name="value">类型的值对象</param>
+        /// <returns>成功的结果对象</returns>
+        public static OperateResult<T> CreateSuccessResult<T>(T value)
+        {
+            return new OperateResult<T>()
+            {
+                IsSuccess = true,
+                Message = StringResources.SuccessText,
+                Content = value
+            };
+        }
+
+
+        /// <summary>
+        /// 创建并返回一个成功的结果对象，并带有两个参数对象
+        /// </summary>
+        /// <typeparam name="T1">第一个参数类型</typeparam>
+        /// <typeparam name="T2">第二个参数类型</typeparam>
+        /// <param name="value1">类型一对象</param>
+        /// <param name="value2">类型二对象</param>
+        /// <returns>成的结果对象</returns>
+        public static OperateResult<T1, T2> CreateSuccessResult<T1, T2>(T1 value1, T2 value2)
+        {
+            return new OperateResult<T1, T2>()
+            {
+                IsSuccess = true,
+                Message = StringResources.SuccessText,
+                Content1 = value1,
+                Content2 = value2,
+            };
+        }
+
+
+        /// <summary>
+        /// 创建并返回一个成功的结果对象，并带有三个参数对象
+        /// </summary>
+        /// <typeparam name="T1">第一个参数类型</typeparam>
+        /// <typeparam name="T2">第二个参数类型</typeparam>
+        /// <typeparam name="T3">第三个参数类型</typeparam>
+        /// <param name="value1">类型一对象</param>
+        /// <param name="value2">类型二对象</param>
+        /// <param name="value3">类型三对象</param>
+        /// <returns>成的结果对象</returns>
+        public static OperateResult<T1, T2, T3> CreateSuccessResult<T1, T2, T3>(T1 value1, T2 value2, T3 value3)
+        {
+            return new OperateResult<T1, T2, T3>()
+            {
+                IsSuccess = true,
+                Message = StringResources.SuccessText,
+                Content1 = value1,
+                Content2 = value2,
+                Content3 = value3,
+            };
+        }
+
+        /// <summary>
+        /// 创建并返回一个成功的结果对象，并带有四个参数对象
+        /// </summary>
+        /// <typeparam name="T1">第一个参数类型</typeparam>
+        /// <typeparam name="T2">第二个参数类型</typeparam>
+        /// <typeparam name="T3">第三个参数类型</typeparam>
+        /// <typeparam name="T4">第四个参数类型</typeparam>
+        /// <param name="value1">类型一对象</param>
+        /// <param name="value2">类型二对象</param>
+        /// <param name="value3">类型三对象</param>
+        /// <param name="value4">类型四对象</param>
+        /// <returns>成的结果对象</returns>
+        public static OperateResult<T1, T2, T3, T4> CreateSuccessResult<T1, T2, T3, T4>(T1 value1, T2 value2, T3 value3, T4 value4)
+        {
+            return new OperateResult<T1, T2, T3, T4>()
+            {
+                IsSuccess = true,
+                Message = StringResources.SuccessText,
+                Content1 = value1,
+                Content2 = value2,
+                Content3 = value3,
+                Content4 = value4,
+            };
+        }
 
         #endregion
 

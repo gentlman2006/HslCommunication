@@ -35,6 +35,7 @@ namespace HslCommunication
         internal const string ExceptionStackTrace = "错误堆栈：";
         internal const string ExceptopnTargetSite = "错误方法：";
         internal const string ExceprionCustomer = "用户自定义方法出错：";
+        internal const string SuccessText = "Success";
 
 
 

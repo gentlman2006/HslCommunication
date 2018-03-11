@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Net;
 
 namespace HslCommunication.Core
 {
@@ -13,6 +14,15 @@ namespace HslCommunication.Core
     /// </summary>
     public class NetworkDoubleBase<TNetMessage> : NetworkBase where TNetMessage : INetMessage, new()
     {
+        /// <summary>
+        /// 默认的无参构造函数
+        /// </summary>
+        public NetworkDoubleBase()
+        {
+            InteractiveLock = new SimpleHybirdLock();
+        }
+
+
         #region Private Member
 
         /// <summary>
@@ -24,10 +34,27 @@ namespace HslCommunication.Core
         /// </summary>
         private bool IsSocketErrorState { get; set; } = false;
         /// <summary>
+        /// 一次正常的交互的互斥锁
+        /// </summary>
+        private SimpleHybirdLock InteractiveLock { get; set; }
+        /// <summary>
         /// IP地址
         /// </summary>
         private string ipAddress = "127.0.0.1";
+        /// <summary>
+        /// 网络的端口
+        /// </summary>
         private int port = 10000;
+
+
+        private int connectTimeOut = 10000;              // 连接超时时间设置
+
+        #endregion
+
+        #region Protect Member
+
+        
+
 
         #endregion
 
@@ -101,17 +128,42 @@ namespace HslCommunication.Core
          **************************************************************************************/
 
 
-        public OperateResult<byte[],byte[]> ReadFromCoreServer(byte[] send)
+        private OperateResult<Socket> GetAvailableSocket()
         {
-            Socket socket = null;
-            if(IsPersistentConn)
+            if (IsPersistentConn)
             {
                 // 长连接模式
+                if (IsSocketErrorState)
+                {
+                    // 上次通讯异常或是没有打开
+                    IsSocketErrorState = false;
+                    OperateResult<Socket> resultSocket = CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port));
+                    if (!resultSocket.IsSuccess)
+                    {
+                        result.CopyErrorFromOther(resultSocket);
+                        socket.Close();
+                        IsSocketErrorState = true;
+                        return result;
+                    }
+                }
+                else
+                {
+                    return 
+                }
             }
             else
             {
                 // 短连接模式
+                return CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port));
             }
+        }
+
+
+        public OperateResult<byte[],byte[]> ReadFromCoreServer(byte[] send)
+        {
+            var result = new OperateResult<byte[], byte[]>();
+            Socket socket = null;
+            
         }
 
 
