@@ -284,6 +284,8 @@ namespace HslCommunication.Enthernet
     public sealed class NetUdpClient : NetBase
     {
         private IPEndPoint ServerEndPoint = null;
+
+
         /// <summary>
         /// 实例化对象，
         /// </summary>
@@ -293,6 +295,8 @@ namespace HslCommunication.Enthernet
             ServerEndPoint = endpoint;
             WorkSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         }
+
+
         /// <summary>
         /// 发送字节数据到服务器
         /// </summary>
@@ -305,6 +309,8 @@ namespace HslCommunication.Enthernet
         {
             WorkSocket.SendTo(NetSupport.CommandBytes(customer, KeyToken, data), ServerEndPoint);
         }
+
+
         /// <summary>
         /// 发送字符串数据到服务器
         /// </summary>

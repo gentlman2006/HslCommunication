@@ -119,6 +119,7 @@
     <Compile Include="Controls\UserVerticalProgress.Designer.cs">
       <DependentUpon>UserVerticalProgress.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\IMessage\HslMessage.cs" />
     <Compile Include="Core\IMessage\SiemensMessage.cs" />
     <Compile Include="Core\Net\ClassNetHandle.cs" />
     <Compile Include="Core\Net\CommunicationProtocol.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Enthernet\ClassSimplify.cs" />
     <Compile Include="Enthernet\ClassSoftUpdate.cs" />
     <Compile Include="Enthernet\ClassUdpNet.cs" />
+    <Compile Include="Enthernet\SimplifyNet.cs" />
     <Compile Include="Enthernet\SocketState.cs" />
     <Compile Include="Core\Types\HslTimeOut.cs" />
     <Compile Include="LogNet\Core\ILogNet.cs" />
@@ -177,6 +179,7 @@
     <Compile Include="Profinet\OmronNet.cs" />
     <Compile Include="Profinet\PlcNetBase.cs" />
     <Compile Include="Profinet\SiemensNet.cs" />
+    <Compile Include="Profinet\SiemensTcp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

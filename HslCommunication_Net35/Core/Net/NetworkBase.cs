@@ -64,6 +64,37 @@ namespace HslCommunication.Core
 
         #endregion
 
+        #region Static Method
+
+
+        /// <summary>
+        /// 检查网络套接字是否操作超时，需要对套接字进行封装
+        /// </summary>
+        /// <param name="obj"></param>
+        internal static void ThreadPoolCheckTimeOut(object obj)
+        {
+            if (obj is HslTimeOut timeout)
+            {
+                while (!timeout.IsSuccessful)
+                {
+                    if ((DateTime.Now - timeout.StartTime).TotalMilliseconds > timeout.DelayTime)
+                    {
+                        // 连接超时或是验证超时
+                        if (!timeout.IsSuccessful)
+                        {
+                            timeout.Operator?.Invoke();
+                            timeout.WorkSocket?.Close();
+                            timeout = null;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        #endregion
+
         /*****************************************************************************
          * 
          *    说明：
@@ -285,14 +316,27 @@ namespace HslCommunication.Core
         #region Socket Connect
 
         /// <summary>
-        /// 创建一个新的socket对象并连接到远程的地址
+        /// 创建一个新的socket对象并连接到远程的地址，默认超时时间为10秒钟
         /// </summary>
         /// <param name="ipAddress">Ip地址</param>
         /// <param name="port">端口号</param>
         /// <returns>返回套接字的封装结果对象</returns>
         protected OperateResult<Socket> CreateSocketAndConnect(string ipAddress, int port)
         {
-            return CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port));
+            return CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port), 10000);
+        }
+
+
+        /// <summary>
+        /// 创建一个新的socket对象并连接到远程的地址
+        /// </summary>
+        /// <param name="ipAddress">Ip地址</param>
+        /// <param name="port">端口号</param>
+        /// <param name="timeOut">连接的超时时间</param>
+        /// <returns>返回套接字的封装结果对象</returns>
+        protected OperateResult<Socket> CreateSocketAndConnect(string ipAddress, int port,int timeOut)
+        {
+            return CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port), timeOut);
         }
 
 
@@ -300,8 +344,9 @@ namespace HslCommunication.Core
         /// 创建一个新的socket对象并连接到远程的地址
         /// </summary>
         /// <param name="endPoint">连接的目标终结点</param>
+        /// <param name="timeOut">连接的超时时间</param>
         /// <returns>返回套接字的封装结果对象</returns>
-        protected OperateResult<Socket> CreateSocketAndConnect(IPEndPoint endPoint)
+        protected OperateResult<Socket> CreateSocketAndConnect(IPEndPoint endPoint,int timeOut)
         {
             var result = new OperateResult<Socket>();
             var connectDone = new ManualResetEvent(false);
@@ -311,6 +356,13 @@ namespace HslCommunication.Core
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
+                HslTimeOut connectTimeout = new HslTimeOut()
+                {
+                    WorkSocket = socket,
+                    DelayTime = timeOut
+                };
+                ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckTimeOut), connectTimeout);
+
                 state.WaitDone = connectDone;
                 state.WorkSocket = socket;
                 socket.BeginConnect(endPoint, new AsyncCallback(ConnectCallBack), state);
