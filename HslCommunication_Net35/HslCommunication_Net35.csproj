@@ -119,6 +119,7 @@
     <Compile Include="Controls\UserVerticalProgress.Designer.cs">
       <DependentUpon>UserVerticalProgress.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\IMessage\SiemensMessage.cs" />
     <Compile Include="Core\Net\ClassNetHandle.cs" />
     <Compile Include="Core\Net\CommunicationProtocol.cs" />
     <Compile Include="Controls\UserButton.cs">
@@ -133,7 +134,7 @@
     <Compile Include="Controls\UserClock.designer.cs">
       <DependentUpon>UserClock.cs</DependentUpon>
     </Compile>
-    <Compile Include="Core\Net\INetMessage.cs" />
+    <Compile Include="Core\IMessage\INetMessage.cs" />
     <Compile Include="Core\Net\NetworkBase.cs" />
     <Compile Include="Core\Net\NetworkDoubleBase.cs" />
     <Compile Include="Core\Net\NetworkShareBase.cs" />

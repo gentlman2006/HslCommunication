@@ -63,7 +63,7 @@ namespace HslCommunication.Core
         #region Receive Message
 
         /// <summary>
-        /// 接收一条完成的数据，使用异步接收完成，包含了指令头信息
+        /// 接收一条完整的数据，使用异步接收完成，包含了指令头信息
         /// </summary>
         /// <param name="socket">已经打开的网络套接字</param>
         /// <returns>数据的接收结果对象</returns>
@@ -76,17 +76,15 @@ namespace HslCommunication.Core
             OperateResult<byte[]> headResult = Receive(socket, netMsg.ProtocolHeadBytesLength);
             if (!headResult.IsSuccess)
             {
-                socket.Close();
                 result.CopyErrorFromOther(headResult);
                 return result;
             }
 
             netMsg.HeadBytes = headResult.Content;
-
             if (!netMsg.CheckHeadBytesLegal(Token.ToByteArray()))
             {
                 // 令牌校验失败
-                socket.Close();
+                socket?.Close();
                 LogNet?.WriteError(ToString(), StringResources.TokenCheckFailed);
                 result.Message = StringResources.TokenCheckFailed;
                 return result;
@@ -102,10 +100,11 @@ namespace HslCommunication.Core
                 OperateResult<byte[]> contentResult = Receive(socket, contentLength);
                 if (!headResult.IsSuccess)
                 {
-                    socket.Close();
                     result.CopyErrorFromOther(contentResult);
                     return result;
                 }
+
+                netMsg.ContentBytes = contentResult.Content;
             }
 
             result.Content = netMsg;
@@ -137,18 +136,18 @@ namespace HslCommunication.Core
                 {
                     // 上次通讯异常或是没有打开
                     IsSocketErrorState = false;
-                    OperateResult<Socket> resultSocket = CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port));
-                    if (!resultSocket.IsSuccess)
+                    OperateResult<Socket> resultSocket = CreateSocketAndConnect( new IPEndPoint( IPAddress.Parse( ipAddress ), port ) );
+                    if (resultSocket.IsSuccess)
                     {
-                        result.CopyErrorFromOther(resultSocket);
-                        socket.Close();
                         IsSocketErrorState = true;
-                        return result;
+                        CoreSocket?.Close( );
+                        CoreSocket = resultSocket.Content;
                     }
+                    return resultSocket;
                 }
                 else
                 {
-                    return 
+                    return OperateResult.CreateSuccessResult( CoreSocket );
                 }
             }
             else
@@ -159,11 +158,73 @@ namespace HslCommunication.Core
         }
 
 
+        /// <summary>
+        /// 使用底层的数据报文来通讯，传入需要发送的消息，返回最终的数据结果
+        /// </summary>
+        /// <param name="send"></param>
+        /// <returns></returns>
         public OperateResult<byte[],byte[]> ReadFromCoreServer(byte[] send)
         {
             var result = new OperateResult<byte[], byte[]>();
-            Socket socket = null;
-            
+            LogNet?.WriteDebug( ToString( ), "Command: " + BasicFramework.SoftBasic.ByteToHexString( send ) );
+
+            InteractiveLock.Enter( );
+
+            // 获取有用的网络通道，如果没有，就建立新的连接
+            OperateResult<Socket> resultSocket = GetAvailableSocket( );
+            if (!resultSocket.IsSuccess)
+            {
+                IsSocketErrorState = false;
+                InteractiveLock.Leave( );
+                result.CopyErrorFromOther( resultSocket );
+                return result;
+            }
+
+            // 发送数据信息
+            OperateResult resultSend = Send( resultSocket.Content, send );
+            if(!resultSend.IsSuccess)
+            {
+                IsSocketErrorState = false;
+                InteractiveLock.Leave( );
+                resultSocket.Content?.Close( );
+                result.CopyErrorFromOther( resultSend );
+                return result;
+            }
+
+            // 接收数据信息
+            OperateResult<TNetMessage> resultReceive = ReceiveMessage( resultSocket.Content );
+            if(!resultReceive.IsSuccess)
+            {
+                IsSocketErrorState = false;
+                InteractiveLock.Leave( );
+                resultSocket.Content?.Close( );
+                result.CopyErrorFromOther( resultReceive );
+                return result;
+            }
+
+            // 复制结果
+            result.Content1 = resultReceive.Content.HeadBytes;
+            result.Content2 = resultReceive.Content.ContentBytes;
+
+            if (!IsPersistentConn) resultSocket.Content?.Close( );
+            InteractiveLock.Leave( );
+
+            result.IsSuccess = true;
+            return result;
+        }
+
+
+        #endregion
+
+        #region Object Override
+
+        /// <summary>
+        /// 获取本对象的字符串标识形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            return "NetworkDoubleBase<TNetMessage>";
         }
 
 

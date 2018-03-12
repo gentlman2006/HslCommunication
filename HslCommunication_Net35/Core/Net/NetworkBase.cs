@@ -101,6 +101,7 @@ namespace HslCommunication.Core
                 LogNet?.WriteException(ToString(), ex);
                 result.Message = ex.Message;
                 receiveDone.Close();
+                socket?.Close( );
                 return result;
             }
 
@@ -115,6 +116,7 @@ namespace HslCommunication.Core
             // 接收数据失败
             if (state.IsError)
             {
+                socket?.Close( );
                 result.Message = state.ErrerMsg;
                 return result;
             }
@@ -124,6 +126,7 @@ namespace HslCommunication.Core
             if (state.IsClose)
             {
                 result.Message = "远程关闭了连接";
+                socket?.Close( );
                 return result;
             }
 
@@ -193,13 +196,13 @@ namespace HslCommunication.Core
         /// <param name="socket"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        protected OperateResult Send(Socket socket, byte[] data)
+        protected OperateResult Send( Socket socket, byte[] data )
         {
-            if (data == null) return OperateResult.CreateSuccessResult();
+            if (data == null) return OperateResult.CreateSuccessResult( );
 
-            var result = new OperateResult();
-            var sendDone = new ManualResetEvent(false);
-            var state = new StateObject(data.Length);
+            var result = new OperateResult( );
+            var sendDone = new ManualResetEvent( false );
+            var state = new StateObject( data.Length );
 
             try
             {
@@ -207,32 +210,34 @@ namespace HslCommunication.Core
                 state.WorkSocket = socket;
                 state.Buffer = data;
 
-                socket.BeginSend(state.Buffer, state.AlreadyDealLength, state.DataLength - state.AlreadyDealLength,
-                    SocketFlags.None, new AsyncCallback(SendCallBack), state);
+                socket.BeginSend( state.Buffer, state.AlreadyDealLength, state.DataLength - state.AlreadyDealLength,
+                    SocketFlags.None, new AsyncCallback( SendCallBack ), state );
             }
             catch (Exception ex)
             {
                 // 发生了错误，直接返回
-                LogNet?.WriteException(ToString(), ex);
+                LogNet?.WriteException( ToString( ), ex );
                 result.Message = ex.Message;
-                sendDone.Close();
+                socket?.Close( );
+                sendDone.Close( );
                 return result;
             }
 
             // 等待发送完成
-            sendDone.WaitOne();
-            sendDone.Close();
+            sendDone.WaitOne( );
+            sendDone.Close( );
 
             if (state.IsError)
             {
+                socket.Close( );
                 result.Message = state.ErrerMsg;
                 return result;
             }
 
-            state.Clear();
+            state.Clear( );
             state = null;
             result.IsSuccess = true;
-            result.Message = "success";
+            result.Message = StringResources.SuccessText;
 
             return result;
         }
