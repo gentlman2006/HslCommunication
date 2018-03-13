@@ -140,6 +140,7 @@
     <Compile Include="Core\Net\NetworkDoubleBase.cs" />
     <Compile Include="Core\Net\NetworkShareBase.cs" />
     <Compile Include="Core\Thread\ThreadLock.cs" />
+    <Compile Include="Core\Transfer\IByteTransform.cs" />
     <Compile Include="Core\Types\HslPieItem.cs" />
     <Compile Include="Enthernet\ClassDeviceNet.cs" />
     <Compile Include="Enthernet\ClassFileNet.cs" />
