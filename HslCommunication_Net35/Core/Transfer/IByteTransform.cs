@@ -31,6 +31,8 @@ namespace HslCommunication.Core.Transfer
     /// </summary>
     public interface IByteTransform
     {
+        #region Get Value From Bytes
+        
         /// <summary>
         /// 从缓存中提取出bool结果
         /// </summary>
@@ -68,46 +70,112 @@ namespace HslCommunication.Core.Transfer
         /// <returns>uint对象</returns>
         uint TransUInt32( byte[] buffer );
         /// <summary>
-        /// 从缓存中提取
+        /// 从缓存中提取long结果
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
+        /// <param name="buffer">缓存数据</param>
+        /// <returns>long对象</returns>
         long TransInt64( byte[] buffer );
-
+        /// <summary>
+        /// 从缓存中提取ulong结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <returns>ulong对象</returns>
         ulong TransUInt64( byte[] buffer );
-
+        /// <summary>
+        /// 从缓存中提取float结果
+        /// </summary>
+        /// <param name="buffer">缓存对象</param>
+        /// <returns>float对象</returns>
         float TransSingle( byte[] buffer );
-
+        /// <summary>
+        /// 从缓存中提取double结果
+        /// </summary>
+        /// <param name="buffer">缓存对象</param>
+        /// <returns>double对象</returns>
         double TransDouble( byte[] buffer );
-
+        /// <summary>
+        /// 从缓存中提取string结果，编码ASCII
+        /// </summary>
+        /// <param name="buffer">缓存对象</param>
+        /// <returns>string对象</returns>
         string TransString( byte[] buffer );
 
 
+        #endregion
 
 
+        #region Get Bytes From Value
 
 
+        /// <summary>
+        /// bool变量转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( bool value );
-
+        /// <summary>
+        /// byte变量转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( byte value );
-
+        /// <summary>
+        /// short变量转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( short value );
-
+        /// <summary>
+        /// ushort变量转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( ushort value );
-
+        /// <summary>
+        /// int变量转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( int value );
-
+        /// <summary>
+        /// uint变量转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( uint value );
-
+        /// <summary>
+        /// long变量转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( long value );
-
+        /// <summary>
+        /// ulong变量转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( ulong value );
-
+        /// <summary>
+        /// float变量转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( float value );
-
+        /// <summary>
+        /// double变量转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( double value );
-
+        /// <summary>
+        /// ASCII编码字符串转化缓存数据
+        /// </summary>
+        /// <param name="value">等待转化的数据</param>
+        /// <returns>buffer数据</returns>
         byte[] TransByte( string value );
+
+
+        #endregion
 
     }
 

@@ -64,6 +64,7 @@ namespace HslCommunication.Core
                     IsPersistentConn = value;
                     if(!IsPersistentConn)
                     {
+                        ExtraOnDisconnect( CoreSocket );
                         CoreSocket?.Close();
                     }
                 }
@@ -128,6 +129,30 @@ namespace HslCommunication.Core
 
         #endregion
 
+        #region Initialization And Extra
+
+        /// <summary>
+        /// 连接上服务器后需要进行的初始化操作
+        /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <returns></returns>
+        protected virtual OperateResult InitilizationOnConnect( Socket socket )
+        {
+            return OperateResult.CreateSuccessResult( );
+        }
+
+        /// <summary>
+        /// 在将要和服务器进行断开的情况下额外的操作
+        /// </summary>
+        /// <param name="socket">网络套接字</param>
+        /// <returns></returns>
+        protected virtual OperateResult ExtraOnDisconnect( Socket socket )
+        {
+            return OperateResult.CreateSuccessResult( );
+        }
+
+        #endregion
+
         #region Core Communication
 
         /***************************************************************************************
@@ -157,6 +182,17 @@ namespace HslCommunication.Core
                         CoreSocket?.Close( );
                         CoreSocket = resultSocket.Content;
                     }
+
+                    // 初始化系统信息
+                    OperateResult initi = InitilizationOnConnect( resultSocket.Content );
+                    if (!initi.IsSuccess)
+                    {
+                        IsSocketErrorState = false;
+                        CoreSocket?.Close( );
+                        resultSocket.CopyErrorFromOther( initi );
+                        resultSocket.IsSuccess = false;
+                    }
+
                     return resultSocket;
                 }
                 else

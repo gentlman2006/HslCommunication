@@ -464,6 +464,8 @@ namespace TestTool.TestForm
         private void userButton7_Click(object sender, EventArgs e)
         {
             MessageBox.Show(tcpServer.ReadShortRegister(ushort.Parse(textBox8.Text)).ToString());
+
+            // tcpServer.WriteRegister( 100, Encoding.ASCII.GetBytes( "1234567890" ) );
         }
 
 
