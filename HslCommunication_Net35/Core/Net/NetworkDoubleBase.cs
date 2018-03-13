@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Net;
+using System.Threading;
 
 namespace HslCommunication.Core
 {
@@ -80,11 +81,20 @@ namespace HslCommunication.Core
         /// 接收一条完整的数据，使用异步接收完成，包含了指令头信息
         /// </summary>
         /// <param name="socket">已经打开的网络套接字</param>
+        /// <param name="timeOut">超时时间</param>
         /// <returns>数据的接收结果对象</returns>
-        protected OperateResult<TNetMessage> ReceiveMessage(Socket socket)
+        protected OperateResult<TNetMessage> ReceiveMessage(Socket socket, int timeOut)
         {
             TNetMessage netMsg = new TNetMessage();
             OperateResult<TNetMessage> result = new OperateResult<TNetMessage>();
+
+            // 超时接收的代码验证
+            HslTimeOut hslTimeOut = new HslTimeOut()
+            {
+                DelayTime = timeOut,
+                WorkSocket = socket,
+            };
+            if (timeOut > 0) ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckTimeOut), hslTimeOut);
 
             // 接收指令头
             OperateResult<byte[]> headResult = Receive(socket, netMsg.ProtocolHeadBytesLength);
@@ -122,6 +132,7 @@ namespace HslCommunication.Core
                 netMsg.ContentBytes = contentResult.Content;
             }
 
+            hslTimeOut.IsSuccessful = true;
             result.Content = netMsg;
             result.IsSuccess = true;
             return result;
@@ -175,22 +186,12 @@ namespace HslCommunication.Core
                 {
                     // 上次通讯异常或是没有打开
                     IsSocketErrorState = false;
-                    OperateResult<Socket> resultSocket = CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port), connectTimeOut);
+                    OperateResult<Socket> resultSocket = CreateSocketAndInitialication();
                     if (resultSocket.IsSuccess)
                     {
                         IsSocketErrorState = true;
                         CoreSocket?.Close( );
                         CoreSocket = resultSocket.Content;
-                    }
-
-                    // 初始化系统信息
-                    OperateResult initi = InitilizationOnConnect( resultSocket.Content );
-                    if (!initi.IsSuccess)
-                    {
-                        IsSocketErrorState = false;
-                        CoreSocket?.Close( );
-                        resultSocket.CopyErrorFromOther( initi );
-                        resultSocket.IsSuccess = false;
                     }
 
                     return resultSocket;
@@ -203,8 +204,30 @@ namespace HslCommunication.Core
             else
             {
                 // 短连接模式
-                return CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port), connectTimeOut);
+                return CreateSocketAndInitialication();
             }
+        }
+
+
+        /// <summary>
+        /// 连接并初始化网络套接字
+        /// </summary>
+        /// <returns></returns>
+        private OperateResult<Socket> CreateSocketAndInitialication()
+        {
+            OperateResult<Socket> result = CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port), connectTimeOut);
+            if(result.IsSuccess)
+            {
+                // 初始化
+                OperateResult initi = InitilizationOnConnect(result.Content);
+                if (!initi.IsSuccess)
+                {
+                    result.Content?.Close();
+                    result.IsSuccess = initi.IsSuccess;
+                    result.CopyErrorFromOther(initi);
+                }
+            }
+            return result;
         }
 
 

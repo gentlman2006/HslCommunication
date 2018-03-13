@@ -351,17 +351,18 @@ namespace HslCommunication.Core
             var result = new OperateResult<Socket>();
             var connectDone = new ManualResetEvent(false);
             var state = new StateObject();
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+            // 超时验证的信息
+            HslTimeOut connectTimeout = new HslTimeOut()
+            {
+                WorkSocket = socket,
+                DelayTime = timeOut
+            };
+            ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckTimeOut), connectTimeout);
 
-            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
-                HslTimeOut connectTimeout = new HslTimeOut()
-                {
-                    WorkSocket = socket,
-                    DelayTime = timeOut
-                };
-                ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckTimeOut), connectTimeout);
 
                 state.WaitDone = connectDone;
                 state.WorkSocket = socket;
@@ -370,16 +371,18 @@ namespace HslCommunication.Core
             catch (Exception ex)
             {
                 // 直接失败
-                LogNet?.WriteException(ToString(), ex);
-                socket.Close();
-                connectDone.Close();
-                result.Message = ex.Message;
+                connectTimeout.IsSuccessful = true;                   // 退出线程池的超时检查
+                LogNet?.WriteException(ToString(), ex);               // 记录错误日志
+                socket.Close();                                       // 关闭网络信息
+                connectDone.Close();                                  // 释放等待资源
+                result.Message = ex.Message;                          // 传递错误消息
                 return result;
             }
 
             // 等待连接完成
             connectDone.WaitOne();
             connectDone.Close();
+            connectTimeout.IsSuccessful = true;
 
             if (state.IsError)
             {

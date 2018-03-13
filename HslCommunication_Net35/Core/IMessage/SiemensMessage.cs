@@ -7,7 +7,7 @@ namespace HslCommunication.Core
 {
 
     /// <summary>
-    /// 西门子S7协议的
+    /// 西门子S7协议的消息解析规则
     /// </summary>
     public class SiemensMessage : INetMessage
     {
@@ -29,7 +29,7 @@ namespace HslCommunication.Core
         /// <summary>
         /// 内容字节的数据
         /// </summary>
-        public byte[] ContentBytes { get ; set ; }
+        public byte[] ContentBytes { get; set; }
 
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace HslCommunication.Core
         /// </summary>
         /// <param name="token">令牌</param>
         /// <returns>是否合法的</returns>
-        public bool CheckHeadBytesLegal( byte[] token )
+        public bool CheckHeadBytesLegal(byte[] token)
         {
             return true;
         }
@@ -47,9 +47,9 @@ namespace HslCommunication.Core
         /// 获取剩余的内容长度
         /// </summary>
         /// <returns></returns>
-        public int GetContentLengthByHeadBytes( )
+        public int GetContentLengthByHeadBytes()
         {
-            if(HeadBytes?.Length>=4)
+            if (HeadBytes?.Length >= 4)
             {
                 return HeadBytes[2] * 256 + HeadBytes[3] - 4;
             }
@@ -63,7 +63,7 @@ namespace HslCommunication.Core
         /// 获取消息号，此处无效
         /// </summary>
         /// <returns></returns>
-        public int GetHeadBytesIdentity( )
+        public int GetHeadBytesIdentity()
         {
             return 0;
         }
