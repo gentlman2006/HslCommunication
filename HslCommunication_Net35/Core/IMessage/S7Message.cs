@@ -9,7 +9,7 @@ namespace HslCommunication.Core
     /// <summary>
     /// 西门子S7协议的消息解析规则
     /// </summary>
-    public class SiemensMessage : INetMessage
+    public class S7Message : INetMessage
     {
         /// <summary>
         /// 西门子头字节的长度

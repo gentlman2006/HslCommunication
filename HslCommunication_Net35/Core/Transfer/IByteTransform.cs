@@ -24,7 +24,7 @@ using System.Text;
 
 
 
-namespace HslCommunication.Core.Transfer
+namespace HslCommunication.Core
 {
     /// <summary>
     /// 支持转换器的基础接口
@@ -114,6 +114,12 @@ namespace HslCommunication.Core.Transfer
         /// <returns>buffer数据</returns>
         byte[] TransByte( bool value );
         /// <summary>
+        /// bool数组变量转化缓存数据
+        /// </summary>
+        /// <param name="values">等待转化的数组</param>
+        /// <returns>buffer数据</returns>
+        byte[] TransByte( bool[] values );
+        /// <summary>
         /// byte变量转化缓存数据
         /// </summary>
         /// <param name="value">等待转化的数据</param>
@@ -126,11 +132,23 @@ namespace HslCommunication.Core.Transfer
         /// <returns>buffer数据</returns>
         byte[] TransByte( short value );
         /// <summary>
+        /// short数组变量转化缓存数据
+        /// </summary>
+        /// <param name="values">等待转化的数组</param>
+        /// <returns>buffer数据</returns>
+        byte[] TransByte( short[] values );
+        /// <summary>
         /// ushort变量转化缓存数据
         /// </summary>
         /// <param name="value">等待转化的数据</param>
         /// <returns>buffer数据</returns>
         byte[] TransByte( ushort value );
+        /// <summary>
+        /// ushort数组变量转化缓存数据
+        /// </summary>
+        /// <param name="values">等待转化的数组</param>
+        /// <returns>buffer数据</returns>
+        byte[] TransByte( ushort[] values );
         /// <summary>
         /// int变量转化缓存数据
         /// </summary>
@@ -138,11 +156,23 @@ namespace HslCommunication.Core.Transfer
         /// <returns>buffer数据</returns>
         byte[] TransByte( int value );
         /// <summary>
+        /// int数组变量转化缓存数据
+        /// </summary>
+        /// <param name="values">等待转化的数组</param>
+        /// <returns>buffer数据</returns>
+        byte[] TransByte( int[] values );
+        /// <summary>
         /// uint变量转化缓存数据
         /// </summary>
         /// <param name="value">等待转化的数据</param>
         /// <returns>buffer数据</returns>
         byte[] TransByte( uint value );
+        /// <summary>
+        /// uint数组变量转化缓存数据
+        /// </summary>
+        /// <param name="values">等待转化的数组</param>
+        /// <returns>buffer数据</returns>
+        byte[] TransByte( uint[] values );
         /// <summary>
         /// long变量转化缓存数据
         /// </summary>
@@ -150,11 +180,23 @@ namespace HslCommunication.Core.Transfer
         /// <returns>buffer数据</returns>
         byte[] TransByte( long value );
         /// <summary>
+        /// long数组变量转化缓存数据
+        /// </summary>
+        /// <param name="values">等待转化的数组</param>
+        /// <returns>buffer数据</returns>
+        byte[] TransByte( long[] values );
+        /// <summary>
         /// ulong变量转化缓存数据
         /// </summary>
         /// <param name="value">等待转化的数据</param>
         /// <returns>buffer数据</returns>
         byte[] TransByte( ulong value );
+        /// <summary>
+        /// ulong数组变量转化缓存数据
+        /// </summary>
+        /// <param name="values">等待转化的数组</param>
+        /// <returns>buffer数据</returns>
+        byte[] TransByte( ulong[] values );
         /// <summary>
         /// float变量转化缓存数据
         /// </summary>
@@ -162,11 +204,23 @@ namespace HslCommunication.Core.Transfer
         /// <returns>buffer数据</returns>
         byte[] TransByte( float value );
         /// <summary>
+        /// float数组变量转化缓存数据
+        /// </summary>
+        /// <param name="values">等待转化的数组</param>
+        /// <returns>buffer数据</returns>
+        byte[] TransByte( float[] values );
+        /// <summary>
         /// double变量转化缓存数据
         /// </summary>
         /// <param name="value">等待转化的数据</param>
         /// <returns>buffer数据</returns>
         byte[] TransByte( double value );
+        /// <summary>
+        /// double数组变量转化缓存数据
+        /// </summary>
+        /// <param name="values">等待转化的数组</param>
+        /// <returns>buffer数据</returns>
+        byte[] TransByte( double[] values );
         /// <summary>
         /// ASCII编码字符串转化缓存数据
         /// </summary>

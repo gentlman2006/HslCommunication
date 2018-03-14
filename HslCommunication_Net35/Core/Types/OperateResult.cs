@@ -30,31 +30,17 @@ namespace HslCommunication
         /// 指示本次访问是否成功
         /// </summary>
         public bool IsSuccess { get; set; }
-
-
+        
         /// <summary>
         /// 具体的错误描述
         /// </summary>
         public string Message { get; set; } = StringResources.UnknownError;
-
-
+        
         /// <summary>
         /// 具体的错误代码
         /// </summary>
         public int ErrorCode { get; set; } = 10000;
-
-        /// <summary>
-        /// 允许用户自己使用的一个额外的int数据，可以根据自身的需求进行扩充
-        /// </summary>
-        public int CustomerCode { get; set; } = 0;
-
-
-        /// <summary>
-        /// 消息附带的额外信息
-        /// </summary>
-        public object Tag { get; set; }
-
-
+        
         /// <summary>
         /// 获取错误代号及文本描述
         /// </summary>
@@ -75,16 +61,19 @@ namespace HslCommunication
             if (result != null)
             {
                 ErrorCode = result.ErrorCode;
-                CustomerCode = result.CustomerCode;
                 Message = result.Message;
-                Tag = result.Tag;
             }
             
         }
 
         #region Static Method
 
-
+        /*****************************************************************************************************
+         * 
+         *    主要是方便获取到一些特殊状态的结果对象
+         * 
+         ******************************************************************************************************/
+        
         /// <summary>
         /// 创建并返回一个成功的结果对象
         /// </summary>
@@ -455,8 +444,7 @@ namespace HslCommunication
         /// </summary>
         public T3 Content3 { get; set; }
     }
-
-
+    
     /// <summary>
     /// 操作结果的泛型类，允许带四个用户自定义的泛型对象，推荐使用这个类
     /// </summary>
@@ -486,8 +474,7 @@ namespace HslCommunication
         /// </summary>
         public T4 Content4 { get; set; }
     }
-
-
+    
     /// <summary>
     /// 操作结果的泛型类，允许带五个用户自定义的泛型对象，推荐使用这个类
     /// </summary>

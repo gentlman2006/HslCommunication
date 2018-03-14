@@ -120,7 +120,7 @@
       <DependentUpon>UserVerticalProgress.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\IMessage\HslMessage.cs" />
-    <Compile Include="Core\IMessage\SiemensMessage.cs" />
+    <Compile Include="Core\IMessage\S7Message.cs" />
     <Compile Include="Core\Net\ClassNetHandle.cs" />
     <Compile Include="Core\Net\CommunicationProtocol.cs" />
     <Compile Include="Controls\UserButton.cs">
@@ -141,6 +141,8 @@
     <Compile Include="Core\Net\NetworkShareBase.cs" />
     <Compile Include="Core\Thread\ThreadLock.cs" />
     <Compile Include="Core\Transfer\IByteTransform.cs" />
+    <Compile Include="Core\Transfer\RegularByteTransform.cs" />
+    <Compile Include="Core\Transfer\ReverseBytesTransform.cs" />
     <Compile Include="Core\Types\HslPieItem.cs" />
     <Compile Include="Enthernet\ClassDeviceNet.cs" />
     <Compile Include="Enthernet\ClassFileNet.cs" />
@@ -180,7 +182,7 @@
     <Compile Include="Profinet\OmronNet.cs" />
     <Compile Include="Profinet\PlcNetBase.cs" />
     <Compile Include="Profinet\SiemensNet.cs" />
-    <Compile Include="Profinet\SiemensTcp.cs" />
+    <Compile Include="Profinet\SiemensS7Net.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

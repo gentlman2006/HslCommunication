@@ -13,16 +13,19 @@ namespace HslCommunication.Core
     /// <summary>
     /// 支持长连接，短连接两个模式的通用客户端基类
     /// </summary>
-    public class NetworkDoubleBase<TNetMessage> : NetworkBase where TNetMessage : INetMessage, new()
+    /// <typeparam name="TNetMessage">指定了消息的解析规则</typeparam>
+    /// <typeparam name="TTransform">指定了数据转换的规则</typeparam>
+    public class NetworkDoubleBase<TNetMessage, TTransform> : NetworkBase where TNetMessage : INetMessage, new() where TTransform : IByteTransform, new()
     {
         #region Constructor
-        
+
         /// <summary>
         /// 默认的无参构造函数
         /// </summary>
-        public NetworkDoubleBase()
+        public NetworkDoubleBase( )
         {
-            InteractiveLock = new SimpleHybirdLock();
+            InteractiveLock = new SimpleHybirdLock( );                    // 实例化数据访问锁
+            byteTransform = new TTransform( );                            // 实例化数据转换规则
         }
 
         #endregion
@@ -37,6 +40,10 @@ namespace HslCommunication.Core
         /// 网络的端口
         /// </summary>
         protected int port = 10000;
+        /// <summary>
+        /// 具体的数据转换规则
+        /// </summary>
+        protected TTransform byteTransform;
 
 
         private int connectTimeOut = 10000;              // 连接超时时间设置
@@ -63,12 +70,42 @@ namespace HslCommunication.Core
                 if (IsPersistentConn != value)
                 {
                     IsPersistentConn = value;
-                    if(!IsPersistentConn)
+                    if (!IsPersistentConn)
                     {
                         ExtraOnDisconnect( CoreSocket );
-                        CoreSocket?.Close();
+                        CoreSocket?.Close( );
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置连接的超时时间
+        /// </summary>
+        public int ConnectTimeOut
+        {
+            get
+            {
+                return connectTimeOut;
+            }
+            set
+            {
+                connectTimeOut = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置接收服务器反馈的时间，如果为负数，则不接收反馈
+        /// </summary>
+        public int ReceiveTimeOut
+        {
+            get
+            {
+                return receiveTimeOut;
+            }
+            set
+            {
+                receiveTimeOut = value;
             }
         }
 
@@ -83,49 +120,52 @@ namespace HslCommunication.Core
         /// <param name="socket">已经打开的网络套接字</param>
         /// <param name="timeOut">超时时间</param>
         /// <returns>数据的接收结果对象</returns>
-        protected OperateResult<TNetMessage> ReceiveMessage(Socket socket, int timeOut)
+        protected OperateResult<TNetMessage> ReceiveMessage( Socket socket, int timeOut )
         {
-            TNetMessage netMsg = new TNetMessage();
-            OperateResult<TNetMessage> result = new OperateResult<TNetMessage>();
+            TNetMessage netMsg = new TNetMessage( );
+            OperateResult<TNetMessage> result = new OperateResult<TNetMessage>( );
 
             // 超时接收的代码验证
-            HslTimeOut hslTimeOut = new HslTimeOut()
+            HslTimeOut hslTimeOut = new HslTimeOut( )
             {
                 DelayTime = timeOut,
                 WorkSocket = socket,
             };
-            if (timeOut > 0) ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckTimeOut), hslTimeOut);
+            if (timeOut > 0) ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), hslTimeOut );
 
             // 接收指令头
-            OperateResult<byte[]> headResult = Receive(socket, netMsg.ProtocolHeadBytesLength);
+            OperateResult<byte[]> headResult = Receive( socket, netMsg.ProtocolHeadBytesLength );
             if (!headResult.IsSuccess)
             {
-                result.CopyErrorFromOther(headResult);
+                hslTimeOut.IsSuccessful = true;
+                result.CopyErrorFromOther( headResult );
                 return result;
             }
 
             netMsg.HeadBytes = headResult.Content;
-            if (!netMsg.CheckHeadBytesLegal(Token.ToByteArray()))
+            if (!netMsg.CheckHeadBytesLegal( Token.ToByteArray( ) ))
             {
                 // 令牌校验失败
-                socket?.Close();
-                LogNet?.WriteError(ToString(), StringResources.TokenCheckFailed);
+                hslTimeOut.IsSuccessful = true;
+                socket?.Close( );
+                LogNet?.WriteError( ToString( ), StringResources.TokenCheckFailed );
                 result.Message = StringResources.TokenCheckFailed;
                 return result;
             }
 
 
-            int contentLength = netMsg.GetContentLengthByHeadBytes();
+            int contentLength = netMsg.GetContentLengthByHeadBytes( );
             if (contentLength == 0)
             {
                 netMsg.ContentBytes = new byte[0];
             }
             else
             {
-                OperateResult<byte[]> contentResult = Receive(socket, contentLength);
+                OperateResult<byte[]> contentResult = Receive( socket, contentLength );
                 if (!headResult.IsSuccess)
                 {
-                    result.CopyErrorFromOther(contentResult);
+                    hslTimeOut.IsSuccessful = true;
+                    result.CopyErrorFromOther( contentResult );
                     return result;
                 }
 
@@ -176,8 +216,11 @@ namespace HslCommunication.Core
          * 
          **************************************************************************************/
 
-
-        private OperateResult<Socket> GetAvailableSocket()
+        /// <summary>
+        /// 获取本次操作的可用的网络套接字
+        /// </summary>
+        /// <returns>是否成功，如果成功，使用这个套接字</returns>
+        private OperateResult<Socket> GetAvailableSocket( )
         {
             if (IsPersistentConn)
             {
@@ -186,7 +229,7 @@ namespace HslCommunication.Core
                 {
                     // 上次通讯异常或是没有打开
                     IsSocketErrorState = false;
-                    OperateResult<Socket> resultSocket = CreateSocketAndInitialication();
+                    OperateResult<Socket> resultSocket = CreateSocketAndInitialication( );
                     if (resultSocket.IsSuccess)
                     {
                         IsSocketErrorState = true;
@@ -204,7 +247,7 @@ namespace HslCommunication.Core
             else
             {
                 // 短连接模式
-                return CreateSocketAndInitialication();
+                return CreateSocketAndInitialication( );
             }
         }
 
@@ -213,32 +256,55 @@ namespace HslCommunication.Core
         /// 连接并初始化网络套接字
         /// </summary>
         /// <returns></returns>
-        private OperateResult<Socket> CreateSocketAndInitialication()
+        private OperateResult<Socket> CreateSocketAndInitialication( )
         {
-            OperateResult<Socket> result = CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port), connectTimeOut);
-            if(result.IsSuccess)
+            OperateResult<Socket> result = CreateSocketAndConnect( new IPEndPoint( IPAddress.Parse( ipAddress ), port ), connectTimeOut );
+            if (result.IsSuccess)
             {
                 // 初始化
-                OperateResult initi = InitilizationOnConnect(result.Content);
+                OperateResult initi = InitilizationOnConnect( result.Content );
                 if (!initi.IsSuccess)
                 {
-                    result.Content?.Close();
+                    result.Content?.Close( );
                     result.IsSuccess = initi.IsSuccess;
-                    result.CopyErrorFromOther(initi);
+                    result.CopyErrorFromOther( initi );
                 }
             }
             return result;
         }
 
+        /// <summary>
+        /// 使用底层的数据报文来通讯，传入需要发送的消息，返回一条完整的数据指令
+        /// </summary>
+        /// <param name="send">发送的完整的报文信息</param>
+        /// <returns>接收的完整的报文信息</returns>
+        public OperateResult<byte[]> ReadFromCoreServer( byte[] send )
+        {
+            var result = new OperateResult<byte[]>( );
+            var read = ReadFromCoreServerBase( send );
+
+            if (read.IsSuccess)
+            {
+                result.Content = new byte[read.Content1.Length + read.Content2.Length];
+                if (read.Content1.Length > 0) read.Content1.CopyTo( result.Content, 0 );
+                if (read.Content2.Length > 0) read.Content2.CopyTo( result.Content, read.Content1.Length );
+            }
+            else
+            {
+                result.CopyErrorFromOther( read );
+            }
+
+            return result;
+        }
 
         /// <summary>
-        /// 使用底层的数据报文来通讯，传入需要发送的消息，返回最终的数据结果
+        /// 使用底层的数据报文来通讯，传入需要发送的消息，返回最终的数据结果，被拆分成了头子节和内容字节信息
         /// </summary>
         /// <param name="send">发送的数据</param>
         /// <returns>结果对象</returns>
-        public OperateResult<byte[],byte[]> ReadFromCoreServer(byte[] send)
+        protected OperateResult<byte[], byte[]> ReadFromCoreServerBase( byte[] send )
         {
-            var result = new OperateResult<byte[], byte[]>();
+            var result = new OperateResult<byte[], byte[]>( );
             // LogNet?.WriteDebug( ToString( ), "Command: " + BasicFramework.SoftBasic.ByteToHexString( send ) );
             InteractiveLock.Enter( );
 
@@ -254,7 +320,7 @@ namespace HslCommunication.Core
 
             // 发送数据信息
             OperateResult resultSend = Send( resultSocket.Content, send );
-            if(!resultSend.IsSuccess)
+            if (!resultSend.IsSuccess)
             {
                 IsSocketErrorState = false;
                 InteractiveLock.Leave( );
@@ -267,13 +333,13 @@ namespace HslCommunication.Core
             if (receiveTimeOut >= 0)
             {
                 // 接收数据信息
-                OperateResult<TNetMessage> resultReceive = ReceiveMessage(resultSocket.Content);
+                OperateResult<TNetMessage> resultReceive = ReceiveMessage( resultSocket.Content, receiveTimeOut );
                 if (!resultReceive.IsSuccess)
                 {
                     IsSocketErrorState = false;
-                    InteractiveLock.Leave();
-                    resultSocket.Content?.Close();
-                    result.CopyErrorFromOther(resultReceive);
+                    InteractiveLock.Leave( );
+                    resultSocket.Content?.Close( );
+                    result.CopyErrorFromOther( resultReceive );
                     return result;
                 }
 
@@ -307,6 +373,141 @@ namespace HslCommunication.Core
 
         #endregion
 
+        #region Result Transform
+
+        /// <summary>
+        /// 结果转换操作的基础方法，需要支持类型，及转换的委托
+        /// </summary>
+        /// <typeparam name="TResult">结果类型</typeparam>
+        /// <param name="result"></param>
+        /// <param name="translator"></param>
+        /// <returns></returns>
+        private OperateResult<TResult> GetResultFromBytes<TResult>( OperateResult<byte[]> result, Func<byte[], TResult> translator )
+        {
+            var tmp = new OperateResult<TResult>( );
+            if (result.IsSuccess)
+            {
+                tmp.Content = translator( result.Content );
+            }
+            tmp.IsSuccess = result.IsSuccess;
+            tmp.CopyErrorFromOther( result );
+            return tmp;
+        }
+
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<bool> GetBoolResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<bool>( result, byteTransform.TransBool );
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<byte> GetByteResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<byte>( result, byteTransform.TransByte );
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<short> GetInt16ResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<short>( result, byteTransform.TransInt16 );
+        }
+
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<ushort> GetUInt16ResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<ushort>( result, byteTransform.TransUInt16 );
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<int> GetInt32ResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<int>( result, byteTransform.TransInt32 );
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<uint> GetUInt32ResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<uint>( result, byteTransform.TransUInt32 );
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<long> GetInt64ResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<long>( result, byteTransform.TransInt64 );
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<ulong> GetUInt64ResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<ulong>( result, byteTransform.TransUInt64 );
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<float> GetSingleResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<float>( result, byteTransform.TransSingle );
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<double> GetDoubleResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<double>( result, byteTransform.TransDouble );
+        }
+
+        /// <summary>
+        /// 将指定的OperateResult类型转化
+        /// </summary>
+        /// <param name="result">原始的类型</param>
+        /// <returns>转化后的类型</returns>
+        protected OperateResult<string> GetStringResultFromBytes( OperateResult<byte[]> result )
+        {
+            return GetResultFromBytes<string>( result, byteTransform.TransString );
+        }
+        
+
+        #endregion
     }
 
 

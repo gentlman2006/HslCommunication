@@ -33,7 +33,7 @@ namespace HslCommunication.Core
         /// <summary>
         /// 实例化一个NetworkBase对象
         /// </summary>
-        public NetworkBase()
+        public NetworkBase( )
         {
             Token = Guid.Empty;
         }
@@ -71,7 +71,7 @@ namespace HslCommunication.Core
         /// 检查网络套接字是否操作超时，需要对套接字进行封装
         /// </summary>
         /// <param name="obj"></param>
-        internal static void ThreadPoolCheckTimeOut(object obj)
+        internal static void ThreadPoolCheckTimeOut( object obj )
         {
             if (obj is HslTimeOut timeout)
             {
@@ -82,8 +82,8 @@ namespace HslCommunication.Core
                         // 连接超时或是验证超时
                         if (!timeout.IsSuccessful)
                         {
-                            timeout.Operator?.Invoke();
-                            timeout.WorkSocket?.Close();
+                            timeout.Operator?.Invoke( );
+                            timeout.WorkSocket?.Close( );
                             timeout = null;
                         }
                         break;
@@ -110,11 +110,11 @@ namespace HslCommunication.Core
         /// <param name="socket">网络通讯的套接字</param>
         /// <param name="length">准备接收的数据长度</param>
         /// <returns>包含了字节数据的结果类</returns>
-        protected OperateResult<byte[]> Receive(Socket socket, int length)
+        protected OperateResult<byte[]> Receive( Socket socket, int length )
         {
-            var result = new OperateResult<byte[]>();
-            var receiveDone = new ManualResetEvent(false);
-            var state = new StateObject(length);
+            var result = new OperateResult<byte[]>( );
+            var receiveDone = new ManualResetEvent( false );
+            var state = new StateObject( length );
 
             try
             {
@@ -122,16 +122,16 @@ namespace HslCommunication.Core
                 state.WorkSocket = socket;
 
                 // Begin receiving the data from the remote device.
-                socket.BeginReceive(state.Buffer, state.AlreadyDealLength,
+                socket.BeginReceive( state.Buffer, state.AlreadyDealLength,
                     state.DataLength - state.AlreadyDealLength, SocketFlags.None,
-                    new AsyncCallback(ReceiveCallback), state);
+                    new AsyncCallback( ReceiveCallback ), state );
             }
             catch (Exception ex)
             {
                 // 发生了错误，直接返回
-                LogNet?.WriteException(ToString(), ex);
+                LogNet?.WriteException( ToString( ), ex );
                 result.Message = ex.Message;
-                receiveDone.Close();
+                receiveDone.Close( );
                 socket?.Close( );
                 return result;
             }
@@ -139,8 +139,8 @@ namespace HslCommunication.Core
 
 
             // 等待接收完成，或是发生异常
-            receiveDone.WaitOne();
-            receiveDone.Close();
+            receiveDone.WaitOne( );
+            receiveDone.Close( );
 
 
 
@@ -165,21 +165,21 @@ namespace HslCommunication.Core
             // 正常接收到数据
             result.Content = state.Buffer;
             result.IsSuccess = true;
-            state.Clear();
+            state.Clear( );
             state = null;
             return result;
         }
 
 
 
-        private void ReceiveCallback(IAsyncResult ar)
+        private void ReceiveCallback( IAsyncResult ar )
         {
             if (ar.AsyncState is StateObject state)
             {
                 try
                 {
                     Socket client = state.WorkSocket;
-                    int bytesRead = client.EndReceive(ar);
+                    int bytesRead = client.EndReceive( ar );
 
                     if (bytesRead > 0)
                     {
@@ -188,29 +188,29 @@ namespace HslCommunication.Core
                         if (state.AlreadyDealLength < state.DataLength)
                         {
                             // 获取接下来的所有的数据
-                            client.BeginReceive(state.Buffer, state.AlreadyDealLength,
+                            client.BeginReceive( state.Buffer, state.AlreadyDealLength,
                                 state.DataLength - state.AlreadyDealLength, SocketFlags.None,
-                                new AsyncCallback(ReceiveCallback), state);
+                                new AsyncCallback( ReceiveCallback ), state );
                         }
                         else
                         {
                             // 接收到了所有的数据，通知接收数据的线程继续
-                            state.WaitDone.Set();
+                            state.WaitDone.Set( );
                         }
                     }
                     else
                     {
                         // 对方关闭了网络通讯
                         state.IsClose = true;
-                        state.WaitDone.Set();
+                        state.WaitDone.Set( );
                     }
                 }
                 catch (Exception ex)
                 {
                     state.IsError = true;
-                    LogNet?.WriteException(ToString(), ex);
+                    LogNet?.WriteException( ToString( ), ex );
                     state.ErrerMsg = ex.Message;
-                    state.WaitDone.Set();
+                    state.WaitDone.Set( );
                 }
             }
         }
@@ -277,35 +277,35 @@ namespace HslCommunication.Core
         /// 发送数据异步返回的方法
         /// </summary>
         /// <param name="ar"></param>
-        private void SendCallBack(IAsyncResult ar)
+        private void SendCallBack( IAsyncResult ar )
         {
             if (ar.AsyncState is StateObject state)
             {
                 try
                 {
                     Socket socket = state.WorkSocket;
-                    int byteSend = socket.EndSend(ar);
+                    int byteSend = socket.EndSend( ar );
                     state.AlreadyDealLength += byteSend;
 
                     if (state.AlreadyDealLength < state.DataLength)
                     {
                         // 继续发送数据
-                        socket.BeginSend(state.Buffer, state.AlreadyDealLength, state.DataLength - state.AlreadyDealLength,
-                            SocketFlags.None, new AsyncCallback(SendCallBack), state);
+                        socket.BeginSend( state.Buffer, state.AlreadyDealLength, state.DataLength - state.AlreadyDealLength,
+                            SocketFlags.None, new AsyncCallback( SendCallBack ), state );
                     }
                     else
                     {
                         // 发送完成
-                        state.WaitDone.Set();
+                        state.WaitDone.Set( );
                     }
                 }
                 catch (Exception ex)
                 {
                     // 发生了异常
                     state.IsError = true;
-                    LogNet?.WriteException(ToString(), ex);
+                    LogNet?.WriteException( ToString( ), ex );
                     state.ErrerMsg = ex.Message;
-                    state.WaitDone.Set();
+                    state.WaitDone.Set( );
                 }
             }
         }
@@ -321,9 +321,9 @@ namespace HslCommunication.Core
         /// <param name="ipAddress">Ip地址</param>
         /// <param name="port">端口号</param>
         /// <returns>返回套接字的封装结果对象</returns>
-        protected OperateResult<Socket> CreateSocketAndConnect(string ipAddress, int port)
+        protected OperateResult<Socket> CreateSocketAndConnect( string ipAddress, int port )
         {
-            return CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port), 10000);
+            return CreateSocketAndConnect( new IPEndPoint( IPAddress.Parse( ipAddress ), port ), 10000 );
         }
 
 
@@ -334,9 +334,9 @@ namespace HslCommunication.Core
         /// <param name="port">端口号</param>
         /// <param name="timeOut">连接的超时时间</param>
         /// <returns>返回套接字的封装结果对象</returns>
-        protected OperateResult<Socket> CreateSocketAndConnect(string ipAddress, int port,int timeOut)
+        protected OperateResult<Socket> CreateSocketAndConnect( string ipAddress, int port, int timeOut )
         {
-            return CreateSocketAndConnect(new IPEndPoint(IPAddress.Parse(ipAddress), port), timeOut);
+            return CreateSocketAndConnect( new IPEndPoint( IPAddress.Parse( ipAddress ), port ), timeOut );
         }
 
 
@@ -346,56 +346,56 @@ namespace HslCommunication.Core
         /// <param name="endPoint">连接的目标终结点</param>
         /// <param name="timeOut">连接的超时时间</param>
         /// <returns>返回套接字的封装结果对象</returns>
-        protected OperateResult<Socket> CreateSocketAndConnect(IPEndPoint endPoint,int timeOut)
+        protected OperateResult<Socket> CreateSocketAndConnect( IPEndPoint endPoint, int timeOut )
         {
-            var result = new OperateResult<Socket>();
-            var connectDone = new ManualResetEvent(false);
-            var state = new StateObject();
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            var result = new OperateResult<Socket>( );
+            var connectDone = new ManualResetEvent( false );
+            var state = new StateObject( );
+            var socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
 
             // 超时验证的信息
-            HslTimeOut connectTimeout = new HslTimeOut()
+            HslTimeOut connectTimeout = new HslTimeOut( )
             {
                 WorkSocket = socket,
                 DelayTime = timeOut
             };
-            ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckTimeOut), connectTimeout);
+            ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), connectTimeout );
 
             try
             {
 
                 state.WaitDone = connectDone;
                 state.WorkSocket = socket;
-                socket.BeginConnect(endPoint, new AsyncCallback(ConnectCallBack), state);
+                socket.BeginConnect( endPoint, new AsyncCallback( ConnectCallBack ), state );
             }
             catch (Exception ex)
             {
                 // 直接失败
                 connectTimeout.IsSuccessful = true;                   // 退出线程池的超时检查
-                LogNet?.WriteException(ToString(), ex);               // 记录错误日志
-                socket.Close();                                       // 关闭网络信息
-                connectDone.Close();                                  // 释放等待资源
+                LogNet?.WriteException( ToString( ), ex );               // 记录错误日志
+                socket.Close( );                                       // 关闭网络信息
+                connectDone.Close( );                                  // 释放等待资源
                 result.Message = ex.Message;                          // 传递错误消息
                 return result;
             }
 
             // 等待连接完成
-            connectDone.WaitOne();
-            connectDone.Close();
+            connectDone.WaitOne( );
+            connectDone.Close( );
             connectTimeout.IsSuccessful = true;
 
             if (state.IsError)
             {
                 // 连接失败
                 result.Message = state.ErrerMsg;
-                socket.Close();
+                socket.Close( );
                 return result;
             }
 
 
             result.Content = socket;
             result.IsSuccess = true;
-            state.Clear();
+            state.Clear( );
             state = null;
             return result;
         }
@@ -405,22 +405,22 @@ namespace HslCommunication.Core
         /// 当连接的结果返回
         /// </summary>
         /// <param name="ar"></param>
-        private void ConnectCallBack(IAsyncResult ar)
+        private void ConnectCallBack( IAsyncResult ar )
         {
             if (ar.AsyncState is StateObject state)
             {
                 try
                 {
                     Socket socket = state.WorkSocket;
-                    socket.EndConnect(ar);
+                    socket.EndConnect( ar );
                 }
                 catch (Exception ex)
                 {
                     // 发生了异常
                     state.IsError = true;
-                    LogNet?.WriteException(ToString(), ex);
+                    LogNet?.WriteException( ToString( ), ex );
                     state.ErrerMsg = ex.Message;
-                    state.WaitDone.Set();
+                    state.WaitDone.Set( );
                 }
             }
         }
@@ -428,18 +428,22 @@ namespace HslCommunication.Core
 
         #endregion
 
+        #region Object Override
+        
         /// <summary>
         /// 获取字符串表示形式
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
+        public override string ToString( )
         {
             return "NetworkBase";
         }
+        
+        #endregion
 
     }
 
-    
+
 
 
     internal class StateObject
@@ -449,44 +453,74 @@ namespace HslCommunication.Core
         /// <summary>
         /// 实例化一个对象
         /// </summary>
-        public StateObject()
+        public StateObject( )
         {
 
         }
 
-        public StateObject(int length)
+        /// <summary>
+        /// 实例化一个对象，指定接收或是发送的数据长度
+        /// </summary>
+        /// <param name="length"></param>
+        public StateObject( int length )
         {
             DataLength = length;
             Buffer = new byte[length];
         }
-        
+
         #endregion
-        
+
         #region Public Member
 
+        /// <summary>
+        /// 本次接收或是发送的数据长度
+        /// </summary>
         public int DataLength { get; } = 32;
         
-
+        /// <summary>
+        /// 已经处理的字节长度
+        /// </summary>
         public int AlreadyDealLength { get; set; }
 
+        /// <summary>
+        /// 操作完成的信号
+        /// </summary>
         public ManualResetEvent WaitDone { get; set; }
 
+
+        /// <summary>
+        /// 缓存器
+        /// </summary>
         public byte[] Buffer { get; set; }
 
-
+        /// <summary>
+        /// 网络套接字
+        /// </summary>
         public Socket WorkSocket { get; set; }
 
+        /// <summary>
+        /// 是否发生了错误
+        /// </summary>
         public bool IsError { get; set; }
 
+        /// <summary>
+        /// 是否关闭了通道
+        /// </summary>
         public bool IsClose { get; set; }
 
+        /// <summary>
+        /// 错误消息
+        /// </summary>
         public string ErrerMsg { get; set; }
 
         #endregion
 
         #region Public Method
 
-        public void Clear()
+        /// <summary>
+        /// 清空旧的数据
+        /// </summary>
+        public void Clear( )
         {
             IsError = false;
             IsClose = false;
