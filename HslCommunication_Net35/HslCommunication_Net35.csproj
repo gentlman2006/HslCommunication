@@ -119,6 +119,7 @@
     <Compile Include="Controls\UserVerticalProgress.Designer.cs">
       <DependentUpon>UserVerticalProgress.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\IMessage\FetchWriteMessage.cs" />
     <Compile Include="Core\IMessage\HslMessage.cs" />
     <Compile Include="Core\IMessage\S7Message.cs" />
     <Compile Include="Core\Net\ClassNetHandle.cs" />

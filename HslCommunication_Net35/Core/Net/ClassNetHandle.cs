@@ -76,8 +76,8 @@ namespace HslCommunication
         /// <summary>
         /// 两个数值相加
         /// </summary>
-        /// <param name="netHandle1">第一个对象param>
-        /// <param name="netHandle2">第二个对象param>
+        /// <param name="netHandle1">第一个对象</param>
+        /// <param name="netHandle2">第二个对象</param>
         /// <returns>返回两个指令的和</returns>
         public static NetHandle operator + (NetHandle netHandle1, NetHandle netHandle2)
         {
@@ -87,8 +87,8 @@ namespace HslCommunication
         /// <summary>
         /// 两个数值相减
         /// </summary>
-        /// <param name="netHandle1">第一个对象param>
-        /// <param name="netHandle2">第二个对象param>
+        /// <param name="netHandle1">第一个对象</param>
+        /// <param name="netHandle2">第二个对象</param>
         /// <returns>返回两个指令的差</returns>
         public static NetHandle operator - (NetHandle netHandle1, NetHandle netHandle2)
         {
@@ -98,8 +98,8 @@ namespace HslCommunication
         /// <summary>
         /// 判断是否小于另一个数值
         /// </summary>
-        /// <param name="netHandle1">第一个对象param>
-        /// <param name="netHandle2">第二个对象param>
+        /// <param name="netHandle1">第一个对象</param>
+        /// <param name="netHandle2">第二个对象</param>
         /// <returns>小于则返回<c>True</c>，否则返回<c>False</c></returns>
         public static bool operator < (NetHandle netHandle1, NetHandle netHandle2)
         {
@@ -109,8 +109,8 @@ namespace HslCommunication
         /// <summary>
         /// 判断是否大于另一个数值
         /// </summary>
-        /// <param name="netHandle1">第一个对象param>
-        /// <param name="netHandle2">第二个对象param>
+        /// <param name="netHandle1">第一个对象</param>
+        /// <param name="netHandle2">第二个对象</param>
         /// <returns>大于则返回<c>True</c>，否则返回<c>False</c></returns>
         public static bool operator > (NetHandle netHandle1, NetHandle netHandle2)
         {

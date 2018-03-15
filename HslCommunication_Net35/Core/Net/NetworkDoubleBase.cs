@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Net;
 using System.Threading;
+using HslCommunication.Core.IMessage;
 
 namespace HslCommunication.Core
 {
@@ -39,7 +40,7 @@ namespace HslCommunication.Core
         private int receiveTimeOut = 10000;              // 数据接收的超时时间
         private bool IsPersistentConn = false;           // 是否处于长连接的状态
         private SimpleHybirdLock InteractiveLock;        // 一次正常的交互的互斥锁
-        private bool IsSocketError = false;         // 指示长连接的套接字是否处于错误的状态
+        private bool IsSocketError = false;              // 指示长连接的套接字是否处于错误的状态
 
 
         #endregion
@@ -187,9 +188,8 @@ namespace HslCommunication.Core
         /// <param name="socket">已经打开的网络套接字</param>
         /// <param name="timeOut">超时时间</param>
         /// <returns>数据的接收结果对象</returns>
-        protected OperateResult<TNetMessage> ReceiveMessage( Socket socket, int timeOut )
+        protected OperateResult<TNetMessage> ReceiveMessage( Socket socket, int timeOut , TNetMessage netMsg)
         {
-            TNetMessage netMsg = new TNetMessage( );
             OperateResult<TNetMessage> result = new OperateResult<TNetMessage>( );
 
             // 超时接收的代码验证
@@ -396,8 +396,11 @@ namespace HslCommunication.Core
         {
             var result = new OperateResult<byte[], byte[]>( );
             // LogNet?.WriteDebug( ToString( ), "Command: " + BasicFramework.SoftBasic.ByteToHexString( send ) );
-            
-            
+            TNetMessage netMsg = new TNetMessage
+            {
+                SendBytes = send
+            };
+
             // 发送数据信息
             OperateResult resultSend = Send( socket, send );
             if (!resultSend.IsSuccess)
@@ -411,7 +414,7 @@ namespace HslCommunication.Core
             if (receiveTimeOut >= 0)
             {
                 // 接收数据信息
-                OperateResult<TNetMessage> resultReceive = ReceiveMessage( socket, receiveTimeOut );
+                OperateResult<TNetMessage> resultReceive = ReceiveMessage(socket, receiveTimeOut, netMsg);
                 if (!resultReceive.IsSuccess)
                 {
                     socket?.Close( );

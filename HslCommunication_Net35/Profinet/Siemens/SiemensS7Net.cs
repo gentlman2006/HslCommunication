@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using HslCommunication.Core;
+using HslCommunication.Core.IMessage;
 
 
 
@@ -1180,7 +1181,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC( string address, long[] data )
+        public OperateResult Write( string address, long[] data )
         {
             return Write( address, ByteTransform.TransByte( data ) );
         }
@@ -1191,9 +1192,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC( string address, long data )
+        public OperateResult Write( string address, long data )
         {
-            return WriteIntoPLC( address, new long[] { data } );
+            return Write( address, new long[] { data } );
         }
 
         #endregion
@@ -1206,7 +1207,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC( string address, ulong[] data )
+        public OperateResult Write( string address, ulong[] data )
         {
             return Write( address, ByteTransform.TransByte( data ) );
         }
@@ -1217,9 +1218,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC( string address, ulong data )
+        public OperateResult Write( string address, ulong data )
         {
-            return WriteIntoPLC( address, new ulong[] { data } );
+            return Write( address, new ulong[] { data } );
         }
 
         #endregion

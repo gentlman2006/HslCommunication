@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HslCommunication.Core
+namespace HslCommunication.Core.IMessage
 {
 
     /// <summary>
@@ -67,5 +67,11 @@ namespace HslCommunication.Core
         {
             return 0;
         }
+
+
+        /// <summary>
+        /// 发送的字节信息
+        /// </summary>
+        public byte[] SendBytes { get; set; }
     }
 }

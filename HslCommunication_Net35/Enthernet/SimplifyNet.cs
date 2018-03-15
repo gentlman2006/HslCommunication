@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HslCommunication.Core;
+using HslCommunication.Core.IMessage;
 
 namespace HslCommunication.Enthernet
 {
