@@ -71,7 +71,7 @@ namespace HslCommunication.Core
         /// 检查网络套接字是否操作超时，需要对套接字进行封装
         /// </summary>
         /// <param name="obj"></param>
-        internal static void ThreadPoolCheckTimeOut( object obj )
+        internal void ThreadPoolCheckTimeOut( object obj )
         {
             if (obj is HslTimeOut timeout)
             {
@@ -82,6 +82,7 @@ namespace HslCommunication.Core
                         // 连接超时或是验证超时
                         if (!timeout.IsSuccessful)
                         {
+                            LogNet?.WriteWarn( ToString( ), "Wait Time Out : " + timeout.DelayTime );
                             timeout.Operator?.Invoke( );
                             timeout.WorkSocket?.Close( );
                             timeout = null;

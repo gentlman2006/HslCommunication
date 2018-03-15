@@ -309,33 +309,7 @@ namespace HslCommunication.Profinet
 
     }
 
-
-
-
-
-    /// <summary>
-    /// 西门子的PLC类型，目前支持的访问类型
-    /// </summary>
-    public enum SiemensPLCS
-    {
-        /// <summary>
-        /// 1200系列
-        /// </summary>
-        S1200 = 1,
-        /// <summary>
-        /// 300系列
-        /// </summary>
-        S300 = 2,
-        /// <summary>
-        /// 1500系列PLC
-        /// </summary>
-        S1500 = 3,
-        /// <summary>
-        /// 200的smart系列
-        /// </summary>
-        S200Smart = 4,
-    }
-
+    
     /// <summary>
     /// 一个直接使用Tcp协议连接西门子PLC的类，只需要在plc侧配置IP即可，该类在西门子1200上经过测试，1500暂时不支持
     /// </summary>

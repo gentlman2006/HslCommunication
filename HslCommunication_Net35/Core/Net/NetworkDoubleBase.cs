@@ -39,7 +39,7 @@ namespace HslCommunication.Core
         private int receiveTimeOut = 10000;              // 数据接收的超时时间
         private bool IsPersistentConn = false;           // 是否处于长连接的状态
         private SimpleHybirdLock InteractiveLock;        // 一次正常的交互的互斥锁
-        private bool IsSocketErrorState = true;         // 指示长连接的套接字是否处于错误的状态
+        private bool IsSocketError = false;         // 指示长连接的套接字是否处于错误的状态
 
 
         #endregion
@@ -54,30 +54,7 @@ namespace HslCommunication.Core
             get { return byteTransform; }
             set { byteTransform = value; }
         }
-
-        /// <summary>
-        /// 获取或设置当前通信是否为长连接，如果是长连接，返回<c>True</c>，否则返回<c>False</c>
-        /// </summary>
-        public bool PersistentConnection
-        {
-            get
-            {
-                return IsPersistentConn;
-            }
-            set
-            {
-                if (IsPersistentConn != value)
-                {
-                    IsPersistentConn = value;
-                    if (!IsPersistentConn)
-                    {
-                        ExtraOnDisconnect( CoreSocket );
-                        CoreSocket?.Close( );
-                    }
-                }
-            }
-        }
-
+        
         /// <summary>
         /// 获取或设置连接的超时时间
         /// </summary>
@@ -140,6 +117,64 @@ namespace HslCommunication.Core
             {
                 port = value;
             }
+        }
+
+        #endregion
+
+        #region Open Close
+
+        /// <summary>
+        /// 切换短连接模式到长连接模式，后面的每次请求都共享一个通道
+        /// </summary>
+        /// <returns>返回连接结果，如果失败的话（也即IsSuccess为False），包含失败信息</returns>
+        public OperateResult ConnectServer( )
+        {
+            IsPersistentConn = true;
+            OperateResult result = new OperateResult( );
+
+            // 重新连接之前，先将旧的数据进行清空
+            CoreSocket?.Close( );
+
+            OperateResult<Socket> rSocket = CreateSocketAndInitialication( );
+
+            if (!rSocket.IsSuccess)
+            {
+                IsSocketError = true;
+                // 创建失败
+                rSocket.Content = null;
+            }
+            else
+            {
+                // 创建成功
+                CoreSocket = rSocket.Content;
+                // 初始化成功
+                result.IsSuccess = true;
+                LogNet?.WriteDebug( ToString( ), StringResources.NetEngineStart );
+            }
+
+            return result;
+        }
+
+
+
+
+        /// <summary>
+        /// 在长连接模式下，断开服务器的连接，并切换到短连接模式
+        /// </summary>
+        /// <returns>关闭连接，不需要查看IsSuccess属性查看</returns>
+        public OperateResult ConnectClose( )
+        {
+            OperateResult result = new OperateResult( );
+            IsPersistentConn = false;
+
+            // 额外操作
+            result = ExtraOnDisconnect( CoreSocket );
+            // 关闭信息
+            CoreSocket?.Close( );
+            CoreSocket = null;
+
+            LogNet?.WriteDebug( ToString( ), StringResources.NetEngineClose );
+            return result;
         }
 
         #endregion
@@ -254,26 +289,29 @@ namespace HslCommunication.Core
         /// <returns>是否成功，如果成功，使用这个套接字</returns>
         private OperateResult<Socket> GetAvailableSocket( )
         {
+            var result = new OperateResult<Socket>( );
+
             if (IsPersistentConn)
             {
                 // 长连接模式
-                if (IsSocketErrorState)
+                if (IsSocketError || CoreSocket == null)
                 {
-                    // 上次通讯异常或是没有打开
-                    IsSocketErrorState = false;
-                    OperateResult<Socket> resultSocket = CreateSocketAndInitialication( );
-                    if (resultSocket.IsSuccess)
+                    OperateResult connect = ConnectServer( );
+                    if (!connect.IsSuccess)
                     {
-                        IsSocketErrorState = true;
-                        CoreSocket?.Close( );
-                        CoreSocket = resultSocket.Content;
+                        IsSocketError = true;
+                        result.CopyErrorFromOther( connect );
+                        return result;
                     }
-
-                    return resultSocket;
+                    else
+                    {
+                        IsSocketError = false;
+                        return OperateResult.CreateSuccessResult( CoreSocket );
+                    }
                 }
                 else
                 {
-                    return OperateResult.CreateSuccessResult( CoreSocket );
+                    return  OperateResult.CreateSuccessResult( CoreSocket );
                 }
             }
             else
@@ -290,12 +328,9 @@ namespace HslCommunication.Core
         /// <returns></returns>
         private OperateResult<Socket> CreateSocketAndInitialication( )
         {
-            LogNet?.WriteDebug( ToString( ), "正在创建网络" );
-
             OperateResult<Socket> result = CreateSocketAndConnect( new IPEndPoint( IPAddress.Parse( ipAddress ), port ), connectTimeOut );
             if (result.IsSuccess)
             {
-                LogNet?.WriteDebug( ToString( ), "正在初始化信息" );
                 // 初始化
                 OperateResult initi = InitilizationOnConnect( result.Content );
                 if (!initi.IsSuccess)
@@ -323,7 +358,7 @@ namespace HslCommunication.Core
             OperateResult<Socket> resultSocket = GetAvailableSocket( );
             if (!resultSocket.IsSuccess)
             {
-                IsSocketErrorState = false;
+                IsSocketError = true;
                 InteractiveLock.Leave( );
                 result.CopyErrorFromOther( resultSocket );
                 return result;
@@ -333,6 +368,7 @@ namespace HslCommunication.Core
 
             if (read.IsSuccess)
             {
+                IsSocketError = false;
                 result.IsSuccess = read.IsSuccess;
                 result.Content = new byte[read.Content1.Length + read.Content2.Length];
                 if (read.Content1.Length > 0) read.Content1.CopyTo( result.Content, 0 );
@@ -340,18 +376,20 @@ namespace HslCommunication.Core
             }
             else
             {
+                IsSocketError = true;
                 result.CopyErrorFromOther( read );
             }
-            
+
+
             InteractiveLock.Leave( );
             if (!IsPersistentConn) resultSocket.Content?.Close( );
-
             return result;
         }
 
         /// <summary>
         /// 使用底层的数据报文来通讯，传入需要发送的消息，返回最终的数据结果，被拆分成了头子节和内容字节信息
         /// </summary>
+        /// <param name="socket">网络套接字</param>
         /// <param name="send">发送的数据</param>
         /// <returns>结果对象</returns>
         protected OperateResult<byte[], byte[]> ReadFromCoreServerBase(Socket socket, byte[] send )
@@ -359,20 +397,15 @@ namespace HslCommunication.Core
             var result = new OperateResult<byte[], byte[]>( );
             // LogNet?.WriteDebug( ToString( ), "Command: " + BasicFramework.SoftBasic.ByteToHexString( send ) );
             
-
-            LogNet?.WriteDebug( ToString( ), "正在发送" );
-
+            
             // 发送数据信息
             OperateResult resultSend = Send( socket, send );
             if (!resultSend.IsSuccess)
             {
-                IsSocketErrorState = false;
                 socket?.Close( );
                 result.CopyErrorFromOther( resultSend );
                 return result;
             }
-
-            LogNet?.WriteDebug( ToString( ), "正在接收" );
 
             // 接收超时时间大于0时才允许接收远程的数据
             if (receiveTimeOut >= 0)
@@ -381,7 +414,6 @@ namespace HslCommunication.Core
                 OperateResult<TNetMessage> resultReceive = ReceiveMessage( socket, receiveTimeOut );
                 if (!resultReceive.IsSuccess)
                 {
-                    IsSocketErrorState = false;
                     socket?.Close( );
                     result.CopyErrorFromOther( resultReceive );
                     return result;
@@ -391,10 +423,7 @@ namespace HslCommunication.Core
                 result.Content1 = resultReceive.Content.HeadBytes;
                 result.Content2 = resultReceive.Content.ContentBytes;
             }
-
             
-            LogNet?.WriteDebug( ToString( ), "完成" );
-            IsSocketErrorState = true;
             result.IsSuccess = true;
             return result;
         }
