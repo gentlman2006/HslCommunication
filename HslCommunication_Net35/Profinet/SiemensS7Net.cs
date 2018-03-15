@@ -32,9 +32,9 @@ namespace HslCommunication.Profinet
         /// 实例化一个西门子的S7协议的通讯对象
         /// </summary>
         /// <param name="siemens">指定西门子的型号</param>
-        public SiemensS7Net(SiemensPLCS siemens)
+        public SiemensS7Net( SiemensPLCS siemens )
         {
-            port = 102;
+            Port = 102;
             CurrentPlc = siemens;
 
             switch (siemens)
@@ -63,24 +63,24 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="socket"></param>
         /// <returns></returns>
-        protected override OperateResult InitilizationOnConnect(Socket socket)
+        protected override OperateResult InitilizationOnConnect( Socket socket )
         {
             // 第一层通信的初始化
-            OperateResult<byte[]> read_first = ReadFromCoreServer(plcHead1);
-            if(!read_first.IsSuccess)
+            OperateResult<byte[], byte[]> read_first = ReadFromCoreServerBase(socket, plcHead1 );
+            if (!read_first.IsSuccess)
             {
                 return read_first;
             }
 
             // 第二层通信的初始化
-            OperateResult read_second = ReadFromCoreServer(plcHead2);
-            if(!read_second.IsSuccess)
+            OperateResult<byte[], byte[]> read_second = ReadFromCoreServerBase(socket, plcHead2 );
+            if (!read_second.IsSuccess)
             {
                 return read_second;
             }
 
             // 返回成功的信号
-            return OperateResult.CreateSuccessResult();
+            return OperateResult.CreateSuccessResult( );
         }
 
 
@@ -93,16 +93,16 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">字符串信息</param>
         /// <returns>实际值</returns>
-        private int CalculateAddressStarted(string address)
+        private int CalculateAddressStarted( string address )
         {
-            if (address.IndexOf('.') < 0)
+            if (address.IndexOf( '.' ) < 0)
             {
-                return Convert.ToInt32(address) * 8;
+                return Convert.ToInt32( address ) * 8;
             }
             else
             {
-                string[] temp = address.Split('.');
-                return Convert.ToInt32(temp[0]) * 8 + Convert.ToInt32(temp[1]);
+                string[] temp = address.Split( '.' );
+                return Convert.ToInt32( temp[0] ) * 8 + Convert.ToInt32( temp[1] );
             }
         }
 
@@ -111,51 +111,51 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
-        private OperateResult<byte, int, ushort> AnalysisAddress(string address)
+        private OperateResult<byte, int, ushort> AnalysisAddress( string address )
         {
-            var result = new OperateResult<byte, int, ushort>();
+            var result = new OperateResult<byte, int, ushort>( );
             try
             {
                 result.Content3 = 0;
                 if (address[0] == 'I')
                 {
                     result.Content1 = 0x81;
-                    result.Content2 = CalculateAddressStarted(address.Substring(1));
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
                 }
                 else if (address[0] == 'Q')
                 {
                     result.Content1 = 0x82;
-                    result.Content2 = CalculateAddressStarted(address.Substring(1));
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
                 }
                 else if (address[0] == 'M')
                 {
                     result.Content1 = 0x83;
-                    result.Content2 = CalculateAddressStarted(address.Substring(1));
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
                 }
-                else if (address[0] == 'D' || address.Substring(0, 2) == "DB")
+                else if (address[0] == 'D' || address.Substring( 0, 2 ) == "DB")
                 {
                     result.Content1 = 0x84;
-                    string[] adds = address.Split('.');
+                    string[] adds = address.Split( '.' );
                     if (address[1] == 'B')
                     {
-                        result.Content3 = Convert.ToUInt16(adds[0].Substring(2));
+                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 2 ) );
                     }
                     else
                     {
-                        result.Content3 = Convert.ToUInt16(adds[0].Substring(1));
+                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 1 ) );
                     }
 
-                    result.Content2 = CalculateAddressStarted(address.Substring(address.IndexOf('.') + 1));
+                    result.Content2 = CalculateAddressStarted( address.Substring( address.IndexOf( '.' ) + 1 ) );
                 }
                 else if (address[0] == 'T')
                 {
                     result.Content1 = 0x1D;
-                    result.Content2 = CalculateAddressStarted(address.Substring(1));
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
                 }
                 else if (address[0] == 'C')
                 {
                     result.Content1 = 0x1C;
-                    result.Content2 = CalculateAddressStarted(address.Substring(1));
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
                 }
                 else
                 {
@@ -187,14 +187,14 @@ namespace HslCommunication.Profinet
         /// <param name="address"></param>
         /// <param name="count"></param>
         /// <returns>携带有命令字节</returns>
-        private OperateResult<byte[]> BuildReadCommand(string[] address, ushort[] count)
+        private OperateResult<byte[]> BuildReadCommand( string[] address, ushort[] count )
         {
-            if (address == null) throw new NullReferenceException("address");
-            if (count == null) throw new NullReferenceException("count");
-            if (address.Length != count.Length) throw new Exception("两个参数的个数不统一");
-            if (count.Length > 255) throw new Exception("读取的数组数量不允许大于255");
+            if (address == null) throw new NullReferenceException( "address" );
+            if (count == null) throw new NullReferenceException( "count" );
+            if (address.Length != count.Length) throw new Exception( "两个参数的个数不统一" );
+            if (count.Length > 255) throw new Exception( "读取的数组数量不允许大于255" );
 
-            var result = new OperateResult<byte[]>();
+            var result = new OperateResult<byte[]>( );
             int readCount = count.Length;
 
             byte[] _PLCCommand = new byte[19 + readCount * 12];
@@ -242,10 +242,10 @@ namespace HslCommunication.Profinet
             for (int ii = 0; ii < readCount; ii++)
             {
                 // 填充数据
-                OperateResult<byte, int, ushort> analysis = AnalysisAddress(address[ii]);
+                OperateResult<byte, int, ushort> analysis = AnalysisAddress( address[ii] );
                 if (!analysis.IsSuccess)
                 {
-                    result.CopyErrorFromOther(analysis);
+                    result.CopyErrorFromOther( analysis );
                     return result;
                 }
 
@@ -281,9 +281,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address"></param>
         /// <returns></returns>
-        private OperateResult<byte[]> BuildBitReadCommand(string address)
+        private OperateResult<byte[]> BuildBitReadCommand( string address )
         {
-            var result = new OperateResult<byte[]>();
+            var result = new OperateResult<byte[]>( );
 
             byte[] _PLCCommand = new byte[31];
             // 报文头
@@ -318,10 +318,10 @@ namespace HslCommunication.Profinet
 
 
             // 填充数据
-            OperateResult<byte, int, ushort> analysis = AnalysisAddress(address);
+            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
             if (!analysis.IsSuccess)
             {
-                result.CopyErrorFromOther(analysis);
+                result.CopyErrorFromOther( analysis );
                 return result;
             }
 
@@ -352,15 +352,15 @@ namespace HslCommunication.Profinet
 
 
 
-        private OperateResult<byte[]> BuildWriteByteCommand(string address, byte[] data)
+        private OperateResult<byte[]> BuildWriteByteCommand( string address, byte[] data )
         {
             if (data == null) data = new byte[0];
-            var result = new OperateResult<byte[]>();
+            var result = new OperateResult<byte[]>( );
 
-            OperateResult<byte, int, ushort> analysis = AnalysisAddress(address);
+            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
             if (!analysis.IsSuccess)
             {
-                result.CopyErrorFromOther(analysis);
+                result.CopyErrorFromOther( analysis );
                 return result;
             }
 
@@ -417,7 +417,7 @@ namespace HslCommunication.Profinet
             _PLCCommand[33] = (byte)(data.Length * 8 / 256);
             _PLCCommand[34] = (byte)(data.Length * 8 % 256);
 
-            data.CopyTo(_PLCCommand, 35);
+            data.CopyTo( _PLCCommand, 35 );
 
             result.Content = _PLCCommand;
             result.IsSuccess = true;
@@ -425,17 +425,17 @@ namespace HslCommunication.Profinet
         }
 
 
-        private OperateResult<byte[]> BuildWriteBitCommand(string address, bool data)
+        private OperateResult<byte[]> BuildWriteBitCommand( string address, bool data )
         {
-            var result = new OperateResult<byte[]>();
+            var result = new OperateResult<byte[]>( );
 
-            OperateResult<byte, int, ushort> analysis = AnalysisAddress(address);
+            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
             if (!analysis.IsSuccess)
             {
-                result.CopyErrorFromOther(analysis);
+                result.CopyErrorFromOther( analysis );
                 return result;
             }
-            
+
 
             byte[] buffer = new byte[1];
             buffer[0] = data ? (byte)0x01 : (byte)0x00;
@@ -492,7 +492,7 @@ namespace HslCommunication.Profinet
             _PLCCommand[33] = (byte)(buffer.Length / 256);
             _PLCCommand[34] = (byte)(buffer.Length % 256);
 
-            buffer.CopyTo(_PLCCommand, 35);
+            buffer.CopyTo( _PLCCommand, 35 );
 
             result.Content = _PLCCommand;
             result.IsSuccess = true;
@@ -509,22 +509,22 @@ namespace HslCommunication.Profinet
         /// 从PLC读取订货号信息
         /// </summary>
         /// <returns></returns>
-        public OperateResult<string> ReadOrderNumber()
+        public OperateResult<string> ReadOrderNumber( )
         {
-            OperateResult<string> result = new OperateResult<string>();
-            OperateResult<byte[]> read = ReadFromCoreServer(plcOrderNumber);
+            OperateResult<string> result = new OperateResult<string>( );
+            OperateResult<byte[]> read = ReadFromCoreServer( plcOrderNumber );
             if (read.IsSuccess)
             {
                 if (read.Content.Length > 100)
                 {
                     result.IsSuccess = true;
-                    result.Content = Encoding.ASCII.GetString(read.Content, 71, 20);
+                    result.Content = Encoding.ASCII.GetString( read.Content, 71, 20 );
                 }
             }
 
             if (!result.IsSuccess)
             {
-                result.CopyErrorFromOther(read);
+                result.CopyErrorFromOther( read );
             }
 
             return result;
@@ -541,9 +541,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <param name="count">读取的数量，以字节为单位</param>
         /// <returns></returns>
-        public OperateResult<byte[]> ReadFromPLC(string address, ushort count)
+        public OperateResult<byte[]> ReadFromPLC( string address, ushort count )
         {
-            return ReadFromPLC(new string[] { address }, new ushort[] { count });
+            return ReadFromPLC( new string[] { address }, new ushort[] { count } );
         }
 
         /// <summary>
@@ -551,18 +551,18 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        private OperateResult<byte[]> ReadBitFromPLC(string address)
+        private OperateResult<byte[]> ReadBitFromPLC( string address )
         {
-            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            OperateResult<byte[]> result = new OperateResult<byte[]>( );
 
-            OperateResult<byte[]> command = BuildBitReadCommand(address);
+            OperateResult<byte[]> command = BuildBitReadCommand( address );
             if (!command.IsSuccess)
             {
-                result.CopyErrorFromOther(command);
+                result.CopyErrorFromOther( command );
                 return result;
             }
 
-            OperateResult<byte[]> read = ReadFromCoreServer(command.Content);
+            OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
             if (read.IsSuccess)
             {
                 int receiveCount = 1;
@@ -608,18 +608,18 @@ namespace HslCommunication.Profinet
         /// <param name="count">数据长度数组</param>
         /// <returns></returns>
         /// <exception cref="NullReferenceException"></exception>
-        public OperateResult<byte[]> ReadFromPLC(string[] address, ushort[] count)
+        public OperateResult<byte[]> ReadFromPLC( string[] address, ushort[] count )
         {
-            OperateResult<byte[]> result = new OperateResult<byte[]>();
+            OperateResult<byte[]> result = new OperateResult<byte[]>( );
 
-            OperateResult<byte[]> command = BuildReadCommand(address, count);
+            OperateResult<byte[]> command = BuildReadCommand( address, count );
             if (!command.IsSuccess)
             {
-                result.CopyErrorFromOther(command);
+                result.CopyErrorFromOther( command );
                 return result;
             }
 
-            OperateResult<byte[]> read = ReadFromCoreServer(command.Content);
+            OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
             if (read.IsSuccess)
             {
                 int receiveCount = 0;
@@ -642,7 +642,7 @@ namespace HslCommunication.Profinet
                                 read.Content[ii + 1] == 0x04)
                             {
                                 // 有数据
-                                Array.Copy(read.Content, ii + 4, buffer, ll, count[kk]);
+                                Array.Copy( read.Content, ii + 4, buffer, ll, count[kk] );
                                 ii += count[kk] + 3;
                                 ll += count[kk];
                                 kk++;
@@ -674,9 +674,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<bool> ReadBoolFromPLC(string address)
+        public OperateResult<bool> ReadBoolFromPLC( string address )
         {
-            return GetBoolResultFromBytes(ReadBitFromPLC(address));
+            return GetBoolResultFromBytes( ReadBitFromPLC( address ) );
         }
 
 
@@ -685,9 +685,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<byte> ReadByteFromPLC(string address)
+        public OperateResult<byte> ReadByteFromPLC( string address )
         {
-            return GetByteResultFromBytes(ReadFromPLC(address, 1));
+            return GetByteResultFromBytes( ReadFromPLC( address, 1 ) );
         }
 
 
@@ -696,9 +696,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<short> ReadShortFromPLC(string address)
+        public OperateResult<short> ReadShortFromPLC( string address )
         {
-            return GetInt16ResultFromBytes(ReadFromPLC(address, 2));
+            return GetInt16ResultFromBytes( ReadFromPLC( address, 2 ) );
         }
 
 
@@ -707,9 +707,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<ushort> ReadUShortFromPLC(string address)
+        public OperateResult<ushort> ReadUShortFromPLC( string address )
         {
-            return GetUInt16ResultFromBytes(ReadFromPLC(address, 2));
+            return GetUInt16ResultFromBytes( ReadFromPLC( address, 2 ) );
         }
 
         /// <summary>
@@ -717,9 +717,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<int> ReadIntFromPLC(string address)
+        public OperateResult<int> ReadIntFromPLC( string address )
         {
-            return GetInt32ResultFromBytes(ReadFromPLC(address, 4));
+            return GetInt32ResultFromBytes( ReadFromPLC( address, 4 ) );
         }
 
         /// <summary>
@@ -727,9 +727,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<uint> ReadUIntFromPLC(string address)
+        public OperateResult<uint> ReadUIntFromPLC( string address )
         {
-            return GetUInt32ResultFromBytes(ReadFromPLC(address, 4));
+            return GetUInt32ResultFromBytes( ReadFromPLC( address, 4 ) );
         }
 
         /// <summary>
@@ -737,9 +737,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<float> ReadFloatFromPLC(string address)
+        public OperateResult<float> ReadFloatFromPLC( string address )
         {
-            return GetSingleResultFromBytes(ReadFromPLC(address, 4));
+            return GetSingleResultFromBytes( ReadFromPLC( address, 4 ) );
         }
 
         /// <summary>
@@ -747,9 +747,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<long> ReadLongFromPLC(string address)
+        public OperateResult<long> ReadLongFromPLC( string address )
         {
-            return GetInt64ResultFromBytes(ReadFromPLC(address, 8));
+            return GetInt64ResultFromBytes( ReadFromPLC( address, 8 ) );
         }
 
         /// <summary>
@@ -757,9 +757,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<ulong> ReadULongFromPLC(string address)
+        public OperateResult<ulong> ReadULongFromPLC( string address )
         {
-            return GetUInt64ResultFromBytes(ReadFromPLC(address, 8));
+            return GetUInt64ResultFromBytes( ReadFromPLC( address, 8 ) );
         }
 
         /// <summary>
@@ -767,9 +767,9 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<double> ReadDoubleFromPLC(string address)
+        public OperateResult<double> ReadDoubleFromPLC( string address )
         {
-            return GetDoubleResultFromBytes(ReadFromPLC(address, 8));
+            return GetDoubleResultFromBytes( ReadFromPLC( address, 8 ) );
         }
 
         /// <summary>
@@ -778,9 +778,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <param name="length">字符串长度</param>
         /// <returns></returns>
-        public OperateResult<string> ReadStringFromPLC(string address, ushort length)
+        public OperateResult<string> ReadStringFromPLC( string address, ushort length )
         {
-            return GetStringResultFromBytes(ReadFromPLC(address, length));
+            return GetStringResultFromBytes( ReadFromPLC( address, length ) );
         }
 
 
@@ -822,25 +822,25 @@ namespace HslCommunication.Profinet
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <param name="data">写入的数据，长度根据data的长度来指示</param>
         /// <returns></returns>
-        public OperateResult WriteIntoPLC(string address, byte[] data)
+        public OperateResult WriteIntoPLC( string address, byte[] data )
         {
-            OperateResult result = new OperateResult();
+            OperateResult result = new OperateResult( );
 
-            OperateResult<byte[]> command = BuildWriteByteCommand(address, data);
+            OperateResult<byte[]> command = BuildWriteByteCommand( address, data );
             if (!command.IsSuccess)
             {
-                result.CopyErrorFromOther(command);
+                result.CopyErrorFromOther( command );
                 return result;
             }
-            
 
-            OperateResult<byte[]> write = ReadFromCoreServer(command.Content);
+
+            OperateResult<byte[]> write = ReadFromCoreServer( command.Content );
             if (write.IsSuccess)
             {
                 if (write.Content[write.Content.Length - 1] != 0xFF)
                 {
                     // 写入异常
-                    result.Message = "写入数据异常，代号为：" + write.Content[write.Content.Length - 1].ToString();
+                    result.Message = "写入数据异常，代号为：" + write.Content[write.Content.Length - 1].ToString( );
                 }
                 else
                 {
@@ -862,25 +862,25 @@ namespace HslCommunication.Profinet
         /// <param name="address"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        public OperateResult WriteIntoPLC(string address, bool data)
+        public OperateResult WriteIntoPLC( string address, bool data )
         {
-            OperateResult result = new OperateResult();
+            OperateResult result = new OperateResult( );
 
             // 生成指令
-            OperateResult<byte[]> command = BuildWriteBitCommand(address, data);
+            OperateResult<byte[]> command = BuildWriteBitCommand( address, data );
             if (!command.IsSuccess)
             {
-                result.CopyErrorFromOther(command);
+                result.CopyErrorFromOther( command );
                 return result;
             }
 
-            OperateResult<byte[]> write = ReadFromCoreServer(command.Content);
+            OperateResult<byte[]> write = ReadFromCoreServer( command.Content );
             if (write.IsSuccess)
             {
                 if (write.Content[write.Content.Length - 1] != 0xFF)
                 {
                     // 写入异常
-                    result.Message = "写入数据异常，代号为：" + write.Content[write.Content.Length - 1].ToString();
+                    result.Message = "写入数据异常，代号为：" + write.Content[write.Content.Length - 1].ToString( );
                 }
                 else
                 {
@@ -900,18 +900,17 @@ namespace HslCommunication.Profinet
 
         #region Write String
 
-
-
+        
         /// <summary>
         /// 向PLC中写入字符串，编码格式为ASCII
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回读取结果</returns>
-        public OperateResult WriteAsciiStringIntoPLC(string address, string data)
+        public OperateResult WriteAsciiStringIntoPLC( string address, string data )
         {
-            byte[] temp = Encoding.ASCII.GetBytes(data);
-            return WriteIntoPLC(address, temp);
+            byte[] temp = Encoding.ASCII.GetBytes( data );
+            return WriteIntoPLC( address, temp );
         }
 
         /// <summary>
@@ -921,11 +920,11 @@ namespace HslCommunication.Profinet
         /// <param name="data">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
         /// <returns>返回读取结果</returns>
-        public OperateResult WriteAsciiStringIntoPLC(string address, string data, int length)
+        public OperateResult WriteAsciiStringIntoPLC( string address, string data, int length )
         {
-            byte[] temp = Encoding.ASCII.GetBytes(data);
-            temp = ManageBytesLength(temp, length);
-            return WriteIntoPLC(address, temp);
+            byte[] temp = Encoding.ASCII.GetBytes( data );
+            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length );
+            return WriteIntoPLC( address, temp );
         }
 
         /// <summary>
@@ -934,10 +933,10 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeStringIntoPLC(string address, string data)
+        public OperateResult WriteUnicodeStringIntoPLC( string address, string data )
         {
-            byte[] temp = Encoding.Unicode.GetBytes(data);
-            return WriteIntoPLC(address, temp);
+            byte[] temp = Encoding.Unicode.GetBytes( data );
+            return WriteIntoPLC( address, temp );
         }
 
         /// <summary>
@@ -947,11 +946,11 @@ namespace HslCommunication.Profinet
         /// <param name="data">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
         /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeStringIntoPLC(string address, string data, int length)
+        public OperateResult WriteUnicodeStringIntoPLC( string address, string data, int length )
         {
-            byte[] temp = Encoding.Unicode.GetBytes(data);
-            temp = ManageBytesLength(temp, length * 2);
-            return WriteIntoPLC(address, temp);
+            byte[] temp = Encoding.Unicode.GetBytes( data );
+            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length * 2 );
+            return WriteIntoPLC( address, temp );
         }
 
         #endregion
@@ -964,9 +963,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据，长度为8的倍数</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, bool[] data)
+        public OperateResult WriteIntoPLC( string address, bool[] data )
         {
-            return WriteIntoPLC(address, BasicFramework.SoftBasic.BoolArrayToByte(data));
+            return WriteIntoPLC( address, BasicFramework.SoftBasic.BoolArrayToByte( data ) );
         }
 
 
@@ -980,9 +979,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns></returns>
-        public OperateResult WriteIntoPLC(string address, byte data)
+        public OperateResult WriteIntoPLC( string address, byte data )
         {
-            return WriteIntoPLC(address, new byte[] { data });
+            return WriteIntoPLC( address, new byte[] { data } );
         }
 
         #endregion
@@ -995,9 +994,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, short[] data)
+        public OperateResult WriteIntoPLC( string address, short[] data )
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+            return WriteIntoPLC( address, ByteTransform.TransByte( data ) );
         }
 
         /// <summary>
@@ -1006,9 +1005,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, short data)
+        public OperateResult WriteIntoPLC( string address, short data )
         {
-            return WriteIntoPLC(address, new short[] { data });
+            return WriteIntoPLC( address, new short[] { data } );
         }
 
         #endregion
@@ -1022,9 +1021,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, ushort[] data)
+        public OperateResult WriteIntoPLC( string address, ushort[] data )
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+            return WriteIntoPLC( address, ByteTransform.TransByte( data ) );
         }
 
 
@@ -1034,9 +1033,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, ushort data)
+        public OperateResult WriteIntoPLC( string address, ushort data )
         {
-            return WriteIntoPLC(address, new ushort[] { data });
+            return WriteIntoPLC( address, new ushort[] { data } );
         }
 
 
@@ -1050,9 +1049,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, int[] data)
+        public OperateResult WriteIntoPLC( string address, int[] data )
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+            return WriteIntoPLC( address, ByteTransform.TransByte( data ) );
         }
 
         /// <summary>
@@ -1061,9 +1060,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, int data)
+        public OperateResult WriteIntoPLC( string address, int data )
         {
-            return WriteIntoPLC(address, new int[] { data });
+            return WriteIntoPLC( address, new int[] { data } );
         }
 
         #endregion
@@ -1076,9 +1075,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, uint[] data)
+        public OperateResult WriteIntoPLC( string address, uint[] data )
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+            return WriteIntoPLC( address, ByteTransform.TransByte( data ) );
         }
 
         /// <summary>
@@ -1087,9 +1086,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, uint data)
+        public OperateResult WriteIntoPLC( string address, uint data )
         {
-            return WriteIntoPLC(address, new uint[] { data });
+            return WriteIntoPLC( address, new uint[] { data } );
         }
 
         #endregion
@@ -1102,9 +1101,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, float[] data)
+        public OperateResult WriteIntoPLC( string address, float[] data )
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+            return WriteIntoPLC( address, ByteTransform.TransByte( data ) );
         }
 
         /// <summary>
@@ -1113,9 +1112,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, float data)
+        public OperateResult WriteIntoPLC( string address, float data )
         {
-            return WriteIntoPLC(address, new float[] { data });
+            return WriteIntoPLC( address, new float[] { data } );
         }
 
 
@@ -1129,9 +1128,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, long[] data)
+        public OperateResult WriteIntoPLC( string address, long[] data )
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+            return WriteIntoPLC( address, ByteTransform.TransByte( data ) );
         }
 
         /// <summary>
@@ -1140,9 +1139,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, long data)
+        public OperateResult WriteIntoPLC( string address, long data )
         {
-            return WriteIntoPLC(address, new long[] { data });
+            return WriteIntoPLC( address, new long[] { data } );
         }
 
         #endregion
@@ -1155,9 +1154,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, ulong[] data)
+        public OperateResult WriteIntoPLC( string address, ulong[] data )
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+            return WriteIntoPLC( address, ByteTransform.TransByte( data ) );
         }
 
         /// <summary>
@@ -1166,9 +1165,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, ulong data)
+        public OperateResult WriteIntoPLC( string address, ulong data )
         {
-            return WriteIntoPLC(address, new ulong[] { data });
+            return WriteIntoPLC( address, new ulong[] { data } );
         }
 
         #endregion
@@ -1181,9 +1180,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, double[] data)
+        public OperateResult WriteIntoPLC( string address, double[] data )
         {
-            return WriteIntoPLC(address, GetBytesFromArray(data, true));
+            return WriteIntoPLC( address, ByteTransform.TransByte( data ) );
         }
 
         /// <summary>
@@ -1192,9 +1191,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC(string address, double data)
+        public OperateResult WriteIntoPLC( string address, double data )
         {
-            return WriteIntoPLC(address, new double[] { data });
+            return WriteIntoPLC( address, new double[] { data } );
         }
 
         #endregion
@@ -1225,7 +1224,7 @@ namespace HslCommunication.Profinet
                 0x02,  // 20
                 0x01,  // 21
                 0x00   // 22
-        };                    
+        };
         private byte[] plcHead2 = new byte[25]
         {
                 0x03,
@@ -1353,7 +1352,7 @@ namespace HslCommunication.Profinet
         /// 获取当前对象的字符串标识形式
         /// </summary>
         /// <returns>字符串信息</returns>
-        public override string ToString()
+        public override string ToString( )
         {
             return "SiemensS7Net";
         }

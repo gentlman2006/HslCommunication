@@ -156,6 +156,33 @@ namespace HslCommunication.BasicFramework
             }
         }
 
+        /// <summary>
+        /// 将一个数组进行扩充到指定长度，或是缩短到指定长度
+        /// </summary>
+        /// <typeparam name="T">数组的类型</typeparam>
+        /// <param name="data">原先数据的数据</param>
+        /// <param name="length">新数组的长度</param>
+        /// <returns>新数组长度信息</returns>
+        public static T[] ArrayExpandToLength<T>( T[] data, int length )
+        {
+            if (data == null) return new T[length];
+
+            if (data.Length == length) return data;
+
+            if (data.Length < length)
+            {
+                T[] tmp = new T[length];
+                Array.Copy( data, tmp, data.Length );
+                return tmp;
+            }
+            else
+            {
+                T[] tmp = new T[length];
+                Array.Copy( data, tmp, tmp.Length );
+                return tmp;
+            }
+        }
+
         #endregion
 
         #region 数组比较

@@ -363,7 +363,6 @@ namespace HslCommunication.Core
 
             try
             {
-
                 state.WaitDone = connectDone;
                 state.WorkSocket = socket;
                 socket.BeginConnect( endPoint, new AsyncCallback( ConnectCallBack ), state );
@@ -371,11 +370,11 @@ namespace HslCommunication.Core
             catch (Exception ex)
             {
                 // 直接失败
-                connectTimeout.IsSuccessful = true;                   // 退出线程池的超时检查
+                connectTimeout.IsSuccessful = true;                      // 退出线程池的超时检查
                 LogNet?.WriteException( ToString( ), ex );               // 记录错误日志
-                socket.Close( );                                       // 关闭网络信息
-                connectDone.Close( );                                  // 释放等待资源
-                result.Message = ex.Message;                          // 传递错误消息
+                socket.Close( );                                         // 关闭网络信息
+                connectDone.Close( );                                    // 释放等待资源
+                result.Message = ex.Message;                             // 传递错误消息
                 return result;
             }
 
@@ -388,7 +387,7 @@ namespace HslCommunication.Core
             {
                 // 连接失败
                 result.Message = state.ErrerMsg;
-                socket.Close( );
+                socket?.Close( );
                 return result;
             }
 
@@ -413,6 +412,7 @@ namespace HslCommunication.Core
                 {
                     Socket socket = state.WorkSocket;
                     socket.EndConnect( ar );
+                    state.WaitDone.Set( );
                 }
                 catch (Exception ex)
                 {
@@ -429,7 +429,7 @@ namespace HslCommunication.Core
         #endregion
 
         #region Object Override
-        
+
         /// <summary>
         /// 获取字符串表示形式
         /// </summary>
@@ -438,7 +438,7 @@ namespace HslCommunication.Core
         {
             return "NetworkBase";
         }
-        
+
         #endregion
 
     }

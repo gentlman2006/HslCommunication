@@ -43,62 +43,71 @@ namespace HslCommunication.Core
         /// 从缓存中提取byte结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>byte对象</returns>
-        byte TransByte( byte[] buffer );
+        byte TransByte( byte[] buffer, int index );
         /// <summary>
         /// 从缓存中提取short结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>short对象</returns>
-        short TransInt16( byte[] buffer );
+        short TransInt16( byte[] buffer, int index );
         /// <summary>
         /// 从缓存中提取ushort结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>ushort对象</returns>
-        ushort TransUInt16( byte[] buffer );
+        ushort TransUInt16( byte[] buffer, int index );
         /// <summary>
         /// 从缓存中提取int结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>int对象</returns>
-        int TransInt32( byte[] buffer );
+        int TransInt32( byte[] buffer, int index );
         /// <summary>
         /// 从缓存中提取uint结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>uint对象</returns>
-        uint TransUInt32( byte[] buffer );
+        uint TransUInt32( byte[] buffer, int index );
         /// <summary>
         /// 从缓存中提取long结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>long对象</returns>
-        long TransInt64( byte[] buffer );
+        long TransInt64( byte[] buffer, int index );
         /// <summary>
         /// 从缓存中提取ulong结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>ulong对象</returns>
-        ulong TransUInt64( byte[] buffer );
+        ulong TransUInt64( byte[] buffer, int index );
         /// <summary>
         /// 从缓存中提取float结果
         /// </summary>
         /// <param name="buffer">缓存对象</param>
+        /// <param name="index">索引位置</param>
         /// <returns>float对象</returns>
-        float TransSingle( byte[] buffer );
+        float TransSingle( byte[] buffer, int index );
         /// <summary>
         /// 从缓存中提取double结果
         /// </summary>
         /// <param name="buffer">缓存对象</param>
+        /// <param name="index">索引位置</param>
         /// <returns>double对象</returns>
-        double TransDouble( byte[] buffer );
+        double TransDouble( byte[] buffer, int index );
         /// <summary>
         /// 从缓存中提取string结果，编码ASCII
         /// </summary>
         /// <param name="buffer">缓存对象</param>
         /// <returns>string对象</returns>
-        string TransString( byte[] buffer );
+        string TransString( byte[] buffer);
 
 
         #endregion

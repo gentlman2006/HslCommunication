@@ -24,7 +24,8 @@ namespace TestTool.TestForm
             // 窗口的载入方法
             MelsecNetInitialization();
 
-
+            siemensTcpNet.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + @"\Logs\s7log.txt" );
+            // siemensTcpNet.PersistentConnection = true;
         }
 
         /// <summary>
@@ -40,6 +41,7 @@ namespace TestTool.TestForm
             }
 
             textBox1.AppendText($"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}] {str}{Environment.NewLine}");
+            
         }
 
 
@@ -318,9 +320,9 @@ namespace TestTool.TestForm
         #region 西门子篇二S7通讯协议读取
 
 
-        private SiemensTcpNet siemensTcpNet = new SiemensTcpNet(SiemensPLCS.S1200)
+        private SiemensS7Net siemensTcpNet = new SiemensS7Net( SiemensPLCS.S1200 )
         {
-            PLCIpAddress = System.Net.IPAddress.Parse("192.168.1.195")
+            IpAddress = "192.168.1.195",
         };
 
 
@@ -328,8 +330,6 @@ namespace TestTool.TestForm
         {
             for (int i = 0; i < 10; i++)
             {
-
-
                 OperateResult<byte[]> read = siemensTcpNet.ReadFromPLC("M100", 6);
                 if (read.IsSuccess)
                 {
@@ -396,8 +396,8 @@ namespace TestTool.TestForm
             if (read.IsSuccess)
             {
                 byte value1 = read.Content[0];
-                int value2 = siemensTcpNet.GetIntFromBytes(read.Content, 1);
-                short value3 = siemensTcpNet.GetShortFromBytes(read.Content, 5);
+                int value2 = siemensTcpNet.ByteTransform.TransInt16(read.Content, 1);
+                short value3 = siemensTcpNet.ByteTransform.TransInt16( read.Content, 5);
                 byte value4 = read.Content[8];
 
                 TextBoxAppendStringLine($"[{value1},{value2}, {value3}, {value4}]");
@@ -456,10 +456,10 @@ namespace TestTool.TestForm
                 result.Content = new MachineInfo();
                 result.IsSuccess = true;
 
-                result.Content.温度一 = siemensTcpNet.GetFloatFromBytes(read.Content, 0);
-                result.Content.温度二 = siemensTcpNet.GetFloatFromBytes(read.Content, 4);
-                result.Content.转速一 = siemensTcpNet.GetFloatFromBytes(read.Content, 8);
-                result.Content.转速二 = siemensTcpNet.GetFloatFromBytes(read.Content, 12);
+                result.Content.温度一 = siemensTcpNet.ByteTransform.TransSingle(read.Content, 0);
+                result.Content.温度二 = siemensTcpNet.ByteTransform.TransSingle( read.Content, 4);
+                result.Content.转速一 = siemensTcpNet.ByteTransform.TransSingle( read.Content, 8);
+                result.Content.转速二 = siemensTcpNet.ByteTransform.TransSingle( read.Content, 12);
             }
             else
             {
@@ -553,7 +553,7 @@ namespace TestTool.TestForm
             ulong ulong_M100 = siemensTcpNet.ReadULongFromPLC("M100").Content;   // 读取M100-M107组成的无符号大数据
             double double_M100 = siemensTcpNet.ReadDoubleFromPLC("M100").Content; // 读取M100-M107组成的双精度值
             string str_M100 = siemensTcpNet.ReadStringFromPLC("M100", 10).Content;// 读取M100-M109组成的ASCII字符串数据
-            MachineInfoTwo machine100 = siemensTcpNet.ReadFromPLC<MachineInfoTwo>("D100").Content; // 读取自定义的对象
+            //MachineInfoTwo machine100 = siemensTcpNet.ReadFromPLC<MachineInfoTwo>("D100").Content; // 读取自定义的对象
 
 
             // 写入操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
@@ -568,7 +568,7 @@ namespace TestTool.TestForm
             siemensTcpNet.WriteIntoPLC("M100", 523434234234343UL);     // 写大整数无符号
             siemensTcpNet.WriteIntoPLC("M100", 123.456d);              // 写双精度
             siemensTcpNet.WriteAsciiStringIntoPLC("M100", "K123456789");// 写ASCII字符串
-            siemensTcpNet.WriteIntoPLC<MachineInfoTwo>("M100", machine100);// 写入自定义的对象
+            //siemensTcpNet.WriteIntoPLC<MachineInfoTwo>("M100", machine100);// 写入自定义的对象
         }
 
 
@@ -658,8 +658,8 @@ namespace TestTool.TestForm
                 if (read.IsSuccess)
                 {
                     byte value1 = read.Content[0];
-                    int value2 = siemensTcpNet.GetIntFromBytes(read.Content, 1);
-                    short value3 = siemensTcpNet.GetShortFromBytes(read.Content, 5);
+                    int value2 = siemensTcpNet.ByteTransform.TransInt32( read.Content, 1);
+                    short value3 = siemensTcpNet.ByteTransform.TransInt16(read.Content, 5);
                     byte value4 = read.Content[8];
 
                     TextBoxAppendStringLine($"[{value1},{value2}, {value3}, {value4}]");
@@ -674,7 +674,7 @@ namespace TestTool.TestForm
 
         private void userButton16_Click(object sender, EventArgs e)
         {
-            siemensTcpNet.ConnectServer();
+            //siemensTcpNet.ConnectServer();
         }
 
         private void userButton18_Click(object sender, EventArgs e)
@@ -695,7 +695,7 @@ namespace TestTool.TestForm
         private void userButton22_Click_1(object sender, EventArgs e)
         {
             string temp = HslCommunication.BasicFramework.SoftBasic.ByteToHexString(
-                siemensTcpNet.ReadFromServerCore(HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(
+                siemensTcpNet.ReadFromCoreServer(HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(
                     "03 00 00 1F 02 F0 80 32 01 00 00 00 01 00 0E 00 00 04 01 12 0A 10 01 00 01 00 00 81 00 00 00")).Content, ' ');
 
 
@@ -715,7 +715,7 @@ namespace TestTool.TestForm
         private void userButton23_Click_1(object sender, EventArgs e)
         {
             byte[] buffer = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes(textBox2.Text);
-            OperateResult<byte[]> operate = siemensTcpNet.ReadFromServerCore(buffer);
+            OperateResult<byte[]> operate = siemensTcpNet.ReadFromCoreServer(buffer);
             if (operate.IsSuccess)
             {
                 // 显示服务器返回的报文

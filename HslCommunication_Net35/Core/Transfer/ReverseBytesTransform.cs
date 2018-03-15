@@ -33,22 +33,24 @@ namespace HslCommunication.Core
         /// 从缓存中提取byte结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>byte对象</returns>
-        public byte TransByte( byte[] buffer )
+        public byte TransByte( byte[] buffer, int index )
         {
-            return buffer[0];
+            return buffer[index];
         }
 
         /// <summary>
         /// 从缓存中提取short结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>short对象</returns>
-        public short TransInt16( byte[] buffer )
+        public short TransInt16( byte[] buffer, int index )
         {
             byte[] tmp = new byte[2];
-            tmp[0] = buffer[1];
-            tmp[1] = buffer[0];
+            tmp[0] = buffer[1 + index];
+            tmp[1] = buffer[0 + index];
             return BitConverter.ToInt16( tmp, 0 );
         }
 
@@ -56,12 +58,13 @@ namespace HslCommunication.Core
         /// 从缓存中提取ushort结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>ushort对象</returns>
-        public ushort TransUInt16( byte[] buffer )
+        public ushort TransUInt16( byte[] buffer, int index )
         {
             byte[] tmp = new byte[2];
-            tmp[0] = buffer[1];
-            tmp[1] = buffer[0];
+            tmp[0] = buffer[1 + index];
+            tmp[1] = buffer[0 + index];
             return BitConverter.ToUInt16( tmp, 0 );
         }
 
@@ -69,14 +72,15 @@ namespace HslCommunication.Core
         /// 从缓存中提取int结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>int对象</returns>
-        public int TransInt32( byte[] buffer )
+        public int TransInt32( byte[] buffer, int index )
         {
             byte[] tmp = new byte[4];
-            tmp[0] = buffer[3];
-            tmp[1] = buffer[2];
-            tmp[2] = buffer[1];
-            tmp[3] = buffer[0];
+            tmp[0] = buffer[3 + index];
+            tmp[1] = buffer[2 + index];
+            tmp[2] = buffer[1 + index];
+            tmp[3] = buffer[0 + index];
             return BitConverter.ToInt32( tmp, 0 );
         }
 
@@ -84,14 +88,15 @@ namespace HslCommunication.Core
         /// 从缓存中提取uint结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>uint对象</returns>
-        public uint TransUInt32( byte[] buffer )
+        public uint TransUInt32( byte[] buffer, int index )
         {
             byte[] tmp = new byte[4];
-            tmp[0] = buffer[3];
-            tmp[1] = buffer[2];
-            tmp[2] = buffer[1];
-            tmp[3] = buffer[0];
+            tmp[0] = buffer[3 + index];
+            tmp[1] = buffer[2 + index];
+            tmp[2] = buffer[1 + index];
+            tmp[3] = buffer[0 + index];
             return BitConverter.ToUInt32( tmp, 0 );
         }
 
@@ -99,18 +104,19 @@ namespace HslCommunication.Core
         /// 从缓存中提取long结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>long对象</returns>
-        public long TransInt64( byte[] buffer )
+        public long TransInt64( byte[] buffer, int index )
         {
             byte[] tmp = new byte[8];
-            tmp[0] = buffer[7];
-            tmp[1] = buffer[6];
-            tmp[2] = buffer[5];
-            tmp[3] = buffer[4];
-            tmp[4] = buffer[3];
-            tmp[5] = buffer[2];
-            tmp[6] = buffer[1];
-            tmp[7] = buffer[0];
+            tmp[0] = buffer[7 + index];
+            tmp[1] = buffer[6 + index];
+            tmp[2] = buffer[5 + index];
+            tmp[3] = buffer[4 + index];
+            tmp[4] = buffer[3 + index];
+            tmp[5] = buffer[2 + index];
+            tmp[6] = buffer[1 + index];
+            tmp[7] = buffer[0 + index];
             return BitConverter.ToInt64( tmp, 0 );
         }
 
@@ -118,18 +124,19 @@ namespace HslCommunication.Core
         /// 从缓存中提取ulong结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
         /// <returns>ulong对象</returns>
-        public ulong TransUInt64( byte[] buffer )
+        public ulong TransUInt64( byte[] buffer, int index )
         {
             byte[] tmp = new byte[8];
-            tmp[0] = buffer[7];
-            tmp[1] = buffer[6];
-            tmp[2] = buffer[5];
-            tmp[3] = buffer[4];
-            tmp[4] = buffer[3];
-            tmp[5] = buffer[2];
-            tmp[6] = buffer[1];
-            tmp[7] = buffer[0];
+            tmp[0] = buffer[7 + index];
+            tmp[1] = buffer[6 + index];
+            tmp[2] = buffer[5 + index];
+            tmp[3] = buffer[4 + index];
+            tmp[4] = buffer[3 + index];
+            tmp[5] = buffer[2 + index];
+            tmp[6] = buffer[1 + index];
+            tmp[7] = buffer[0 + index];
             return BitConverter.ToUInt64( tmp, 0 );
         }
 
@@ -137,14 +144,15 @@ namespace HslCommunication.Core
         /// 从缓存中提取float结果
         /// </summary>
         /// <param name="buffer">缓存对象</param>
+        /// <param name="index">索引位置</param>
         /// <returns>float对象</returns>
-        public float TransSingle( byte[] buffer )
+        public float TransSingle( byte[] buffer, int index )
         {
             byte[] tmp = new byte[4];
-            tmp[0] = buffer[3];
-            tmp[1] = buffer[2];
-            tmp[2] = buffer[1];
-            tmp[3] = buffer[0];
+            tmp[0] = buffer[3 + index];
+            tmp[1] = buffer[2 + index];
+            tmp[2] = buffer[1 + index];
+            tmp[3] = buffer[0 + index];
             return BitConverter.ToSingle( tmp, 0 );
         }
 
@@ -152,18 +160,19 @@ namespace HslCommunication.Core
         /// 从缓存中提取double结果
         /// </summary>
         /// <param name="buffer">缓存对象</param>
+        /// <param name="index">索引位置</param>
         /// <returns>double对象</returns>
-        public double TransDouble( byte[] buffer )
+        public double TransDouble( byte[] buffer, int index )
         {
             byte[] tmp = new byte[8];
-            tmp[0] = buffer[7];
-            tmp[1] = buffer[6];
-            tmp[2] = buffer[5];
-            tmp[3] = buffer[4];
-            tmp[4] = buffer[3];
-            tmp[5] = buffer[2];
-            tmp[6] = buffer[1];
-            tmp[7] = buffer[0];
+            tmp[0] = buffer[7 + index];
+            tmp[1] = buffer[6 + index];
+            tmp[2] = buffer[5 + index];
+            tmp[3] = buffer[4 + index];
+            tmp[4] = buffer[3 + index];
+            tmp[5] = buffer[2 + index];
+            tmp[6] = buffer[1 + index];
+            tmp[7] = buffer[0 + index];
             return BitConverter.ToDouble( tmp, 0 );
         }
 
