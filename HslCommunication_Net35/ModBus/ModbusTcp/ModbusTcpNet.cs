@@ -2,124 +2,53 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HslCommunication.BasicFramework;
 using HslCommunication.Core;
 using HslCommunication.Core.IMessage;
-using System.Net.Sockets;
 
-
-/********************************************************************************
- * 
- *    说明：西门子通讯类，使用Fetch/Write消息解析规格，和反字节转换规格来实现的
- *    
- *    继承自统一的自定义方法
- * 
- * 
- *********************************************************************************/
-
-namespace HslCommunication.Profinet
+namespace HslCommunication.ModBus
 {
+    
+
     /// <summary>
-    /// 使用了Fetch/Write协议来和西门子进行通讯，该种方法需要在PLC侧进行一些配置
+    /// Modbus-Tcp协议的客户端通讯类，方便的和服务器进行数据交互
     /// </summary>
-    public class SiemensFetchWriteNet : NetworkDoubleBase<FetchWriteMessage, ReverseBytesTransform>
+    public class ModbusTcpNet : NetworkDoubleBase<ModbusTcpMessage, ReverseWordTransform>
     {
+
         #region Constructor
 
         /// <summary>
-        /// 实例化一个西门子的Fetch/Write协议的通讯对象
+        /// 实例化一个MOdbus-Tcp协议的客户端对象
         /// </summary>
-        public SiemensFetchWriteNet( )
+        public ModbusTcpNet( )
         {
-
+            softIncrementCount = new SoftIncrementCount( ushort.MaxValue );
         }
-        
+
+        #endregion
+
+        #region Private Member
+
+        private byte station = 0x01;             // 本客户端的站号
+        private SoftIncrementCount softIncrementCount;              // 自增消息的对象
+
+
         #endregion
 
         #region Address Analysis
 
         /// <summary>
-        /// 计算特殊的地址信息
-        /// </summary>
-        /// <param name="address">字符串信息</param>
-        /// <returns>实际值</returns>
-        private int CalculateAddressStarted( string address )
-        {
-            if (address.IndexOf( '.' ) < 0)
-            {
-                return Convert.ToInt32( address );
-            }
-            else
-            {
-                string[] temp = address.Split( '.' );
-                return Convert.ToInt32( temp[0] );
-            }
-        }
-
-        /// <summary>
-        /// 解析数据地址，解析出地址类型，起始地址，DB块的地址
+        /// 解析数据地址，解析出地址类型，起始地址
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
-        private OperateResult<byte, int, ushort> AnalysisAddress( string address )
+        private OperateResult<int> AnalysisAddress( string address )
         {
-            var result = new OperateResult<byte, int, ushort>( );
+            var result = new OperateResult<int>( );
             try
             {
-                result.Content3 = 0;
-                if (address[0] == 'I')
-                {
-                    result.Content1 = 0x03;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'Q')
-                {
-                    result.Content1 = 0x04;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'M')
-                {
-                    result.Content1 = 0x02;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'D' || address.Substring( 0, 2 ) == "DB")
-                {
-                    result.Content1 = 0x01;
-                    string[] adds = address.Split( '.' );
-                    if (address[1] == 'B')
-                    {
-                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 2 ) );
-                    }
-                    else
-                    {
-                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 1 ) );
-                    }
-
-                    if (result.Content3 > 255)
-                    {
-                        result.Message = "DB块数据无法大于255";
-                        return result;
-                    }
-
-                    result.Content2 = CalculateAddressStarted( address.Substring( address.IndexOf( '.' ) + 1 ) );
-                }
-                else if (address[0] == 'T')
-                {
-                    result.Content1 = 0x07;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'C')
-                {
-                    result.Content1 = 0x06;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else
-                {
-                    result.Message = "不支持的数据类型";
-                    result.Content1 = 0;
-                    result.Content2 = 0;
-                    result.Content3 = 0;
-                    return result;
-                }
+                result.Content = Convert.ToInt32( address );
             }
             catch (Exception ex)
             {
@@ -136,111 +65,262 @@ namespace HslCommunication.Profinet
 
         #region Build Command
 
+
         /// <summary>
-        /// 生成一个读取字数据指令头的通用方法
+        /// 读取数据的基础指令，需要指定指令码，地址，长度
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="address"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> BuildReadCommandBase(byte code, string address, ushort count )
+        {
+            var result = new OperateResult<byte[]>( );
+
+            OperateResult<int> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess)
+            {
+                result.CopyErrorFromOther( analysis );
+                return result;
+            }
+
+            ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
+            byte[] buffer = new byte[12];
+            buffer[0] = (byte)(messageId / 256);
+            buffer[1] = (byte)(messageId % 256);
+            buffer[2] = 0x00;
+            buffer[3] = 0x00;
+            buffer[4] = 0x00;
+            buffer[5] = 0x06;
+            buffer[6] = station;
+            buffer[7] = code;
+            buffer[8] = (byte)(analysis.Content / 256);
+            buffer[9] = (byte)(analysis.Content % 256);
+            buffer[10] = (byte)(count / 256);
+            buffer[11] = (byte)(count % 256);
+
+            result.Content = buffer;
+            result.IsSuccess = true;
+            return result;
+        }
+
+        /// <summary>
+        /// 生成一个读取线圈的指令头
+        /// </summary>
+        /// <param name="address">地址</param>
+        /// <param name="count">长度</param>
+        /// <returns>携带有命令字节</returns>
+        private OperateResult<byte[]> BuildReadCoilCommand( string address, ushort count )
+        {
+            return BuildReadCommandBase( 0x01, address, count );
+        }
+
+        /// <summary>
+        /// 生成一个读取离散信息的指令头
+        /// </summary>
+        /// <param name="address">地址</param>
+        /// <param name="count">长度</param>
+        /// <returns>携带有命令字节</returns>
+        private OperateResult<byte[]> BuildReadDiscreteCommand( string address, ushort count )
+        {
+            return BuildReadCommandBase( 0x02, address, count );
+        }
+
+        
+
+
+        /// <summary>
+        /// 生成一个读取寄存器的指令头
         /// </summary>
         /// <param name="address"></param>
         /// <param name="count"></param>
         /// <returns>携带有命令字节</returns>
-        private OperateResult<byte[]> BuildReadCommand( string address, ushort count )
+        private OperateResult<byte[]> BuildReadRegisterCommand( string address, ushort count )
+        {
+            return BuildReadCommandBase( 0x03, address, count );
+        }
+
+
+
+        private OperateResult<byte[]> BuildWriteOneCoilCommand( string address, bool value )
         {
             var result = new OperateResult<byte[]>( );
 
-            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
+            OperateResult<int> analysis = AnalysisAddress( address );
             if (!analysis.IsSuccess)
             {
                 result.CopyErrorFromOther( analysis );
                 return result;
             }
 
-            byte[] _PLCCommand = new byte[16];
-            _PLCCommand[0] = 0x53;
-            _PLCCommand[1] = 0x35;
-            _PLCCommand[2] = 0x10;
-            _PLCCommand[3] = 0x01;
-            _PLCCommand[4] = 0x03;
-            _PLCCommand[5] = 0x05;
-            _PLCCommand[6] = 0x03;
-            _PLCCommand[7] = 0x08;
+            ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
+            byte[] buffer = new byte[12];
+            buffer[0] = (byte)(messageId / 256);
+            buffer[1] = (byte)(messageId % 256);
+            buffer[2] = 0x00;
+            buffer[3] = 0x00;
+            buffer[4] = 0x00;
+            buffer[5] = 0x06;
+            buffer[6] = station;
+            buffer[7] = 0x05;
+            buffer[8] = (byte)(analysis.Content / 256);
+            buffer[9] = (byte)(analysis.Content % 256);
+            buffer[10] = (byte)(value ? 0xFF : 0x00);
+            buffer[11] = 0x00;
 
-            //指定数据区
-            _PLCCommand[8] = analysis.Content1;
-            _PLCCommand[9] = (byte)analysis.Content3;
-
-            //指定数据地址
-            _PLCCommand[10] = (byte)(analysis.Content2 / 256);
-            _PLCCommand[11] = (byte)(analysis.Content2 % 256);
-
-            //指定数据长度
-            _PLCCommand[12] = (byte)(count / 256);
-            _PLCCommand[13] = (byte)(count % 256);
-
-            _PLCCommand[14] = 0xff;
-            _PLCCommand[15] = 0x02;
-            
-            result.Content = _PLCCommand;
+            result.Content = buffer;
             result.IsSuccess = true;
             return result;
         }
 
 
 
-        /// <summary>
-        /// 生成一个写入字节数据的指令
-        /// </summary>
-        /// <param name="address"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private OperateResult<byte[]> BuildWriteByteCommand( string address, byte[] data )
+
+
+        private OperateResult<byte[]> BuildWriteOneRegisterCommand( string address, byte[] data )
         {
-            if (data == null) data = new byte[0];
             var result = new OperateResult<byte[]>( );
 
-            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
+            OperateResult<int> analysis = AnalysisAddress( address );
             if (!analysis.IsSuccess)
             {
                 result.CopyErrorFromOther( analysis );
                 return result;
             }
 
-            byte[] _PLCCommand = new byte[16 + data.Length];
-            _PLCCommand[0] = 0x53;
-            _PLCCommand[1] = 0x35;
-            _PLCCommand[2] = 0x10;
-            _PLCCommand[3] = 0x01;
-            _PLCCommand[4] = 0x03;
-            _PLCCommand[5] = 0x03;
-            _PLCCommand[6] = 0x03;
-            _PLCCommand[7] = 0x08;
+            ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
+            byte[] buffer = new byte[12];
+            buffer[0] = (byte)(messageId / 256);
+            buffer[1] = (byte)(messageId % 256);
+            buffer[2] = 0x00;
+            buffer[3] = 0x00;
+            buffer[4] = 0x00;
+            buffer[5] = 0x06;
+            buffer[6] = station;
+            buffer[7] = 0x06;
+            buffer[8] = (byte)(analysis.Content / 256);
+            buffer[9] = (byte)(analysis.Content % 256);
+            buffer[10] = data[1];
+            buffer[11] = data[0];
 
-            //指定数据区
-            _PLCCommand[8] = analysis.Content1;
-            _PLCCommand[9] = (byte)analysis.Content3;
-
-            //指定数据地址
-            _PLCCommand[10] = (byte)(analysis.Content2 / 256);
-            _PLCCommand[11] = (byte)(analysis.Content2 % 256);
-
-            //指定数据长度
-            _PLCCommand[12] = (byte)(data.Length / 256);
-            _PLCCommand[13] = (byte)(data.Length % 256);
-
-            _PLCCommand[14] = 0xff;
-            _PLCCommand[15] = 0x02;
-
-            //放置数据
-            Array.Copy( data, 0, _PLCCommand, 16, data.Length );
-            
-            result.Content = _PLCCommand;
+            result.Content = buffer;
             result.IsSuccess = true;
             return result;
         }
-        
+
+
+
+        private OperateResult<byte[]> BuildWriteCoilCommand( string address, bool[] values )
+        {
+            var result = new OperateResult<byte[]>( );
+            byte[] data = SoftBasic.BoolArrayToByte( values );
+
+            OperateResult<int> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess)
+            {
+                result.CopyErrorFromOther( analysis );
+                return result;
+            }
+            
+            ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
+            byte[] buffer = new byte[13 + data.Length];
+            buffer[0] = (byte)(messageId / 256);
+            buffer[1] = (byte)(messageId % 256);
+            buffer[2] = 0x00;
+            buffer[3] = 0x00;
+            buffer[4] = (byte)((buffer.Length - 6) / 256);
+            buffer[5] = (byte)((buffer.Length - 6) % 256);
+            buffer[6] = station;
+            buffer[7] = 0x0F;
+            buffer[8] = (byte)(analysis.Content / 256);
+            buffer[9] = (byte)(analysis.Content % 256);
+            buffer[10] = (byte)(values.Length / 256);
+            buffer[11] = (byte)(values.Length % 256);
+
+            buffer[12] = (byte)(data.Length);
+            data.CopyTo( buffer, 13 );
+
+            result.Content = buffer;
+            result.IsSuccess = true;
+            return result;
+        }
+
+
+        private OperateResult<byte[]> BuildWriteRegisterCommand( string address, byte[] data )
+        {
+            var result = new OperateResult<byte[]>( );
+
+            OperateResult<int> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess)
+            {
+                result.CopyErrorFromOther( analysis );
+                return result;
+            }
+
+            ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
+            byte[] buffer = new byte[13 + data.Length];
+            buffer[0] = (byte)(messageId / 256);
+            buffer[1] = (byte)(messageId % 256);
+            buffer[2] = 0x00;
+            buffer[3] = 0x00;
+            buffer[4] = (byte)((buffer.Length - 6) / 256);
+            buffer[5] = (byte)((buffer.Length - 6) % 256);
+            buffer[6] = station;
+            buffer[7] = 0x10;
+            buffer[8] = (byte)(analysis.Content / 256);
+            buffer[9] = (byte)(analysis.Content % 256);
+            buffer[10] = (byte)(data.Length / 2 / 256);
+            buffer[11] = (byte)(data.Length / 2 % 256);
+
+            buffer[12] = (byte)(data.Length);
+            data.CopyTo( buffer, 13 );
+
+            result.Content = buffer;
+            result.IsSuccess = true;
+            return result;
+        }
 
 
 
         #endregion
-        
+
+        #region Core Interative
+
+        /// <summary>
+        /// 通过错误码来获取到对应的文本消息
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        private string GetDescriptionByErrorCode( byte code )
+        {
+            switch (code)
+            {
+                case 0x01: return "不支持该功能码";
+                case 0x02: return "越界";
+                case 0x03: return "寄存器数量超出范围";
+                case 0x04: return "读写异常";
+                default: return "未知异常";
+            }
+        }
+
+        private OperateResult<byte[]> CheckModbusTcpResponse( byte[] send )
+        {
+            OperateResult<byte[]> result = ReadFromCoreServer( send );
+            if (result.IsSuccess)
+            {
+                if ((send[7] + 0x80) == result.Content[7])
+                {
+                    // 发生了错误
+                    result.IsSuccess = false;
+                    result.Message = GetDescriptionByErrorCode( result.Content[8] );
+                    result.ErrorCode = result.Content[8];
+                }
+            }
+            return result;
+        }
+
+        #endregion
+
         #region Customer Support
 
         /// <summary>
@@ -285,6 +365,50 @@ namespace HslCommunication.Profinet
 
         #region Read Support
 
+        /// <summary>
+        /// 读取服务器的数据，需要指定不同的功能码
+        /// </summary>
+        /// <param name="code">指令</param>
+        /// <param name="address">地址</param>
+        /// <param name="length">长度</param>
+        /// <returns></returns>
+        private OperateResult<byte[]> ReadModBusBase( byte code, string address, ushort length )
+        {
+            OperateResult<byte[]> command = BuildReadCommandBase( code, address, length );
+            if(!command.IsSuccess)
+            {
+                return new OperateResult<byte[]>( )
+                {
+                    ErrorCode = command.ErrorCode,
+                    Message = command.Message,
+                };
+            }
+
+            OperateResult<byte[]> resultBytes = CheckModbusTcpResponse( command.Content );
+            if (resultBytes.IsSuccess)
+            {
+                // 二次数据处理
+                if (resultBytes.Content?.Length >= 9)
+                {
+                    byte[] buffer = new byte[resultBytes.Content.Length - 9];
+                    Array.Copy( resultBytes.Content, 9, buffer, 0, buffer.Length );
+                    resultBytes.Content = buffer;
+                }
+            }
+            return resultBytes;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public OperateResult<bool[]> ReadCoil( string address, ushort count )
+        {
+            OperateResult<bool[]> result = new OperateResult<bool[]>( );
+            OperateResult<byte[]> read = ReadModBusBase( 0x01, address, count );
+        }
 
         /// <summary>
         /// 从PLC读取数据，地址格式为I100，Q100，DB20.100，M100，T100，C100，以字节为单位
@@ -328,8 +452,6 @@ namespace HslCommunication.Profinet
 
             return result;
         }
-        
-        
 
         /// <summary>
         /// 读取指定地址的byte数据
@@ -480,7 +602,7 @@ namespace HslCommunication.Profinet
             return result;
         }
 
-        
+
 
         #endregion
 
@@ -556,22 +678,7 @@ namespace HslCommunication.Profinet
 
 
         #endregion
-
-        #region Write Byte
-
-        /// <summary>
-        /// 向PLC中写入byte数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
-        /// <returns></returns>
-        public OperateResult Write( string address, byte data )
-        {
-            return Write( address, new byte[] { data } );
-        }
-
-        #endregion
-
+        
         #region Write Short
 
         /// <summary>
@@ -783,7 +890,7 @@ namespace HslCommunication.Profinet
         }
 
         #endregion
-        
+
         #region Object Override
 
         /// <summary>
@@ -792,10 +899,11 @@ namespace HslCommunication.Profinet
         /// <returns>字符串信息</returns>
         public override string ToString( )
         {
-            return "SiemensFetchWriteNet";
+            return "ModbusTcpNet";
         }
 
         #endregion
+
 
 
 

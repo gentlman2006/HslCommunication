@@ -121,6 +121,7 @@
     </Compile>
     <Compile Include="Core\IMessage\FetchWriteMessage.cs" />
     <Compile Include="Core\IMessage\HslMessage.cs" />
+    <Compile Include="Core\IMessage\ModbusTcpMessage.cs" />
     <Compile Include="Core\IMessage\S7Message.cs" />
     <Compile Include="Core\Net\ClassNetHandle.cs" />
     <Compile Include="Core\Net\CommunicationProtocol.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Core\Transfer\IByteTransform.cs" />
     <Compile Include="Core\Transfer\RegularByteTransform.cs" />
     <Compile Include="Core\Transfer\ReverseBytesTransform.cs" />
+    <Compile Include="Core\Transfer\ReverseWordTransform.cs" />
     <Compile Include="Core\Types\HslPieItem.cs" />
     <Compile Include="Enthernet\ClassDeviceNet.cs" />
     <Compile Include="Enthernet\ClassFileNet.cs" />
@@ -176,15 +178,16 @@
     <Compile Include="LogNet\Logs\LogNetSingle.cs" />
     <Compile Include="Core\Net\NetBase.cs" />
     <Compile Include="Core\Types\OperateResult.cs" />
-    <Compile Include="ModBus\Modbus-Tcp\ModBusTcpClient.cs" />
-    <Compile Include="ModBus\Modbus-Tcp\ModBusTcpServer.cs" />
+    <Compile Include="ModBus\ModbusInfo.cs" />
+    <Compile Include="ModBus\ModbusTcp\ModbusTcpNet.cs" />
+    <Compile Include="ModBus\ModBusTcpClient.cs" />
+    <Compile Include="ModBus\ModBusTcpServer.cs" />
     <Compile Include="Core\Types\IDataTransfer.cs" />
     <Compile Include="Profinet\MelsecNet.cs" />
     <Compile Include="Profinet\Melsec\Melsec1ENet.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcNet.cs" />
     <Compile Include="Profinet\Omron\OmronFinsNet.cs" />
     <Compile Include="Profinet\PlcNetBase.cs" />
-    <Compile Include="Profinet\SiemensNet.cs" />
     <Compile Include="Profinet\Siemens\SiemensFetchWriteNet.cs" />
     <Compile Include="Profinet\Siemens\SiemensPLCS.cs" />
     <Compile Include="Profinet\Siemens\SiemensS7Net.cs" />
@@ -364,7 +367,7 @@
     <None Include="imgaes\abstr11.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ModBus\Modbus-Rtu\" />
+    <Folder Include="ModBus\ModbusRtu\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

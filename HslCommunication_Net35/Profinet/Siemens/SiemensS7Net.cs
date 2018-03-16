@@ -1233,7 +1233,7 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC( string address, double[] data )
+        public OperateResult Write( string address, double[] data )
         {
             return Write( address, ByteTransform.TransByte( data ) );
         }
@@ -1244,9 +1244,9 @@ namespace HslCommunication.Profinet
         /// <param name="address">要写入的数据地址</param>
         /// <param name="data">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult WriteIntoPLC( string address, double data )
+        public OperateResult Write( string address, double data )
         {
-            return WriteIntoPLC( address, new double[] { data } );
+            return Write( address, new double[] { data } );
         }
 
         #endregion
