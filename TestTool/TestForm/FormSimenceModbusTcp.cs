@@ -20,12 +20,12 @@ namespace TestTool.TestForm
 
 
 
-        private ModBusTcpClient client;                                   // 与PLC通信的对象
+        private ModbusTcpNet client;                                   // 与PLC通信的对象
 
 
         private void FormSimenceModbusTcp_Load( object sender, EventArgs e )
         {
-            client = new ModBusTcpClient( "192.168.1.195" );
+            client = new ModbusTcpNet( "192.168.1.195" );
 
             action_update = new Action( ShowUpdate );
         }
@@ -71,7 +71,7 @@ namespace TestTool.TestForm
         {
             while (true)
             {
-                HslCommunication.OperateResult<short> read = client.ReadShortRegister( 100 );
+                HslCommunication.OperateResult<short> read = client.ReadInt16( "100" );
                 if (read.IsSuccess)
                 {
                     readSuccess++;
@@ -89,7 +89,7 @@ namespace TestTool.TestForm
         {
             while (true)
             {
-                HslCommunication.OperateResult read = client.WriteRegister( 100, (short)1234 );
+                HslCommunication.OperateResult read = client.Write( "100", (short)1234 );
                 if (read.IsSuccess)
                 {
                     readSuccess++;

@@ -75,6 +75,22 @@ namespace HslCommunication
          ******************************************************************************************************/
         
         /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public static OperateResult CreateFailedResult<T>(T result) where T : OperateResult
+        {
+            return new OperateResult( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+
+        /// <summary>
         /// 创建并返回一个成功的结果对象
         /// </summary>
         /// <returns>成功的结果对象</returns>

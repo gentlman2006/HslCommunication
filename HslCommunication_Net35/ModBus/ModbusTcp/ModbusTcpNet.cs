@@ -8,12 +8,12 @@ using HslCommunication.Core.IMessage;
 
 namespace HslCommunication.ModBus
 {
-    
+
 
     /// <summary>
     /// Modbus-Tcp协议的客户端通讯类，方便的和服务器进行数据交互
     /// </summary>
-    public class ModbusTcpNet : NetworkDoubleBase<ModbusTcpMessage, ReverseWordTransform>
+    public class ModbusTcpNet : NetworkDoubleBase<ModbusTcpMessage, ReverseWordTransform>, IReadWriteNet
     {
 
         #region Constructor
@@ -21,10 +21,11 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 实例化一个MOdbus-Tcp协议的客户端对象
         /// </summary>
-        public ModbusTcpNet( )
+        public ModbusTcpNet()
         {
             softIncrementCount = new SoftIncrementCount( ushort.MaxValue );
         }
+
 
         /// <summary>
         /// 指定服务器地址，端口号，客户端自己的站号来初始化
@@ -32,8 +33,9 @@ namespace HslCommunication.ModBus
         /// <param name="ipAddress">服务器的Ip地址</param>
         /// <param name="port">服务器的端口号</param>
         /// <param name="station">客户端自身的站号</param>
-        public ModbusTcpNet(string ipAddress, int port = 502, byte station = 0x01)
+        public ModbusTcpNet( string ipAddress, int port = 502, byte station = 0x01 )
         {
+            softIncrementCount = new SoftIncrementCount( ushort.MaxValue );
             IpAddress = ipAddress;
             Port = port;
             this.station = station;
@@ -86,7 +88,7 @@ namespace HslCommunication.ModBus
         /// <param name="address"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        private OperateResult<byte[]> BuildReadCommandBase(byte code, string address, ushort count )
+        private OperateResult<byte[]> BuildReadCommandBase( byte code, string address, ushort count )
         {
             var result = new OperateResult<byte[]>( );
 
@@ -125,7 +127,7 @@ namespace HslCommunication.ModBus
         /// <returns>携带有命令字节</returns>
         private OperateResult<byte[]> BuildReadCoilCommand( string address, ushort count )
         {
-            return BuildReadCommandBase(ModbusInfo.ReadCoil, address, count );
+            return BuildReadCommandBase( ModbusInfo.ReadCoil, address, count );
         }
 
         /// <summary>
@@ -136,10 +138,10 @@ namespace HslCommunication.ModBus
         /// <returns>携带有命令字节</returns>
         private OperateResult<byte[]> BuildReadDiscreteCommand( string address, ushort count )
         {
-            return BuildReadCommandBase(ModbusInfo.ReadDiscrete, address, count );
+            return BuildReadCommandBase( ModbusInfo.ReadDiscrete, address, count );
         }
 
-        
+
 
 
         /// <summary>
@@ -150,7 +152,7 @@ namespace HslCommunication.ModBus
         /// <returns>携带有命令字节</returns>
         private OperateResult<byte[]> BuildReadRegisterCommand( string address, ushort count )
         {
-            return BuildReadCommandBase(ModbusInfo.ReadRegister, address, count );
+            return BuildReadCommandBase( ModbusInfo.ReadRegister, address, count );
         }
 
 
@@ -234,7 +236,7 @@ namespace HslCommunication.ModBus
                 result.CopyErrorFromOther( analysis );
                 return result;
             }
-            
+
             ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
             byte[] buffer = new byte[13 + data.Length];
             buffer[0] = (byte)(messageId / 256);
@@ -342,11 +344,11 @@ namespace HslCommunication.ModBus
         /// <typeparam name="T">类型名称</typeparam>
         /// <param name="address">起始地址</param>
         /// <returns>带是否成功的特定类型的对象</returns>
-        public OperateResult<T> Read<T>( string address ) where T : IDataTransfer, new()
+        public OperateResult<T> ReadCustomer<T>( string address ) where T : IDataTransfer, new()
         {
             OperateResult<T> result = new OperateResult<T>( );
             T Content = new T( );
-            OperateResult<byte[]> read = ReadRegisters( address, Content.ReadCount );
+            OperateResult<byte[]> read = Read( address, Content.ReadCount );
             if (read.IsSuccess)
             {
                 Content.ParseSource( read.Content );
@@ -362,15 +364,15 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
-        /// 写入自定义的数据类型到PLC去，只要规定了生成字节的方法即可
+        /// 写入自定义的数据类型到寄存器去，只要规定了生成字节的方法即可
         /// </summary>
         /// <typeparam name="T">自定义类型</typeparam>
         /// <param name="address">起始地址</param>
         /// <param name="data">实例对象</param>
         /// <returns>是否成功</returns>
-        public OperateResult Write<T>( string address, T data ) where T : IDataTransfer, new()
+        public OperateResult WriteCustomer<T>( string address, T data ) where T : IDataTransfer, new()
         {
-            return WriteRegisters( address, data.ToSource( ) );
+            return Write( address, data.ToSource( ) );
         }
 
 
@@ -383,12 +385,12 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="code">指令</param>
         /// <param name="address">地址</param>
-        /// <param name="count">长度</param>
+        /// <param name="length">长度</param>
         /// <returns></returns>
-        private OperateResult<byte[]> ReadModBusBase( byte code, string address, ushort count)
+        private OperateResult<byte[]> ReadModBusBase( byte code, string address, ushort length )
         {
-            OperateResult<byte[]> command = BuildReadCommandBase( code, address, count);
-            if(!command.IsSuccess)
+            OperateResult<byte[]> command = BuildReadCommandBase( code, address, length );
+            if (!command.IsSuccess)
             {
                 return new OperateResult<byte[]>( )
                 {
@@ -413,22 +415,41 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
-        /// 批量的读取线圈，需要指定起始地址，读取长度
+        /// 读取线圈，需要指定起始地址
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
-        /// <param name="count">读取长度</param>
-        /// <returns>带有成功标志的bool数组对象</returns>
-        public OperateResult<bool[]> ReadCoil( string address, ushort count )
+        /// <param name="length">读取长度</param>
+        /// <returns>带有成功标志的bool对象</returns>
+        public OperateResult<bool> ReadCoil( string address )
         {
-            var result = new OperateResult<bool[]>( );
-            var read = ReadModBusBase( ModbusInfo.ReadCoil, address, count );
-            if(!read.IsSuccess)
+            var result = new OperateResult<bool>( );
+            var read = ReadModBusBase( ModbusInfo.ReadCoil, address, 1 );
+            if (!read.IsSuccess)
             {
-                result.CopyErrorFromOther(read);
+                result.CopyErrorFromOther( read );
                 return result;
             }
 
-            result.Content = SoftBasic.ByteToBoolArray(read.Content, count);
+            return GetBoolResultFromBytes( read );
+        }
+
+        /// <summary>
+        /// 批量的读取线圈，需要指定起始地址，读取长度
+        /// </summary>
+        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <param name="length">读取长度</param>
+        /// <returns>带有成功标志的bool数组对象</returns>
+        public OperateResult<bool[]> ReadCoil( string address, ushort length )
+        {
+            var result = new OperateResult<bool[]>( );
+            var read = ReadModBusBase( ModbusInfo.ReadCoil, address, length );
+            if (!read.IsSuccess)
+            {
+                result.CopyErrorFromOther( read );
+                return result;
+            }
+
+            result.Content = SoftBasic.ByteToBoolArray( read.Content, length );
             result.IsSuccess = true;
             return result;
         }
@@ -437,19 +458,19 @@ namespace HslCommunication.ModBus
         /// 批量的离散变量，需要指定起始地址，读取长度
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
-        /// <param name="count">读取长度</param>
+        /// <param name="length">读取长度</param>
         /// <returns>带有成功标志的bool数组对象</returns>
-        public OperateResult<bool[]> ReadDiscrete(string address, ushort count)
+        public OperateResult<bool[]> ReadDiscrete( string address, ushort length )
         {
-            var result = new OperateResult<bool[]>();
-            var read = ReadModBusBase(ModbusInfo.ReadDiscrete, address, count);
+            var result = new OperateResult<bool[]>( );
+            var read = ReadModBusBase( ModbusInfo.ReadDiscrete, address, length );
             if (!read.IsSuccess)
             {
-                result.CopyErrorFromOther(read);
+                result.CopyErrorFromOther( read );
                 return result;
             }
 
-            result.Content = SoftBasic.ByteToBoolArray(read.Content, count);
+            result.Content = SoftBasic.ByteToBoolArray( read.Content, length );
             result.IsSuccess = true;
             return result;
         }
@@ -458,19 +479,19 @@ namespace HslCommunication.ModBus
         /// 从Modbus服务器批量读取寄存器的信息，需要指定起始地址，读取长度
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
-        /// <param name="count">读取的数量</param>
+        /// <param name="length">读取的数量</param>
         /// <returns>带有成功标志的字节信息</returns>
-        public OperateResult<byte[]> ReadRegisters( string address, ushort count )
+        public OperateResult<byte[]> Read( string address, ushort length )
         {
             var result = new OperateResult<byte[]>( );
-            var command = BuildReadCommandBase(ModbusInfo.ReadRegister, address, count);
+            var command = BuildReadCommandBase( ModbusInfo.ReadRegister, address, length );
             if (!command.IsSuccess)
             {
                 result.CopyErrorFromOther( command );
                 return result;
             }
 
-            var read = ReadModBusBase(ModbusInfo.ReadRegister, address, count);
+            var read = ReadModBusBase( ModbusInfo.ReadRegister, address, length );
 
             return result;
         }
@@ -482,7 +503,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的byte数据</returns>
         public OperateResult<byte> ReadByte( string address )
         {
-            return GetByteResultFromBytes( ReadRegisters( address, 1 ) );
+            return GetByteResultFromBytes( Read( address, 1 ) );
         }
 
 
@@ -491,9 +512,9 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
         /// <returns>带有成功标志的short数据</returns>
-        public OperateResult<short> ReadShort( string address )
+        public OperateResult<short> ReadInt16( string address )
         {
-            return GetInt16ResultFromBytes( ReadRegisters( address, 2 ) );
+            return GetInt16ResultFromBytes( Read( address, 2 ) );
         }
 
 
@@ -502,9 +523,9 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
         /// <returns>带有成功标志的ushort数据</returns>
-        public OperateResult<ushort> ReadUShort( string address )
+        public OperateResult<ushort> ReadUInt16( string address )
         {
-            return GetUInt16ResultFromBytes( ReadRegisters( address, 2 ) );
+            return GetUInt16ResultFromBytes( Read( address, 2 ) );
         }
 
         /// <summary>
@@ -512,9 +533,9 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
         /// <returns>带有成功标志的int数据</returns>
-        public OperateResult<int> ReadInt( string address )
+        public OperateResult<int> ReadInt32( string address )
         {
-            return GetInt32ResultFromBytes( ReadRegisters( address, 4 ) );
+            return GetInt32ResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
@@ -522,9 +543,9 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
         /// <returns>带有成功标志的uint数据</returns>
-        public OperateResult<uint> ReadUInt( string address )
+        public OperateResult<uint> ReadUInt32( string address )
         {
-            return GetUInt32ResultFromBytes( ReadRegisters( address, 4 ) );
+            return GetUInt32ResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
@@ -534,7 +555,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的float数据</returns>
         public OperateResult<float> ReadFloat( string address )
         {
-            return GetSingleResultFromBytes( ReadRegisters( address, 4 ) );
+            return GetSingleResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
@@ -542,9 +563,9 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
         /// <returns>带有成功标志的long数据</returns>
-        public OperateResult<long> ReadLong( string address )
+        public OperateResult<long> ReadInt64( string address )
         {
-            return GetInt64ResultFromBytes( ReadRegisters( address, 8 ) );
+            return GetInt64ResultFromBytes( Read( address, 8 ) );
         }
 
         /// <summary>
@@ -552,19 +573,19 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
         /// <returns>带有成功标志的ulong数据</returns>
-        public OperateResult<ulong> ReadULong( string address )
+        public OperateResult<ulong> ReadUInt64( string address )
         {
-            return GetUInt64ResultFromBytes( ReadRegisters( address, 8 ) );
+            return GetUInt64ResultFromBytes( Read( address, 8 ) );
         }
 
         /// <summary>
         /// 读取指定地址的double数据
         /// </summary>
-        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <param name="address">起始地址，格式为"1234"</param>
         /// <returns>带有成功标志的double数据</returns>
         public OperateResult<double> ReadDouble( string address )
         {
-            return GetDoubleResultFromBytes( ReadRegisters( address, 8 ) );
+            return GetDoubleResultFromBytes( Read( address, 8 ) );
         }
 
         /// <summary>
@@ -575,7 +596,57 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的string数据</returns>
         public OperateResult<string> ReadString( string address, ushort length )
         {
-            return GetStringResultFromBytes( ReadRegisters( address, length ) );
+            return GetStringResultFromBytes( Read( address, length ) );
+        }
+
+
+
+        #endregion
+
+        #region Write One Register
+
+
+
+        /// <summary>
+        /// 写一个寄存器数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="high">高位</param>
+        /// <param name="low">地位</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteOneRegister( string address, byte high, byte low )
+        {
+            OperateResult<byte[]> command = BuildWriteOneRegisterCommand( address, new byte[] { high, low } );
+            if (!command.IsSuccess)
+            {
+                return command;
+            }
+
+            return CheckModbusTcpResponse( command.Content );
+        }
+
+        /// <summary>
+        /// 写一个寄存器数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="value">写入值</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteOneRegister( string address, short value )
+        {
+            byte[] buffer = BitConverter.GetBytes( value );
+            return WriteOneRegister( address, buffer[1], buffer[0] );
+        }
+
+        /// <summary>
+        /// 写一个寄存器数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="value">写入值</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteOneRegister( string address, ushort value )
+        {
+            byte[] buffer = BitConverter.GetBytes( value );
+            return WriteOneRegister( address, buffer[1], buffer[0] );
         }
 
 
@@ -589,33 +660,57 @@ namespace HslCommunication.ModBus
         /// 将数据写入到Modbus的寄存器上去，需要指定起始地址和数据内容
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
-        /// <param name="data">写入的数据，长度根据data的长度来指示</param>
-        /// <returns></returns>
-        public OperateResult WriteRegisters( string address, byte[] data )
+        /// <param name="value">写入的数据，长度根据data的长度来指示</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult Write( string address, byte[] value )
         {
-            OperateResult result = new OperateResult( );
-
-            OperateResult<byte[]> command = BuildWriteRegisterCommand( address, data );
+            OperateResult<byte[]> command = BuildWriteRegisterCommand( address, value );
             if (!command.IsSuccess)
             {
-                result.CopyErrorFromOther( command );
-                return result;
+                return command;
             }
 
-
-            OperateResult<byte[]> resultBytes = CheckModbusTcpResponse(command.Content);
-            if (!resultBytes.IsSuccess)
-            {
-                result.CopyErrorFromOther(resultBytes);
-            }
-            else
-            {
-                result.IsSuccess = true;
-            }
-
-            return result;
+            return CheckModbusTcpResponse( command.Content );
         }
 
+
+        #endregion
+
+        #region Write Coil
+
+        /// <summary>
+        /// 写一个线圈信息，指定是否通断
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="value">写入值</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteCoil( string address, bool value )
+        {
+            OperateResult<byte[]> command = BuildWriteOneCoilCommand( address, value );
+            if (!command.IsSuccess)
+            {
+                return command;
+            }
+
+            return CheckModbusTcpResponse( command.Content );
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="values">写入值</param>
+        /// <returns>返回写入结果</returns>
+        public OperateResult WriteCoil( string address, bool[] values )
+        {
+            OperateResult<byte[]> command = BuildWriteCoilCommand( address, values );
+            if (!command.IsSuccess)
+            {
+                return command;
+            }
+
+            return CheckModbusTcpResponse( command.Content );
+        }
 
 
         #endregion
@@ -624,55 +719,55 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
-        /// 向PLC中写入字符串，编码格式为ASCII
+        /// 向寄存器中写入字符串，编码格式为ASCII
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <returns>返回读取结果</returns>
-        public OperateResult WriteAsciiString( string address, string data )
+        public OperateResult Write( string address, string value )
         {
-            byte[] temp = Encoding.ASCII.GetBytes( data );
-            return WriteRegisters( address, temp );
+            byte[] temp = Encoding.ASCII.GetBytes( value );
+            return Write( address, temp );
         }
 
         /// <summary>
-        /// 向PLC中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
+        /// 向寄存器中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
         /// <returns>返回读取结果</returns>
-        public OperateResult WriteAsciiString( string address, string data, int length )
+        public OperateResult Write( string address, string value, int length )
         {
-            byte[] temp = Encoding.ASCII.GetBytes( data );
+            byte[] temp = Encoding.ASCII.GetBytes( value );
             temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length );
-            return WriteRegisters( address, temp );
+            return Write( address, temp );
         }
 
         /// <summary>
-        /// 向PLC中写入字符串，编码格式为Unicode
+        /// 向寄存器中写入字符串，编码格式为Unicode
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string data )
+        public OperateResult WriteUnicodeString( string address, string value )
         {
-            byte[] temp = Encoding.Unicode.GetBytes( data );
-            return WriteRegisters( address, temp );
+            byte[] temp = Encoding.Unicode.GetBytes( value );
+            return Write( address, temp );
         }
 
         /// <summary>
-        /// 向PLC中写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
+        /// 向寄存器中写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
         /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string data, int length )
+        public OperateResult WriteUnicodeString( string address, string value, int length )
         {
-            byte[] temp = Encoding.Unicode.GetBytes( data );
-            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length * 2 );
-            return WriteRegisters( address, temp );
+            byte[] temp = Encoding.Unicode.GetBytes( value );
+            temp = SoftBasic.ArrayExpandToLength( temp, length * 2 );
+            return Write( address, temp );
         }
 
         #endregion
@@ -680,41 +775,41 @@ namespace HslCommunication.ModBus
         #region Write bool[]
 
         /// <summary>
-        /// 向PLC中写入bool数组，返回值说明，比如你写入M100,那么data[0]对应M100.0
+        /// 向寄存器中写入bool数组，返回值说明，比如你写入M100,那么data[0]对应M100.0
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据，长度为8的倍数</param>
+        /// <param name="values">要写入的实际数据，长度为8的倍数</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, bool[] data )
+        public OperateResult Write( string address, bool[] values )
         {
-            return WriteRegisters( address, BasicFramework.SoftBasic.BoolArrayToByte( data ) );
+            return Write( address, BasicFramework.SoftBasic.BoolArrayToByte( values ) );
         }
 
 
         #endregion
-        
+
         #region Write Short
 
         /// <summary>
-        /// 向PLC中写入short数组，返回值说明
+        /// 向寄存器中写入short数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="values">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, short[] data )
+        public OperateResult Write( string address, short[] values )
         {
-            return WriteRegisters( address, ByteTransform.TransByte( data ) );
+            return Write( address, ByteTransform.TransByte( values ) );
         }
 
         /// <summary>
-        /// 向PLC中写入short数据，返回值说明
+        /// 向寄存器中写入short数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, short data )
+        public OperateResult Write( string address, short value )
         {
-            return Write( address, new short[] { data } );
+            return Write( address, new short[] { value } );
         }
 
         #endregion
@@ -723,26 +818,26 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
-        /// 向PLC中写入ushort数组，返回值说明
+        /// 向寄存器中写入ushort数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="values">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ushort[] data )
+        public OperateResult Write( string address, ushort[] values )
         {
-            return WriteRegisters( address, ByteTransform.TransByte( data ) );
+            return Write( address, ByteTransform.TransByte( values ) );
         }
 
 
         /// <summary>
-        /// 向PLC中写入ushort数据，返回值说明
+        /// 向寄存器中写入ushort数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ushort data )
+        public OperateResult Write( string address, ushort value )
         {
-            return Write( address, new ushort[] { data } );
+            return Write( address, new ushort[] { value } );
         }
 
 
@@ -751,25 +846,25 @@ namespace HslCommunication.ModBus
         #region Write Int
 
         /// <summary>
-        /// 向PLC中写入int数组，返回值说明
+        /// 向寄存器中写入int数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="values">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, int[] data )
+        public OperateResult Write( string address, int[] values )
         {
-            return WriteRegisters( address, ByteTransform.TransByte( data ) );
+            return Write( address, ByteTransform.TransByte( values ) );
         }
 
         /// <summary>
-        /// 向PLC中写入int数据，返回值说明
+        /// 向寄存器中写入int数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, int data )
+        public OperateResult Write( string address, int value )
         {
-            return Write( address, new int[] { data } );
+            return Write( address, new int[] { value } );
         }
 
         #endregion
@@ -777,25 +872,25 @@ namespace HslCommunication.ModBus
         #region Write UInt
 
         /// <summary>
-        /// 向PLC中写入uint数组，返回值说明
+        /// 向寄存器中写入uint数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="values">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, uint[] data )
+        public OperateResult Write( string address, uint[] values )
         {
-            return WriteRegisters( address, ByteTransform.TransByte( data ) );
+            return Write( address, ByteTransform.TransByte( values ) );
         }
 
         /// <summary>
-        /// 向PLC中写入uint数据，返回值说明
+        /// 向寄存器中写入uint数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, uint data )
+        public OperateResult Write( string address, uint value )
         {
-            return Write( address, new uint[] { data } );
+            return Write( address, new uint[] { value } );
         }
 
         #endregion
@@ -803,25 +898,25 @@ namespace HslCommunication.ModBus
         #region Write Float
 
         /// <summary>
-        /// 向PLC中写入float数组，返回值说明
+        /// 向寄存器中写入float数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="values">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, float[] data )
+        public OperateResult Write( string address, float[] values )
         {
-            return WriteRegisters( address, ByteTransform.TransByte( data ) );
+            return Write( address, ByteTransform.TransByte( values ) );
         }
 
         /// <summary>
-        /// 向PLC中写入float数据，返回值说明
+        /// 向寄存器中写入float数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, float data )
+        public OperateResult Write( string address, float value )
         {
-            return Write( address, new float[] { data } );
+            return Write( address, new float[] { value } );
         }
 
 
@@ -830,25 +925,25 @@ namespace HslCommunication.ModBus
         #region Write Long
 
         /// <summary>
-        /// 向PLC中写入long数组，返回值说明
+        /// 向寄存器中写入long数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="values">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, long[] data )
+        public OperateResult Write( string address, long[] values )
         {
-            return WriteRegisters( address, ByteTransform.TransByte( data ) );
+            return Write( address, ByteTransform.TransByte( values ) );
         }
 
         /// <summary>
-        /// 向PLC中写入long数据，返回值说明
+        /// 向寄存器中写入long数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, long data )
+        public OperateResult Write( string address, long value )
         {
-            return Write( address, new long[] { data } );
+            return Write( address, new long[] { value } );
         }
 
         #endregion
@@ -856,25 +951,25 @@ namespace HslCommunication.ModBus
         #region Write ULong
 
         /// <summary>
-        /// 向PLC中写入ulong数组，返回值说明
+        /// 向寄存器中写入ulong数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="values">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ulong[] data )
+        public OperateResult Write( string address, ulong[] values )
         {
-            return WriteRegisters( address, ByteTransform.TransByte( data ) );
+            return Write( address, ByteTransform.TransByte( values ) );
         }
 
         /// <summary>
-        /// 向PLC中写入ulong数据，返回值说明
+        /// 向寄存器中写入ulong数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ulong data )
+        public OperateResult Write( string address, ulong value )
         {
-            return Write( address, new ulong[] { data } );
+            return Write( address, new ulong[] { value } );
         }
 
         #endregion
@@ -882,25 +977,25 @@ namespace HslCommunication.ModBus
         #region Write Double
 
         /// <summary>
-        /// 向PLC中写入double数组，返回值说明
+        /// 向寄存器中写入double数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="values">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, double[] data )
+        public OperateResult Write( string address, double[] values )
         {
-            return WriteRegisters( address, ByteTransform.TransByte( data ) );
+            return Write( address, ByteTransform.TransByte( values ) );
         }
 
         /// <summary>
-        /// 向PLC中写入double数据，返回值说明
+        /// 向寄存器中写入double数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
+        /// <param name="value">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, double data )
+        public OperateResult Write( string address, double value )
         {
-            return Write( address, new double[] { data } );
+            return Write( address, new double[] { value } );
         }
 
         #endregion
@@ -911,7 +1006,7 @@ namespace HslCommunication.ModBus
         /// 获取当前对象的字符串标识形式
         /// </summary>
         /// <returns>字符串信息</returns>
-        public override string ToString( )
+        public override string ToString()
         {
             return "ModbusTcpNet";
         }

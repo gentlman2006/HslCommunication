@@ -432,8 +432,8 @@ namespace TestTool.TestForm
             siemensTcpNet.Write("M100", 123.456f);              // 写单精度
             siemensTcpNet.Write("M100", 1234556434534545L);     // 写大整数有符号
             siemensTcpNet.Write("M100", 523434234234343UL);     // 写大整数无符号
-            siemensTcpNet.WriteIntoPLC("M100", 123.456d);              // 写双精度
-            siemensTcpNet.WriteAsciiString("M100", "K123456789");// 写ASCII字符串
+            siemensTcpNet.Write("M100", 123.456d);              // 写双精度
+            siemensTcpNet.Write("M100", "K123456789");// 写ASCII字符串
         }
 
 
@@ -552,7 +552,7 @@ namespace TestTool.TestForm
             ulong ulong_M100 = siemensTcpNet.ReadUInt64("M100").Content;   // 读取M100-M107组成的无符号大数据
             double double_M100 = siemensTcpNet.ReadDouble("M100").Content; // 读取M100-M107组成的双精度值
             string str_M100 = siemensTcpNet.ReadString("M100", 10).Content;// 读取M100-M109组成的ASCII字符串数据
-            MachineInfoTwo machine100 = siemensTcpNet.Read<MachineInfoTwo>("D100").Content; // 读取自定义的对象
+            MachineInfoTwo machine100 = siemensTcpNet.ReadCustomer<MachineInfoTwo>("D100").Content; // 读取自定义的对象
 
 
             // 写入操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
@@ -565,9 +565,9 @@ namespace TestTool.TestForm
             siemensTcpNet.Write("M100", 123.456f);              // 写单精度
             siemensTcpNet.Write("M100", 1234556434534545L);     // 写大整数有符号
             siemensTcpNet.Write("M100", 523434234234343UL);     // 写大整数无符号
-            siemensTcpNet.WriteIntoPLC("M100", 123.456d);              // 写双精度
-            siemensTcpNet.WriteAsciiString("M100", "K123456789");// 写ASCII字符串
-            siemensTcpNet.Write<MachineInfoTwo>("M100", machine100);// 写入自定义的对象
+            siemensTcpNet.Write("M100", 123.456d);              // 写双精度
+            siemensTcpNet.Write("M100", "K123456789");// 写ASCII字符串
+            siemensTcpNet.WriteCustomer<MachineInfoTwo>("M100", machine100);// 写入自定义的对象
         }
 
 
@@ -576,7 +576,7 @@ namespace TestTool.TestForm
         private void userButton12_Click(object sender, EventArgs e)
         {
             // 条码写入测试
-            OperateResult write = siemensTcpNet.WriteAsciiString("M110", "AKDQWDNADC", 10);
+            OperateResult write = siemensTcpNet.Write("M110", "AKDQWDNADC", 10);
             if (write.IsSuccess)
 
             {
