@@ -136,44 +136,6 @@ namespace TestTool.TestForm
             // 00 00 00 00 00 06 FF 03 00 00 00 10
 
             HslCommunication.OperateResult<byte[]> read = null;
-
-            ModBusFunctionMask mask = (ModBusFunctionMask)comboBox1.SelectedItem;
-
-            switch (mask)
-            {
-                case ModBusFunctionMask.ReadCoil:
-                    {
-                        // 读线圈
-                        read = busTcpClient.ReadCoil(ushort.Parse(textBox4.Text), ushort.Parse(textBox5.Text));
-                        break;
-                    }
-                case ModBusFunctionMask.ReadDiscrete:
-                    {
-                        // 读离散值
-                        read = busTcpClient.ReadDiscrete(ushort.Parse(textBox4.Text), ushort.Parse(textBox5.Text));
-                        break;
-                    }
-                case ModBusFunctionMask.ReadRegister:
-                    {
-                        // 读寄存器
-                        read = busTcpClient.ReadRegister(ushort.Parse(textBox4.Text), ushort.Parse(textBox5.Text));
-                        break;
-                    }
-                default: break;
-            }
-
-            if (read != null)
-            {
-                if (read.IsSuccess)
-                {
-                    textBox2.AppendText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + " :" +
-                    HslCommunication.BasicFramework.SoftBasic.ByteToHexString(read.Content, ' ') + Environment.NewLine);
-                }
-                else
-                {
-                    MessageBox.Show(read.ToMessageShowString());
-                }
-            }
         }
 
 
@@ -255,7 +217,7 @@ namespace TestTool.TestForm
         }
 
 
-        private ModBusTcpClient busTcpClient = new ModBusTcpClient("127.0.0.1", 51234, 0xFF);   // 站号255
+        private ModbusTcpNet busTcpClient = new ModbusTcpNet("127.0.0.1", 502, 0xFF);   // 站号255
 
 
 
@@ -358,7 +320,7 @@ namespace TestTool.TestForm
         {
             if (!string.IsNullOrEmpty(textBox6.Text))
             {
-                HslCommunication.OperateResult result = busTcpClient.WriteRegister( ushort.Parse( textBox6.Text ), short.Parse(textBox7.Text));
+                HslCommunication.OperateResult result = busTcpClient.Write( textBox6.Text, short.Parse(textBox7.Text));
                 MessageBox.Show(result.IsSuccess ? "写入成功！" : "写入失败");
             }
         }
@@ -367,7 +329,7 @@ namespace TestTool.TestForm
         {
             if (!string.IsNullOrEmpty( textBox6.Text ))
             {
-                HslCommunication.OperateResult<short> read = busTcpClient.ReadShortRegister( ushort.Parse( textBox6.Text ));
+                HslCommunication.OperateResult<short> read = busTcpClient.ReadShort(  textBox6.Text );
                 MessageBox.Show( read.IsSuccess ? read.Content.ToString() : "读取失败" );
             }
         }
@@ -430,16 +392,16 @@ namespace TestTool.TestForm
         private void userButton30_Click(object sender, EventArgs e)
         {
             // 读取操作
-            bool coil100 = busTcpClient.ReadBoolCoil(100).Content;   // 读取线圈100的通断
-            short short100 = busTcpClient.ReadShortRegister(100).Content; // 读取寄存器100的short值
-            ushort ushort100 = busTcpClient.ReadUShortRegister(100).Content; // 读取寄存器100的ushort值
-            int int100 = busTcpClient.ReadIntRegister(100).Content;      // 读取寄存器100-101的int值
-            uint uint100 = busTcpClient.ReadUIntRegister(100).Content;   // 读取寄存器100-101的uint值
-            float float100 = busTcpClient.ReadFloatRegister(100).Content; // 读取寄存器100-101的float值
-            long long100 = busTcpClient.ReadLongRegister(100).Content;    // 读取寄存器100-103的long值
-            ulong ulong100 = busTcpClient.ReadULongRegister(100).Content; // 读取寄存器100-103的ulong值
-            double double100 = busTcpClient.ReadDoubleRegister(100).Content; // 读取寄存器100-103的double值
-            string str100 = busTcpClient.ReadStringRegister(100, 5).Content;// 读取100到104共10个字符的字符串
+            bool coil100 = busTcpClient.ReadBool("100").Content;   // 读取线圈100的通断
+            short short100 = busTcpClient.ReadShort("100").Content; // 读取寄存器100的short值
+            ushort ushort100 = busTcpClient.ReadUShort("100").Content; // 读取寄存器100的ushort值
+            int int100 = busTcpClient.ReadInt("100").Content;      // 读取寄存器100-101的int值
+            uint uint100 = busTcpClient.ReadUInt("100").Content;   // 读取寄存器100-101的uint值
+            float float100 = busTcpClient.ReadFloat("100").Content; // 读取寄存器100-101的float值
+            long long100 = busTcpClient.ReadLong("100").Content;    // 读取寄存器100-103的long值
+            ulong ulong100 = busTcpClient.ReadULong("100").Content; // 读取寄存器100-103的ulong值
+            double double100 = busTcpClient.ReadDouble("100").Content; // 读取寄存器100-103的double值
+            string str100 = busTcpClient.ReadString("100", 5).Content;// 读取100到104共10个字符的字符串
 
             // 写入操作
             busTcpClient.WriteOneCoil(100, true);// 写入线圈100为通

@@ -180,7 +180,6 @@
     <Compile Include="Core\Types\OperateResult.cs" />
     <Compile Include="ModBus\ModbusInfo.cs" />
     <Compile Include="ModBus\ModbusTcp\ModbusTcpNet.cs" />
-    <Compile Include="ModBus\ModBusTcpClient.cs" />
     <Compile Include="ModBus\ModBusTcpServer.cs" />
     <Compile Include="Core\Types\IDataTransfer.cs" />
     <Compile Include="Profinet\MelsecNet.cs" />

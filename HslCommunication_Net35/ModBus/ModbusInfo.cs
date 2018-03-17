@@ -5,42 +5,46 @@ using System.Text;
 
 namespace HslCommunication.ModBus
 {
+
+    /// <summary>
+    /// Modbus协议相关的一些信息
+    /// </summary>
     public class ModbusInfo
     {
         /// <summary>
         /// 读取线圈
         /// </summary>
-        public const byte ReadCoil = 1;
+        public const byte ReadCoil = 0x01;
 
         /// <summary>
         /// 读取离散量
         /// </summary>
-        public const byte ReadDiscrete = 1;
+        public const byte ReadDiscrete = 0x02;
 
         /// <summary>
         /// 读取寄存器
         /// </summary>
-        public const byte ReadRegister = 1;
+        public const byte ReadRegister = 0x03;
 
         /// <summary>
         /// 写单个线圈
         /// </summary>
-        public const byte WriteOneCoil = 1;
+        public const byte WriteOneCoil = 0x05;
 
         /// <summary>
         /// 写单个寄存器
         /// </summary>
-        public const byte WriteOneRegister = 1;
+        public const byte WriteOneRegister = 0x06;
 
         /// <summary>
         /// 写多个线圈
         /// </summary>
-        public const byte WriteCoil = 1;
+        public const byte WriteCoil = 0x0F;
 
         /// <summary>
         /// 写多个寄存器
         /// </summary>
-        public const byte WriteRegister = 1;
+        public const byte WriteRegister = 0x10;
 
     }
 }

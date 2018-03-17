@@ -412,13 +412,13 @@ namespace TestTool.TestForm
             // 读取操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
             bool M100_7 = siemensTcpNet.ReadBool("M100.7").Content;  // 读取M100.7是否通断
             byte byte_M100 = siemensTcpNet.ReadByte("M100").Content; // 读取M100的值
-            short short_M100 = siemensTcpNet.ReadShort("M100").Content; // 读取M100-M101组成的字
-            ushort ushort_M100 = siemensTcpNet.ReadUShort("M100").Content; // 读取M100-M101组成的无符号的值
-            int int_M100 = siemensTcpNet.ReadInt("M100").Content;         // 读取M100-M103组成的有符号的数据
-            uint uint_M100 = siemensTcpNet.ReadUInt("M100").Content;      // 读取M100-M103组成的无符号的值
+            short short_M100 = siemensTcpNet.ReadInt16("M100").Content; // 读取M100-M101组成的字
+            ushort ushort_M100 = siemensTcpNet.ReadUInt16("M100").Content; // 读取M100-M101组成的无符号的值
+            int int_M100 = siemensTcpNet.ReadInt32("M100").Content;         // 读取M100-M103组成的有符号的数据
+            uint uint_M100 = siemensTcpNet.ReadUInt32("M100").Content;      // 读取M100-M103组成的无符号的值
             float float_M100 = siemensTcpNet.ReadFloat("M100").Content;   // 读取M100-M103组成的单精度值
-            long long_M100 = siemensTcpNet.ReadLong("M100").Content;      // 读取M100-M107组成的大数据值
-            ulong ulong_M100 = siemensTcpNet.ReadULong("M100").Content;   // 读取M100-M107组成的无符号大数据
+            long long_M100 = siemensTcpNet.ReadInt64("M100").Content;      // 读取M100-M107组成的大数据值
+            ulong ulong_M100 = siemensTcpNet.ReadUInt64("M100").Content;   // 读取M100-M107组成的无符号大数据
             double double_M100 = siemensTcpNet.ReadDouble("M100").Content; // 读取M100-M107组成的双精度值
             string str_M100 = siemensTcpNet.ReadString("M100", 10).Content;// 读取M100-M109组成的ASCII字符串数据
 
@@ -543,13 +543,13 @@ namespace TestTool.TestForm
             // 读取操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
             bool M100_7 = siemensTcpNet.ReadBool("M100.7").Content;  // 读取M100.7是否通断
             byte byte_M100 = siemensTcpNet.ReadByte("M100").Content; // 读取M100的值
-            short short_M100 = siemensTcpNet.ReadShort("M100").Content; // 读取M100-M101组成的字
-            ushort ushort_M100 = siemensTcpNet.ReadUShort("M100").Content; // 读取M100-M101组成的无符号的值
-            int int_M100 = siemensTcpNet.ReadInt("M100").Content;         // 读取M100-M103组成的有符号的数据
-            uint uint_M100 = siemensTcpNet.ReadUInt("M100").Content;      // 读取M100-M103组成的无符号的值
+            short short_M100 = siemensTcpNet.ReadInt16("M100").Content; // 读取M100-M101组成的字
+            ushort ushort_M100 = siemensTcpNet.ReadUInt16("M100").Content; // 读取M100-M101组成的无符号的值
+            int int_M100 = siemensTcpNet.ReadInt32("M100").Content;         // 读取M100-M103组成的有符号的数据
+            uint uint_M100 = siemensTcpNet.ReadUInt32("M100").Content;      // 读取M100-M103组成的无符号的值
             float float_M100 = siemensTcpNet.ReadFloat("M100").Content;   // 读取M100-M103组成的单精度值
-            long long_M100 = siemensTcpNet.ReadLong("M100").Content;      // 读取M100-M107组成的大数据值
-            ulong ulong_M100 = siemensTcpNet.ReadULong("M100").Content;   // 读取M100-M107组成的无符号大数据
+            long long_M100 = siemensTcpNet.ReadInt64("M100").Content;      // 读取M100-M107组成的大数据值
+            ulong ulong_M100 = siemensTcpNet.ReadUInt64("M100").Content;   // 读取M100-M107组成的无符号大数据
             double double_M100 = siemensTcpNet.ReadDouble("M100").Content; // 读取M100-M107组成的双精度值
             string str_M100 = siemensTcpNet.ReadString("M100", 10).Content;// 读取M100-M109组成的ASCII字符串数据
             MachineInfoTwo machine100 = siemensTcpNet.Read<MachineInfoTwo>("D100").Content; // 读取自定义的对象
@@ -680,7 +680,7 @@ namespace TestTool.TestForm
         {
             for (int i = 0; i < 10; i++)
             {
-                TextBoxAppendStringLine(siemensTcpNet.ReadShort("M200").Content.ToString());
+                TextBoxAppendStringLine(siemensTcpNet.ReadInt16("M200").Content.ToString());
 
             }
         }
@@ -729,7 +729,7 @@ namespace TestTool.TestForm
 
         private void userButton24_Click(object sender, EventArgs e)
         {
-            short value = siemensTcpNet.ReadShort("I0").Content;
+            short value = siemensTcpNet.ReadInt16("I0").Content;
 
             OperateResult<byte[]> read = siemensTcpNet.Read("I0", 2);
             if (read.IsSuccess)

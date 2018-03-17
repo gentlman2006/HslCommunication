@@ -749,7 +749,7 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<short> ReadShort( string address )
+        public OperateResult<short> ReadInt16( string address )
         {
             return GetInt16ResultFromBytes( Read( address, 2 ) );
         }
@@ -760,7 +760,7 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<ushort> ReadUShort( string address )
+        public OperateResult<ushort> ReadUInt16( string address )
         {
             return GetUInt16ResultFromBytes( Read( address, 2 ) );
         }
@@ -770,7 +770,7 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<int> ReadInt( string address )
+        public OperateResult<int> ReadInt32( string address )
         {
             return GetInt32ResultFromBytes( Read( address, 4 ) );
         }
@@ -780,7 +780,7 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<uint> ReadUInt( string address )
+        public OperateResult<uint> ReadUInt32( string address )
         {
             return GetUInt32ResultFromBytes( Read( address, 4 ) );
         }
@@ -800,7 +800,7 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<long> ReadLong( string address )
+        public OperateResult<long> ReadInt64( string address )
         {
             return GetInt64ResultFromBytes( Read( address, 8 ) );
         }
@@ -810,7 +810,7 @@ namespace HslCommunication.Profinet
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <returns></returns>
-        public OperateResult<ulong> ReadULong( string address )
+        public OperateResult<ulong> ReadUInt64( string address )
         {
             return GetUInt64ResultFromBytes( Read( address, 8 ) );
         }
