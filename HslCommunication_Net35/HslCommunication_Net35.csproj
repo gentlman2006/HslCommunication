@@ -183,12 +183,11 @@
     <Compile Include="ModBus\ModbusTcp\ModbusTcpNet.cs" />
     <Compile Include="ModBus\ModBusTcpServer.cs" />
     <Compile Include="Core\Types\IDataTransfer.cs" />
-    <Compile Include="Profinet\MelsecNet.cs" />
     <Compile Include="Profinet\Melsec\Melsec1ENet.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcDataType.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcNet.cs" />
+    <Compile Include="Profinet\Melsec\MelsecNetMultiAsync.cs" />
     <Compile Include="Profinet\Omron\OmronFinsNet.cs" />
-    <Compile Include="Profinet\PlcNetBase.cs" />
     <Compile Include="Profinet\Siemens\SiemensFetchWriteNet.cs" />
     <Compile Include="Profinet\Siemens\SiemensPLCS.cs" />
     <Compile Include="Profinet\Siemens\SiemensS7Net.cs" />

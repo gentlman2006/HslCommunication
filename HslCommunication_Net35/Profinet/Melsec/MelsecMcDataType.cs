@@ -32,46 +32,46 @@ namespace HslCommunication.Profinet.Melsec
         /// <summary>
         /// X输入寄存器
         /// </summary>
-        public readonly static MelsecDataType X = new MelsecDataType( 0x9C, 0x01 );
+        public readonly static MelsecMcDataType X = new MelsecMcDataType( 0x9C, 0x01 );
         /// <summary>
         /// Y输出寄存器
         /// </summary>
-        public readonly static MelsecDataType Y = new MelsecDataType( 0x9D, 0x01 );
+        public readonly static MelsecMcDataType Y = new MelsecMcDataType( 0x9D, 0x01 );
         /// <summary>
         /// M中间寄存器
         /// </summary>
-        public readonly static MelsecDataType M = new MelsecDataType( 0x90, 0x01 );
+        public readonly static MelsecMcDataType M = new MelsecMcDataType( 0x90, 0x01 );
         /// <summary>
         /// D数据寄存器
         /// </summary>
-        public readonly static MelsecDataType D = new MelsecDataType( 0xA8, 0x00 );
+        public readonly static MelsecMcDataType D = new MelsecMcDataType( 0xA8, 0x00 );
         /// <summary>
         /// W链接寄存器
         /// </summary>
-        public readonly static MelsecDataType W = new MelsecDataType( 0xB4, 0x00 );
+        public readonly static MelsecMcDataType W = new MelsecMcDataType( 0xB4, 0x00 );
         /// <summary>
         /// L锁存继电器
         /// </summary>
-        public readonly static MelsecDataType L = new MelsecDataType( 0x92, 0x01 );
+        public readonly static MelsecMcDataType L = new MelsecMcDataType( 0x92, 0x01 );
         /// <summary>
         /// F报警器
         /// </summary>
-        public readonly static MelsecDataType F = new MelsecDataType( 0x93, 0x01 );
+        public readonly static MelsecMcDataType F = new MelsecMcDataType( 0x93, 0x01 );
         /// <summary>
         /// V边沿继电器
         /// </summary>
-        public readonly static MelsecDataType V = new MelsecDataType( 0x94, 0x01 );
+        public readonly static MelsecMcDataType V = new MelsecMcDataType( 0x94, 0x01 );
         /// <summary>
         /// B链接继电器
         /// </summary>
-        public readonly static MelsecDataType B = new MelsecDataType( 0xA0, 0x01 );
+        public readonly static MelsecMcDataType B = new MelsecMcDataType( 0xA0, 0x01 );
         /// <summary>
         /// R文件寄存器
         /// </summary>
-        public readonly static MelsecDataType R = new MelsecDataType( 0xAF, 0x00 );
+        public readonly static MelsecMcDataType R = new MelsecMcDataType( 0xAF, 0x00 );
         /// <summary>
         /// S步进继电器
         /// </summary>
-        public readonly static MelsecDataType S = new MelsecDataType( 0x98, 0x01 );
+        public readonly static MelsecMcDataType S = new MelsecMcDataType( 0x98, 0x01 );
     }
 }

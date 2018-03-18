@@ -418,7 +418,6 @@ namespace HslCommunication.ModBus
         /// 读取线圈，需要指定起始地址
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
-        /// <param name="length">读取长度</param>
         /// <returns>带有成功标志的bool对象</returns>
         public OperateResult<bool> ReadCoil( string address )
         {

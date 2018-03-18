@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HslCommunication.BasicFramework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -120,7 +121,101 @@ namespace HslCommunication
         /// </summary>
         internal const int ProtocolZipped  = 3002;
 
-        
+
+
+        /// <summary>
+        /// 生成终极传送指令的方法，所有的数据均通过该方法出来
+        /// </summary>
+        /// <param name="command">命令头</param>
+        /// <param name="customer">自用自定义</param>
+        /// <param name="token">令牌</param>
+        /// <param name="data">字节数据</param>
+        /// <returns></returns>
+        internal static byte[] CommandBytes( int command, int customer, Guid token, byte[] data )
+        {
+            byte[] _temp = null;
+            int _zipped = ProtocolNoZipped;
+            int _sendLength = 0;
+            if (data == null)
+            {
+                _temp = new byte[HeadByteLength];
+            }
+            else
+            {
+                // 加密
+                data = HslSecurity.ByteEncrypt( data );
+                if (data.Length > 102400)
+                {
+                    // 100K以上的数据，进行数据压缩
+                    data = SoftZipped.CompressBytes( data );
+                    _zipped = ProtocolZipped;
+                }
+                _temp = new byte[HeadByteLength + data.Length];
+                _sendLength = data.Length;
+            }
+            BitConverter.GetBytes( command ).CopyTo( _temp, 0 );
+            BitConverter.GetBytes( customer ).CopyTo( _temp, 4 );
+            BitConverter.GetBytes( _zipped ).CopyTo( _temp, 8 );
+            token.ToByteArray( ).CopyTo( _temp, 12 );
+            BitConverter.GetBytes( _sendLength ).CopyTo( _temp, 28 );
+            if (_sendLength > 0)
+            {
+                Array.Copy( data, 0, _temp, 32, _sendLength );
+            }
+            return _temp;
+        }
+
+
+        /// <summary>
+        /// 解析接收到数据，先解压缩后进行解密
+        /// </summary>
+        /// <param name="head"></param>
+        /// <param name="content"></param>
+        internal static byte[] CommandAnalysis( byte[] head, byte[] content )
+        {
+            if (content != null)
+            {
+                int _zipped = BitConverter.ToInt32( head, 8 );
+                // 先进行解压
+                if (_zipped == ProtocolZipped)
+                {
+                    content = SoftZipped.Decompress( content );
+                }
+                // 进行解密
+                return HslSecurity.ByteDecrypt( content );
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// 获取发送字节数据的实际数据，带指令头
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="token"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        internal static byte[] CommandBytes( int customer, Guid token, byte[] data )
+        {
+            return CommandBytes( ProtocolUserBytes, customer, token, data );
+        }
+
+
+        /// <summary>
+        /// 获取发送字节数据的实际数据，带指令头
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <param name="token"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        internal static byte[] CommandBytes( int customer, Guid token, string data )
+        {
+            if (data == null) return CommandBytes( ProtocolUserString, customer, token, null );
+            else return CommandBytes( ProtocolUserString, customer, token, Encoding.Unicode.GetBytes( data ) );
+        }
     }
 
 

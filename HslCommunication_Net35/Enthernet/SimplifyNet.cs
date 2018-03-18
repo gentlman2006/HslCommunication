@@ -28,7 +28,12 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
+        #region Build Command
 
+
+
+
+        #endregion
 
         #region Object Override
 

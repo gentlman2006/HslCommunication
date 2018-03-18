@@ -212,10 +212,10 @@ namespace HslCommunication.Profinet.Melsec
         /// 根据类型地址以及需要写入的数据来生成指令头
         /// </summary>
         /// <param name="address">起始地址</param>
-        /// <param name="data"></param>
+        /// <param name="value"></param>
         /// <param name="length">指定长度</param>
         /// <returns></returns>
-        private OperateResult<MelsecMcDataType, byte[]> BuildWriteCommand( string address, byte[] data, int length = -1 )
+        private OperateResult<MelsecMcDataType, byte[]> BuildWriteCommand( string address, byte[] value, int length = -1 )
         {
             var result = new OperateResult<MelsecMcDataType, byte[]>( );
             var analysis = AnalysisAddress( address );
@@ -227,7 +227,7 @@ namespace HslCommunication.Profinet.Melsec
 
             // 默认信息----注意：高低字节交错
 
-            byte[] _PLCCommand = new byte[21 + data.Length];
+            byte[] _PLCCommand = new byte[21 + value.Length];
 
             _PLCCommand[0] = 0x50;                                          // 副标题
             _PLCCommand[1] = 0x00;
@@ -243,12 +243,12 @@ namespace HslCommunication.Profinet.Melsec
             _PLCCommand[10] = 0x00;
             _PLCCommand[11] = 0x01;                                         // 批量读取数据命令
             _PLCCommand[12] = 0x14;
-            _PLCCommand[13] = analysis.Content1.DataType;                                // 以点为单位还是字为单位成批读取
+            _PLCCommand[13] = analysis.Content1.DataType;                   // 以点为单位还是字为单位成批读取
             _PLCCommand[14] = 0x00;
-            _PLCCommand[15] = (byte)(analysis.Content2 % 256); ;                      // 起始地址的地位
+            _PLCCommand[15] = (byte)(analysis.Content2 % 256); ;            // 起始地址的地位
             _PLCCommand[16] = (byte)(analysis.Content2 / 256);
             _PLCCommand[17] = 0x00;
-            _PLCCommand[18] = analysis.Content1.DataCode;                                // 指明写入的数据
+            _PLCCommand[18] = analysis.Content1.DataCode;                   // 指明写入的数据
 
             // 判断是否进行位操作
             if (analysis.Content1.DataType == 1)
@@ -260,16 +260,16 @@ namespace HslCommunication.Profinet.Melsec
                 }
                 else
                 {
-                    _PLCCommand[19] = (byte)(data.Length * 2 % 256);         // 软元件长度的地位
-                    _PLCCommand[20] = (byte)(data.Length * 2 / 256);
+                    _PLCCommand[19] = (byte)(value.Length * 2 % 256);        // 软元件长度的地位
+                    _PLCCommand[20] = (byte)(value.Length * 2 / 256);
                 }
             }
             else
             {
-                _PLCCommand[19] = (byte)(data.Length / 2 % 256);             // 软元件长度的地位
-                _PLCCommand[20] = (byte)(data.Length / 2 / 256);
+                _PLCCommand[19] = (byte)(value.Length / 2 % 256);            // 软元件长度的地位
+                _PLCCommand[20] = (byte)(value.Length / 2 / 256);
             }
-            Array.Copy( data, 0, _PLCCommand, 21, data.Length );
+            Array.Copy( value, 0, _PLCCommand, 21, value.Length );
 
             result.Content1 = analysis.Content1;
             result.Content2 = _PLCCommand;
@@ -532,11 +532,19 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>结果</returns>
         public OperateResult Write( string address, byte[] value )
         {
-            OperateResult result = new OperateResult( );
-            // 预处理指令
-            byte[] _PLCCommand = null;
+            OperateResult<byte[]> result = new OperateResult<byte[]>( );
 
-            if (type.DataType == 0x01)
+            //获取指令
+            var analysis = AnalysisAddress( address );
+            if(!analysis.IsSuccess)
+            {
+                result.CopyErrorFromOther( analysis );
+                return result;
+            }
+
+            OperateResult<MelsecMcDataType,byte[]> command;
+            // 预处理指令
+            if (analysis.Content1.DataType == 0x01)
             {
                 int length = value.Length % 2 == 0 ? value.Length / 2 : value.Length / 2 + 1;
                 byte[] buffer = new byte[length];
@@ -550,14 +558,22 @@ namespace HslCommunication.Profinet.Melsec
                     }
                 }
 
-                _PLCCommand = GetWriteCommand( type, address, buffer, value.Length );
+                // 位写入
+                command = BuildWriteCommand(address, buffer, value.Length );
             }
             else
             {
-                _PLCCommand = GetWriteCommand( type, address, value );
+                // 字写入
+                command = BuildWriteCommand( address, value );
             }
 
-            OperateResult<byte[]> read = ReadFromServerCore( _PLCCommand );
+            if(!command.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            OperateResult<byte[]> read = ReadFromCoreServer( command.Content2 );
             if (read.IsSuccess)
             {
                 result.ErrorCode = BitConverter.ToUInt16( read.Content, 9 );
@@ -584,7 +600,7 @@ namespace HslCommunication.Profinet.Melsec
 
 
         /// <summary>
-        /// 向PLC中写入字符串，编码格式为ASCII
+        /// 向PLC中字软元件写入字符串，编码格式为ASCII
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -596,7 +612,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         /// <summary>
-        /// 向PLC中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
+        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -610,7 +626,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         /// <summary>
-        /// 向PLC中写入字符串，编码格式为Unicode
+        /// 向PLC中字软元件写入字符串，编码格式为Unicode
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -622,7 +638,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         /// <summary>
-        /// 向PLC中写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
+        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -640,38 +656,23 @@ namespace HslCommunication.Profinet.Melsec
         #region Write bool[]
 
         /// <summary>
-        /// 向PLC中写入bool数组，返回值说明，比如你写入M100,那么data[0]对应M100.0
+        /// 向PLC中位软元件写入bool数组，返回值说明，比如你写入M100,values[0]对应M100
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据，长度为8的倍数</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, bool[] values )
         {
-            return Write( address, BasicFramework.SoftBasic.BoolArrayToByte( values ) );
+            return Write( address, values.Select( m => m ? (byte)0x01 : (byte)0x00 ).ToArray( ) );
         }
 
 
         #endregion
-
-        #region Write Byte
-
-        /// <summary>
-        /// 向PLC中写入byte数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns></returns>
-        public OperateResult Write( string address, byte value )
-        {
-            return Write( address, new byte[] { value } );
-        }
-
-        #endregion
-
+        
         #region Write Short
 
         /// <summary>
-        /// 向PLC中写入short数组，返回值说明
+        /// 向PLC中字软元件写入short数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
@@ -682,7 +683,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         /// <summary>
-        /// 向PLC中写入short数据，返回值说明
+        /// 向PLC中字软元件写入short数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -698,7 +699,7 @@ namespace HslCommunication.Profinet.Melsec
 
 
         /// <summary>
-        /// 向PLC中写入ushort数组，返回值说明
+        /// 向PLC中字软元件写入ushort数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
@@ -710,7 +711,7 @@ namespace HslCommunication.Profinet.Melsec
 
 
         /// <summary>
-        /// 向PLC中写入ushort数据，返回值说明
+        /// 向PLC中字软元件写入ushort数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -726,7 +727,7 @@ namespace HslCommunication.Profinet.Melsec
         #region Write Int
 
         /// <summary>
-        /// 向PLC中写入int数组，返回值说明
+        /// 向PLC中字软元件写入int数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
@@ -737,7 +738,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         /// <summary>
-        /// 向PLC中写入int数据，返回值说明
+        /// 向PLC中字软元件写入int数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -752,7 +753,7 @@ namespace HslCommunication.Profinet.Melsec
         #region Write UInt
 
         /// <summary>
-        /// 向PLC中写入uint数组，返回值说明
+        /// 向PLC中字软元件写入uint数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
@@ -763,7 +764,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         /// <summary>
-        /// 向PLC中写入uint数据，返回值说明
+        /// 向PLC中字软元件写入uint数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -778,7 +779,7 @@ namespace HslCommunication.Profinet.Melsec
         #region Write Float
 
         /// <summary>
-        /// 向PLC中写入float数组，返回值说明
+        /// 向PLC中字软元件写入float数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
@@ -789,7 +790,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         /// <summary>
-        /// 向PLC中写入float数据，返回值说明
+        /// 向PLC中字软元件写入float数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -805,7 +806,7 @@ namespace HslCommunication.Profinet.Melsec
         #region Write Long
 
         /// <summary>
-        /// 向PLC中写入long数组，返回值说明
+        /// 向PLC中字软元件写入long数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
@@ -816,7 +817,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         /// <summary>
-        /// 向PLC中写入long数据，返回值说明
+        /// 向PLC中字软元件写入long数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -831,7 +832,7 @@ namespace HslCommunication.Profinet.Melsec
         #region Write ULong
 
         /// <summary>
-        /// 向PLC中写入ulong数组，返回值说明
+        /// 向PLC中字软元件写入ulong数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
@@ -842,7 +843,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         /// <summary>
-        /// 向PLC中写入ulong数据，返回值说明
+        /// 向PLC中字软元件写入ulong数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -857,7 +858,7 @@ namespace HslCommunication.Profinet.Melsec
         #region Write Double
 
         /// <summary>
-        /// 向PLC中写入double数组，返回值说明
+        /// 向PLC中字软元件写入double数组，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
@@ -868,7 +869,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         /// <summary>
-        /// 向PLC中写入double数据，返回值说明
+        /// 向PLC中字软元件写入double数据，返回值说明
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
@@ -888,7 +889,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>字符串信息</returns>
         public override string ToString()
         {
-            return "SiemensFetchWriteNet";
+            return "MelsecMcNet";
         }
 
         #endregion

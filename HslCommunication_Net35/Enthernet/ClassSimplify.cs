@@ -204,8 +204,8 @@ namespace HslCommunication.Enthernet
                 null,
                 StringResources.SocketSendException);
             result = null;
-            state?.WorkSocket.Close();
-            state = null;
+            //state?.WorkSocket.Close();
+            //state = null;
         }
         /// <summary>
         /// 向指定的通信对象发送字节数据
