@@ -7,7 +7,7 @@ using System.Net;
 using System.Threading;
 using HslCommunication.Core.IMessage;
 
-namespace HslCommunication.Core
+namespace HslCommunication.Core.Net
 {
 
 

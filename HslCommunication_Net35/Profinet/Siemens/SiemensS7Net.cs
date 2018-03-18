@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using HslCommunication.Core;
 using HslCommunication.Core.IMessage;
+using HslCommunication.Core.Net;
 
 
 

@@ -140,8 +140,9 @@
     </Compile>
     <Compile Include="Core\IMessage\INetMessage.cs" />
     <Compile Include="Core\Net\IReadWriteNet.cs" />
-    <Compile Include="Core\Net\NetworkBase.cs" />
-    <Compile Include="Core\Net\NetworkDoubleBase.cs" />
+    <Compile Include="Core\Net\NetworkBase\NetworkBase.cs" />
+    <Compile Include="Core\Net\NetworkBase\StateObject.cs" />
+    <Compile Include="Core\Net\NetworkDouble\NetworkDoubleBase.cs" />
     <Compile Include="Core\Net\NetworkShareBase.cs" />
     <Compile Include="Core\Thread\ThreadLock.cs" />
     <Compile Include="Core\Transfer\IByteTransform.cs" />

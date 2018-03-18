@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using HslCommunication.Core;
 using HslCommunication.Core.IMessage;
+using HslCommunication.Core.Net;
 
 namespace HslCommunication.Profinet.Melsec
 {

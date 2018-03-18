@@ -5,6 +5,7 @@ using System.Text;
 using HslCommunication.BasicFramework;
 using HslCommunication.Core;
 using HslCommunication.Core.IMessage;
+using HslCommunication.Core.Net;
 
 namespace HslCommunication.ModBus
 {
