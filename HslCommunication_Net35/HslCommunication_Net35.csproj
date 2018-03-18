@@ -121,6 +121,7 @@
     </Compile>
     <Compile Include="Core\IMessage\FetchWriteMessage.cs" />
     <Compile Include="Core\IMessage\HslMessage.cs" />
+    <Compile Include="Core\IMessage\MelsecQnA3EMessage.cs" />
     <Compile Include="Core\IMessage\ModbusTcpMessage.cs" />
     <Compile Include="Core\IMessage\S7Message.cs" />
     <Compile Include="Core\Net\ClassNetHandle.cs" />
@@ -184,6 +185,7 @@
     <Compile Include="Core\Types\IDataTransfer.cs" />
     <Compile Include="Profinet\MelsecNet.cs" />
     <Compile Include="Profinet\Melsec\Melsec1ENet.cs" />
+    <Compile Include="Profinet\Melsec\MelsecMcDataType.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcNet.cs" />
     <Compile Include="Profinet\Omron\OmronFinsNet.cs" />
     <Compile Include="Profinet\PlcNetBase.cs" />

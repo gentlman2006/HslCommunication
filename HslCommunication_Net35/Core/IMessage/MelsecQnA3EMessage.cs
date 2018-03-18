@@ -5,11 +5,13 @@ using System.Text;
 
 namespace HslCommunication.Core.IMessage
 {
+    
     /// <summary>
-    /// 西门子Fetch/Write消息解析协议
+    /// 三菱的Qna兼容3E帧协议解析规则
     /// </summary>
-    public class FetchWriteMessage : INetMessage
+    public class MelsecQnA3EMessage : INetMessage
     {
+
         /// <summary>
         /// 消息头的指令长度
         /// </summary>
@@ -17,7 +19,7 @@ namespace HslCommunication.Core.IMessage
         {
             get
             {
-                return 16;
+                return 9;
             }
         }
 
@@ -26,23 +28,9 @@ namespace HslCommunication.Core.IMessage
         /// 从当前的头子节文件中提取出接下来需要接收的数据长度
         /// </summary>
         /// <returns>返回接下来的数据内容长度</returns>
-        public int GetContentLengthByHeadBytes( )
+        public int GetContentLengthByHeadBytes()
         {
-            if (SendBytes != null)
-            {
-                if (HeadBytes[5] == 0x04)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return SendBytes[12] * 256 + SendBytes[13];
-                }
-            }
-            else
-            {
-                return 16;
-            }
+            return BitConverter.ToUInt16( HeadBytes, 7 );
         }
 
 
@@ -53,7 +41,7 @@ namespace HslCommunication.Core.IMessage
         /// <returns></returns>
         public bool CheckHeadBytesLegal( byte[] token )
         {
-            if (HeadBytes[0] == 0x53 && HeadBytes[1] == 0x35)
+            if (HeadBytes[0] == 0xD0 && HeadBytes[1] == 0x00)
             {
                 return true;
             }
@@ -68,9 +56,9 @@ namespace HslCommunication.Core.IMessage
         /// 获取头子节里的消息标识
         /// </summary>
         /// <returns></returns>
-        public int GetHeadBytesIdentity( )
+        public int GetHeadBytesIdentity()
         {
-            return HeadBytes[3];
+            return 0;
         }
 
 
@@ -85,9 +73,13 @@ namespace HslCommunication.Core.IMessage
         /// </summary>
         public byte[] ContentBytes { get; set; }
 
+
         /// <summary>
         /// 发送的字节信息
         /// </summary>
         public byte[] SendBytes { get; set; }
+
+
     }
+
 }

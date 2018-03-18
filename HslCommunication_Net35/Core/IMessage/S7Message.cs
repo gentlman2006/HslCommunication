@@ -39,7 +39,14 @@ namespace HslCommunication.Core.IMessage
         /// <returns>是否合法的</returns>
         public bool CheckHeadBytesLegal(byte[] token)
         {
-            return true;
+            if (HeadBytes[0] == 0x03 && HeadBytes[1] == 0x00)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 

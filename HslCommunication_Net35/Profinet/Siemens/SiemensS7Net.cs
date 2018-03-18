@@ -20,7 +20,7 @@ using HslCommunication.Core.IMessage;
 
 
 
-namespace HslCommunication.Profinet
+namespace HslCommunication.Profinet.Siemens
 {
     /// <summary>
     /// 一个西门子的客户端类，使用S7协议来进行数据交互

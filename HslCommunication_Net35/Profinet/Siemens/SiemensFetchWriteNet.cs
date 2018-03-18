@@ -16,7 +16,7 @@ using System.Net.Sockets;
  * 
  *********************************************************************************/
 
-namespace HslCommunication.Profinet
+namespace HslCommunication.Profinet.Siemens
 {
     /// <summary>
     /// 使用了Fetch/Write协议来和西门子进行通讯，该种方法需要在PLC侧进行一些配置
@@ -40,7 +40,8 @@ namespace HslCommunication.Profinet
         /// <param name="port">PLC的端口</param>
         public SiemensFetchWriteNet(string ipAddress,int port)
         {
-
+            IpAddress = ipAddress;
+            Port = port;
         }
 
         #endregion
