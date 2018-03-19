@@ -17,8 +17,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Resources\**" />
+    <EmbeddedResource Remove="Resources\**" />
+    <None Remove="Resources\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="LogNet\View\" />
-    <Folder Include="Resources\" />
   </ItemGroup>
 
   <ItemGroup>

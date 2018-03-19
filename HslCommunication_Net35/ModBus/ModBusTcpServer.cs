@@ -907,137 +907,147 @@ namespace HslCommunication.ModBus
 
                 // 需要回发消息
                 byte[] copy = null;
-                switch (data[7])
+                try
                 {
-                    case 0x01:
-                        {
-                            // 线圈读取
-                            int address = data[8] * 256 + data[9];
-                            int length = data[10] * 256 + data[11];
-                            if (length > 2048) length = 2048;         // 线圈读取应该小于2048个
-                            bool[] read = ReadCoil((ushort)address, (ushort)length);
-                            byte[] buffer = BasicFramework.SoftBasic.BoolArrayToByte(read);
-                            copy = new byte[9 + buffer.Length];
-                            Array.Copy(data, 0, copy, 0, 8);
-                            copy[4] = (byte)((copy.Length - 6) / 256);
-                            copy[5] = (byte)((copy.Length - 6) % 256);
-                            copy[8] = (byte)buffer.Length;
-                            Array.Copy(buffer, 0, copy, 9, buffer.Length);
-                            break;
-                        }
-                    case 0x03:
-                        {
-                            // 寄存器读取
-                            int address = data[8] * 256 + data[9];
-                            int length = data[10] * 256 + data[11];
-                            if (length > 127) length = 127;          // 寄存器最大读取范围为127个
-                            byte[] buffer = ReadRegister((ushort)address, (ushort)length);
-                            copy = new byte[9 + buffer.Length];
-                            Array.Copy(data, 0, copy, 0, 8);
-                            copy[4] = (byte)((copy.Length - 6) / 256);
-                            copy[5] = (byte)((copy.Length - 6) % 256);
-                            copy[8] = (byte)buffer.Length;
-                            Array.Copy(buffer, 0, copy, 9, buffer.Length);
-                            break;
-                        }
-                    case 0x05:
-                        {
-                            // 写单个线圈
-                            int address = data[8] * 256 + data[9];
-                            if (data[10] == 0xFF && data[11] == 0x00)
+                    switch (data[7])
+                    {
+                        case 0x01:
                             {
-                                WriteCoil((ushort)address, true);
+                                // 线圈读取
+                                int address = data[8] * 256 + data[9];
+                                int length = data[10] * 256 + data[11];
+                                if (length > 2048) length = 2048;         // 线圈读取应该小于2048个
+                                bool[] read = ReadCoil( (ushort)address, (ushort)length );
+                                byte[] buffer = BasicFramework.SoftBasic.BoolArrayToByte( read );
+                                copy = new byte[9 + buffer.Length];
+                                Array.Copy( data, 0, copy, 0, 8 );
+                                copy[4] = (byte)((copy.Length - 6) / 256);
+                                copy[5] = (byte)((copy.Length - 6) % 256);
+                                copy[8] = (byte)buffer.Length;
+                                Array.Copy( buffer, 0, copy, 9, buffer.Length );
+                                break;
                             }
-                            else if (data[10] == 0x00 && data[11] == 0x00)
+                        case 0x03:
                             {
-                                WriteCoil((ushort)address, false);
+                                // 寄存器读取
+                                int address = data[8] * 256 + data[9];
+                                int length = data[10] * 256 + data[11];
+                                if (length > 127) length = 127;          // 寄存器最大读取范围为127个
+                                byte[] buffer = ReadRegister( (ushort)address, (ushort)length );
+                                copy = new byte[9 + buffer.Length];
+                                Array.Copy( data, 0, copy, 0, 8 );
+                                copy[4] = (byte)((copy.Length - 6) / 256);
+                                copy[5] = (byte)((copy.Length - 6) % 256);
+                                copy[8] = (byte)buffer.Length;
+                                Array.Copy( buffer, 0, copy, 9, buffer.Length );
+                                break;
                             }
-                            copy = new byte[12];
-                            Array.Copy(data, 0, copy, 0, 12);
-                            copy[4] = 0x00;
-                            copy[5] = 0x06;
-                            break;
-                        }
-                    case 0x06:
-                        {
-                            // 写单个寄存器
-                            ushort address = (ushort)(data[8] * 256 + data[9]);
-                            short ValueOld = ReadShortRegister(address);
-                            // 写入到寄存器
-                            WriteRegister(address, data[10], data[11]);
-                            short ValueNew = ReadShortRegister(address);
-                            // 触发写入请求
-                            OnRegisterBeforWrite(address, ValueOld, ValueNew);
-
-                            copy = new byte[12];
-                            Array.Copy(data, 0, copy, 0, 12);
-                            copy[4] = 0x00;
-                            copy[5] = 0x06;
-                            break;
-                        }
-                    case 0x0F:
-                        {
-                            // 写多个线圈
-                            int address = data[8] * 256 + data[9];
-                            int length = data[10] * 256 + data[11];
-                            byte[] buffer = new byte[data.Length - 13];
-                            Array.Copy(data, 13, buffer, 0, buffer.Length);
-                            bool[] value = BasicFramework.SoftBasic.ByteToBoolArray(buffer, length);
-                            WriteCoil((ushort)address, value);
-                            copy = new byte[12];
-                            Array.Copy(data, 0, copy, 0, 12);
-                            copy[4] = 0x00;
-                            copy[5] = 0x06;
-                            break;
-                        }
-                    case 0x10:
-                        {
-                            // 写多个寄存器
-                            int address = data[8] * 256 + data[9];
-                            int length = data[10] * 256 + data[11];
-                            byte[] buffer = new byte[data.Length - 13];
-
-                            // 为了使服务器的数据订阅更加的准确，决定将设计改为等待所有的数据写入完成后，再统一触发订阅，2018年3月4日 20:56:47
-                            MonitorAddress[] addresses = new MonitorAddress[length];
-                            for (int i = 0; i < length; i++)
+                        case 0x05:
                             {
-                                if ((2 * i + 14) < data.Length)
+                                // 写单个线圈
+                                int address = data[8] * 256 + data[9];
+                                if (data[10] == 0xFF && data[11] == 0x00)
                                 {
-                                    short ValueOld = ReadShortRegister((ushort)(address + i));
-                                    WriteRegister((ushort)(address + i), data[2 * i + 13], data[2 * i + 14]);
-                                    short ValueNew = ReadShortRegister((ushort)(address + i));
-                                    // 触发写入请求
-                                    addresses[i] = new MonitorAddress()
-                                    {
-                                        Address = (ushort)(address + i),
-                                        ValueOrigin = ValueOld,
-                                        ValueNew = ValueNew
-                                    };
+                                    WriteCoil( (ushort)address, true );
                                 }
+                                else if (data[10] == 0x00 && data[11] == 0x00)
+                                {
+                                    WriteCoil( (ushort)address, false );
+                                }
+                                copy = new byte[12];
+                                Array.Copy( data, 0, copy, 0, 12 );
+                                copy[4] = 0x00;
+                                copy[5] = 0x06;
+                                break;
                             }
-
-                            // 所有数据都更改完成后，再触发消息
-                            for (int i = 0; i < addresses.Length; i++)
+                        case 0x06:
                             {
-                                OnRegisterBeforWrite(addresses[i].Address, addresses[i].ValueOrigin, addresses[i].ValueNew);
-                            }
+                                // 写单个寄存器
+                                ushort address = (ushort)(data[8] * 256 + data[9]);
+                                short ValueOld = ReadShortRegister( address );
+                                // 写入到寄存器
+                                WriteRegister( address, data[10], data[11] );
+                                short ValueNew = ReadShortRegister( address );
+                                // 触发写入请求
+                                OnRegisterBeforWrite( address, ValueOld, ValueNew );
 
-                            copy = new byte[12];
-                            Array.Copy(data, 0, copy, 0, 12);
-                            copy[4] = 0x00;
-                            copy[5] = 0x06;
-                            break;
-                        }
-                    default:
-                        {
-                            copy = new byte[9];
-                            Array.Copy( data, 0, copy, 0, 8 );
-                            copy[4] = 0x00;
-                            copy[5] = 0x03;
-                            copy[7] = (byte)(data[7] + 0x80);
-                            copy[8] = 0x01;  // 不支持的功能码
-                            break;
-                        }
+                                copy = new byte[12];
+                                Array.Copy( data, 0, copy, 0, 12 );
+                                copy[4] = 0x00;
+                                copy[5] = 0x06;
+                                break;
+                            }
+                        case 0x0F:
+                            {
+                                // 写多个线圈
+                                int address = data[8] * 256 + data[9];
+                                int length = data[10] * 256 + data[11];
+                                byte[] buffer = new byte[data.Length - 13];
+                                Array.Copy( data, 13, buffer, 0, buffer.Length );
+                                bool[] value = BasicFramework.SoftBasic.ByteToBoolArray( buffer, length );
+                                WriteCoil( (ushort)address, value );
+                                copy = new byte[12];
+                                Array.Copy( data, 0, copy, 0, 12 );
+                                copy[4] = 0x00;
+                                copy[5] = 0x06;
+                                break;
+                            }
+                        case 0x10:
+                            {
+                                // 写多个寄存器
+                                int address = data[8] * 256 + data[9];
+                                int length = data[10] * 256 + data[11];
+                                byte[] buffer = new byte[data.Length - 13];
+
+                                // 为了使服务器的数据订阅更加的准确，决定将设计改为等待所有的数据写入完成后，再统一触发订阅，2018年3月4日 20:56:47
+                                MonitorAddress[] addresses = new MonitorAddress[length];
+                                for (int i = 0; i < length; i++)
+                                {
+                                    if ((2 * i + 14) < data.Length)
+                                    {
+                                        short ValueOld = ReadShortRegister( (ushort)(address + i) );
+                                        WriteRegister( (ushort)(address + i), data[2 * i + 13], data[2 * i + 14] );
+                                        short ValueNew = ReadShortRegister( (ushort)(address + i) );
+                                        // 触发写入请求
+                                        addresses[i] = new MonitorAddress( )
+                                        {
+                                            Address = (ushort)(address + i),
+                                            ValueOrigin = ValueOld,
+                                            ValueNew = ValueNew
+                                        };
+                                    }
+                                }
+
+                                // 所有数据都更改完成后，再触发消息
+                                for (int i = 0; i < addresses.Length; i++)
+                                {
+                                    OnRegisterBeforWrite( addresses[i].Address, addresses[i].ValueOrigin, addresses[i].ValueNew );
+                                }
+
+                                copy = new byte[12];
+                                Array.Copy( data, 0, copy, 0, 12 );
+                                copy[4] = 0x00;
+                                copy[5] = 0x06;
+                                break;
+                            }
+                        default:
+                            {
+                                copy = new byte[9];
+                                Array.Copy( data, 0, copy, 0, 8 );
+                                copy[4] = 0x00;
+                                copy[5] = 0x03;
+                                copy[7] = (byte)(data[7] + 0x80);
+                                copy[8] = 0x01;  // 不支持的功能码
+                                break;
+                            }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    state.WorkSocket?.Close( );
+                    state = null;
+                    LogNet?.WriteException( LogHeaderText, ex );
+                    return;
                 }
 
                 
