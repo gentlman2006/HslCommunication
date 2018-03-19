@@ -144,6 +144,7 @@
     <Compile Include="Core\Net\NetworkBase\StateObject.cs" />
     <Compile Include="Core\Net\NetworkDouble\NetworkDoubleBase.cs" />
     <Compile Include="Core\Net\NetworkShareBase.cs" />
+    <Compile Include="Core\Net\NetworkXBase\NetworkXBase.cs" />
     <Compile Include="Core\Thread\ThreadLock.cs" />
     <Compile Include="Core\Transfer\IByteTransform.cs" />
     <Compile Include="Core\Transfer\RegularByteTransform.cs" />

@@ -187,6 +187,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="socket">已经打开的网络套接字</param>
         /// <param name="timeOut">超时时间</param>
+        /// <param name="netMsg">消息规则</param>
         /// <returns>数据的接收结果对象</returns>
         protected OperateResult<TNetMessage> ReceiveMessage( Socket socket, int timeOut , TNetMessage netMsg)
         {
