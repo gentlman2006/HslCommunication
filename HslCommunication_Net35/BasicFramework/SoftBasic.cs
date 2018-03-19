@@ -530,6 +530,14 @@ namespace HslCommunication.BasicFramework
 
         #region byte[]数组和short,ushort相互转化
 
+
+        /*******************************************************************************************************
+         * 
+         *    2018年3月19日 10:57:11
+         *    感谢：毛毛虫 提供的BUG报告 316664767@qq.com
+         * 
+         ********************************************************************************************************/
+
         /// <summary>
         /// 从byte数组中提取出short数组，并指定是否需要高地位置换
         /// </summary>
@@ -555,7 +563,7 @@ namespace HslCommunication.BasicFramework
                     temp[0] = InBytes[2 * i + 0];
                     temp[1] = InBytes[2 * i + 1];
                 }
-                array[i] = BitConverter.ToInt16( temp, 2 );
+                array[i] = BitConverter.ToInt16( temp, 0 );
             }
 
             return array;
@@ -586,7 +594,7 @@ namespace HslCommunication.BasicFramework
                     temp[0] = InBytes[2 * i + 0];
                     temp[1] = InBytes[2 * i + 1];
                 }
-                array[i] = BitConverter.ToUInt16( temp, 2 );
+                array[i] = BitConverter.ToUInt16( temp, 0 );
             }
 
             return array;
