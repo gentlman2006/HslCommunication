@@ -386,6 +386,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
 
+
         /// <summary>
         /// 从三菱PLC中批量读取位软元件，返回读取结果
         /// </summary>

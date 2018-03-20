@@ -97,11 +97,14 @@ namespace HslCommunication.Core.Net
             }
             set
             {
-                if(!IPAddress.TryParse( value, out IPAddress address))
+                if (!string.IsNullOrEmpty( value ))
                 {
-                    throw new Exception( "Ip地址设置异常，格式不正确" );
+                    if (!IPAddress.TryParse( value, out IPAddress address ))
+                    {
+                        throw new Exception( "Ip地址设置异常，格式不正确" );
+                    }
+                    ipAddress = value;
                 }
-                ipAddress = value;
             }
         }
 
