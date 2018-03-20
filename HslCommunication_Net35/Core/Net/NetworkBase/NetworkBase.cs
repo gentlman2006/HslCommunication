@@ -429,6 +429,147 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
+        /*****************************************************************************
+         * 
+         *    说明：
+         *    下面的两个模块代码指示了如何读写文件
+         * 
+         ********************************************************************************/
+
+        #region Read Stream
+
+
+        /// <summary>
+        /// 读取流中的数据到缓存区
+        /// </summary>
+        /// <param name="stream">数据流</param>
+        /// <param name="buffer">缓冲区</param>
+        /// <returns>带有成功标志的读取数据长度</returns>
+        protected OperateResult<int> ReadStream( Stream stream, byte[] buffer )
+        {
+            ManualResetEvent WaitDone = new ManualResetEvent( false );
+            FileStateObject stateObject = new FileStateObject( );
+            stateObject.WaitDone = WaitDone;
+            stateObject.Stream = stream;
+            try
+            {
+                stream.BeginRead( buffer, 0, buffer.Length, new AsyncCallback( ReadStreamCallBack ), stateObject );
+            }
+            catch (Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), ex );
+                stateObject = null;
+                WaitDone.Close( );
+                return new OperateResult<int>( );
+            }
+
+            WaitDone.WaitOne( );
+            WaitDone.Close( );
+            if (stateObject.IsError)
+            {
+                return new OperateResult<int>( )
+                {
+                    Message = stateObject.ErrerMsg
+                };
+            }
+            else
+            {
+                return OperateResult.CreateSuccessResult( stateObject.AlreadyDone );
+            }
+        }
+
+
+        private void ReadStreamCallBack( IAsyncResult ar )
+        {
+            if (ar.AsyncState is FileStateObject stateObject)
+            {
+                try
+                {
+                    stateObject.AlreadyDone = stateObject.Stream.EndRead( ar );
+                }
+                catch (Exception ex)
+                {
+                    LogNet?.WriteException( ToString( ), ex );
+                    stateObject.IsError = true;
+                    stateObject.ErrerMsg = ex.Message;
+
+                }
+                finally
+                {
+                    stateObject.WaitDone.Set( );
+                }
+            }
+        }
+
+
+        #endregion
+
+        #region Write Stream
+
+        /// <summary>
+        /// 将缓冲区的数据写入到流里面去
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
+        protected OperateResult WriteStream( Stream stream, byte[] buffer )
+        {
+            ManualResetEvent WaitDone = new ManualResetEvent( false );
+            FileStateObject stateObject = new FileStateObject( );
+            stateObject.WaitDone = WaitDone;
+            stateObject.Stream = stream;
+            try
+            {
+                stream.BeginWrite( buffer, 0, buffer.Length, new AsyncCallback( WriteStreamCallBack ), stateObject );
+            }
+            catch (Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), ex );
+                stateObject = null;
+                WaitDone.Close( );
+                return new OperateResult( );
+            }
+
+            WaitDone.WaitOne( );
+            WaitDone.Close( );
+            if (stateObject.IsError)
+            {
+                return new OperateResult( )
+                {
+                    Message = stateObject.ErrerMsg
+                };
+            }
+            else
+            {
+                return OperateResult.CreateSuccessResult( );
+            }
+
+
+        }
+
+        private void WriteStreamCallBack( IAsyncResult ar )
+        {
+            if (ar.AsyncState is FileStateObject stateObject)
+            {
+                try
+                {
+                    stateObject.Stream.EndWrite( ar );
+                }
+                catch (Exception ex)
+                {
+                    LogNet?.WriteException( ToString( ), ex );
+                    stateObject.IsError = true;
+                    stateObject.ErrerMsg = ex.Message;
+                }
+                finally
+                {
+                    stateObject.WaitDone.Set( );
+                }
+            }
+        }
+
+        #endregion
+
         #region Object Override
 
         /// <summary>
