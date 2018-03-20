@@ -491,9 +491,7 @@ namespace HslCommunication.ModBus
                 return result;
             }
 
-            var read = ReadModBusBase( ModbusInfo.ReadRegister, address, length );
-
-            return result;
+            return ReadModBusBase( ModbusInfo.ReadRegister, address, length );
         }
 
         /// <summary>
@@ -723,7 +721,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, string value )
         {
             byte[] temp = Encoding.ASCII.GetBytes( value );
@@ -736,7 +734,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, string value, int length )
         {
             byte[] temp = Encoding.ASCII.GetBytes( value );
@@ -749,7 +747,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>返回写入结果</returns>
         public OperateResult WriteUnicodeString( string address, string value )
         {
             byte[] temp = Encoding.Unicode.GetBytes( value );
@@ -762,7 +760,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>返回写入结果</returns>
         public OperateResult WriteUnicodeString( string address, string value, int length )
         {
             byte[] temp = Encoding.Unicode.GetBytes( value );
