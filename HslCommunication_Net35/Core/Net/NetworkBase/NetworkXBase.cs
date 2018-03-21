@@ -32,29 +32,29 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
-        #region 异步发送数据块
+        #region Send Bytes Async
 
         /// <summary>
         /// 发送数据的方法
         /// </summary>
-        /// <param name="stateOne">通信用的核心对象</param>
-        /// <param name="content"></param>
-        internal void SendBytesAsync( AppSession stateOne, byte[] content )
+        /// <param name="session">通信用的核心对象</param>
+        /// <param name="content">完整的字节信息</param>
+        internal void SendBytesAsync( AppSession session, byte[] content )
         {
             if (content == null) return;
             try
             {
-                // 启用另外一个套接字传送
+                // 启用另外一个网络封装对象进行发送数据
                 AsyncStateSend state = new AsyncStateSend( )
                 {
-                    WorkSocket = stateOne.WorkSocket,
+                    WorkSocket = session.WorkSocket,
                     Content = content,
                     AlreadySendLength = 0,
-                    HybirdLockSend = stateOne.HybirdLockSend,
+                    HybirdLockSend = session.HybirdLockSend,
                 };
 
+                // 进入发送数据的锁，然后开启异步的数据发送
                 state.HybirdLockSend.Enter( );
-
                 state.WorkSocket.BeginSend(
                     state.Content,
                     state.AlreadySendLength,
@@ -66,11 +66,11 @@ namespace HslCommunication.Core.Net
             catch (ObjectDisposedException ex)
             {
                 // 不操作
-                stateOne.HybirdLockSend.Leave( );
+                session.HybirdLockSend.Leave( );
             }
             catch (Exception ex)
             {
-                stateOne.HybirdLockSend.Leave( );
+                session.HybirdLockSend.Leave( );
                 if (!ex.Message.Contains( StringResources.SocketRemoteCloseException ))
                 {
                     LogNet?.WriteException( ToString(), StringResources.SocketSendException, ex );
@@ -95,7 +95,9 @@ namespace HslCommunication.Core.Net
                         stateone.WorkSocket.BeginSend( stateone.Content,
                         stateone.AlreadySendLength,
                         stateone.Content.Length - stateone.AlreadySendLength,
-                        SocketFlags.None, new AsyncCallback( SendCallBack ), stateone );
+                        SocketFlags.None, 
+                        new AsyncCallback( SendCallBack ), 
+                        stateone );
                     }
                     else
                     {
@@ -121,7 +123,7 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
-        #region 异步数据接收块
+        #region Receive Bytes Async
 
         /// <summary>
         /// 重新开始接收下一次的数据传递
@@ -140,7 +142,7 @@ namespace HslCommunication.Core.Net
                 if (isProcess)
                 {
                     // 校验令牌
-                    if (BasicFramework.SoftBasic.IsTwoBytesEquel( head, 12, Token.ToByteArray( ), 0, 16 ))
+                    if (SoftBasic.IsTwoBytesEquel( head, 12, Token.ToByteArray( ), 0, 16 ))
                     {
                         Content = NetSupport.CommandAnalysis( head, Content );
                         int protocol = BitConverter.ToInt32( head, 0 );
@@ -165,7 +167,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 指令头接收方法
         /// </summary>
-        /// <param name="ar"></param>
+        /// <param name="ar">异步状态信息</param>
         protected void HeadReceiveCallback( IAsyncResult ar )
         {
             if (ar.AsyncState is AppSession session)
@@ -328,7 +330,7 @@ namespace HslCommunication.Core.Net
         /// <param name="headcode">头指令</param>
         /// <param name="customer">用户指令</param>
         /// <param name="send">发送的数据</param>
-        /// <returns></returns>
+        /// <returns>是否发送成功</returns>
         protected OperateResult SendBaseAndCheckReceive(
             Socket socket,
             int headcode,
@@ -348,7 +350,7 @@ namespace HslCommunication.Core.Net
         /// <param name="socket">网络套接字</param>
         /// <param name="customer">用户指令</param>
         /// <param name="send">发送的数据</param>
-        /// <returns></returns>
+        /// <returns>是否发送成功</returns>
         protected OperateResult SendBytesAndCheckReceive(
             Socket socket,
             int customer,
@@ -365,7 +367,7 @@ namespace HslCommunication.Core.Net
         /// <param name="socket">网络套接字</param>
         /// <param name="customer">用户指令</param>
         /// <param name="send">发送的数据</param>
-        /// <returns></returns>
+        /// <returns>是否发送成功</returns>
         protected OperateResult SendStringAndCheckReceive(
             Socket socket,
             int customer,
@@ -378,21 +380,20 @@ namespace HslCommunication.Core.Net
                 socket,                                           // 套接字
                 HslProtocol.ProtocolUserString,                   // 指示字符串数据
                 customer,                                         // 用户数据
-                data                                             // 字符串的数据
+                data                                              // 字符串的数据
                 );
-            
         }
 
 
 
         /// <summary>
-        /// 将文件数据发送至套接字，如果结果异常，则结束通讯
+        /// [自校验] 将文件数据发送至套接字，如果结果异常，则结束通讯
         /// </summary>
-        /// <param name="socket"></param>
-        /// <param name="filename"></param>
-        /// <param name="filelength"></param>
-        /// <param name="report"></param>
-        /// <returns></returns>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="filename">完整的文件路径</param>
+        /// <param name="filelength">文件的长度</param>
+        /// <param name="report">进度报告器</param>
+        /// <returns>是否发送成功</returns>
         protected OperateResult SendFileStreamToSocket(
             Socket socket,
             string filename,
@@ -430,7 +431,7 @@ namespace HslCommunication.Core.Net
         /// <param name="filetag">文件的额外标签</param>
         /// <param name="fileupload">文件的上传人</param>
         /// <param name="sendReport">发送进度报告</param>
-        /// <returns></returns>
+        /// <returns>是否发送成功</returns>
         protected OperateResult SendFileAndCheckReceive(
             Socket socket,
             string filename,
@@ -454,9 +455,10 @@ namespace HslCommunication.Core.Net
                 else
                 {
                     socket?.Close( );
+                    LogNet?.WriteWarn( ToString( ), StringResources.FileNotExist );
                     return new OperateResult( )
                     {
-                        Message = "找不到该文件，请重新确认文件！"
+                        Message = StringResources.FileNotExist
                     };
                 }
             }
@@ -470,14 +472,14 @@ namespace HslCommunication.Core.Net
                 { "FileUpload", new Newtonsoft.Json.Linq.JValue(fileupload) }
             };
 
+            // 先发送文件的信息到对方
             OperateResult sendResult = SendStringAndCheckReceive( socket, 1, json.ToString( ) );
             if (!sendResult.IsSuccess) 
             {
                 return sendResult;
             }
-
-
-
+            
+            // 最后发送
             return SendFileStreamToSocket( socket, filename, info.Length, sendReport );
         }
 
@@ -932,6 +934,18 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
+        #region Object Override
 
+        /// <summary>
+        /// 获取本对象的字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "NetworkXBase";
+        }
+
+
+        #endregion
     }
 }
