@@ -445,36 +445,38 @@ namespace HslCommunication.Core.Net
         /// <param name="stream">数据流</param>
         /// <param name="buffer">缓冲区</param>
         /// <returns>带有成功标志的读取数据长度</returns>
-        protected OperateResult<int> ReadStream( Stream stream, byte[] buffer )
+        protected OperateResult ReadStream( Stream stream, byte[] buffer ,int length)
         {
             ManualResetEvent WaitDone = new ManualResetEvent( false );
             FileStateObject stateObject = new FileStateObject( );
             stateObject.WaitDone = WaitDone;
             stateObject.Stream = stream;
+            stateObject.DataLength = length;
+            stateObject.Buffer = buffer;
             try
             {
-                stream.BeginRead( buffer, 0, buffer.Length, new AsyncCallback( ReadStreamCallBack ), stateObject );
+                stream.BeginRead( buffer, 0, stateObject.DataLength, new AsyncCallback( ReadStreamCallBack ), stateObject );
             }
             catch (Exception ex)
             {
                 LogNet?.WriteException( ToString( ), ex );
                 stateObject = null;
                 WaitDone.Close( );
-                return new OperateResult<int>( );
+                return new OperateResult( );
             }
 
             WaitDone.WaitOne( );
             WaitDone.Close( );
             if (stateObject.IsError)
             {
-                return new OperateResult<int>( )
+                return new OperateResult( )
                 {
                     Message = stateObject.ErrerMsg
                 };
             }
             else
             {
-                return OperateResult.CreateSuccessResult( stateObject.AlreadyDone );
+                return OperateResult.CreateSuccessResult( );
             }
         }
 
@@ -485,17 +487,24 @@ namespace HslCommunication.Core.Net
             {
                 try
                 {
-                    stateObject.AlreadyDone = stateObject.Stream.EndRead( ar );
+                    stateObject.AlreadyDealLength += stateObject.Stream.EndRead( ar );
+
+                    if (stateObject.AlreadyDealLength < stateObject.DataLength)
+                    {
+                        // 继续读取剩余的数据
+                        stateObject.Stream.BeginRead( stateObject.Buffer, stateObject.AlreadyDealLength,
+                            stateObject.DataLength - stateObject.AlreadyDealLength, new AsyncCallback( ReadStreamCallBack ), stateObject );
+                    }
+                    else
+                    {
+                        stateObject.WaitDone.Set( );
+                    }
                 }
                 catch (Exception ex)
                 {
                     LogNet?.WriteException( ToString( ), ex );
                     stateObject.IsError = true;
                     stateObject.ErrerMsg = ex.Message;
-
-                }
-                finally
-                {
                     stateObject.WaitDone.Set( );
                 }
             }

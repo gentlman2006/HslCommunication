@@ -7,7 +7,10 @@ using System.Threading;
 
 namespace HslCommunication.Core.Net
 {
-    internal class StateObject
+    /// <summary>
+    /// 网络中的异步对象
+    /// </summary>
+    internal class StateObject : StateOneBase
     {
         #region Constructor
 
@@ -29,50 +32,27 @@ namespace HslCommunication.Core.Net
             Buffer = new byte[length];
         }
 
+        /// <summary>
+        /// 唯一的一串信息
+        /// </summary>
+        public string UniqueId { get; set; }
+
         #endregion
 
         #region Public Member
 
-        /// <summary>
-        /// 本次接收或是发送的数据长度
-        /// </summary>
-        public int DataLength { get; } = 32;
-
-        /// <summary>
-        /// 已经处理的字节长度
-        /// </summary>
-        public int AlreadyDealLength { get; set; }
-
-        /// <summary>
-        /// 操作完成的信号
-        /// </summary>
-        public ManualResetEvent WaitDone { get; set; }
-
-
-        /// <summary>
-        /// 缓存器
-        /// </summary>
-        public byte[] Buffer { get; set; }
-
+   
         /// <summary>
         /// 网络套接字
         /// </summary>
         public Socket WorkSocket { get; set; }
-
-        /// <summary>
-        /// 是否发生了错误
-        /// </summary>
-        public bool IsError { get; set; }
+        
 
         /// <summary>
         /// 是否关闭了通道
         /// </summary>
         public bool IsClose { get; set; }
-
-        /// <summary>
-        /// 错误消息
-        /// </summary>
-        public string ErrerMsg { get; set; }
+        
 
         #endregion
 

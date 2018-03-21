@@ -141,11 +141,15 @@
     <Compile Include="Core\IMessage\INetMessage.cs" />
     <Compile Include="Core\Net\IReadWriteNet.cs" />
     <Compile Include="Core\Net\NetworkBase\NetworkBase.cs" />
-    <Compile Include="Core\Net\NetworkBase\StateObject.cs" />
-    <Compile Include="Core\Net\NetworkDouble\NetworkDoubleBase.cs" />
+    <Compile Include="Core\Net\NetworkBase\NetworkServerBase.cs" />
+    <Compile Include="Core\Net\StateOne\AppSession.cs" />
+    <Compile Include="Core\Net\StateOne\AsyncStateSend.cs" />
+    <Compile Include="Core\Net\StateOne\StateObject.cs" />
+    <Compile Include="Core\Net\NetworkBase\NetworkDoubleBase.cs" />
     <Compile Include="Core\Net\NetworkShareBase.cs" />
-    <Compile Include="Core\Net\NetworkXBase\FileStateObject.cs" />
+    <Compile Include="Core\Net\StateOne\FileStateObject.cs" />
     <Compile Include="Core\Net\NetworkBase\NetworkXBase.cs" />
+    <Compile Include="Core\Net\StateOne\StateOneBase.cs" />
     <Compile Include="Core\Thread\ThreadLock.cs" />
     <Compile Include="Core\Transfer\IByteTransform.cs" />
     <Compile Include="Core\Transfer\RegularByteTransform.cs" />
@@ -158,6 +162,8 @@
     <Compile Include="Enthernet\ClassSimplify.cs" />
     <Compile Include="Enthernet\ClassSoftUpdate.cs" />
     <Compile Include="Enthernet\ClassUdpNet.cs" />
+    <Compile Include="Enthernet\ComplexNet\NetworkComplexClient.cs" />
+    <Compile Include="Enthernet\ComplexNet\NetworkComplexServer.cs" />
     <Compile Include="Enthernet\SimplifyNet.cs" />
     <Compile Include="Enthernet\SocketState.cs" />
     <Compile Include="Core\Types\HslTimeOut.cs" />
