@@ -158,12 +158,11 @@
     <Compile Include="Core\Types\HslPieItem.cs" />
     <Compile Include="Enthernet\ClassDeviceNet.cs" />
     <Compile Include="Enthernet\ClassFileNet.cs" />
-    <Compile Include="Enthernet\ClassMultiNet.cs" />
     <Compile Include="Enthernet\ClassSimplify.cs" />
     <Compile Include="Enthernet\ClassSoftUpdate.cs" />
     <Compile Include="Enthernet\ClassUdpNet.cs" />
-    <Compile Include="Enthernet\ComplexNet\NetworkComplexClient.cs" />
-    <Compile Include="Enthernet\ComplexNet\NetworkComplexServer.cs" />
+    <Compile Include="Enthernet\ComplexNet\NetComplexClient.cs" />
+    <Compile Include="Enthernet\ComplexNet\NetComplexServer.cs" />
     <Compile Include="Enthernet\SimplifyNet.cs" />
     <Compile Include="Enthernet\SocketState.cs" />
     <Compile Include="Core\Types\HslTimeOut.cs" />
@@ -376,6 +375,7 @@
     <None Include="imgaes\abstr11.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Enthernet\SimplifyNet\" />
     <Folder Include="ModBus\ModbusRtu\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

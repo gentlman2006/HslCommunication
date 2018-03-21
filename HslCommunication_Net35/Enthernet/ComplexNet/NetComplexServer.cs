@@ -10,14 +10,17 @@ using System.Threading;
 
 namespace HslCommunication.Enthernet
 { 
-    public class NetworkComplexServer : HslCommunication.Core.Net.NetworkServerBase
+    /// <summary>
+    /// 高性能的异步网络服务器类，适合搭建局域网聊天程序，消息推送程序
+    /// </summary>
+    public class NetComplexServer : NetworkServerBase
     {
         #region 构造方法块
 
         /// <summary>
         /// 实例化一个网络服务器类对象
         /// </summary>
-        public NetworkComplexServer( )
+        public NetComplexServer( )
         {
             AsyncCoordinator = new HslAsyncCoordinator( new Action( CalculateOnlineClients ) );
         }
@@ -29,6 +32,8 @@ namespace HslCommunication.Enthernet
 
 
         private int m_Connect_Max = 1000;
+
+
         /// <summary>
         /// 所支持的同时在线客户端的最大数量，商用限制1000个，最小10个
         /// </summary>

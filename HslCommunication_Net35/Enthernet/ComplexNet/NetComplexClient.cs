@@ -10,13 +10,17 @@ using System.Net.Sockets;
 
 namespace HslCommunication.Enthernet
 {
-    public class NetworkComplexClient : NetworkXBase
+
+    /// <summary>
+    /// 一个基于异步高性能的客户端网络类，支持主动接收服务器的消息
+    /// </summary>
+    public class NetComplexClient : NetworkXBase
     {
         #region Constructor
         /// <summary>
         /// 实例化一个对象
         /// </summary>
-        public NetworkComplexClient( )
+        public NetComplexClient( )
         {
 
         }
@@ -379,6 +383,19 @@ namespace HslCommunication.Enthernet
             }
         }
 
+
+        #endregion
+
+        #region Object Override
+
+        /// <summary>
+        /// 返回对象的字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            return "NetComplexClient";
+        }
 
         #endregion
     }
