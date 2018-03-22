@@ -13,16 +13,16 @@ using HslCommunication;
 
 namespace HslCommunicationDemo
 {
-    public partial class FormMelsec : Form
+    public partial class FormMelsecAscii : Form
     {
-        public FormMelsec()
+        public FormMelsecAscii( )
         {
             InitializeComponent( );
-            melsec_net = new MelsecMcNet( );
+            melsec_net = new MelsecMcAsciiNet( );
         }
 
 
-        private MelsecMcNet melsec_net = null;
+        private MelsecMcAsciiNet melsec_net = null;
 
         private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
         {

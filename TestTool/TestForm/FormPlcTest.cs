@@ -1,5 +1,6 @@
 ﻿using HslCommunication;
-using HslCommunication.Profinet;
+using HslCommunication.Profinet.Melsec;
+using HslCommunication.Profinet.Siemens;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -47,16 +48,15 @@ namespace TestTool.TestForm
         #region 三菱PLC数据测试篇
 
 
-        private MelsecNet melsec_net = new MelsecNet();
+        private  MelsecMcNet melsec_net = new MelsecMcNet( );
         private void MelsecNetInitialization()
         {
-            //初始化
-            melsec_net.PLCIpAddress = System.Net.IPAddress.Parse("192.168.0.7");  // PLC的IP地址
-            melsec_net.PortRead = 6000;                                           // 端口
-            melsec_net.PortWrite = 6001;                                          // 写入端口，最好和读取分开
+            //初始化 
+            melsec_net.IpAddress = "192.168.0.7";                               // PLC的IP地址
+            melsec_net.Port = 6000;                                               // 端口
             melsec_net.NetworkNumber = 0;                                         // 网络号
             melsec_net.NetworkStationNumber = 0;                                  // 网络站号
-            melsec_net.ConnectTimeout = 500;                                      // 连接超时时间
+            melsec_net.ConnectTimeOut = 500;                                      // 连接超时时间
 
             // 如果需要长连接，就取消下面这行代码的注释，对于数据读写的代码，没有影响
             // melsec_net.ConnectServer();                                        // 切换长连接，这行代码可以放在其他任何地方
@@ -66,7 +66,7 @@ namespace TestTool.TestForm
         private void userButton1_Click(object sender, EventArgs e)
         {
             // M100-M104读取显示
-            OperateResult<byte[]> read = melsec_net.ReadFromPLC("M100", 5);
+            OperateResult<byte[]> read = melsec_net.Read("M100", 5);
 
             if (read.IsSuccess)
             {
@@ -91,7 +91,7 @@ namespace TestTool.TestForm
         private void userButton20_Click(object sender, EventArgs e)
         {
             // M200-M209读取显示
-            OperateResult<byte[]> read = melsec_net.ReadFromPLC("M200", 10);
+            OperateResult<byte[]> read = melsec_net.Read("M200", 10);
             if (read.IsSuccess)
             {
                 // 成功读取，True代表通，False代表不通
@@ -117,7 +117,7 @@ namespace TestTool.TestForm
         private void userButton21_Click(object sender, EventArgs e)
         {
             // X100-X10F读取显示
-            OperateResult<byte[]> read = melsec_net.ReadFromPLC("X200", 16);
+            OperateResult<byte[]> read = melsec_net.Read("X200", 16);
             if (read.IsSuccess)
             {
                 // 成功读取，True代表通，False代表不通
@@ -147,40 +147,41 @@ namespace TestTool.TestForm
         }
         private void userButton22_Click(object sender, EventArgs e)
         {
-            bool M100 = melsec_net.ReadBoolFromPLC("M100").Content;            // 读取M100是否通，十进制地址
-            bool X1A0 = melsec_net.ReadBoolFromPLC("X1A0").Content;            // 读取X1A0是否通，十六进制地址
-            bool Y1A0 = melsec_net.ReadBoolFromPLC("Y1A0").Content;            // 读取Y1A0是否通，十六进制地址
-            bool B1A0 = melsec_net.ReadBoolFromPLC("B1A0").Content;            // 读取B1A0是否通，十六进制地址
-            short short_D1000 = melsec_net.ReadShortFromPLC("D1000").Content;   // 读取D1000的short值  ,W3C0,R3C0 效果是一样的
-            ushort ushort_D1000 = melsec_net.ReadUShortFromPLC("D1000").Content; // 读取D1000的ushort值
-            int int_D1000 = melsec_net.ReadIntFromPLC("D1000").Content;          // 读取D1000-D1001组成的int数据
-            uint uint_D1000 = melsec_net.ReadUIntFromPLC("D1000").Content;       // 读取D1000-D1001组成的uint数据
-            float float_D1000 = melsec_net.ReadFloatFromPLC("D1000").Content;    // 读取D1000-D1001组成的float数据
-            long long_D1000 = melsec_net.ReadLongFromPLC("D1000").Content;       // 读取D1000-D1003组成的long数据
-            double double_D1000 = melsec_net.ReadDoubleFromPLC("D1000").Content; // 读取D1000-D1003组成的double数据
-            string str_D1000 = melsec_net.ReadStringFromPLC("D1000", 10).Content; // 读取D1000-D1009组成的条码数据
+            bool[] M100 = melsec_net.ReadBool("M100",1).Content;            // 读取M100是否通，十进制地址
+            bool[] X1A0 = melsec_net.ReadBool("X1A0",1).Content;            // 读取X1A0是否通，十六进制地址
+            bool[] Y1A0 = melsec_net.ReadBool("Y1A0",1).Content;            // 读取Y1A0是否通，十六进制地址
+            bool[] B1A0 = melsec_net.ReadBool("B1A0",1).Content;            // 读取B1A0是否通，十六进制地址
+            short short_D1000 = melsec_net.ReadInt16("D1000").Content;   // 读取D1000的short值  ,W3C0,R3C0 效果是一样的
+            ushort ushort_D1000 = melsec_net.ReadUInt16("D1000").Content; // 读取D1000的ushort值
+            int int_D1000 = melsec_net.ReadInt32("D1000").Content;          // 读取D1000-D1001组成的int数据
+            uint uint_D1000 = melsec_net.ReadUInt32("D1000").Content;       // 读取D1000-D1001组成的uint数据
+            float float_D1000 = melsec_net.ReadFloat("D1000").Content;    // 读取D1000-D1001组成的float数据
+            long long_D1000 = melsec_net.ReadInt64("D1000").Content;       // 读取D1000-D1003组成的long数据
+            ulong ulong_D1000 = melsec_net.ReadUInt64( "D1000" ).Content;       // 读取D1000-D1003组成的long数据
+            double double_D1000 = melsec_net.ReadDouble("D1000").Content; // 读取D1000-D1003组成的double数据
+            string str_D1000 = melsec_net.ReadString("D1000", 10).Content; // 读取D1000-D1009组成的条码数据
 
 
             
-            melsec_net.WriteIntoPLC("M100", true);                        // 写入M100为通
-            melsec_net.WriteIntoPLC("Y1A0", true);                        // 写入Y1A0为通
-            melsec_net.WriteIntoPLC("X1A0", true);                        // 写入X1A0为通
-            melsec_net.WriteIntoPLC("B1A0", true);                        // 写入B1A0为通
-            melsec_net.WriteIntoPLC("D1000", (short)1234);                // 写入D1000  short值  ,W3C0,R3C0 效果是一样的
-            melsec_net.WriteIntoPLC("D1000", (ushort)45678);              // 写入D1000  ushort值
-            melsec_net.WriteIntoPLC("D1000", 1234566);                    // 写入D1000  int值
-            melsec_net.WriteIntoPLC("D1000", (uint)1234566);               // 写入D1000  uint值
-            melsec_net.WriteIntoPLC("D1000", 123.456f);                    // 写入D1000  float值
-            melsec_net.WriteIntoPLC("D1000", 123.456d);                    // 写入D1000  double值
-            melsec_net.WriteIntoPLC("D1000", 123456661235123534L);          // 写入D1000  long值
-            melsec_net.WriteAsciiStringIntoPLC("D1000", "K123456789");      // 写入D1000  string值
+            melsec_net.Write("M100", new bool[] { true} );                        // 写入M100为通
+            melsec_net.Write( "Y1A0", new bool[] { true } );                        // 写入Y1A0为通
+            melsec_net.Write( "X1A0", new bool[] { true } );                        // 写入X1A0为通
+            melsec_net.Write( "B1A0", new bool[] { true } );                        // 写入B1A0为通
+            melsec_net.Write( "D1000", (short)1234);                // 写入D1000  short值  ,W3C0,R3C0 效果是一样的
+            melsec_net.Write( "D1000", (ushort)45678);              // 写入D1000  ushort值
+            melsec_net.Write( "D1000", 1234566);                    // 写入D1000  int值
+            melsec_net.Write( "D1000", (uint)1234566);               // 写入D1000  uint值
+            melsec_net.Write( "D1000", 123.456f);                    // 写入D1000  float值
+            melsec_net.Write( "D1000", 123.456d);                    // 写入D1000  double值
+            melsec_net.Write( "D1000", 123456661235123534L);          // 写入D1000  long值
+            melsec_net.Write( "D1000", "K123456789");                // 写入D1000  string值
         }
 
         private void userButton23_Click(object sender, EventArgs e)
         {
             byte[] buffer = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes("50 00 00 FF FF 03 00 0D 00 0A 00 01 14 01 00 64 00 00 90 01 00 10");
             // 直接使用报文进行
-            OperateResult<byte[]> operate = melsec_net.ReadFromServerCore(buffer);
+            OperateResult<byte[]> operate = melsec_net.ReadFromCoreServer(buffer);
             if (operate.IsSuccess)
             {
                 // 返回PLC的报文反馈，需要自己对报文进行结果分析
@@ -197,7 +198,7 @@ namespace TestTool.TestForm
         {
             // M100-M104 写入测试 此处写入后M100:通 M101:断 M102:断 M103:通 M104:通
             bool[] values = new bool[] { true, false, false, true, true };
-            OperateResult write = melsec_net.WriteIntoPLC(MelsecDataType.M, 200, values);
+            OperateResult write = melsec_net.Write("M200", values);
             if (write.IsSuccess)
             {
                 TextBoxAppendStringLine("写入成功");
@@ -210,7 +211,7 @@ namespace TestTool.TestForm
         private void userButton17_Click(object sender, EventArgs e)
         {
             bool[] values = new bool[] { true, false, true };
-            OperateResult write = melsec_net.WriteIntoPLC("M100", values);
+            OperateResult write = melsec_net.Write("M100", values);
             if (write.IsSuccess)
             {
                 TextBoxAppendStringLine("写入成功");
@@ -224,7 +225,7 @@ namespace TestTool.TestForm
 
         private void userButton19_Click(object sender, EventArgs e)
         {
-            OperateResult write = melsec_net.WriteIntoPLC("M100", true);
+            OperateResult write = melsec_net.Write( "M100", new bool[] { true } );
             if (write.IsSuccess)
             {
                 TextBoxAppendStringLine("写入成功");
@@ -240,15 +241,15 @@ namespace TestTool.TestForm
         private void userButton2_Click(object sender, EventArgs e)
         {
             // D100-D104读取
-            OperateResult<byte[]> read = melsec_net.ReadFromPLC(MelsecDataType.D, 100, 5);
+            OperateResult<byte[]> read = melsec_net.Read("D100", 5);
             if (read.IsSuccess)
             {
                 // 成功读取，提取各自的值，此处的值有个前提假设，假设PLC上的数据是有符号的数据，表示-32768-32767
-                short D100 = melsec_net.GetShortFromBytes(read.Content, 0);
-                short D101 = melsec_net.GetShortFromBytes(read.Content, 1);
-                short D102 = melsec_net.GetShortFromBytes(read.Content, 2);
-                short D103 = melsec_net.GetShortFromBytes(read.Content, 3);
-                short D104 = melsec_net.GetShortFromBytes(read.Content, 4);
+                short D100 = melsec_net.ByteTransform.TransInt16(read.Content, 0);
+                short D101 = melsec_net.ByteTransform.TransInt16( read.Content, 2);
+                short D102 = melsec_net.ByteTransform.TransInt16( read.Content, 4);
+                short D103 = melsec_net.ByteTransform.TransInt16( read.Content, 6);
+                short D104 = melsec_net.ByteTransform.TransInt16( read.Content, 8);
                 TextBoxAppendStringLine("D100:" + D100);
                 TextBoxAppendStringLine("D101:" + D101);
                 TextBoxAppendStringLine("D102:" + D102);
@@ -278,7 +279,7 @@ namespace TestTool.TestForm
             {
                 BitConverter.GetBytes(values[i]).CopyTo(buffer, i * 4);
             }
-            OperateResult write = melsec_net.WriteIntoPLC("D1000", buffer);
+            OperateResult write = melsec_net.Write("D1000", buffer);
             if (write.IsSuccess)
             {
                 MessageBox.Show("写入成功！");
@@ -293,7 +294,7 @@ namespace TestTool.TestForm
 
             // short[] values = new short[5] { 1335, 8765, 1234, 4567,-2563 };
             // D100为1234,D101为8765,D102为1234,D103为4567,D104为-2563
-            write = melsec_net.WriteIntoPLC(MelsecDataType.D, 6000, values);
+            write = melsec_net.Write("D6000", values);
             if (write.IsSuccess)
             {
                 //成功写入

@@ -1,6 +1,6 @@
 ﻿namespace HslCommunicationDemo
 {
-    partial class FormMelsec
+    partial class FormMelsecBinary
     {
         /// <summary>
         /// Required designer variable.
@@ -61,6 +61,7 @@
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label24 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.button14 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
@@ -77,6 +78,7 @@
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label23 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.button_read_string = new System.Windows.Forms.Button();
             this.button_read_double = new System.Windows.Forms.Button();
@@ -98,8 +100,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -460,6 +460,15 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "单数据写入测试";
             // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(317, 30);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(96, 17);
+            this.label24.TabIndex = 20;
+            this.label24.Text = "针对M,X,Y,L,V,B";
+            // 
             // label19
             // 
             this.label19.ForeColor = System.Drawing.Color.Red;
@@ -629,6 +638,15 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "单数据读取测试";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(412, 24);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(96, 17);
+            this.label23.TabIndex = 19;
+            this.label23.Text = "针对M,X,Y,L,V,B";
             // 
             // textBox5
             // 
@@ -817,9 +835,9 @@
             this.label5.ForeColor = System.Drawing.Color.Red;
             this.label5.Location = new System.Drawing.Point(540, 9);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(76, 17);
+            this.label5.Size = new System.Drawing.Size(160, 17);
             this.label5.TabIndex = 5;
-            this.label5.Text = "三菱MC协议";
+            this.label5.Text = "三菱MC协议，格式为二进制";
             // 
             // label20
             // 
@@ -831,25 +849,7 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(412, 24);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(96, 17);
-            this.label23.TabIndex = 19;
-            this.label23.Text = "针对M,X,Y,L,V,B";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(317, 30);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(96, 17);
-            this.label24.TabIndex = 20;
-            this.label24.Text = "针对M,X,Y,L,V,B";
-            // 
-            // FormMelsec
+            // FormMelsecBinary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -863,7 +863,7 @@
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Name = "FormMelsec";
+            this.Name = "FormMelsecBinary";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "三菱PLC访问Demo";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSiemens_FormClosing);

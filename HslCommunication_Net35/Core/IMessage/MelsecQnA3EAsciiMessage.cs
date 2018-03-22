@@ -5,11 +5,12 @@ using System.Text;
 
 namespace HslCommunication.Core.IMessage
 {
-    
+
+
     /// <summary>
-    /// 三菱的Qna兼容3E帧协议解析规则
+    /// 基于MC协议的Qna兼容3E帧协议的ASCII通讯消息机制
     /// </summary>
-    public class MelsecQnA3EMessage : INetMessage
+    public class MelsecQnA3EAsciiMessage : INetMessage
     {
 
         /// <summary>
@@ -19,7 +20,7 @@ namespace HslCommunication.Core.IMessage
         {
             get
             {
-                return 9;
+                return 18;
             }
         }
 
@@ -28,9 +29,14 @@ namespace HslCommunication.Core.IMessage
         /// 从当前的头子节文件中提取出接下来需要接收的数据长度
         /// </summary>
         /// <returns>返回接下来的数据内容长度</returns>
-        public int GetContentLengthByHeadBytes()
+        public int GetContentLengthByHeadBytes( )
         {
-            return BitConverter.ToUInt16( HeadBytes, 7 );
+            byte[] buffer = new byte[4];
+            buffer[0] = HeadBytes[14];
+            buffer[1] = HeadBytes[15];
+            buffer[2] = HeadBytes[16];
+            buffer[3] = HeadBytes[17];
+            return Convert.ToInt32( Encoding.ASCII.GetString( buffer ), 16 );
         }
 
 
@@ -41,7 +47,7 @@ namespace HslCommunication.Core.IMessage
         /// <returns></returns>
         public bool CheckHeadBytesLegal( byte[] token )
         {
-            if (HeadBytes[0] == 0xD0 && HeadBytes[1] == 0x00)
+            if (HeadBytes[0] == (byte)'D' && HeadBytes[1] == (byte)'0' && HeadBytes[2] == (byte)'0' && HeadBytes[3] == (byte)'0')
             {
                 return true;
             }
@@ -56,7 +62,7 @@ namespace HslCommunication.Core.IMessage
         /// 获取头子节里的消息标识
         /// </summary>
         /// <returns></returns>
-        public int GetHeadBytesIdentity()
+        public int GetHeadBytesIdentity( )
         {
             return 0;
         }
@@ -80,6 +86,7 @@ namespace HslCommunication.Core.IMessage
         public byte[] SendBytes { get; set; }
 
 
-    }
 
+
+    }
 }

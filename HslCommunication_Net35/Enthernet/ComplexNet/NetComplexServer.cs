@@ -516,5 +516,18 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
+        #region Object Override
+
+        /// <summary>
+        /// 获取本对象的字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            return "NetComplexServer";
+        }
+
+        #endregion
+
     }
 }

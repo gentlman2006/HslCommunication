@@ -52,17 +52,23 @@
     <Compile Include="FormLoad.Designer.cs">
       <DependentUpon>FormLoad.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormMelsecAscii.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMelsecAscii.Designer.cs">
+      <DependentUpon>FormMelsecAscii.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormModbus.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormModbus.Designer.cs">
       <DependentUpon>FormModbus.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMelsec.cs">
+    <Compile Include="FormMelsecBinary.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMelsec.Designer.cs">
-      <DependentUpon>FormMelsec.cs</DependentUpon>
+    <Compile Include="FormMelsecBinary.Designer.cs">
+      <DependentUpon>FormMelsecBinary.cs</DependentUpon>
     </Compile>
     <Compile Include="FormSiemens.cs">
       <SubType>Form</SubType>
@@ -75,11 +81,14 @@
     <EmbeddedResource Include="FormLoad.resx">
       <DependentUpon>FormLoad.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormMelsecAscii.resx">
+      <DependentUpon>FormMelsecAscii.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormModbus.resx">
       <DependentUpon>FormModbus.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMelsec.resx">
-      <DependentUpon>FormMelsec.cs</DependentUpon>
+    <EmbeddedResource Include="FormMelsecBinary.resx">
+      <DependentUpon>FormMelsecBinary.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSiemens.resx">
       <DependentUpon>FormSiemens.cs</DependentUpon>

@@ -41,7 +41,7 @@ namespace HslCommunicationDemo
         private void button4_Click( object sender, EventArgs e )
         {
             Hide( );
-            using (FormMelsec form = new FormMelsec( ))
+            using (FormMelsecBinary form = new FormMelsecBinary( ))
             {
                 form.ShowDialog( );
             }
@@ -90,6 +90,14 @@ namespace HslCommunicationDemo
             }
         }
 
-        
+        private void button7_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormMelsecAscii form = new FormMelsecAscii( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

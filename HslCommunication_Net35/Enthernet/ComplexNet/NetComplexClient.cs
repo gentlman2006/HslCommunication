@@ -317,11 +317,11 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 客户端的数据处理中心
         /// </summary>
-        /// <param name="receive"></param>
+        /// <param name="session"></param>
         /// <param name="protocol"></param>
         /// <param name="customer"></param>
         /// <param name="content"></param>
-        internal override void DataProcessingCenter( AppSession receive, int protocol, int customer, byte[] content )
+        internal override void DataProcessingCenter( AppSession session, int protocol, int customer, byte[] content )
         {
             if (protocol == HslProtocol.ProtocolCheckSecends)
             {
