@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatRoom", "TestProject\Cha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModbusTcpServer", "TestProject\ModbusTcpServer\ModbusTcpServer.csproj", "{FFA24A72-D9E6-492F-BD04-2F30B8E5415F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplifyNetTest", "TestProject\SimplifyNetTest\SimplifyNetTest.csproj", "{46EC6BE3-58FB-43DD-A729-C6C3CE4EE2F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{FFA24A72-D9E6-492F-BD04-2F30B8E5415F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFA24A72-D9E6-492F-BD04-2F30B8E5415F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFA24A72-D9E6-492F-BD04-2F30B8E5415F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46EC6BE3-58FB-43DD-A729-C6C3CE4EE2F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46EC6BE3-58FB-43DD-A729-C6C3CE4EE2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46EC6BE3-58FB-43DD-A729-C6C3CE4EE2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46EC6BE3-58FB-43DD-A729-C6C3CE4EE2F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +67,7 @@ Global
 		{3878075B-B8D7-4090-B094-29622581442F} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 		{448FC473-5044-4064-812C-463BC95CE09C} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 		{FFA24A72-D9E6-492F-BD04-2F30B8E5415F} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
+		{46EC6BE3-58FB-43DD-A729-C6C3CE4EE2F1} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECF517CD-FF89-4611-A2F7-AB7771FCC542}

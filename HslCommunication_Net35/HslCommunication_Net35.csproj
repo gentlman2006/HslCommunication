@@ -163,7 +163,6 @@
     <Compile Include="Enthernet\ClassUdpNet.cs" />
     <Compile Include="Enthernet\ComplexNet\NetComplexClient.cs" />
     <Compile Include="Enthernet\ComplexNet\NetComplexServer.cs" />
-    <Compile Include="Enthernet\SimplifyNet.cs" />
     <Compile Include="Enthernet\SimplifyNet\NetSimplifyClient.cs" />
     <Compile Include="Enthernet\SimplifyNet\NetSimplifyServer.cs" />
     <Compile Include="Enthernet\SocketState.cs" />
@@ -378,6 +377,9 @@
     <None Include="imgaes\abstr11.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Enthernet\DeviceNet\" />
+    <Folder Include="Enthernet\FileNet\" />
+    <Folder Include="Enthernet\UdpNet\" />
     <Folder Include="ModBus\ModbusRtu\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
