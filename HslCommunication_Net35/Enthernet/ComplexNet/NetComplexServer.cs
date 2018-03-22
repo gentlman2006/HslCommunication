@@ -304,7 +304,7 @@ namespace HslCommunication.Enthernet
                 {
                     session.WorkSocket.BeginReceive( session.BytesHead, session.AlreadyReceivedHead,
                         session.BytesHead.Length - session.AlreadyReceivedHead, SocketFlags.None,
-                        new AsyncCallback( HeadReceiveCallback ), session );
+                        new AsyncCallback( HeadBytesReceiveCallback ), session );
                     TcpStateUpLine( session );
                     Thread.Sleep( 500 );//留下一些时间进行反应
                 }
@@ -323,19 +323,29 @@ namespace HslCommunication.Enthernet
 
         #region 异步接收发送块
 
-
-        internal override void SocketReceiveException( AppSession receive, Exception ex )
+        /// <summary>
+        /// 异常下线
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="ex"></param>
+        internal override void SocketReceiveException( AppSession session, Exception ex )
         {
             if (ex.Message.Contains( StringResources.SocketRemoteCloseException ))
             {
                 //异常掉线
-                TcpStateDownLine( receive, false );
+                TcpStateDownLine( session, false );
             }
         }
 
 
-
-
+        /// <summary>
+        /// 正常下线
+        /// </summary>
+        /// <param name="session"></param>
+        internal override void AppSessionRemoteClose( AppSession session )
+        {
+            TcpStateDownLine( session, true );
+        }
 
 
 

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunicationDemo", "Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatRoom", "TestProject\ChatRoom\ChatRoom.csproj", "{448FC473-5044-4064-812C-463BC95CE09C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModbusTcpServer", "TestProject\ModbusTcpServer\ModbusTcpServer.csproj", "{FFA24A72-D9E6-492F-BD04-2F30B8E5415F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{448FC473-5044-4064-812C-463BC95CE09C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{448FC473-5044-4064-812C-463BC95CE09C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{448FC473-5044-4064-812C-463BC95CE09C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFA24A72-D9E6-492F-BD04-2F30B8E5415F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFA24A72-D9E6-492F-BD04-2F30B8E5415F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFA24A72-D9E6-492F-BD04-2F30B8E5415F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFA24A72-D9E6-492F-BD04-2F30B8E5415F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3878075B-B8D7-4090-B094-29622581442F} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 		{448FC473-5044-4064-812C-463BC95CE09C} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
+		{FFA24A72-D9E6-492F-BD04-2F30B8E5415F} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECF517CD-FF89-4611-A2F7-AB7771FCC542}

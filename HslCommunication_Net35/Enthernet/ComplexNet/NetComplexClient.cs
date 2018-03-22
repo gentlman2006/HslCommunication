@@ -210,7 +210,7 @@ namespace HslCommunication.Enthernet
             stateone.WorkSocket = connectResult.Content;
             stateone.WorkSocket.BeginReceive( stateone.BytesHead, stateone.AlreadyReceivedHead,
                 stateone.BytesHead.Length - stateone.AlreadyReceivedHead, SocketFlags.None,
-                new AsyncCallback( HeadReceiveCallback ), stateone );
+                new AsyncCallback( HeadBytesReceiveCallback ), stateone );
 
             // 发送一条验证消息
             // SendBytes(stateone, CommunicationCode.CommandBytes(CommunicationCode.Hsl_Protocol_Check_Secends));

@@ -24,13 +24,13 @@ namespace HslCommunication.Enthernet
     /// 用户同步访问数据的客户端类
     /// 在客户端设置参数后，调用方法即可成功读取服务器数据，甚至是文件
     /// </summary>
-    public sealed class NetSimplifyClient : NetShareBase
+    public sealed class NetSimplifyClient2 : NetShareBase
     {
         /// <summary>
         /// 实例化一个客户端的对象，用于和服务器通信
         /// </summary>
         /// <param name="end_point">服务器的通信地址</param>
-        public NetSimplifyClient(IPEndPoint end_point)
+        public NetSimplifyClient2(IPEndPoint end_point)
         {
             IP_END_POINT = end_point;
             LogHeaderText = "NetSimplifyClient";
@@ -41,7 +41,7 @@ namespace HslCommunication.Enthernet
         /// </summary>
         /// <param name="ipAddress">服务器的Ip地址</param>
         /// <param name="port">服务器的端口</param>
-        public NetSimplifyClient(string ipAddress,int port)
+        public NetSimplifyClient2(string ipAddress,int port)
         {
             IP_END_POINT = new IPEndPoint(IPAddress.Parse(ipAddress), port);
             LogHeaderText = "NetSimplifyClient";
@@ -143,12 +143,12 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 同步数据交换的服务器端类，先配置相关的参数，再启动系统
     /// </summary>
-    public sealed class NetSimplifyServer : NetServerBase
+    public sealed class NetSimplifyServer2 : NetServerBase
     {
         /// <summary>
         /// 实例化一个对象
         /// </summary>
-        public NetSimplifyServer()
+        public NetSimplifyServer2()
         {
             LogHeaderText = "NetSimplifyServer";
         }

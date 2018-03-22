@@ -137,14 +137,14 @@ namespace HslCommunication.Core.Net
                 byte[] head = session.BytesHead, Content = session.BytesContent;
                 session.Clear( );
                 session.WorkSocket.BeginReceive( session.BytesHead, session.AlreadyReceivedHead, session.BytesHead.Length - session.AlreadyReceivedHead,
-                    SocketFlags.None, new AsyncCallback( HeadReceiveCallback ), session );
+                    SocketFlags.None, new AsyncCallback( HeadBytesReceiveCallback ), session );
                 // 检测是否需要数据处理
                 if (isProcess)
                 {
                     // 校验令牌
-                    if (SoftBasic.IsTwoBytesEquel( head, 12, Token.ToByteArray( ), 0, 16 ))
+                    if (CheckRemoteToken(head))
                     {
-                        Content = NetSupport.CommandAnalysis( head, Content );
+                        Content = HslProtocol.CommandAnalysis( head, Content );
                         int protocol = BitConverter.ToInt32( head, 0 );
                         int customer = BitConverter.ToInt32( head, 4 );
                         // 转移到数据中心处理
@@ -154,6 +154,7 @@ namespace HslCommunication.Core.Net
                     {
                         // 应该关闭网络通信
                         LogNet?.WriteWarn( ToString( ), StringResources.TokenCheckFailed );
+                        AppSessionRemoteClose( session );
                     }
                 }
             }
@@ -168,7 +169,7 @@ namespace HslCommunication.Core.Net
         /// 指令头接收方法
         /// </summary>
         /// <param name="ar">异步状态信息</param>
-        protected void HeadReceiveCallback( IAsyncResult ar )
+        protected void HeadBytesReceiveCallback( IAsyncResult ar )
         {
             if (ar.AsyncState is AppSession session)
             {
@@ -178,7 +179,7 @@ namespace HslCommunication.Core.Net
                     if (receiveCount == 0)
                     {
                         // 断开了连接，需要做个处理，一个是直接关闭，另一个是触发下线
-                        session.WorkSocket?.Close( );
+                        AppSessionRemoteClose( session );
                         return;
                     }
                     else
@@ -213,7 +214,7 @@ namespace HslCommunication.Core.Net
                     {
                         // 仍需要接收
                         session.WorkSocket.BeginReceive( session.BytesHead, session.AlreadyReceivedHead, session.BytesHead.Length - session.AlreadyReceivedHead,
-                            SocketFlags.None, new AsyncCallback( HeadReceiveCallback ), session );
+                            SocketFlags.None, new AsyncCallback( HeadBytesReceiveCallback ), session );
                     }
                     catch(Exception ex)
                     {
@@ -223,8 +224,17 @@ namespace HslCommunication.Core.Net
                 }
                 else
                 {
-                    // 接收完毕，准备接收内容
+                    // 接收完毕，校验令牌
+                    if(!CheckRemoteToken( session.BytesHead ))
+                    {
+                        LogNet?.WriteWarn( ToString( ), StringResources.TokenCheckFailed );
+                        AppSessionRemoteClose( session );
+                        return;
+                    }
+
                     int receive_length = BitConverter.ToInt32( session.BytesHead, session.BytesHead.Length - 4 );
+
+
                     session.BytesContent = new byte[receive_length];
 
                     if (receive_length > 0)
@@ -251,16 +261,7 @@ namespace HslCommunication.Core.Net
         }
 
 
-        /// <summary>
-        /// 接收出错的时候进行处理
-        /// </summary>
-        /// <param name="session">会话内容</param>
-        /// <param name="ex">异常信息</param>
-        internal virtual void SocketReceiveException( AppSession session, Exception ex )
-        {
-
-        }
-
+       
 
         /// <summary>
         /// 数据内容接收方法
@@ -318,6 +319,21 @@ namespace HslCommunication.Core.Net
             }
         }
 
+
+        #endregion
+
+        #region Token Check
+
+        /// <summary>
+        /// 检查当前的头子节信息的令牌是否是正确的
+        /// </summary>
+        /// <param name="headBytes">头子节数据</param>
+        /// <returns>令牌是验证成功</returns>
+        private bool CheckRemoteToken(byte[] headBytes)
+        {
+            return SoftBasic.IsByteTokenEquel( headBytes, Token );
+        }
+        
 
         #endregion
 
@@ -565,7 +581,7 @@ namespace HslCommunication.Core.Net
             hslTimeOut.IsSuccessful = true;
             
             // 检查令牌
-            if (!BasicFramework.SoftBasic.IsTwoBytesEquel( headResult.Content, 12, Token.ToByteArray(),0, 16 ))
+            if (!CheckRemoteToken( headResult.Content ))
             {
                 socket?.Close( );
                 return new OperateResult<byte[], byte[]>( )
@@ -739,7 +755,7 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
-        #region 虚方法
+        #region Virtual Method
 
 
         /// <summary>
@@ -750,6 +766,26 @@ namespace HslCommunication.Core.Net
         /// <param name="customer">用户自定义</param>
         /// <param name="content">数据内容</param>
         internal virtual void DataProcessingCenter( AppSession session, int protocol, int customer, byte[] content )
+        {
+
+        }
+
+        /// <summary>
+        /// 接收出错的时候进行处理
+        /// </summary>
+        /// <param name="session">会话内容</param>
+        /// <param name="ex">异常信息</param>
+        internal virtual void SocketReceiveException( AppSession session, Exception ex )
+        {
+
+        }
+
+
+        /// <summary>
+        /// 当远端的客户端关闭连接时触发
+        /// </summary>
+        /// <param name="session"></param>
+        internal virtual void AppSessionRemoteClose( AppSession session )
         {
 
         }
