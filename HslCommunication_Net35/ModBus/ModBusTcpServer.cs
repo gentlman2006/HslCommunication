@@ -26,14 +26,14 @@ namespace HslCommunication.ModBus
     /// <summary>
     /// ModBus Tcp协议的服务器端，支持所有发送到此端口的数据，并对所有的数据提供一个中心处理方法，读取该服务器数据将返回无效数据
     /// </summary>
-    public class ModBusTcpServer : NetServerBase
+    public class ModBusTcpServer2 : NetServerBase
     {
         #region Constructor
 
         /// <summary>
         /// 实例化一个Modbus Tcp的服务器，支持数据读写操作
         /// </summary>
-        public ModBusTcpServer()
+        public ModBusTcpServer2()
         {
             Coils = new bool[65536];
             Register = new byte[65536 * 2];

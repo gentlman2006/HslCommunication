@@ -24,7 +24,7 @@ namespace TestTool.TestForm
 
 
         private bool m_IsModBusStart { get; set; } = false;
-        private ModBusTcpServer tcpServer;
+        private ModBusTcpServer2 tcpServer;
         private long m_ReceivedTimes { get; set; }
 
 
@@ -33,7 +33,7 @@ namespace TestTool.TestForm
             if (!m_IsModBusStart)
             {
                 m_IsModBusStart = true;
-                tcpServer = new ModBusTcpServer(); // 实例化服务器接收对象
+                tcpServer = new ModBusTcpServer2(); // 实例化服务器接收对象
                 tcpServer.LogNet = busTcpClient.LogNet; // 设置日志文件
                 tcpServer.OnDataReceived += TcpServer_OnDataReceived; // 关联数据接收方法
                 tcpServer.ServerStart(502); // 绑定端口

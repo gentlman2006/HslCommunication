@@ -52,9 +52,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(337, 18);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(260, 17);
+            this.label1.Size = new System.Drawing.Size(284, 17);
             this.label1.TabIndex = 1;
-            this.label1.Text = "如果这个组件真的帮到了你，那么非常您的支持";
+            this.label1.Text = "如果这个组件真的帮到了你，那么非常感谢您的支持";
             // 
             // label2
             // 

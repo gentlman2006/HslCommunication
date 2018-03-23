@@ -164,7 +164,6 @@
     <Compile Include="Core\Types\HslPieItem.cs" />
     <Compile Include="Enthernet\DeviceNet\ClassDeviceNet.cs" />
     <Compile Include="Enthernet\ClassFileNet.cs" />
-    <Compile Include="Enthernet\ClassSimplify.cs" />
     <Compile Include="Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" />
     <Compile Include="Enthernet\ComplexNet\NetComplexClient.cs" />
     <Compile Include="Enthernet\ComplexNet\NetComplexServer.cs" />
@@ -200,6 +199,7 @@
     <Compile Include="ModBus\ModbusTcp\ModbusTcpNet.cs" />
     <Compile Include="ModBus\ModBusTcpServer.cs" />
     <Compile Include="Core\Types\IDataTransfer.cs" />
+    <Compile Include="ModBus\ModbusTcp\ModbusTcpServer.cs" />
     <Compile Include="Profinet\Melsec\Melsec1ENet.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcAsciiNet.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcDataType.cs" />
