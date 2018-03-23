@@ -1,33 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using HslCommunication.Core;
+using HslCommunication.Core.Net;
 
-namespace HslCommunication.Enthernet
+namespace HslCommunication.Enthernet.UdpNet
 {
-    /// <summary>
-    /// 一个用于UDP通信的类，服务器端用来接收所有客户端发送数据的功能
-    /// </summary>
-    public sealed class NetUdpServer : NetServerBase
+    public class NetUdpServer : NetworkServerBase
     {
-        #region Constructor
-
-        /// <summary>
-        /// 实例化一个对象
-        /// </summary>
-        public NetUdpServer()
-        {
-            LogHeaderText = "NetUdpServer";
-        }
-
-
-        #endregion
-
-
-
 
         /// <summary>
         /// 获取或设置一次接收时的数据长度，默认2KB数据长度
@@ -39,30 +22,27 @@ namespace HslCommunication.Enthernet
         /// 根据指定的端口启动Upd侦听
         /// </summary>
         /// <param name="port"></param>
-        public override void ServerStart(int port)
+        public override void ServerStart( int port )
         {
             if (!IsStarted)
             {
-                WorkSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                CoreSocket = new Socket( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp );
 
                 //绑定网络地址
-                WorkSocket.Bind(new IPEndPoint(IPAddress.Any, port));
-
-                RefreshReceive();
-
-                LogNet?.WriteInfo(LogHeaderText, StringResources.NetEngineStart);
-
+                CoreSocket.Bind( new IPEndPoint( IPAddress.Any, port ) );
+                RefreshReceive( );
+                LogNet?.WriteInfo( ToString(), StringResources.NetEngineStart );
                 IsStarted = true;
             }
         }
         /// <summary>
         /// 关闭引擎的操作
         /// </summary>
-        protected override void CloseAction()
+        protected override void CloseAction( )
         {
             AcceptString = null;
             AcceptByte = null;
-            base.CloseAction();
+            base.CloseAction( );
         }
 
         /// <summary>
@@ -70,68 +50,68 @@ namespace HslCommunication.Enthernet
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
         /// 
-        private void RefreshReceive()
+        private void RefreshReceive( )
         {
-            AsyncStateOne state = new AsyncStateOne();
-            state.WorkSocket = WorkSocket;
-            state.UdpEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            AsyncStateOne state = new AsyncStateOne( );
+            state.WorkSocket = CoreSocket;
+            state.UdpEndPoint = new IPEndPoint( IPAddress.Any, 0 );
             state.BytesContent = new byte[ReceiveCacheLength];
             //WorkSocket.BeginReceiveFrom(state.BytesHead, 0, 8, SocketFlags.None, ref state.UdpEndPoint, new AsyncCallback(ReceiveAsyncCallback), state);
-            WorkSocket.BeginReceiveFrom(state.BytesContent, 0, ReceiveCacheLength, SocketFlags.None, ref state.UdpEndPoint, new AsyncCallback(AsyncCallback), state);
+            CoreSocket.BeginReceiveFrom( state.BytesContent, 0, ReceiveCacheLength, SocketFlags.None, ref state.UdpEndPoint, new AsyncCallback( AsyncCallback ), state );
         }
 
-        private void AsyncCallback(IAsyncResult ar)
+        private void AsyncCallback( IAsyncResult ar )
         {
-            if (ar.AsyncState is AsyncStateOne state)
+            if (ar.AsyncState is AppSession state)
             {
                 try
                 {
-                    int received = state.WorkSocket.EndReceiveFrom(ar, ref state.UdpEndPoint);
+                    int received = state.WorkSocket.EndReceiveFrom( ar, ref state.UdpEndPoint );
                     //释放连接关联
                     state.WorkSocket = null;
                     //马上开始重新接收，提供性能保障
-                    RefreshReceive();
+                    RefreshReceive( );
                     //处理数据
                     if (received >= HslProtocol.HeadByteLength)
                     {
                         //检测令牌
-                        if (NetSupport.IsTwoBytesEquel(state.BytesContent, 12, KeyToken.ToByteArray(), 0, 16))
+                        if (CheckRemoteToken( state.BytesContent ))
                         {
                             state.IpEndPoint = (IPEndPoint)state.UdpEndPoint;
-                            int contentLength = BitConverter.ToInt32(state.BytesContent, HslProtocol.HeadByteLength - 4);
+                            int contentLength = BitConverter.ToInt32( state.BytesContent, HslProtocol.HeadByteLength - 4 );
                             if (contentLength == received - HslProtocol.HeadByteLength)
                             {
                                 byte[] head = new byte[HslProtocol.HeadByteLength];
                                 byte[] content = new byte[contentLength];
 
-                                Array.Copy(state.BytesContent, 0, head, 0, HslProtocol.HeadByteLength);
+                                Array.Copy( state.BytesContent, 0, head, 0, HslProtocol.HeadByteLength );
                                 if (contentLength > 0)
                                 {
-                                    Array.Copy(state.BytesContent, 32, content, 0, contentLength);
+                                    Array.Copy( state.BytesContent, 32, content, 0, contentLength );
                                 }
 
                                 //解析内容
-                                content = NetSupport.CommandAnalysis(head, content);
+                                content = NetSupport.CommandAnalysis( head, content );
 
-                                int protocol = BitConverter.ToInt32(head, 0);
-                                int customer = BitConverter.ToInt32(head, 4);
+                                int protocol = BitConverter.ToInt32( head, 0 );
+                                int customer = BitConverter.ToInt32( head, 4 );
                                 //丢给数据中心处理
-                                DataProcessingCenter(state, protocol, customer, content);
+                                DataProcessingCenter( state, protocol, customer, content );
                             }
                             else
                             {
                                 //否则记录到日志
-                                LogNet?.WriteWarn(LogHeaderText,$"接收到异常数据，应接收长度：{(BitConverter.ToInt32(state.BytesContent, 4) + 8)} 实际接收：{received}");
+                                LogNet?.WriteWarn( ToString(), $"接收到异常数据，应接收长度：{(BitConverter.ToInt32( state.BytesContent, 4 ) + 8)} 实际接收：{received}" );
                             }
                         }
                         else
                         {
-                            LogNet?.WriteWarn(LogHeaderText,StringResources.TokenCheckFailed);
+                            LogNet?.WriteWarn( ToString( ), StringResources.TokenCheckFailed );
                         }
                     }
                     else
                     {
-                        LogNet?.WriteWarn(LogHeaderText,$"接收到异常数据，长度不符合要求，实际接收：{received}");
+                        LogNet?.WriteWarn( ToString( ), $"接收到异常数据，长度不符合要求，实际接收：{received}" );
                     }
                 }
                 catch (ObjectDisposedException ex)
@@ -140,9 +120,9 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException(LogHeaderText,StringResources.SocketEndReceiveException, ex);
+                    LogNet?.WriteException( ToString( ), StringResources.SocketEndReceiveException, ex );
                     //重新接收，此处已经排除掉了对象释放的异常
-                    RefreshReceive();
+                    RefreshReceive( );
                 }
                 finally
                 {
@@ -238,18 +218,17 @@ namespace HslCommunication.Enthernet
         /// <param name="protocol"></param>
         /// <param name="customer"></param>
         /// <param name="content"></param>
-        internal override void DataProcessingCenter(AsyncStateOne receive, int protocol, int customer, byte[] content)
+        internal override void DataProcessingCenter( AppSession receive, int protocol, int customer, byte[] content )
         {
-            LogNet?.WriteDebug(LogHeaderText,"Protocol:" + protocol + " customer:" + customer + " ip:" + receive.GetRemoteEndPoint().Address.ToString());
             if (protocol == HslProtocol.ProtocolUserBytes)
             {
-                AcceptByte?.Invoke(receive, customer, content);
+                AcceptByte?.Invoke( receive, customer, content );
             }
             else if (protocol == HslProtocol.ProtocolUserString)
             {
-                //接收到文本数据
-                string str = Encoding.Unicode.GetString(content);
-                AcceptString?.Invoke(receive, customer, str);
+                // 接收到文本数据
+                string str = Encoding.Unicode.GetString( content );
+                AcceptString?.Invoke( receive, customer, str );
             }
         }
 
@@ -262,66 +241,16 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 当接收到文本数据的时候,触发此事件
         /// </summary>
-        public event IEDelegate<AsyncStateOne, NetHandle, string> AcceptString;
+        public event Action<AppSession, NetHandle, string> AcceptString;
 
 
         /// <summary>
         /// 当接收到字节数据的时候,触发此事件
         /// </summary>
-        public event IEDelegate<AsyncStateOne, NetHandle, byte[]> AcceptByte;
+        public event Action<AppSession, NetHandle, byte[]> AcceptByte;
 
 
         #endregion
 
-
-
-    }
-
-
-    /// <summary>
-    /// UDP客户端的类，只负责发送数据到服务器，该数据经过封装
-    /// </summary>
-    public sealed class NetUdpClient : NetBase
-    {
-        private IPEndPoint ServerEndPoint = null;
-
-
-        /// <summary>
-        /// 实例化对象，
-        /// </summary>
-        /// <param name="endpoint"></param>
-        public NetUdpClient(IPEndPoint endpoint)
-        {
-            ServerEndPoint = endpoint;
-            WorkSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        }
-
-
-        /// <summary>
-        /// 发送字节数据到服务器
-        /// </summary>
-        /// <param name="customer">用户自定义的标记数据</param>
-        /// <param name="data">字节数据</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="SocketException"></exception>
-        /// <exception cref="ObjectDisposedException"></exception>
-        public void SendMessage(NetHandle customer, byte[] data)
-        {
-            WorkSocket.SendTo(NetSupport.CommandBytes(customer, KeyToken, data), ServerEndPoint);
-        }
-
-
-        /// <summary>
-        /// 发送字符串数据到服务器
-        /// </summary>
-        /// <param name="customer">用户自定义的标记数据</param>
-        /// <param name="data">字符串数据</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="SocketException"></exception>
-        /// <exception cref="ObjectDisposedException"></exception>
-        public void SendMessage(NetHandle customer, string data)
-        {
-            WorkSocket.SendTo(NetSupport.CommandBytes(customer, KeyToken, data), ServerEndPoint);
-        }
     }
 }

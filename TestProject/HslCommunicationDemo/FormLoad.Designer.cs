@@ -36,10 +36,11 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button6 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button7 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
-            this.button7 = new System.Windows.Forms.Button();
+            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -129,6 +130,16 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "三菱PLC";
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(13, 60);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(151, 31);
+            this.button7.TabIndex = 2;
+            this.button7.Text = "MC协议【ASCII】";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(13, 23);
@@ -159,21 +170,23 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "博客地址：";
             // 
-            // button7
+            // linkLabel2
             // 
-            this.button7.Location = new System.Drawing.Point(13, 60);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(151, 31);
-            this.button7.TabIndex = 2;
-            this.button7.Text = "MC协议【ASCII】";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Location = new System.Drawing.Point(437, 9);
+            this.linkLabel2.Name = "linkLabel2";
+            this.linkLabel2.Size = new System.Drawing.Size(113, 12);
+            this.linkLabel2.TabIndex = 6;
+            this.linkLabel2.TabStop = true;
+            this.linkLabel2.Text = "创作不易，感谢打赏";
+            this.linkLabel2.Click += new System.EventHandler(this.linkLabel2_Click);
             // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(562, 343);
+            this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBox3);
@@ -204,6 +217,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.LinkLabel linkLabel2;
     }
 }
 

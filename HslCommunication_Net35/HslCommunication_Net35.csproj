@@ -52,6 +52,12 @@
     <Compile Include="BasicFramework\FormPortraitSelect.Designer.cs">
       <DependentUpon>FormPortraitSelect.cs</DependentUpon>
     </Compile>
+    <Compile Include="BasicFramework\FormSupport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BasicFramework\FormSupport.Designer.cs">
+      <DependentUpon>FormSupport.cs</DependentUpon>
+    </Compile>
     <Compile Include="BasicFramework\SoftCache.cs" />
     <Compile Include="BasicFramework\SoftException.cs" />
     <Compile Include="BasicFramework\FormAuthorAdvertisement.cs">
@@ -156,17 +162,19 @@
     <Compile Include="Core\Transfer\ReverseBytesTransform.cs" />
     <Compile Include="Core\Transfer\ReverseWordTransform.cs" />
     <Compile Include="Core\Types\HslPieItem.cs" />
-    <Compile Include="Enthernet\ClassDeviceNet.cs" />
+    <Compile Include="Enthernet\DeviceNet\ClassDeviceNet.cs" />
     <Compile Include="Enthernet\ClassFileNet.cs" />
     <Compile Include="Enthernet\ClassSimplify.cs" />
-    <Compile Include="Enthernet\ClassSoftUpdate.cs" />
-    <Compile Include="Enthernet\ClassUdpNet.cs" />
+    <Compile Include="Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" />
     <Compile Include="Enthernet\ComplexNet\NetComplexClient.cs" />
     <Compile Include="Enthernet\ComplexNet\NetComplexServer.cs" />
+    <Compile Include="Enthernet\DeviceNet\DeviceState.cs" />
     <Compile Include="Enthernet\SimplifyNet\NetSimplifyClient.cs" />
     <Compile Include="Enthernet\SimplifyNet\NetSimplifyServer.cs" />
     <Compile Include="Enthernet\SocketState.cs" />
     <Compile Include="Core\Types\HslTimeOut.cs" />
+    <Compile Include="Enthernet\UdpNet\NetUdpClient.cs" />
+    <Compile Include="Enthernet\UdpNet\NetUdpServer.cs" />
     <Compile Include="LogNet\Core\ILogNet.cs" />
     <Compile Include="LogNet\Core\LogBase.cs" />
     <Compile Include="LogNet\Core\Types.cs" />
@@ -225,6 +233,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BasicFramework\FormPortraitSelect.resx">
       <DependentUpon>FormPortraitSelect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BasicFramework\FormSupport.resx">
+      <DependentUpon>FormSupport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserButton.resx">
       <DependentUpon>UserButton.cs</DependentUpon>
@@ -372,14 +383,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Doc.txt" />
+    <None Include="imgaes\alipay.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgaes\abstr11.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Enthernet\DeviceNet\" />
     <Folder Include="Enthernet\FileNet\" />
-    <Folder Include="Enthernet\UdpNet\" />
     <Folder Include="ModBus\ModbusRtu\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

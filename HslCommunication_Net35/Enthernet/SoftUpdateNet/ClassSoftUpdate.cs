@@ -8,6 +8,7 @@ using System.Net;
 using System.IO;
 using System.Threading;
 using HslCommunication.Core;
+using HslCommunication.Core.Net;
 
 namespace HslCommunication.Enthernet
 {
@@ -15,7 +16,7 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 用于服务器支持软件全自动更新升级的类
     /// </summary>
-    public sealed class NetSoftUpdateServer : NetServerBase
+    public sealed class NetSoftUpdateServer : NetworkServerBase
     {
 
         #region Constructor
@@ -25,13 +26,11 @@ namespace HslCommunication.Enthernet
         /// </summary>
         public NetSoftUpdateServer()
         {
-            LogHeaderText = "NetSoftUpdateServer";
+            
         }
 
         #endregion
-
-
-
+        
 
 
         private string m_FilePath = @"C:\HslCommunication";
@@ -91,11 +90,11 @@ namespace HslCommunication.Enthernet
                     // 安装系统和更新系统
                     if (Protocol == 0x1001)
                     {
-                        LogNet?.WriteInfo(LogHeaderText, StringResources.SystemInstallOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
+                        LogNet?.WriteInfo(ToString(), StringResources.SystemInstallOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
                     }
                     else
                     {
-                        LogNet?.WriteInfo(LogHeaderText, StringResources.SystemUpdateOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
+                        LogNet?.WriteInfo( ToString( ), StringResources.SystemUpdateOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
                     }
                     if (Directory.Exists(FileUpdatePath))
                     {
@@ -170,9 +169,11 @@ namespace HslCommunication.Enthernet
             {
                 Thread.Sleep(20);
                 socket?.Close();
-                LogNet?.WriteException(LogHeaderText, StringResources.FileSendClientFailed, ex);
+                LogNet?.WriteException( ToString( ), StringResources.FileSendClientFailed, ex);
             }
         }
+
+
         private void ReceiveCallBack(IAsyncResult ir)
         {
             if (ir.AsyncState is Socket socket)
@@ -183,7 +184,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch(Exception ex)
                 {
-                    LogNet?.WriteException(LogHeaderText, ex);
+                    LogNet?.WriteException( ToString( ), ex);
                 }
                 finally
                 {
@@ -192,5 +193,21 @@ namespace HslCommunication.Enthernet
                 }
             }
         }
+
+
+        #region Object Override
+
+        /// <summary>
+        /// 获取本对象的字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            return "NetSoftUpdateServer";
+        }
+
+
+        #endregion
+
     }
 }

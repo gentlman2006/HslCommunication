@@ -329,7 +329,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="headBytes">头子节数据</param>
         /// <returns>令牌是验证成功</returns>
-        private bool CheckRemoteToken(byte[] headBytes)
+        protected bool CheckRemoteToken(byte[] headBytes)
         {
             return SoftBasic.IsByteTokenEquel( headBytes, Token );
         }

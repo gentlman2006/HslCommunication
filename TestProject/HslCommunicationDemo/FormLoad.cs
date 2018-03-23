@@ -99,5 +99,11 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void linkLabel2_Click( object sender, EventArgs e )
+        {
+            HslCommunication.BasicFramework.FormSupport form = new HslCommunication.BasicFramework.FormSupport( );
+            form.ShowDialog( );
+        }
     }
 }

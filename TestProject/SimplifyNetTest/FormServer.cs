@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace SimplifyNetTest
 {
-    public partial class Form1 : Form
+    public partial class FormServer : Form
     {
-        public Form1()
+        public FormServer()
         {
             InitializeComponent( );
         }

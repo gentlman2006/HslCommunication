@@ -207,10 +207,10 @@ namespace HslCommunication.Profinet.Siemens
         /// <summary>
         /// 生成一个读取字数据指令头的通用方法
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="length"></param>
+        /// <param name="address">解析后的地址</param>
+        /// <param name="length">每个地址的读取长度</param>
         /// <returns>携带有命令字节</returns>
-        private OperateResult<byte[]> BuildReadCommand(string[] address, ushort[] length)
+        private OperateResult<byte[]> BuildReadCommand( OperateResult<byte, int, ushort>[] address, ushort[] length)
         {
             if (address == null) throw new NullReferenceException( "address" );
             if (length == null) throw new NullReferenceException( "count" );
@@ -264,14 +264,6 @@ namespace HslCommunication.Profinet.Siemens
 
             for (int ii = 0; ii < readCount; ii++)
             {
-                // 填充数据
-                OperateResult<byte, int, ushort> analysis = AnalysisAddress( address[ii] );
-                if (!analysis.IsSuccess)
-                {
-                    result.CopyErrorFromOther( analysis );
-                    return result;
-                }
-
                 //===========================================================================================
                 // 指定有效值类型
                 _PLCCommand[19 + ii * 12] = 0x12;
@@ -285,14 +277,14 @@ namespace HslCommunication.Profinet.Siemens
                 _PLCCommand[23 + ii * 12] = (byte)(length[ii] / 256);
                 _PLCCommand[24 + ii * 12] = (byte)(length[ii] % 256);
                 // DB块编号，如果访问的是DB块的话
-                _PLCCommand[25 + ii * 12] = (byte)(analysis.Content3 / 256);
-                _PLCCommand[26 + ii * 12] = (byte)(analysis.Content3 % 256);
+                _PLCCommand[25 + ii * 12] = (byte)(address[ii].Content3 / 256);
+                _PLCCommand[26 + ii * 12] = (byte)(address[ii].Content3 % 256);
                 // 访问数据类型
-                _PLCCommand[27 + ii * 12] = analysis.Content1;
+                _PLCCommand[27 + ii * 12] = address[ii].Content1;
                 // 偏移位置
-                _PLCCommand[28 + ii * 12] = (byte)(analysis.Content2 / 256 / 256 % 256);
-                _PLCCommand[29 + ii * 12] = (byte)(analysis.Content2 / 256 % 256);
-                _PLCCommand[30 + ii * 12] = (byte)(analysis.Content2 % 256);
+                _PLCCommand[28 + ii * 12] = (byte)(address[ii].Content2 / 256 / 256 % 256);
+                _PLCCommand[29 + ii * 12] = (byte)(address[ii].Content2 / 256 % 256);
+                _PLCCommand[30 + ii * 12] = (byte)(address[ii].Content2 % 256);
             }
             result.Content = _PLCCommand;
             result.IsSuccess = true;
@@ -610,15 +602,52 @@ namespace HslCommunication.Profinet.Siemens
         #region Read Support
 
 
+
         /// <summary>
-        /// 从PLC读取数据，地址格式为I100，Q100，DB20.100，M100，以字节为单位
+        /// 从PLC读取数据，地址格式为I100，Q100，DB20.100，M100，T100，C100以字节为单位
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <param name="length">读取的数量，以字节为单位</param>
         /// <returns></returns>
         public OperateResult<byte[]> Read(string address, ushort length)
         {
-            return Read( new string[] { address }, new ushort[] { length } );
+            OperateResult<byte, int, ushort> addressResult = AnalysisAddress( address );
+            if (!addressResult.IsSuccess)
+            {
+                return new OperateResult<byte[]>( )
+                {
+                    Message = addressResult.Message
+                };
+            }
+
+            List<byte[]> bytesContent = new List<byte[]>( );
+            ushort alreadyFinished = 0;
+            while (alreadyFinished < length)
+            {
+                ushort readLength = (ushort)Math.Min( length - alreadyFinished, 200 );
+                OperateResult<byte[]> read = Read( new OperateResult<byte, int, ushort>[] { addressResult }, new ushort[] { readLength } );
+                if(read.IsSuccess)
+                {
+                    bytesContent.Add( read.Content );
+                }
+                else
+                {
+                    return read;
+                }
+
+                alreadyFinished += readLength;
+                addressResult.Content2 += readLength * 8;
+            }
+
+            byte[] buffer = new byte[bytesContent.Sum( m => m.Length )];
+            int current = 0;
+            for (int i = 0; i < bytesContent.Count; i++)
+            {
+                bytesContent[i].CopyTo( buffer, current );
+                current += bytesContent[i].Length;
+            }
+
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
         /// <summary>
@@ -686,7 +715,26 @@ namespace HslCommunication.Profinet.Siemens
         public OperateResult<byte[]> Read(string[] address, ushort[] length)
         {
             OperateResult<byte[]> result = new OperateResult<byte[]>( );
+            OperateResult<byte, int, ushort>[] addressResult = new OperateResult<byte, int, ushort>[address.Length];
+            for (int i = 0; i < address.Length; i++)
+            {
+                OperateResult<byte, int, ushort> tmp = AnalysisAddress( address[i] );
+                if(!tmp.IsSuccess)
+                {
+                    result.CopyErrorFromOther( tmp );
+                    return result;
+                }
 
+                addressResult[i] = tmp;
+            }
+
+            return Read( addressResult, length );
+        }
+
+        private OperateResult<byte[]> Read( OperateResult<byte, int, ushort>[] address, ushort[] length )
+        {
+            OperateResult<byte[]> result = new OperateResult<byte[]>( );
+            
             OperateResult<byte[]> command = BuildReadCommand( address, length );
             if (!command.IsSuccess)
             {
@@ -742,6 +790,9 @@ namespace HslCommunication.Profinet.Siemens
 
             return result;
         }
+
+
+
 
 
         /// <summary>
@@ -857,34 +908,7 @@ namespace HslCommunication.Profinet.Siemens
         {
             return GetStringResultFromBytes( Read( address, length ) );
         }
-
-
-        ///// <summary>
-        ///// 读取多个DB块字节(超过协议报文222字节限制会自动处理)
-        ///// </summary>
-        ///// <param name="DB">DB块地址,例如DB1</param>
-        ///// <param name="numBytes">要读的字节数</param>
-        ///// <param name="startByteAdr">起始地址</param>
-        ///// <returns></returns>
-        //public OperateResult<byte[]> ReadMultipleBytes( string DB, int numBytes, int startByteAdr = 0 )
-        //{
-        //    OperateResult<byte[]> result = new OperateResult<byte[]>( );
-        //    int index = startByteAdr;
-        //    List<byte> resultBytes = new List<byte>( );
-        //    while (numBytes > 0)
-        //    {
-        //        string db = String.Format( "{0}.{1}", DB, index.ToString( ) );
-        //        int maxToRead = Math.Min( numBytes, 200 );
-        //        OperateResult<byte[]> read = ReadFromPLC( db, (ushort)maxToRead );
-        //        if (read == null)
-        //            return new OperateResult<byte[]>( );
-        //        resultBytes.AddRange( read.Content );
-        //        numBytes -= maxToRead;
-        //        index += maxToRead;
-        //    }
-        //    result.Content = resultBytes.ToArray( );
-        //    return result;
-        //}
+        
 
         #endregion
 

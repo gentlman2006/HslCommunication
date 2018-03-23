@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using HslCommunication;
 using System.IO;
+using HslCommunication.Core.Net;
 
 namespace HslCommunication.Enthernet
 {
@@ -14,7 +15,7 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 通用设备的基础网络信息
     /// </summary>
-    public class DeviceNet : NetServerBase
+    public class DeviceNet : NetworkServerBase
     {
 
         #region Constructor
@@ -24,7 +25,6 @@ namespace HslCommunication.Enthernet
         /// </summary>
         public DeviceNet()
         {
-            LogHeaderText = "DeviceNet";
             list = new List<DeviceState>( );
             lock_list = new SimpleHybirdLock( );
         }
@@ -65,18 +65,23 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 当客户端上线的时候，触发此事件
         /// </summary>
-        public event IEDelegate<DeviceState> ClientOnline;
+        public event Action<DeviceState> ClientOnline;
 
         /// <summary>
         /// 当客户端下线的时候，触发此事件
         /// </summary>
-        public event IEDelegate<DeviceState> ClientOffline;
+        public event Action<DeviceState> ClientOffline;
 
 
         /// <summary>
-        /// 当接收到文本数据的时候,触发此事件
+        /// 按照ASCII文本的方式进行触发接收的数据
         /// </summary>
-        public event IEDelegate<DeviceState, string> AcceptString;
+        public event Action<DeviceState, string> AcceptString;
+
+        /// <summary>
+        /// 按照字节的方式进行触发接收的数据
+        /// </summary>
+        public event Action<DeviceState, byte[]> AcceptBytes;
 
         #endregion
 
@@ -116,7 +121,7 @@ namespace HslCommunication.Enthernet
                 {
                     //登录前已经出错
                     RemoveClient( stateone );
-                    LogNet?.WriteException( LogHeaderText, StringResources.NetClientLoginFailed, ex );
+                    LogNet?.WriteException( ToString(), StringResources.NetClientLoginFailed, ex );
                 }
             }
         }
@@ -145,65 +150,32 @@ namespace HslCommunication.Enthernet
                         stateone.WorkSocket.BeginReceive( stateone.Buffer, 0, stateone.Buffer.Length, SocketFlags.None,
                             new AsyncCallback( ContentReceiveCallBack ), stateone );
 
-                        string read = Encoding.ASCII.GetString( ms.ToArray( ) );
+
+                        byte[] receive =ms.ToArray( );
                         ms.Dispose( );
 
                         lock_list.Enter( );
                         stateone.ReceiveTime = DateTime.Now;
                         lock_list.Leave( );
-                        AcceptString?.Invoke( stateone, read );
+                        AcceptBytes?.Invoke( stateone, receive );
+                        AcceptString?.Invoke( stateone, Encoding.ASCII.GetString( receive ));
                     }
                     else
                     {
-                        stateone.WorkSocket.BeginReceive( stateone.Buffer, 0, stateone.Buffer.Length, SocketFlags.None,
-                            new AsyncCallback( ContentReceiveCallBack ), stateone );
+                        RemoveClient( stateone );
+                        LogNet?.WriteInfo( ToString( ), StringResources.NetClientOffline );
                     }
                 }
                 catch(Exception ex)
                 {
                     //登录前已经出错
                     RemoveClient( stateone );
-                    LogNet?.WriteException( LogHeaderText, StringResources.NetClientLoginFailed, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.NetClientLoginFailed, ex );
                 }
             }
         }
 
     }
 
-    /// <summary>
-    /// 通用设备的基础状态
-    /// </summary>
-    public class DeviceState
-    {
-        /// <summary>
-        /// 设备的连接地址
-        /// </summary>
-        public IPEndPoint DeviceEndPoint { get; set; }
-
-        /// <summary>
-        /// 设备的连接时间
-        /// </summary>
-        public DateTime ConnectTime { get; set; }
-
-        /// <summary>
-        /// 网络套接字
-        /// </summary>
-        internal Socket WorkSocket { get; set; }
-
-        /// <summary>
-        /// 上次接收到信息的时间
-        /// </summary>
-        public DateTime ReceiveTime { get; set; }
-
-        /// <summary>
-        /// 设备的ip地址
-        /// </summary>
-        public string IpAddress { get; set; }
-
-        /// <summary>
-        /// 缓冲内存块
-        /// </summary>
-        internal byte[] Buffer = new byte[1];
-    }
 
 }
