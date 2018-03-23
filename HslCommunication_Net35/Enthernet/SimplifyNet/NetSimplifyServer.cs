@@ -114,7 +114,7 @@ namespace HslCommunication.Enthernet
         internal override void SocketReceiveException( AppSession session, Exception ex )
         {
             session.WorkSocket?.Close( );
-            LogNet?.WriteException( ToString(), StringResources.SocketIOException, ex );
+            LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpAddress} ] 异常下线" );
         }
 
         /// <summary>
@@ -155,6 +155,19 @@ namespace HslCommunication.Enthernet
         }
 
         #endregion
-        
+
+        #region Object Override
+
+        /// <summary>
+        /// 获取本对象的字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            return "NetSimplifyServer";
+        }
+
+
+        #endregion
     }
 }

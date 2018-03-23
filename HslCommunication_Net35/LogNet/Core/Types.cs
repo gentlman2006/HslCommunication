@@ -141,7 +141,14 @@ namespace HslCommunication.LogNet
         public DateTime Time { get; set; }
 
 
-
+        /// <summary>
+        /// 获取本日志消息的字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            return $"[{Degree}] {Time.ToString( "yyyy-MM-dd HH:mm:ss.fff" )} Thread [{ThreadId.ToString( "D2" )}] {Text}";
+        }
     }
 
     #endregion

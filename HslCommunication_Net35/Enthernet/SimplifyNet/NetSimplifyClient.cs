@@ -26,6 +26,14 @@ namespace HslCommunication.Enthernet
             Port = port;
         }
 
+        /// <summary>
+        /// 实例化一个客户端对象，需要手动指定Ip地址和端口
+        /// </summary>
+        public NetSimplifyClient( )
+        {
+
+        }
+
         #endregion
 
 

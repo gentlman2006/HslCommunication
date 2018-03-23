@@ -105,5 +105,15 @@ namespace HslCommunicationDemo
             HslCommunication.BasicFramework.FormSupport form = new HslCommunication.BasicFramework.FormSupport( );
             form.ShowDialog( );
         }
+
+        private void button8_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormSimplifyNet form = new FormSimplifyNet( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

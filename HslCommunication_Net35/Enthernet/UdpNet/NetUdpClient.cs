@@ -5,12 +5,12 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace HslCommunication.Enthernet.UdpNet
+namespace HslCommunication.Enthernet
 {
     /// <summary>
     /// UDP客户端的类，只负责发送数据到服务器，该数据经过封装
     /// </summary>
-    public class NetUdpClient : HslCommunication.Core.Net.NetworkBase
+    public class NetUdpClient : Core.Net.NetworkBase
     {
 
         private IPEndPoint ServerEndPoint = null;
@@ -53,5 +53,19 @@ namespace HslCommunication.Enthernet.UdpNet
         {
             CoreSocket.SendTo( HslProtocol.CommandBytes( customer, Token, data ), ServerEndPoint );
         }
+
+
+        #region Object Override
+
+        /// <summary>
+        /// 获取本对象的字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            return "NetUdpClient";
+        }
+        #endregion
+
     }
 }

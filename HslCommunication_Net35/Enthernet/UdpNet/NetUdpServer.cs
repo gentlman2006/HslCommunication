@@ -7,8 +7,11 @@ using System.Text;
 using HslCommunication.Core;
 using HslCommunication.Core.Net;
 
-namespace HslCommunication.Enthernet.UdpNet
+namespace HslCommunication.Enthernet
 {
+    /// <summary>
+    /// Udp网络的服务器端类
+    /// </summary>
     public class NetUdpServer : NetworkServerBase
     {
 
@@ -250,6 +253,19 @@ namespace HslCommunication.Enthernet.UdpNet
         public event Action<AppSession, NetHandle, byte[]> AcceptByte;
 
 
+        #endregion
+
+
+        #region Object Override
+
+        /// <summary>
+        /// 获取本对象的字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            return "NetUdpServer";
+        }
         #endregion
 
     }
