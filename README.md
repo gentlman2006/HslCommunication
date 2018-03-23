@@ -82,3 +82,6 @@ Install-Package HslCommunication
 
 ## 控件集合实示例图
 ![控件图](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/controls.png)
+
+## 创作不易，感谢打赏
+![打赏](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/support.png)
