@@ -39,6 +39,7 @@ namespace HslCommunicationDemo
 
             if(connect.IsSuccess)
             {
+                button1.Enabled = false;
                 button2.Enabled = true;
                 panel2.Enabled = true;
                 button5.Enabled = false;
@@ -54,6 +55,8 @@ namespace HslCommunicationDemo
         {
             // 断开连接
             button5.Enabled = true;
+            button1.Enabled = true;
+            button2.Enabled = false;
             panel2.Enabled = false;
 
             simplifyClient.ConnectClose( );

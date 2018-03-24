@@ -688,6 +688,47 @@ namespace HslCommunication.ModBus.ModbusTcp
 
         #region Private Method
 
+        /// <summary>
+        /// 检测当前的Modbus接收的指定是否是合法的
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
+        private bool CheckModbusMessageLegal(byte[] buffer)
+        {
+            if (buffer[7] == 0x01 || buffer[7] == 0x02 || buffer[7] == 0x03)
+            {
+                if (buffer.Length != 0x0C)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (buffer[7] == 0x05 || buffer[7] == 0x06 || buffer[7] == 0x0F || buffer[7] == 0x10)
+            {
+                if (buffer.Length < 13)
+                {
+                    return false;
+                }
+                else
+                {
+                    if (buffer[12] == (buffer.Length - 13))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         private void ModbusHeadReveiveCallback( IAsyncResult ar )
         {
@@ -699,7 +740,6 @@ namespace HslCommunication.ModBus.ModbusTcp
                     if (receiveCount == 0)
                     {
                         state.WorkSocket?.Close( );
-                        state = null;
                         LogNet?.WriteDebug( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线" );
                         return;
                     }
@@ -712,7 +752,6 @@ namespace HslCommunication.ModBus.ModbusTcp
                 {
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close( );
-                    state = null;
                     LogNet?.WriteException( ToString(), $"客户端 [ {state.IpEndPoint} ] 异常下线，消息子节接收失败！", ex );
                     return;
                 }
@@ -730,7 +769,6 @@ namespace HslCommunication.ModBus.ModbusTcp
                 catch(Exception ex)
                 {
                     state.WorkSocket?.Close( );
-                    state = null;
                     LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，再次启动接收失败！", ex );
                     return;
                 }
@@ -755,7 +793,6 @@ namespace HslCommunication.ModBus.ModbusTcp
                     catch(Exception ex)
                     {
                         state.WorkSocket?.Close( );
-                        state = null;
                         LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，启动内容接收失败！", ex );
                         return;
                     }
@@ -764,8 +801,7 @@ namespace HslCommunication.ModBus.ModbusTcp
                 {
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close( );
-                    state = null;
-                    LogNet?.WriteDebug( ToString(), $"客户端 [ {state.IpEndPoint} ] 下线，不是标准的Modbus协议！" );
+                    LogNet?.WriteWarn( ToString(), $"客户端 [ {state.IpEndPoint} ] 下线，不是标准的Modbus协议！" );
                 }
             }
         }
@@ -790,7 +826,6 @@ namespace HslCommunication.ModBus.ModbusTcp
                 {
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close( );
-                    state = null;
                     LogNet?.WriteException( ToString(), $"客户端 [ {state.IpEndPoint} ] 下线，内容数据接收失败！", ex );
                     return;
                 }
@@ -806,168 +841,50 @@ namespace HslCommunication.ModBus.ModbusTcp
 
 
 
-                if (data[7] == 0x01 ||
-                    data[7] == 0x02 ||
-                    data[7] == 0x03)
+                if (!CheckModbusMessageLegal( data ))
                 {
-                    if (data.Length != 0x0C)
-                    {
-                        // 指令长度验证错误，关闭网络连接
-                        state.WorkSocket?.Close( );
-                        state = null;
-                        LogNet?.WriteWarn( LogHeaderText, "Command length check failed！" );
-                        return;
-                    }
+                    // 指令长度验证错误，关闭网络连接
+                    state.WorkSocket?.Close( );
+                    LogNet?.WriteError( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线，消息长度检查失败！" );
+                    return;
                 }
-
-
+                
 
                 // 需要回发消息
                 byte[] copy = null;
-                try
+
+                switch (data[7])
                 {
-                    switch (data[7])
-                    {
-                        case 0x01:
-                            {
-                                // 线圈读取
-                                int address = data[8] * 256 + data[9];
-                                int length = data[10] * 256 + data[11];
-                                if (length > 2048) length = 2048;         // 线圈读取应该小于2048个
-                                bool[] read = ReadCoil( (ushort)address, (ushort)length );
-                                byte[] buffer = BasicFramework.SoftBasic.BoolArrayToByte( read );
-                                copy = new byte[9 + buffer.Length];
-                                Array.Copy( data, 0, copy, 0, 8 );
-                                copy[4] = (byte)((copy.Length - 6) / 256);
-                                copy[5] = (byte)((copy.Length - 6) % 256);
-                                copy[8] = (byte)buffer.Length;
-                                Array.Copy( buffer, 0, copy, 9, buffer.Length );
-                                break;
-                            }
-                        case 0x03:
-                            {
-                                // 寄存器读取
-                                int address = data[8] * 256 + data[9];
-                                int length = data[10] * 256 + data[11];
-                                if (length > 127) length = 127;          // 寄存器最大读取范围为127个
-                                byte[] buffer = ReadRegister( (ushort)address, (ushort)length );
-                                copy = new byte[9 + buffer.Length];
-                                Array.Copy( data, 0, copy, 0, 8 );
-                                copy[4] = (byte)((copy.Length - 6) / 256);
-                                copy[5] = (byte)((copy.Length - 6) % 256);
-                                copy[8] = (byte)buffer.Length;
-                                Array.Copy( buffer, 0, copy, 9, buffer.Length );
-                                break;
-                            }
-                        case 0x05:
-                            {
-                                // 写单个线圈
-                                int address = data[8] * 256 + data[9];
-                                if (data[10] == 0xFF && data[11] == 0x00)
-                                {
-                                    WriteCoil( (ushort)address, true );
-                                }
-                                else if (data[10] == 0x00 && data[11] == 0x00)
-                                {
-                                    WriteCoil( (ushort)address, false );
-                                }
-                                copy = new byte[12];
-                                Array.Copy( data, 0, copy, 0, 12 );
-                                copy[4] = 0x00;
-                                copy[5] = 0x06;
-                                break;
-                            }
-                        case 0x06:
-                            {
-                                // 写单个寄存器
-                                ushort address = (ushort)(data[8] * 256 + data[9]);
-                                short ValueOld = ReadShortRegister( address );
-                                // 写入到寄存器
-                                WriteRegister( address, data[10], data[11] );
-                                short ValueNew = ReadShortRegister( address );
-                                // 触发写入请求
-                                OnRegisterBeforWrite( address, ValueOld, ValueNew );
-
-                                copy = new byte[12];
-                                Array.Copy( data, 0, copy, 0, 12 );
-                                copy[4] = 0x00;
-                                copy[5] = 0x06;
-                                break;
-                            }
-                        case 0x0F:
-                            {
-                                // 写多个线圈
-                                int address = data[8] * 256 + data[9];
-                                int length = data[10] * 256 + data[11];
-                                byte[] buffer = new byte[data.Length - 13];
-                                Array.Copy( data, 13, buffer, 0, buffer.Length );
-                                bool[] value = BasicFramework.SoftBasic.ByteToBoolArray( buffer, length );
-                                WriteCoil( (ushort)address, value );
-                                copy = new byte[12];
-                                Array.Copy( data, 0, copy, 0, 12 );
-                                copy[4] = 0x00;
-                                copy[5] = 0x06;
-                                break;
-                            }
-                        case 0x10:
-                            {
-                                // 写多个寄存器
-                                int address = data[8] * 256 + data[9];
-                                int length = data[10] * 256 + data[11];
-                                byte[] buffer = new byte[data.Length - 13];
-
-                                // 为了使服务器的数据订阅更加的准确，决定将设计改为等待所有的数据写入完成后，再统一触发订阅，2018年3月4日 20:56:47
-                                MonitorAddress[] addresses = new MonitorAddress[length];
-                                for (int i = 0; i < length; i++)
-                                {
-                                    if ((2 * i + 14) < data.Length)
-                                    {
-                                        short ValueOld = ReadShortRegister( (ushort)(address + i) );
-                                        WriteRegister( (ushort)(address + i), data[2 * i + 13], data[2 * i + 14] );
-                                        short ValueNew = ReadShortRegister( (ushort)(address + i) );
-                                        // 触发写入请求
-                                        addresses[i] = new MonitorAddress( )
-                                        {
-                                            Address = (ushort)(address + i),
-                                            ValueOrigin = ValueOld,
-                                            ValueNew = ValueNew
-                                        };
-                                    }
-                                }
-
-                                // 所有数据都更改完成后，再触发消息
-                                for (int i = 0; i < addresses.Length; i++)
-                                {
-                                    OnRegisterBeforWrite( addresses[i].Address, addresses[i].ValueOrigin, addresses[i].ValueNew );
-                                }
-
-                                copy = new byte[12];
-                                Array.Copy( data, 0, copy, 0, 12 );
-                                copy[4] = 0x00;
-                                copy[5] = 0x06;
-                                break;
-                            }
-                        default:
-                            {
-                                copy = new byte[9];
-                                Array.Copy( data, 0, copy, 0, 8 );
-                                copy[4] = 0x00;
-                                copy[5] = 0x03;
-                                copy[7] = (byte)(data[7] + 0x80);
-                                copy[8] = 0x01;  // 不支持的功能码
-                                break;
-                            }
-                    }
+                    case ModbusInfo.ReadCoil:
+                        {
+                            copy = ReadCoilBack( data ); break;
+                        }
+                    case ModbusInfo.ReadRegister:
+                        {
+                            copy = ReadRegisterBack( data ); break;
+                        }
+                    case ModbusInfo.WriteOneCoil:
+                        {
+                            copy = WriteOneCoilBack( data ); break;
+                        }
+                    case ModbusInfo.WriteOneRegister:
+                        {
+                            copy = WriteOneRegisterBack( data ); break;
+                        }
+                    case ModbusInfo.WriteCoil:
+                        {
+                            copy = WriteCoilsBack( data ); break;
+                        }
+                    case ModbusInfo.WriteRegister:
+                        {
+                            copy = WriteRegisterBack( data ); break;
+                        }
+                    default:
+                        {
+                            copy = CreateExceptionBack( data, ModbusInfo.FunctionCodeNotSupport ); break;
+                        }
                 }
-                catch (Exception ex)
-                {
-                    state.WorkSocket?.Close( );
-                    state = null;
-                    LogNet?.WriteException( LogHeaderText, ex );
-                    return;
-                }
-
-
+                    
 
                 try
                 {
@@ -978,21 +895,27 @@ namespace HslCommunication.ModBus.ModbusTcp
                 catch (Exception ex)
                 {
                     state.WorkSocket?.Close( );
-                    state = null;
-                    LogNet?.WriteException( LogHeaderText, "Send exception:", ex );
+                    LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，重新接收消息失败！", ex );
                     return;
                 }
 
 
                 // 回发数据，先获取发送锁
                 state.hybirdLock.Enter( );
-                state.WorkSocket.BeginSend( copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback( DataSendCallBack ), state: state );
-
+                try
+                {
+                    state.WorkSocket.BeginSend( copy, 0, size: copy.Length, socketFlags: SocketFlags.None, callback: new AsyncCallback( DataSendCallBack ), state: state );
+                }
+                catch(Exception ex)
+                {
+                    state.WorkSocket?.Close( );
+                    state.hybirdLock.Leave( );
+                    LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，回发消息失败！", ex );
+                    return;
+                }
 
                 // 通知处理消息
                 if (IsStarted) OnDataReceived?.Invoke( data );
-
-
             }
         }
 
@@ -1010,10 +933,246 @@ namespace HslCommunication.ModBus.ModbusTcp
                 {
                     state.WorkSocket?.Close( );
                     state = null;
-                    LogNet?.WriteException( LogHeaderText, "内容数据回发失败！", ex );
+                    LogNet?.WriteException( ToString(), "内容数据回发失败！", ex );
                 }
             }
         }
+
+        #endregion
+
+        #region Function Process Center
+
+        /// <summary>
+        /// 创建特殊的功能标识，然后返回该信息
+        /// </summary>
+        /// <param name="modbus"></param>
+        /// <param name="error"></param>
+        /// <returns></returns>
+        private byte[] CreateExceptionBack( byte[] modbus, byte error )
+        {
+            byte[] buffer = new byte[9];
+            Array.Copy( modbus, 0, buffer, 0, 7 );
+            buffer[7] = (byte)(modbus[7] + 0x80);
+            buffer[8] = error;
+            return buffer;
+        }
+
+        /// <summary>
+        /// 创建返回消息
+        /// </summary>
+        /// <param name="modbus"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        private byte[] CreateReadBack( byte[] modbus, byte[] content )
+        {
+            byte[] back = new byte[9 + content.Length];
+            Array.Copy( modbus, 0, content, 0, 8 );
+            back[8] = (byte)content.Length;
+            Array.Copy( content, 0, back, 9, content.Length );
+            return back;
+        }
+
+        /// <summary>
+        /// 创建写入成功的反馈信号
+        /// </summary>
+        /// <param name="modbus"></param>
+        /// <returns></returns>
+        private byte[] CreateWriteBack(byte[] modbus)
+        {
+            byte[] back = new byte[12];
+            Array.Copy( modbus, 0, modbus, 0, 12 );
+            modbus[4] = 0x00;
+            modbus[5] = 0x06;
+            return back;
+        }
+
+        private byte[] ReadCoilBack(byte[] modbus )
+        {
+            try
+            {
+                ushort address = byteTransform.TransUInt16( modbus, 8 );
+                ushort length = byteTransform.TransUInt16( modbus, 10 );
+
+                // 越界检测
+                if ((address + length) >= ushort.MaxValue)
+                {
+                    return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeOverBound );
+                }
+
+                // 地址长度检测
+                if(length > 2040)
+                {
+                    return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeQuantityOver );
+                }
+
+                bool[] read = ReadCoil( address, length );
+                byte[] buffer = BasicFramework.SoftBasic.BoolArrayToByte( read );
+                return CreateReadBack( modbus, buffer );
+            }
+            catch(Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), "读取线圈异常", ex );
+                return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
+            }
+        }
+
+
+        private byte[] ReadRegisterBack(byte[] modbus)
+        {
+            try
+            {
+                ushort address = byteTransform.TransUInt16( modbus, 8 );
+                ushort length = byteTransform.TransUInt16( modbus, 10 );
+
+                // 越界检测
+                if ((address + length) >= ushort.MaxValue)
+                {
+                    return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeOverBound );
+                }
+
+                // 地址长度检测
+                if (length > 127)
+                {
+                    return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeQuantityOver );
+                }
+
+                byte[] buffer = ReadRegister( address, length );
+                return CreateReadBack( modbus, buffer );
+            }
+            catch (Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), "读取寄存器异常", ex );
+                return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
+            }
+        }
+
+        private byte[] WriteOneCoilBack( byte[] modbus )
+        {
+            try
+            {
+                ushort address = byteTransform.TransUInt16( modbus, 8 );
+
+                if (modbus[10] == 0xFF && modbus[11] == 0x00)
+                {
+                    WriteCoil( address, true );
+                }
+                else if (modbus[10] == 0x00 && modbus[11] == 0x00)
+                {
+                    WriteCoil( address, false );
+                }
+                return CreateWriteBack( modbus );
+            }
+            catch(Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), "写入单个线圈异常", ex );
+                return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
+            }
+        }
+
+
+
+        private byte[] WriteOneRegisterBack( byte[] modbus)
+        {
+            try
+            {
+                ushort address = byteTransform.TransUInt16( modbus, 8 );
+                short ValueOld = ReadInt16( address );
+                // 写入到寄存器
+                WriteRegister( address, modbus[10], modbus[11] );
+                short ValueNew = ReadInt16( address );
+                // 触发写入请求
+                OnRegisterBeforWrite( address, ValueOld, ValueNew );
+
+                return CreateWriteBack( modbus );
+            }
+            catch(Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), "写入单个寄存器异常", ex );
+                return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
+            }
+        }
+
+        private byte[] WriteCoilsBack(byte[] modbus)
+        {
+            try
+            {
+                ushort address = byteTransform.TransUInt16( modbus, 8 );
+                ushort length = byteTransform.TransUInt16( modbus, 10 );
+
+                if ((address + length) > ushort.MaxValue)
+                {
+                    return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeOverBound );
+                }
+
+                if(length > 2040)
+                {
+                    return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeQuantityOver );
+                }
+
+                byte[] buffer = new byte[modbus.Length - 13];
+                Array.Copy( modbus, 13, buffer, 0, buffer.Length );
+                bool[] value = BasicFramework.SoftBasic.ByteToBoolArray( buffer, length );
+                WriteCoil( address, value );
+                return CreateWriteBack( modbus );
+            }
+            catch (Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), "写入线圈异常", ex );
+                return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
+            }
+        }
+
+
+        private byte[] WriteRegisterBack( byte[] modbus)
+        {
+            try
+            {
+                ushort address = byteTransform.TransUInt16( modbus, 8 );
+                ushort length = byteTransform.TransUInt16( modbus, 10 );
+
+                if ((address + length) > ushort.MaxValue)
+                {
+                    return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeOverBound );
+                }
+
+                if (length > 127)
+                {
+                    return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeQuantityOver );
+                }
+
+                byte[] buffer = new byte[modbus.Length - 13];
+
+                // 为了使服务器的数据订阅更加的准确，决定将设计改为等待所有的数据写入完成后，再统一触发订阅，2018年3月4日 20:56:47
+                MonitorAddress[] addresses = new MonitorAddress[length];
+                for (ushort i = 0; i < length; i++)
+                {
+                    short ValueOld = ReadInt16( (ushort)(address + i) );
+                    WriteRegister( (ushort)(address + i), modbus[2 * i + 13], modbus[2 * i + 14] );
+                    short ValueNew = ReadInt16( (ushort)(address + i) );
+                    // 触发写入请求
+                    addresses[i] = new MonitorAddress( )
+                    {
+                        Address = (ushort)(address + i),
+                        ValueOrigin = ValueOld,
+                        ValueNew = ValueNew
+                    };
+                }
+
+                // 所有数据都更改完成后，再触发消息
+                for (int i = 0; i < addresses.Length; i++)
+                {
+                    OnRegisterBeforWrite( addresses[i].Address, addresses[i].ValueOrigin, addresses[i].ValueNew );
+                }
+                
+                return CreateWriteBack( modbus );
+            }
+            catch (Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), "写入寄存器异常", ex );
+                return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
+            }
+        }
+    
 
         #endregion
 
@@ -1025,7 +1184,7 @@ namespace HslCommunication.ModBus.ModbusTcp
         private SimpleHybirdLock subcriptionHybirdLock;       // 集合锁
 
         /// <summary>
-        /// 新增一个数据监视的任务
+        /// 新增一个数据监视的任务，针对的是寄存器
         /// </summary>
         /// <param name="monitor"></param>
         public void AddSubcription( ModBusMonitorAddress monitor )
