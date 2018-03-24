@@ -20,7 +20,7 @@ namespace SimplifyNetTest
 
         private void FormServer_Load( object sender, EventArgs e )
         {
-            
+            textBox3.Text = Guid.Empty.ToString( );
         }
 
         #region Simplify Net
@@ -32,7 +32,7 @@ namespace SimplifyNetTest
             try
             {
                 simplifyServer = new NetSimplifyServer( );
-                simplifyServer.Token = Guid.Empty;
+                simplifyServer.Token = new Guid( textBox3.Text );
                 simplifyServer.ReceiveStringEvent += SimplifyServer_ReceiveStringEvent;
                 simplifyServer.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + @"\Logs\log.txt" );
                 simplifyServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
@@ -59,7 +59,8 @@ namespace SimplifyNetTest
         {
             if (handle == 1)
             {
-                simplifyServer.SendMessage( session, handle, "这是测试信号" );
+                // 当收到客户端发来的信号1的时候进行操作的消息
+                simplifyServer.SendMessage( session, handle, "这是测试信号：" + value );
             }
             else if (handle < 100)
             {
@@ -67,7 +68,7 @@ namespace SimplifyNetTest
             }
             else
             {
-
+                simplifyServer.SendMessage( session, handle, "不支持的消息" );
             }
         }
 

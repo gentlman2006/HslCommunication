@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -1246,6 +1247,15 @@ namespace HslCommunication.ModBus
         /// 连接的时间
         /// </summary>
         public DateTime ConnectTime { get; private set; }
+
+        /// <summary>
+        /// 远端的地址
+        /// </summary>
+        public IPEndPoint IpEndPoint { get; internal set; }
+        /// <summary>
+        /// 远端的Ip地址
+        /// </summary>
+        public string IpAddress { get; internal set; }
 
 
 

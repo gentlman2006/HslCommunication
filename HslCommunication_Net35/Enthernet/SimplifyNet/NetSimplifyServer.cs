@@ -101,7 +101,7 @@ namespace HslCommunication.Enthernet
                     LogNet?.WriteException( ToString( ), "Ip信息获取失败", ex );
                 }
 
-                LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpAddress} ] 上线" );
+                LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 上线" );
                 ReBeginReceiveHead( session, false );
             }
         }
@@ -114,7 +114,7 @@ namespace HslCommunication.Enthernet
         internal override void SocketReceiveException( AppSession session, Exception ex )
         {
             session.WorkSocket?.Close( );
-            LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpAddress} ] 异常下线" );
+            LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 异常下线" );
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace HslCommunication.Enthernet
         internal override void AppSessionRemoteClose( AppSession session )
         {
             session.WorkSocket?.Close( );
-            LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpAddress} ] 下线" );
+            LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 下线" );
         }
 
         /// <summary>
@@ -137,19 +137,24 @@ namespace HslCommunication.Enthernet
         internal override void DataProcessingCenter( AppSession session, int protocol, int customer, byte[] content )
         {
             //接收数据完成，进行事件通知，优先进行解密操作
-            if (protocol == HslProtocol.ProtocolUserBytes)
+            if (protocol == HslProtocol.ProtocolCheckSecends)
             {
-                //字节数据
+                // 初始化时候的测试消息
+                SendMessage( session, customer, content );
+            }
+            else if (protocol == HslProtocol.ProtocolUserBytes)
+            {
+                // 字节数据
                 OnReceivedBytesEvent( session, customer, content );
             }
             else if (protocol == HslProtocol.ProtocolUserString)
             {
-                //字符串数据
+                // 字符串数据
                 OnReceiveStringEvent( session, customer, Encoding.Unicode.GetString( content ) );
             }
             else
             {
-                //数据异常
+                // 数据异常
                 session?.WorkSocket?.Close( );
             }
         }
