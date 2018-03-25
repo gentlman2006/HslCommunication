@@ -1920,7 +1920,7 @@ namespace HslCommunication.Core
     /// <summary>
     /// 文件服务器的基类，提供了对文件的基本操作
     /// </summary>
-    public class FileServerBase : NetServerBase
+    public class FileServerBase2 : NetServerBase
     {
         #region 文件的标记块
         /// <summary>

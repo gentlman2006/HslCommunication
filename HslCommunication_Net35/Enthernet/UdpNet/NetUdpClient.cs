@@ -28,6 +28,18 @@ namespace HslCommunication.Enthernet
 
 
         /// <summary>
+        /// 实例化对象，指定发送的服务器地址和端口号
+        /// </summary>
+        /// <param name="ipAddress">服务器的Ip地址</param>
+        /// <param name="port">端口号</param>
+        public NetUdpClient( string ipAddress,int port )
+        {
+            ServerEndPoint = new IPEndPoint( IPAddress.Parse( ipAddress ), port );
+            CoreSocket = new Socket( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp );
+        }
+
+
+        /// <summary>
         /// 发送字节数据到服务器
         /// </summary>
         /// <param name="customer">用户自定义的标记数据</param>

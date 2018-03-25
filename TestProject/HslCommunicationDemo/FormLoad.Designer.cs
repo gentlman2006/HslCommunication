@@ -43,6 +43,8 @@
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.button8 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.label20 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -189,7 +191,8 @@
             // linkLabel2
             // 
             this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(696, 13);
+            this.linkLabel2.LinkColor = System.Drawing.Color.Orchid;
+            this.linkLabel2.Location = new System.Drawing.Point(563, 13);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(116, 17);
             this.linkLabel2.TabIndex = 6;
@@ -199,6 +202,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.button9);
             this.groupBox4.Controls.Add(this.button8);
             this.groupBox4.Location = new System.Drawing.Point(14, 274);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -216,15 +220,37 @@
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(150, 32);
             this.button8.TabIndex = 0;
-            this.button8.Text = "Hsl 协议 Tcp";
+            this.button8.Text = "Simplify Net";
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(15, 64);
+            this.button9.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(150, 32);
+            this.button9.TabIndex = 1;
+            this.button9.Text = "Udp Net";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.ForeColor = System.Drawing.Color.Green;
+            this.label20.Location = new System.Drawing.Point(695, 13);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(108, 17);
+            this.label20.TabIndex = 8;
+            this.label20.Text = "作者：Richard Hu";
             // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(815, 508);
+            this.Controls.Add(this.label20);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.linkLabel2);
             this.Controls.Add(this.linkLabel1);
@@ -263,6 +289,8 @@
         private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Label label20;
     }
 }
 

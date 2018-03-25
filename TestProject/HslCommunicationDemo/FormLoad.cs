@@ -115,5 +115,15 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button9_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormUdpNet form = new FormUdpNet( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

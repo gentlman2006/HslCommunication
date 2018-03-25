@@ -755,6 +755,48 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
+        #region File Operate
+
+        /// <summary>
+        /// 删除文件的操作
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        protected bool DeleteFileByName( string filename )
+        {
+            try
+            {
+                if (!File.Exists( filename )) return true;
+                File.Delete( filename );
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogNet?.WriteException( ToString(), "delete file failed:" + filename, ex );
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 预处理文件夹的名称，除去文件夹名称最后一个'\'，如果有的话
+        /// </summary>
+        /// <param name="folder">文件夹名称</param>
+        /// <returns></returns>
+        protected string PreprocessFolderName( string folder )
+        {
+            if (folder.EndsWith( @"\" ))
+            {
+                return folder.Substring( 0, folder.Length - 1 );
+            }
+            else
+            {
+                return folder;
+            }
+        }
+        
+
+        #endregion
+
         #region Virtual Method
 
 

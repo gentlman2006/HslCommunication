@@ -24,29 +24,13 @@ namespace TestTool.TestForm
 
 
         private bool m_IsModBusStart { get; set; } = false;
-        private ModBusTcpServer2 tcpServer;
         private long m_ReceivedTimes { get; set; }
 
 
         private void userButton1_Click(object sender, EventArgs e)
         {
             if (!m_IsModBusStart)
-            {
-                m_IsModBusStart = true;
-                tcpServer = new ModBusTcpServer2(); // 实例化服务器接收对象
-                tcpServer.LogNet = busTcpClient.LogNet; // 设置日志文件
-                tcpServer.OnDataReceived += TcpServer_OnDataReceived; // 关联数据接收方法
-                tcpServer.ServerStart(502); // 绑定端口
-                timer.Start(); // 启动服务
-
-                // 创建一个数据订阅
-                ModBusMonitorAddress monitorAddress = new ModBusMonitorAddress()
-                {
-                    Address = 0x02
-                };
-                monitorAddress.OnWrite += MonitorAddress_OnWrite;
-                monitorAddress.OnChange += MonitorAddress_OnChange;
-                tcpServer.AddSubcription(monitorAddress);
+            { 
             }
         }
 
@@ -108,7 +92,6 @@ namespace TestTool.TestForm
 
         private void FormModBusTcp_FormClosing(object sender, FormClosingEventArgs e)
         {
-            tcpServer?.ServerClose();
             busTcpClient?.ConnectClose();
         }
 
@@ -394,13 +377,10 @@ namespace TestTool.TestForm
 
         private void userButton8_Click_1(object sender, EventArgs e)
         {
-            // 写入数据
-            tcpServer.WriteRegister(40003, (short)12345);
         }
 
         private void userButton7_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(tcpServer.ReadShortRegister(ushort.Parse(textBox8.Text)).ToString());
 
             // tcpServer.WriteRegister( 100, Encoding.ASCII.GetBytes( "1234567890" ) );
         }
@@ -408,26 +388,6 @@ namespace TestTool.TestForm
 
         private void userButton40_Click(object sender, EventArgs e)
         {
-            bool Coil100 = tcpServer.ReadCoil(100);                  // 读线圈100的值
-            bool[] Coil100_109 = tcpServer.ReadCoil(100, 10);        // 读线圈数组
-            short Short100 = tcpServer.ReadShortRegister(100);       // 读取寄存器值
-            ushort UShort100 = tcpServer.ReadUShortRegister(100);    // 读取寄存器ushort值
-            int Int100 = tcpServer.ReadIntRegister(100);             // 读取寄存器int值
-            uint UInt100 = tcpServer.ReadUIntRegister(100);          // 读取寄存器uint值
-            float Float100 = tcpServer.ReadFloatRegister(100);       // 读取寄存器Float值
-            long Long100 = tcpServer.ReadLongRegister(100);          // 读取寄存器long值
-            ulong ULong100 = tcpServer.ReadULongRegister(100);       // 读取寄存器ulong值
-            double Double100 = tcpServer.ReadDoubleRegister(100);    // 读取寄存器double值
-
-            tcpServer.WriteCoil(100, true);              // 写线圈的通断
-            tcpServer.WriteRegister(100, (short)5);      // 写入short值
-            tcpServer.WriteRegister(100, (ushort)45678); // 写入ushort值
-            tcpServer.WriteRegister(100, 12345667);      // 写入int值
-            tcpServer.WriteRegister(100, (uint)12312312);// 写入uint值
-            tcpServer.WriteRegister(100, 123.456f);      // 写入float值
-            tcpServer.WriteRegister(100, 1231231231233L);// 写入long值
-            tcpServer.WriteRegister(100, 1212312313UL);  // 写入ulong值
-            tcpServer.WriteRegister(100, 123.456d);      // 写入double值
 
         }
 

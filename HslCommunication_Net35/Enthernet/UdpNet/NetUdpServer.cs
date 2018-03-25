@@ -38,6 +38,7 @@ namespace HslCommunication.Enthernet
                 IsStarted = true;
             }
         }
+
         /// <summary>
         /// 关闭引擎的操作
         /// </summary>
@@ -55,42 +56,42 @@ namespace HslCommunication.Enthernet
         /// 
         private void RefreshReceive( )
         {
-            AsyncStateOne state = new AsyncStateOne( );
-            state.WorkSocket = CoreSocket;
-            state.UdpEndPoint = new IPEndPoint( IPAddress.Any, 0 );
-            state.BytesContent = new byte[ReceiveCacheLength];
+            AppSession session = new AppSession( );
+            session.WorkSocket = CoreSocket;
+            session.UdpEndPoint = new IPEndPoint( IPAddress.Any, 0 );
+            session.BytesContent = new byte[ReceiveCacheLength];
             //WorkSocket.BeginReceiveFrom(state.BytesHead, 0, 8, SocketFlags.None, ref state.UdpEndPoint, new AsyncCallback(ReceiveAsyncCallback), state);
-            CoreSocket.BeginReceiveFrom( state.BytesContent, 0, ReceiveCacheLength, SocketFlags.None, ref state.UdpEndPoint, new AsyncCallback( AsyncCallback ), state );
+            CoreSocket.BeginReceiveFrom( session.BytesContent, 0, ReceiveCacheLength, SocketFlags.None, ref session.UdpEndPoint, new AsyncCallback( AsyncCallback ), session );
         }
 
         private void AsyncCallback( IAsyncResult ar )
         {
-            if (ar.AsyncState is AppSession state)
+            if (ar.AsyncState is AppSession session)
             {
                 try
                 {
-                    int received = state.WorkSocket.EndReceiveFrom( ar, ref state.UdpEndPoint );
+                    int received = session.WorkSocket.EndReceiveFrom( ar, ref session.UdpEndPoint );
                     //释放连接关联
-                    state.WorkSocket = null;
+                    session.WorkSocket = null;
                     //马上开始重新接收，提供性能保障
                     RefreshReceive( );
                     //处理数据
                     if (received >= HslProtocol.HeadByteLength)
                     {
                         //检测令牌
-                        if (CheckRemoteToken( state.BytesContent ))
+                        if (CheckRemoteToken( session.BytesContent ))
                         {
-                            state.IpEndPoint = (IPEndPoint)state.UdpEndPoint;
-                            int contentLength = BitConverter.ToInt32( state.BytesContent, HslProtocol.HeadByteLength - 4 );
+                            session.IpEndPoint = (IPEndPoint)session.UdpEndPoint;
+                            int contentLength = BitConverter.ToInt32( session.BytesContent, HslProtocol.HeadByteLength - 4 );
                             if (contentLength == received - HslProtocol.HeadByteLength)
                             {
                                 byte[] head = new byte[HslProtocol.HeadByteLength];
                                 byte[] content = new byte[contentLength];
 
-                                Array.Copy( state.BytesContent, 0, head, 0, HslProtocol.HeadByteLength );
+                                Array.Copy( session.BytesContent, 0, head, 0, HslProtocol.HeadByteLength );
                                 if (contentLength > 0)
                                 {
-                                    Array.Copy( state.BytesContent, 32, content, 0, contentLength );
+                                    Array.Copy( session.BytesContent, 32, content, 0, contentLength );
                                 }
 
                                 //解析内容
@@ -99,12 +100,12 @@ namespace HslCommunication.Enthernet
                                 int protocol = BitConverter.ToInt32( head, 0 );
                                 int customer = BitConverter.ToInt32( head, 4 );
                                 //丢给数据中心处理
-                                DataProcessingCenter( state, protocol, customer, content );
+                                DataProcessingCenter( session, protocol, customer, content );
                             }
                             else
                             {
                                 //否则记录到日志
-                                LogNet?.WriteWarn( ToString(), $"接收到异常数据，应接收长度：{(BitConverter.ToInt32( state.BytesContent, 4 ) + 8)} 实际接收：{received}" );
+                                LogNet?.WriteWarn( ToString(), $"接收到异常数据，应接收长度：{(BitConverter.ToInt32( session.BytesContent, 4 ) + 8)} 实际接收：{received}" );
                             }
                         }
                         else

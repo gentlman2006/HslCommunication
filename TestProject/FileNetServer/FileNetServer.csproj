@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3878075B-B8D7-4090-B094-29622581442F}</ProjectGuid>
+    <ProjectGuid>{1F22638D-76CB-4680-A715-3E305EA3486D}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>HslCommunicationDemo</RootNamespace>
-    <AssemblyName>HslCommunicationDemo</AssemblyName>
+    <RootNamespace>FileNetServer</RootNamespace>
+    <AssemblyName>FileNetServer</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HslCommunication, Version=4.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\HslCommunication_Net35\bin\Debug\HslCommunication.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,71 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FormUdpNet.cs">
+    <Compile Include="FormFileServer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormUdpNet.Designer.cs">
-      <DependentUpon>FormUdpNet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormSimplifyNet.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSimplifyNet.Designer.cs">
-      <DependentUpon>FormSimplifyNet.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormLoad.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormLoad.Designer.cs">
-      <DependentUpon>FormLoad.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormMelsecAscii.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormMelsecAscii.Designer.cs">
-      <DependentUpon>FormMelsecAscii.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormModbus.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormModbus.Designer.cs">
-      <DependentUpon>FormModbus.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormMelsecBinary.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormMelsecBinary.Designer.cs">
-      <DependentUpon>FormMelsecBinary.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormSiemens.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSiemens.Designer.cs">
-      <DependentUpon>FormSiemens.cs</DependentUpon>
+    <Compile Include="FormFileServer.Designer.cs">
+      <DependentUpon>FormFileServer.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FormUdpNet.resx">
-      <DependentUpon>FormUdpNet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormSimplifyNet.resx">
-      <DependentUpon>FormSimplifyNet.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormLoad.resx">
-      <DependentUpon>FormLoad.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormMelsecAscii.resx">
-      <DependentUpon>FormMelsecAscii.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormModbus.resx">
-      <DependentUpon>FormModbus.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormMelsecBinary.resx">
-      <DependentUpon>FormMelsecBinary.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormSiemens.resx">
-      <DependentUpon>FormSiemens.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

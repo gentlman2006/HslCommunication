@@ -362,5 +362,11 @@ namespace ModbusTcpServer
 
             label11.Text = "写入时间：" + DateTime.Now.ToString( ) + " 修改前：" + befor + " 修改后：" + after;
         }
+
+        private void linkLabel2_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            HslCommunication.BasicFramework.FormSupport form = new HslCommunication.BasicFramework.FormSupport( );
+            form.ShowDialog( );
+        }
     }
 }

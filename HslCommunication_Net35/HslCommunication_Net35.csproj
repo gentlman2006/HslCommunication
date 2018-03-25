@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -148,6 +149,7 @@
     <Compile Include="Core\IMessage\INetMessage.cs" />
     <Compile Include="Core\Net\IReadWriteNet.cs" />
     <Compile Include="Core\Net\NetworkBase\NetworkBase.cs" />
+    <Compile Include="Core\Net\NetworkBase\NetworkFileServerBase.cs" />
     <Compile Include="Core\Net\NetworkBase\NetworkServerBase.cs" />
     <Compile Include="Core\Net\StateOne\AppSession.cs" />
     <Compile Include="Core\Net\StateOne\AsyncStateSend.cs" />
@@ -164,6 +166,11 @@
     <Compile Include="Core\Types\HslPieItem.cs" />
     <Compile Include="Enthernet\DeviceNet\ClassDeviceNet.cs" />
     <Compile Include="Enthernet\ClassFileNet.cs" />
+    <Compile Include="Enthernet\FileNet\AdvancedFileServer.cs" />
+    <Compile Include="Enthernet\FileNet\FileMarkId.cs" />
+    <Compile Include="Enthernet\FileNet\GroupFileContainer.cs" />
+    <Compile Include="Enthernet\FileNet\GroupFileItem.cs" />
+    <Compile Include="Enthernet\FileNet\UltimateFileServer.cs" />
     <Compile Include="Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" />
     <Compile Include="Enthernet\ComplexNet\NetComplexClient.cs" />
     <Compile Include="Enthernet\ComplexNet\NetComplexServer.cs" />
@@ -391,7 +398,6 @@
     <None Include="imgaes\abstr11.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Enthernet\FileNet\" />
     <Folder Include="ModBus\ModbusRtu\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
