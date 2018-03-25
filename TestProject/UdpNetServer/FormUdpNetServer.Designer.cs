@@ -35,6 +35,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.userButton1 = new HslCommunication.Controls.UserButton();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label3
@@ -98,7 +100,7 @@
             this.userButton1.CustomerInformation = "";
             this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton1.Location = new System.Drawing.Point(258, 10);
+            this.userButton1.Location = new System.Drawing.Point(507, 13);
             this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton1.Name = "userButton1";
             this.userButton1.Size = new System.Drawing.Size(118, 39);
@@ -106,11 +108,30 @@
             this.userButton1.UIText = "启动服务";
             this.userButton1.Click += new System.EventHandler(this.userButton1_Click_1);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(257, 22);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(80, 17);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "缓冲区长度：";
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(343, 19);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(120, 23);
+            this.textBox4.TabIndex = 14;
+            this.textBox4.Text = "2048";
+            // 
             // FormUdpNetServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(994, 637);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.textBox4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
@@ -137,6 +158,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
         private HslCommunication.Controls.UserButton userButton1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBox4;
     }
 }
 

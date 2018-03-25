@@ -28,10 +28,19 @@
         /// </summary>
         private void InitializeComponent( )
         {
-            this.components = new System.ComponentModel.Container( );
+            this.SuspendLayout();
+            // 
+            // FormFileServer
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size( 800, 450 );
+            this.ClientSize = new System.Drawing.Size(969, 603);
+            this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Name = "FormFileServer";
             this.Text = "Form1";
+            this.ResumeLayout(false);
+
         }
 
         #endregion

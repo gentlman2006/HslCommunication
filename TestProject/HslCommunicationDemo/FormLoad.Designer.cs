@@ -45,6 +45,7 @@
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.label20 = new System.Windows.Forms.Label();
+            this.button10 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -53,6 +54,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button10);
             this.groupBox1.Controls.Add(this.button5);
             this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.button2);
@@ -245,6 +247,17 @@
             this.label20.TabIndex = 8;
             this.label20.Text = "作者：Richard Hu";
             // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(18, 184);
+            this.button10.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(150, 32);
+            this.button10.TabIndex = 4;
+            this.button10.Text = "Fetch/Write 协议";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -291,6 +304,7 @@
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Button button10;
     }
 }
 

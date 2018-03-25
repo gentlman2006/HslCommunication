@@ -125,5 +125,15 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button10_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormSiemensFW form = new FormSiemensFW( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

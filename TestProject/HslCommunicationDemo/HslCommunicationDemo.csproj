@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormSiemensFW.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSiemensFW.Designer.cs">
+      <DependentUpon>FormSiemensFW.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormUdpNet.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,6 +96,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormSiemensFW.resx">
+      <DependentUpon>FormSiemensFW.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormUdpNet.resx">
       <DependentUpon>FormUdpNet.cs</DependentUpon>
     </EmbeddedResource>

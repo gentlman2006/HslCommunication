@@ -34,11 +34,13 @@ namespace UdpNetServer
             try
             {
                 udpNetServer = new NetUdpServer( );
+                udpNetServer.ReceiveCacheLength = int.Parse( textBox4.Text );
                 udpNetServer.Token = new Guid( textBox3.Text );
                 udpNetServer.AcceptString += UdpNetServer_AcceptString;
                 udpNetServer.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + @"\Logs\log.txt" );
                 udpNetServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
                 udpNetServer.ServerStart( int.Parse( textBox1.Text ) );
+                userButton1.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -76,7 +78,6 @@ namespace UdpNetServer
         private void userButton1_Click_1( object sender, EventArgs e )
         {
             Start( );
-            userButton1.Enabled = false;
         }
     }
 }
