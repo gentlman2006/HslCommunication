@@ -7,8 +7,11 @@ using HslCommunication;
 using HslCommunication.Core.Net;
 using System.Net.Sockets;
 
-namespace HslCommunication.ModBus.ModbusTcp
+namespace HslCommunication.ModBus
 {
+    /// <summary>
+    /// Modbus-tcp的虚拟服务器，支持线圈和寄存器的读写操作
+    /// </summary>
     public class ModbusTcpServer : NetworkServerBase
     {
         #region Constructor
@@ -327,7 +330,7 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// <param name="address">起始地址</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public long ReadLong( ushort address )
+        public long ReadInt64( ushort address )
         {
             return byteTransform.TransInt64( ReadRegister( address, 4 ), 0 );
         }
@@ -340,12 +343,12 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public long[] ReadLong( ushort address, ushort length )
+        public long[] ReadInt64( ushort address, ushort length )
         {
             long[] result = new long[length];
             for (int i = 0; i < length; i++)
             {
-                result[i] = ReadLong( (ushort)(address + 4 * i) );
+                result[i] = ReadInt64( (ushort)(address + 4 * i) );
             }
             return result;
         }
@@ -356,7 +359,7 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// <param name="address">起始地址</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public ulong ReadULong( ushort address )
+        public ulong ReadUInt64( ushort address )
         {
             return byteTransform.TransUInt64( ReadRegister( address, 4 ), 0 );
         }
@@ -369,12 +372,12 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns></returns>
-        public ulong[] ReadULong( ushort address, ushort length )
+        public ulong[] ReadUInt64( ushort address, ushort length )
         {
             ulong[] result = new ulong[length];
             for (int i = 0; i < length; i++)
             {
-                result[i] = ReadULong( (ushort)(address + 4 * i) );
+                result[i] = ReadUInt64( (ushort)(address + 4 * i) );
             }
             return result;
         }
@@ -437,7 +440,7 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">字节数据</param>
-        public void WriteRegister( ushort address, byte[] value )
+        public void Write( ushort address, byte[] value )
         {
             hybirdLockRegister.Enter( );
             for (int i = 0; i < value.Length; i++)
@@ -454,9 +457,9 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// <param name="address">起始地址</param>
         /// <param name="high">高位数据</param>
         /// <param name="low">地位数据</param>
-        public void WriteRegister( ushort address, byte high, byte low )
+        public void Write( ushort address, byte high, byte low )
         {
-            WriteRegister( address, new byte[] { high, low } );
+            Write( address, new byte[] { high, low } );
         }
 
 
@@ -465,9 +468,9 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, short value )
+        public void Write( ushort address, short value )
         {
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
         /// <summary>
@@ -475,10 +478,10 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, short[] value )
+        public void Write( ushort address, short[] value )
         {
             if (value == null) return;
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
 
@@ -487,9 +490,9 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, ushort value )
+        public void Write( ushort address, ushort value )
         {
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
         /// <summary>
@@ -497,10 +500,10 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, ushort[] value )
+        public void Write( ushort address, ushort[] value )
         {
             if (value == null) return;
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
 
@@ -509,9 +512,9 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, int value )
+        public void Write( ushort address, int value )
         {
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
         /// <summary>
@@ -519,10 +522,10 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, int[] value )
+        public void Write( ushort address, int[] value )
         {
             if (value == null) return;
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
 
@@ -531,9 +534,9 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, uint value )
+        public void Write( ushort address, uint value )
         {
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
 
@@ -542,10 +545,10 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, uint[] value )
+        public void Write( ushort address, uint[] value )
         {
             if (value == null) return;
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
 
@@ -554,9 +557,9 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, float value )
+        public void Write( ushort address, float value )
         {
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
 
@@ -565,10 +568,10 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, float[] value )
+        public void Write( ushort address, float[] value )
         {
             if (value == null) return;
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
         /// <summary>
@@ -576,9 +579,9 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, long value )
+        public void Write( ushort address, long value )
         {
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
 
@@ -587,33 +590,10 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, long[] value )
+        public void Write( ushort address, long[] value )
         {
             if (value == null) return;
-            WriteRegister( address, byteTransform.TransByte( value ) );
-        }
-
-
-        /// <summary>
-        /// 往Modbus服务器中的指定寄存器写入数据
-        /// </summary>
-        /// <param name="address">起始地址</param>
-        /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, ulong value )
-        {
-            WriteRegister( address, byteTransform.TransByte( value ) );
-        }
-
-
-        /// <summary>
-        /// 往Modbus服务器中的指定寄存器写入数组
-        /// </summary>
-        /// <param name="address">起始地址</param>
-        /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, ulong[] value )
-        {
-            if (value == null) return;
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
 
@@ -622,9 +602,32 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, double value )
+        public void Write( ushort address, ulong value )
         {
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="value">数据值</param>
+        public void Write( ushort address, ulong[] value )
+        {
+            if (value == null) return;
+            Write( address, byteTransform.TransByte( value ) );
+        }
+
+
+        /// <summary>
+        /// 往Modbus服务器中的指定寄存器写入数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="value">数据值</param>
+        public void Write( ushort address, double value )
+        {
+            Write( address, byteTransform.TransByte( value ) );
         }
 
         /// <summary>
@@ -632,12 +635,21 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
-        public void WriteRegister( ushort address, double[] value )
+        public void Write( ushort address, double[] value )
         {
             if (value == null) return;
-            WriteRegister( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value ) );
         }
 
+        /// <summary>
+        /// 往Mobus服务器中的指定寄存器写入字符串
+        /// </summary>
+        /// <param name="address">其实地址</param>
+        /// <param name="value">ASCII编码的字符串的信息</param>
+        public void Write(ushort address, string value)
+        {
+            Write( address, byteTransform.TransByte( value ) );
+        }
 
         #endregion
 
@@ -910,7 +922,7 @@ namespace HslCommunication.ModBus.ModbusTcp
                 {
                     state.WorkSocket?.Close( );
                     state.hybirdLock.Leave( );
-                    LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，回发消息失败！", ex );
+                    LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，开始回发消息失败！", ex );
                     return;
                 }
 
@@ -933,7 +945,7 @@ namespace HslCommunication.ModBus.ModbusTcp
                 {
                     state.WorkSocket?.Close( );
                     state = null;
-                    LogNet?.WriteException( ToString(), "内容数据回发失败！", ex );
+                    LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，确认回发消息失败！", ex );
                 }
             }
         }
@@ -952,6 +964,8 @@ namespace HslCommunication.ModBus.ModbusTcp
         {
             byte[] buffer = new byte[9];
             Array.Copy( modbus, 0, buffer, 0, 7 );
+            buffer[4] = 0x00;
+            buffer[5] = 0x03;
             buffer[7] = (byte)(modbus[7] + 0x80);
             buffer[8] = error;
             return buffer;
@@ -965,11 +979,13 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// <returns></returns>
         private byte[] CreateReadBack( byte[] modbus, byte[] content )
         {
-            byte[] back = new byte[9 + content.Length];
-            Array.Copy( modbus, 0, content, 0, 8 );
-            back[8] = (byte)content.Length;
-            Array.Copy( content, 0, back, 9, content.Length );
-            return back;
+            byte[] buffer = new byte[9 + content.Length];
+            Array.Copy( modbus, 0, buffer, 0, 8 );
+            buffer[4] = (byte)((buffer.Length - 6) / 256);
+            buffer[5] = (byte)((buffer.Length - 6) % 256);
+            buffer[8] = (byte)content.Length;
+            Array.Copy( content, 0, buffer, 9, content.Length );
+            return buffer;
         }
 
         /// <summary>
@@ -979,12 +995,13 @@ namespace HslCommunication.ModBus.ModbusTcp
         /// <returns></returns>
         private byte[] CreateWriteBack(byte[] modbus)
         {
-            byte[] back = new byte[12];
-            Array.Copy( modbus, 0, modbus, 0, 12 );
-            modbus[4] = 0x00;
-            modbus[5] = 0x06;
-            return back;
+            byte[] buffer = new byte[12];
+            Array.Copy( modbus, 0, buffer, 0, 12 );
+            buffer[4] = 0x00;
+            buffer[5] = 0x06;
+            return buffer;
         }
+
 
         private byte[] ReadCoilBack(byte[] modbus )
         {
@@ -1078,7 +1095,7 @@ namespace HslCommunication.ModBus.ModbusTcp
                 ushort address = byteTransform.TransUInt16( modbus, 8 );
                 short ValueOld = ReadInt16( address );
                 // 写入到寄存器
-                WriteRegister( address, modbus[10], modbus[11] );
+                Write( address, modbus[10], modbus[11] );
                 short ValueNew = ReadInt16( address );
                 // 触发写入请求
                 OnRegisterBeforWrite( address, ValueOld, ValueNew );
@@ -1147,7 +1164,7 @@ namespace HslCommunication.ModBus.ModbusTcp
                 for (ushort i = 0; i < length; i++)
                 {
                     short ValueOld = ReadInt16( (ushort)(address + i) );
-                    WriteRegister( (ushort)(address + i), modbus[2 * i + 13], modbus[2 * i + 14] );
+                    Write( (ushort)(address + i), modbus[2 * i + 13], modbus[2 * i + 14] );
                     short ValueNew = ReadInt16( (ushort)(address + i) );
                     // 触发写入请求
                     addresses[i] = new MonitorAddress( )
@@ -1231,6 +1248,17 @@ namespace HslCommunication.ModBus.ModbusTcp
 
         #endregion
 
+        #region Object Override
 
+        /// <summary>
+        /// 获取本对象的字符串表示形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            return "ModbusTcpServer";
+        }
+
+        #endregion
     }
 }

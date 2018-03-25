@@ -196,10 +196,12 @@
     <Compile Include="Core\Net\NetBase.cs" />
     <Compile Include="Core\Types\OperateResult.cs" />
     <Compile Include="ModBus\ModbusInfo.cs" />
+    <Compile Include="ModBus\ModBusMonitorAddress.cs" />
+    <Compile Include="ModBus\ModBusState.cs" />
     <Compile Include="ModBus\ModbusTcp\ModbusTcpNet.cs" />
-    <Compile Include="ModBus\ModBusTcpServer.cs" />
     <Compile Include="Core\Types\IDataTransfer.cs" />
     <Compile Include="ModBus\ModbusTcp\ModbusTcpServer.cs" />
+    <Compile Include="ModBus\MonitorAddress.cs" />
     <Compile Include="Profinet\Melsec\Melsec1ENet.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcAsciiNet.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcDataType.cs" />

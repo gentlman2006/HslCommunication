@@ -51,16 +51,9 @@ namespace ModbusTcpServer
         /// <param name="result"></param>
         /// <param name="address"></param>
         /// <param name="textBox"></param>
-        private void readResultRender<T>( OperateResult<T> result, string address, TextBox textBox )
+        private void readResultRender<T>( T result, string address, TextBox textBox )
         {
-            if (result.IsSuccess)
-            {
-                textBox.AppendText( DateTime.Now.ToString( "[HH:mm:ss] " ) + $"[{address}] {result.Content}{Environment.NewLine}" );
-            }
-            else
-            {
-                MessageBox.Show( DateTime.Now.ToString( "[HH:mm:ss] " ) + $"[{address}] 读取失败{Environment.NewLine}原因：{result.ToMessageShowString( )}" );
-            }
+            textBox.AppendText( DateTime.Now.ToString( "[HH:mm:ss] " ) + $"[{address}] {result}{Environment.NewLine}" );
         }
 
         /// <summary>
@@ -68,16 +61,9 @@ namespace ModbusTcpServer
         /// </summary>
         /// <param name="result"></param>
         /// <param name="address"></param>
-        private void writeResultRender( OperateResult result, string address )
+        private void writeResultRender( string address )
         {
-            if (result.IsSuccess)
-            {
-                MessageBox.Show( DateTime.Now.ToString( "[HH:mm:ss] " ) + $"[{address}] 写入成功" );
-            }
-            else
-            {
-                MessageBox.Show( DateTime.Now.ToString( "[HH:mm:ss] " ) + $"[{address}] 写入失败{Environment.NewLine}原因：{result.ToMessageShowString( )}" );
-            }
+            MessageBox.Show( DateTime.Now.ToString( "[HH:mm:ss] " ) + $"[{address}] 写入成功" );
         }
 
 
@@ -92,25 +78,20 @@ namespace ModbusTcpServer
                 MessageBox.Show( "端口输入不正确！" );
                 return;
             }
-            
 
-            busTcpClient?.ConnectClose( );
-            busTcpClient = new ModbusTcpNet( textBox1.Text, port, station );
+
 
             try
             {
-                OperateResult connect = busTcpClient.ConnectServer( );
-                if (connect.IsSuccess)
-                {
-                    MessageBox.Show( "连接成功！" );
-                    button2.Enabled = true;
-                    button1.Enabled = false;
-                    panel2.Enabled = true;
-                }
-                else
-                {
-                    MessageBox.Show( "连接失败！" );
-                }
+
+                busTcpServer = new HslCommunication.ModBus.ModbusTcpServer( );
+                busTcpServer.LogNet = new HslCommunication.LogNet.LogNetSingle( "logs.txt" );
+                busTcpServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
+                busTcpServer.OnDataReceived += BusTcpServer_OnDataReceived;
+                busTcpServer.ServerStart( port );
+
+                button1.Enabled = false;
+                panel2.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -118,17 +99,23 @@ namespace ModbusTcpServer
             }
         }
 
-        private void button2_Click( object sender, EventArgs e )
+        private void BusTcpServer_OnDataReceived( byte[] modbus )
         {
-            // 断开连接
-            busTcpClient.ConnectClose( );
-            button2.Enabled = false;
-            button1.Enabled = true;
-            panel2.Enabled = false;
+            textBox1.AppendText( "接收数据：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString(modbus) + Environment.NewLine );
         }
 
+        private void LogNet_BeforeSaveToFile( object sender, HslCommunication.LogNet.HslEventArgs e )
+        {
+            if(InvokeRequired)
+            {
+                BeginInvoke( new Action<object, HslCommunication.LogNet.HslEventArgs>( LogNet_BeforeSaveToFile ), sender, e );
+                return;
+            }
 
-        private ModBusTcpServer2
+            textBox1.AppendText( e.HslMessage.ToString( ) + Environment.NewLine );
+        }
+        
+        private HslCommunication.ModBus.ModbusTcpServer busTcpServer;
         
 
         #endregion
@@ -139,59 +126,59 @@ namespace ModbusTcpServer
         private void button_read_bool_Click( object sender, EventArgs e )
         {
             // 读取bool变量
-            readResultRender( busTcpClient.ReadCoil( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( busTcpServer.ReadCoil( ushort.Parse( textBox3.Text ) ), textBox3.Text, textBox4 );
         }
 
         private void button_read_short_Click( object sender, EventArgs e )
         {
             // 读取short变量
-            readResultRender( busTcpClient.ReadInt16( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( busTcpServer.ReadInt16( ushort.Parse( textBox3.Text ) ), textBox3.Text, textBox4 );
         }
 
         private void button_read_ushort_Click( object sender, EventArgs e )
         {
             // 读取ushort变量
-            readResultRender( busTcpClient.ReadUInt16( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( busTcpServer.ReadUInt16( ushort.Parse( textBox3.Text ) ), textBox3.Text, textBox4 );
         }
 
         private void button_read_int_Click( object sender, EventArgs e )
         {
             // 读取int变量
-            readResultRender( busTcpClient.ReadInt32(  textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( busTcpServer.ReadInt32( ushort.Parse( textBox3.Text ) ), textBox3.Text, textBox4 );
         }
         private void button_read_uint_Click( object sender, EventArgs e )
         {
             // 读取uint变量
-            readResultRender( busTcpClient.ReadUInt32( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( busTcpServer.ReadUInt32( ushort.Parse( textBox3.Text ) ), textBox3.Text, textBox4 );
         }
         private void button_read_long_Click( object sender, EventArgs e )
         {
             // 读取long变量
-            readResultRender( busTcpClient.ReadInt64( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( busTcpServer.ReadInt64( ushort.Parse( textBox3.Text ) ), textBox3.Text, textBox4 );
         }
 
         private void button_read_ulong_Click( object sender, EventArgs e )
         {
             // 读取ulong变量
-            readResultRender( busTcpClient.ReadUInt64( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( busTcpServer.ReadUInt64( ushort.Parse( textBox3.Text ) ), textBox3.Text, textBox4 );
         }
 
         private void button_read_float_Click( object sender, EventArgs e )
         {
             // 读取float变量
-            readResultRender( busTcpClient.ReadFloat( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( busTcpServer.ReadFloat( ushort.Parse( textBox3.Text ) ), textBox3.Text, textBox4 );
         }
 
         private void button_read_double_Click( object sender, EventArgs e )
         {
             // 读取double变量
-            readResultRender( busTcpClient.ReadDouble( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( busTcpServer.ReadDouble( ushort.Parse( textBox3.Text ) ), textBox3.Text, textBox4 );
         }
 
         private void button_read_string_Click( object sender, EventArgs e )
         {
             // 读取字符串
-            readResultRender( busTcpClient.ReadString( textBox3.Text , ushort.Parse( textBox5.Text ) ), textBox3.Text, textBox4 );
+            readResultRender( busTcpServer.ReadString( ushort.Parse( textBox3.Text ), ushort.Parse( textBox5.Text ) ), textBox3.Text, textBox4 );
         }
 
 
@@ -205,7 +192,8 @@ namespace ModbusTcpServer
             // bool写入
             try
             {
-                writeResultRender( busTcpClient.WriteCoil( textBox8.Text, bool.Parse( textBox7.Text ) ), textBox8.Text );
+                busTcpServer.WriteCoil( ushort.Parse( textBox8.Text ), bool.Parse( textBox7.Text ) );
+                writeResultRender( textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -218,7 +206,8 @@ namespace ModbusTcpServer
             // short写入
             try
             {
-                writeResultRender( busTcpClient.Write( textBox8.Text , short.Parse( textBox7.Text ) ), textBox8.Text );
+                busTcpServer.Write( ushort.Parse( textBox8.Text ), short.Parse( textBox7.Text ) );
+                writeResultRender( textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -231,7 +220,8 @@ namespace ModbusTcpServer
             // ushort写入
             try
             {
-                writeResultRender( busTcpClient.Write( textBox8.Text , ushort.Parse( textBox7.Text ) ), textBox8.Text );
+                busTcpServer.Write( ushort.Parse( textBox8.Text ), ushort.Parse( textBox7.Text ) );
+                writeResultRender( textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -245,7 +235,8 @@ namespace ModbusTcpServer
             // int写入
             try
             {
-                writeResultRender( busTcpClient.Write( textBox8.Text , int.Parse( textBox7.Text ) ), textBox8.Text );
+                busTcpServer.Write( ushort.Parse( textBox8.Text ), int.Parse( textBox7.Text ) );
+                writeResultRender(  textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -258,7 +249,8 @@ namespace ModbusTcpServer
             // uint写入
             try
             {
-                writeResultRender( busTcpClient.Write( textBox8.Text , uint.Parse( textBox7.Text ) ), textBox8.Text );
+                busTcpServer.Write( ushort.Parse( textBox8.Text ), uint.Parse( textBox7.Text ) );
+                writeResultRender( textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -271,7 +263,8 @@ namespace ModbusTcpServer
             // long写入
             try
             {
-                writeResultRender( busTcpClient.Write( textBox8.Text , long.Parse( textBox7.Text ) ), textBox8.Text );
+                busTcpServer.Write( ushort.Parse( textBox8.Text ), long.Parse( textBox7.Text ) );
+                writeResultRender(  textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -284,7 +277,8 @@ namespace ModbusTcpServer
             // ulong写入
             try
             {
-                writeResultRender( busTcpClient.Write( textBox8.Text , ulong.Parse( textBox7.Text ) ), textBox8.Text );
+                busTcpServer.Write( ushort.Parse( textBox8.Text ), ulong.Parse( textBox7.Text ) );
+                writeResultRender(  textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -297,7 +291,8 @@ namespace ModbusTcpServer
             // float写入
             try
             {
-                writeResultRender( busTcpClient.Write( textBox8.Text , float.Parse( textBox7.Text ) ), textBox8.Text );
+                busTcpServer.Write( ushort.Parse( textBox8.Text ), float.Parse( textBox7.Text ) );
+                writeResultRender(  textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -310,7 +305,8 @@ namespace ModbusTcpServer
             // double写入
             try
             {
-                writeResultRender( busTcpClient.Write( textBox8.Text , double.Parse( textBox7.Text ) ), textBox8.Text );
+                busTcpServer.Write( ushort.Parse( textBox8.Text ), double.Parse( textBox7.Text ) );
+                writeResultRender(  textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -324,7 +320,8 @@ namespace ModbusTcpServer
             // string写入
             try
             {
-                writeResultRender( busTcpClient.Write( textBox8.Text , textBox7.Text ), textBox8.Text );
+                busTcpServer.Write( ushort.Parse( textBox8.Text ), textBox7.Text );
+                writeResultRender(  textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -332,9 +329,38 @@ namespace ModbusTcpServer
             }
         }
 
-        
+
 
         #endregion
-        
+
+        private void button2_Click( object sender, EventArgs e )
+        {
+            // 点击数据监视
+            ModBusMonitorAddress monitorAddress = new ModBusMonitorAddress( );
+            monitorAddress.Address = ushort.Parse( textBox6.Text );
+            monitorAddress.OnChange += MonitorAddress_OnChange;
+            monitorAddress.OnWrite += MonitorAddress_OnWrite;
+            busTcpServer.AddSubcription( monitorAddress );
+            button2.Enabled = false;
+        }
+
+        private void MonitorAddress_OnWrite( ModBusMonitorAddress monitor, short value )
+        {
+            // 当有客户端写入时就触发
+        }
+
+        private void MonitorAddress_OnChange( ModBusMonitorAddress monitor, short befor, short after )
+        {
+            // 当该地址的值更改的时候触发
+            if(InvokeRequired)
+            {
+                BeginInvoke( new Action<ModBusMonitorAddress, short, short>( MonitorAddress_OnChange ), monitor, befor, after );
+                return;
+            }
+
+            textBox9.Text = after.ToString( );
+
+            label11.Text = "写入时间：" + DateTime.Now.ToString( ) + " 修改前：" + befor + " 修改后：" + after;
+        }
     }
 }

@@ -311,10 +311,10 @@ namespace HslCommunication.ModBus
         {
             switch (code)
             {
-                case 0x01: return "不支持该功能码";
-                case 0x02: return "越界";
-                case 0x03: return "寄存器数量超出范围";
-                case 0x04: return "读写异常";
+                case ModbusInfo.FunctionCodeNotSupport: return "不支持该功能码";
+                case ModbusInfo.FunctionCodeOverBound: return "越界";
+                case ModbusInfo.FunctionCodeQuantityOver: return "寄存器数量超出范围";
+                case ModbusInfo.FunctionCodeReadWriteException: return "读写异常";
                 default: return "未知异常";
             }
         }

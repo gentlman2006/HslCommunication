@@ -11,6 +11,15 @@ namespace HslCommunication.ModBus
     /// </summary>
     public class ModbusInfo
     {
+
+        /*****************************************************************************************
+         * 
+         *    本服务器和客户端支持的常用功能码
+         * 
+         *******************************************************************************************/
+
+
+
         /// <summary>
         /// 读取线圈
         /// </summary>
@@ -45,6 +54,36 @@ namespace HslCommunication.ModBus
         /// 写多个寄存器
         /// </summary>
         public const byte WriteRegister = 0x10;
+
+
+
+
+
+
+        /*****************************************************************************************
+         * 
+         *    本服务器和客户端支持的异常返回
+         * 
+         *******************************************************************************************/
+
+
+
+        /// <summary>
+        /// 不支持该功能码
+        /// </summary>
+        public const byte FunctionCodeNotSupport = 0x01;
+        /// <summary>
+        /// 该地址越界
+        /// </summary>
+        public const byte FunctionCodeOverBound = 0x02;
+        /// <summary>
+        /// 读取长度超过最大值
+        /// </summary>
+        public const byte FunctionCodeQuantityOver = 0x03;
+        /// <summary>
+        /// 读写异常
+        /// </summary>
+        public const byte FunctionCodeReadWriteException = 0x04;
 
     }
 }
