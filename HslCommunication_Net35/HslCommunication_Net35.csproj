@@ -165,11 +165,12 @@
     <Compile Include="Core\Transfer\ReverseWordTransform.cs" />
     <Compile Include="Core\Types\HslPieItem.cs" />
     <Compile Include="Enthernet\DeviceNet\ClassDeviceNet.cs" />
-    <Compile Include="Enthernet\ClassFileNet.cs" />
     <Compile Include="Enthernet\FileNet\AdvancedFileServer.cs" />
+    <Compile Include="Enthernet\FileNet\FileClientBase.cs" />
     <Compile Include="Enthernet\FileNet\FileMarkId.cs" />
     <Compile Include="Enthernet\FileNet\GroupFileContainer.cs" />
     <Compile Include="Enthernet\FileNet\GroupFileItem.cs" />
+    <Compile Include="Enthernet\FileNet\IntegrationFileClient.cs" />
     <Compile Include="Enthernet\FileNet\UltimateFileServer.cs" />
     <Compile Include="Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" />
     <Compile Include="Enthernet\ComplexNet\NetComplexClient.cs" />
@@ -200,7 +201,7 @@
     <Compile Include="LogNet\Logs\LogNetDateTime.cs" />
     <Compile Include="LogNet\Logs\LogNetFileSize.cs" />
     <Compile Include="LogNet\Logs\LogNetSingle.cs" />
-    <Compile Include="Core\Net\NetBase.cs" />
+    <Compile Include="Core\Net\NetSupport.cs" />
     <Compile Include="Core\Types\OperateResult.cs" />
     <Compile Include="ModBus\ModbusInfo.cs" />
     <Compile Include="ModBus\ModBusMonitorAddress.cs" />

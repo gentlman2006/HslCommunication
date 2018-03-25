@@ -143,7 +143,9 @@ namespace HslCommunication.Enthernet
                         while(next != endByte)
                         {
                             ms.WriteByte( next );
-                            next = NetSupport.ReadBytesFromSocket( stateone.WorkSocket, 1 )[0];
+                            byte[] buffer = new byte[1];
+                            stateone.WorkSocket.Receive( buffer, 0, 1, SocketFlags.None );
+                            next = buffer[0];
                         }
 
                         // 接收完成

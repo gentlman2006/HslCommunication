@@ -51,12 +51,12 @@ namespace TestTool.TestForm
 
         #region 客户端核心引擎
 
-        private IntegrationFileClient integrationFileClient;
+        private IntegrationFileClient2 integrationFileClient;
 
         private void IntegrationFileClientInitialization()
         {
             // 定义连接服务器的一些属性，超时时间，IP及端口信息
-            integrationFileClient = new IntegrationFileClient()
+            integrationFileClient = new IntegrationFileClient2()
             {
                 ConnectTimeout = 5000,
                 ServerIpEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("127.0.0.1"), 34567),

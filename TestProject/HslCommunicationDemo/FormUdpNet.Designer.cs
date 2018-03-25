@@ -294,7 +294,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "FormUdpNet";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Simplify网络客户端";
+            this.Text = "Udp网络客户端";
             this.Load += new System.EventHandler(this.FormClient_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

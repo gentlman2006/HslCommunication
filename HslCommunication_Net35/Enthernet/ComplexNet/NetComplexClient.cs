@@ -112,7 +112,7 @@ namespace HslCommunication.Enthernet
         {
             IsQuie = true;
             if (Is_Client_Start)
-                SendBytes( stateone, NetSupport.CommandBytes( HslProtocol.ProtocolClientQuit, 0, Token, null ) );
+                SendBytes( stateone, HslProtocol.CommandBytes( HslProtocol.ProtocolClientQuit, 0, Token, null ) );
 
             thread_heart_check?.Abort( );
             Is_Client_Start = false;
@@ -216,7 +216,7 @@ namespace HslCommunication.Enthernet
             // SendBytes(stateone, CommunicationCode.CommandBytes(CommunicationCode.Hsl_Protocol_Check_Secends));
             byte[] bytesTemp = new byte[16];
             BitConverter.GetBytes( DateTime.Now.Ticks ).CopyTo( bytesTemp, 0 );
-            SendBytes( stateone, NetSupport.CommandBytes( HslProtocol.ProtocolCheckSecends, 0, Token, bytesTemp ) );
+            SendBytes( stateone, HslProtocol.CommandBytes( HslProtocol.ProtocolCheckSecends, 0, Token, bytesTemp ) );
 
 
             stateone.HeartTime = DateTime.Now;
@@ -290,7 +290,7 @@ namespace HslCommunication.Enthernet
         {
             if (Is_Client_Start)
             {
-                SendBytes( stateone, NetSupport.CommandBytes( customer, Token, str ) );
+                SendBytes( stateone, HslProtocol.CommandBytes( customer, Token, str ) );
             }
         }
         /// <summary>
@@ -302,7 +302,7 @@ namespace HslCommunication.Enthernet
         {
             if (Is_Client_Start)
             {
-                SendBytes( stateone, NetSupport.CommandBytes( customer, Token, bytes ) );
+                SendBytes( stateone, HslProtocol.CommandBytes( customer, Token, bytes ) );
             }
         }
 
@@ -367,7 +367,7 @@ namespace HslCommunication.Enthernet
                 {
                     byte[] send = new byte[16];
                     BitConverter.GetBytes( DateTime.Now.Ticks ).CopyTo( send, 0 );
-                    SendBytes( stateone, NetSupport.CommandBytes( HslProtocol.ProtocolCheckSecends, 0, Token, send ) );
+                    SendBytes( stateone, HslProtocol.CommandBytes( HslProtocol.ProtocolCheckSecends, 0, Token, send ) );
                     double timeSpan = (DateTime.Now - stateone.HeartTime).TotalSeconds;
                     if (timeSpan > 1 * 8)//8次没有收到失去联系
                     {

@@ -55,34 +55,10 @@ namespace HslCommunication.Enthernet
             Socket socket = obj as Socket;
             try
             {
-                //为了兼容原来旧的升级服务，暂时停止令牌功能
-                //接收令牌 2017-03-14 10:02:20
-                //InfoTcp infoTcp = new InfoTcp()
-                //{
-                //    Worksocket = socket,
-                //};
-                //
-                //ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolCheckConnect), infoTcp);
-                //try
-                //{
-                //    byte[] token = ReadFromSocket(socket, 16);
-                //    infoTcp.IsConnect = true;
-                //    if (!IsTwoBytesEquel(KeyToken.ToByteArray(), token))
-                //    {
-                //        socket.Close();
-                //        log_record.SaveNormal("接收到验证失败的连接");
-                //        return;
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    socket?.Close();
-                //    log_record.SaveNormal("令牌接收出错：" + ex.Message);
-                //    return;
-                //}
+                OperateResult<byte[]> receive = Receive( socket, 4 );
+                if (!receive.IsSuccess) return;
 
-
-                byte[] ReceiveByte = NetSupport.ReadBytesFromSocket(socket, 4);
+                byte[] ReceiveByte = receive.Content;
                 int Protocol = BitConverter.ToInt32(ReceiveByte, 0);
 
                 if (Protocol == 0x1001 || Protocol == 0x1002)

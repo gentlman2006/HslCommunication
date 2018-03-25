@@ -359,7 +359,7 @@ namespace HslCommunication.Enthernet
         /// <param name="str">发送的文本</param>
         public void Send( AppSession stateone, NetHandle customer, string str )
         {
-            SendBytes( stateone, NetSupport.CommandBytes( customer, Token, str ) );
+            SendBytes( stateone, HslProtocol.CommandBytes( customer, Token, str ) );
         }
         /// <summary>
         /// 服务器端用于发送字节的方法
@@ -369,7 +369,7 @@ namespace HslCommunication.Enthernet
         /// <param name="bytes">实际发送的数据</param>
         public void Send( AppSession stateone, NetHandle customer, byte[] bytes )
         {
-            SendBytes( stateone, NetSupport.CommandBytes( customer, Token, bytes ) );
+            SendBytes( stateone, HslProtocol.CommandBytes( customer, Token, bytes ) );
         }
 
         private void SendBytes( AppSession stateone, byte[] content )
@@ -456,7 +456,7 @@ namespace HslCommunication.Enthernet
             if (protocol == HslProtocol.ProtocolCheckSecends)
             {
                 BitConverter.GetBytes( DateTime.Now.Ticks ).CopyTo( content, 8 );
-                SendBytes( session, NetSupport.CommandBytes( HslProtocol.ProtocolCheckSecends, customer, Token, content ) );
+                SendBytes( session, HslProtocol.CommandBytes( HslProtocol.ProtocolCheckSecends, customer, Token, content ) );
                 session.HeartTime = DateTime.Now;
             }
             else if (protocol == HslProtocol.ProtocolClientQuit)

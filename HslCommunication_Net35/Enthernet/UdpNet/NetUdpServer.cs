@@ -95,7 +95,7 @@ namespace HslCommunication.Enthernet
                                 }
 
                                 //解析内容
-                                content = NetSupport.CommandAnalysis( head, content );
+                                content = HslProtocol.CommandAnalysis( head, content );
 
                                 int protocol = BitConverter.ToInt32( head, 0 );
                                 int customer = BitConverter.ToInt32( head, 4 );
