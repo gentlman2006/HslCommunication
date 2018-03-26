@@ -81,6 +81,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.button3 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -93,6 +94,7 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.textBox2);
             this.panel1.Controls.Add(this.label3);
@@ -641,6 +643,16 @@
             this.linkLabel2.Text = "创作不易，感谢打赏";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(379, 11);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(91, 28);
+            this.button3.TabIndex = 5;
+            this.button3.Text = "客户端过滤";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // FormModbus
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -731,5 +743,6 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.Button button3;
     }
 }

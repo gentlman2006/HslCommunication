@@ -368,5 +368,14 @@ namespace ModbusTcpServer
             HslCommunication.BasicFramework.FormSupport form = new HslCommunication.BasicFramework.FormSupport( );
             form.ShowDialog( );
         }
+
+        private void button3_Click( object sender, EventArgs e )
+        {
+            // 信任客户端配置
+            using (FormTrustedClient form = new FormTrustedClient( busTcpServer ))
+            {
+                form.ShowDialog( );
+            }
+        }
     }
 }

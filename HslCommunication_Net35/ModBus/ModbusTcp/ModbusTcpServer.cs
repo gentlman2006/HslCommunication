@@ -25,6 +25,7 @@ namespace HslCommunication.ModBus
             Register = new byte[65536 * 2];
             hybirdLockCoil = new SimpleHybirdLock( );
             hybirdLockRegister = new SimpleHybirdLock( );
+            lock_trusted_clients = new SimpleHybirdLock( );
 
             subscriptions = new List<ModBusMonitorAddress>( );
             subcriptionHybirdLock = new SimpleHybirdLock( );
@@ -680,6 +681,18 @@ namespace HslCommunication.ModBus
                     LogNet?.WriteException( ToString( ), "Ip信息获取失败", ex );
                 }
 
+                if(IsTrustedClientsOnly)
+                {
+                    // 检查受信任的情况
+                    if(!CheckIpAddressTrusted( state.IpAddress ))
+                    {
+                        // 客户端不被信任，退出
+                        LogNet?.WriteDebug( ToString( ), $"客户端 [ {state.IpEndPoint} ] 不被信任，禁止登录！" );
+                        state.WorkSocket.Close( );
+                        return;
+                    }
+                }
+
                 LogNet?.WriteDebug( ToString( ), $"客户端 [ {state.IpEndPoint} ] 上线" );
 
                 try
@@ -1245,6 +1258,83 @@ namespace HslCommunication.ModBus
             }
             subcriptionHybirdLock.Leave( );
         }
+
+        #endregion
+
+        #region Trust Client Only
+
+        private List<string> TrustedClients = null;              // 受信任的客户端
+        private bool IsTrustedClientsOnly = false;               // 是否启用仅仅受信任的客户端登录
+        private SimpleHybirdLock lock_trusted_clients;           // 受信任的客户端的列表
+
+        /// <summary>
+        /// 设置并启动受信任的客户端登录并读写，如果为null，将关闭对客户端的ip验证
+        /// </summary>
+        /// <param name="clients">受信任的客户端列表</param>
+        public void SetTrustedIpAddress(List<string> clients)
+        {
+            lock_trusted_clients.Enter( );
+            if (clients != null)
+            {
+                TrustedClients = clients.Select( m =>
+                 {
+                     System.Net.IPAddress iPAddress = System.Net.IPAddress.Parse( m );
+                     return iPAddress.ToString( );
+                 } ).ToList( );
+                IsTrustedClientsOnly = true;
+            }
+            else
+            {
+                TrustedClients = new List<string>( );
+                IsTrustedClientsOnly = false;
+            }
+            lock_trusted_clients.Leave( );
+        }
+
+        /// <summary>
+        /// 检查该Ip地址是否是受信任的
+        /// </summary>
+        /// <param name="ipAddress">Ip地址信息</param>
+        /// <returns>是受信任的返回<c>True</c>，否则返回<c>False</c></returns>
+        private bool CheckIpAddressTrusted(string ipAddress)
+        {
+            if(IsTrustedClientsOnly)
+            {
+                bool result = false;
+                lock_trusted_clients.Enter( );
+                for (int i = 0; i < TrustedClients.Count; i++)
+                {
+                    if(TrustedClients[i] == ipAddress)
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+                lock_trusted_clients.Leave( );
+                return result;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 获取受信任的客户端列表
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetTrustedClients()
+        {
+            string[] result = new string[0];
+            lock_trusted_clients.Enter( );
+            if(TrustedClients != null)
+            {
+                result = TrustedClients.ToArray( );
+            }
+            lock_trusted_clients.Leave( );
+            return result;
+        }
+        
 
         #endregion
 
