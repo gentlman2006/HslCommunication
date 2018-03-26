@@ -39,6 +39,9 @@ namespace HslCommunicationDemo
         {
             panel2.Enabled = false;
             userCurve1.SetLeftCurve( "A", new float[0], Color.Tomato );
+
+            toolTip = new ToolTip( );
+            toolTip.SetToolTip( button3, "压力测试，生成一千个客户端往服务器写数据，持续一分钟" );
         }
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )
@@ -468,8 +471,59 @@ namespace HslCommunicationDemo
             userCurve1.AddCurveData( "A", data );
         }
 
+
         #endregion
 
-        
+        #region 压力测试
+
+        private ToolTip toolTip;
+        private void button3_Click( object sender, EventArgs e )
+        {
+            Thread thread = new Thread( new ThreadStart( PressureTest ) );
+            thread.IsBackground = true;
+            thread.Start( );
+            button3.Enabled = false;
+        }
+
+
+        private void PressureTest()
+        {
+            DateTime dateStart = DateTime.Now;
+
+            ModbusTcpNet[] clients = new ModbusTcpNet[1000];
+            for (int i = 0; i < clients.Length; i++)
+            {
+                clients[i] = new ModbusTcpNet( textBox1.Text, int.Parse( textBox2.Text ) );
+                clients[i].ConnectServer( );
+            }
+
+            while (true)
+            {
+                if ((DateTime.Now - dateStart).TotalSeconds > 60)
+                {
+                    break;
+                }
+
+                for (int i = 0; i < clients.Length; i++)
+                {
+                    clients[i].Write( (i * 4).ToString( ), (i * 4) );
+                }
+
+                System.Threading.Thread.Sleep( 100 );
+            }
+            for (int i = 0; i < clients.Length; i++)
+            {
+                clients[i].ConnectClose( );
+            }
+
+            BeginInvoke( new Action( () =>
+             {
+                 button3.Enabled = true;
+             } ) );
+        }
+
+        #endregion
+
+
     }
 }

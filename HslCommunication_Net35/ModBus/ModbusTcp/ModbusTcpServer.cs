@@ -718,9 +718,9 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="buffer"></param>
         /// <returns></returns>
-        private bool CheckModbusMessageLegal(byte[] buffer)
+        private bool CheckModbusMessageLegal( byte[] buffer )
         {
-            if (buffer[7] == 0x01 || buffer[7] == 0x02 || buffer[7] == 0x03)
+            if (buffer[7] == 0x01 || buffer[7] == 0x02 || buffer[7] == 0x03 || buffer[7] == 0x05 || buffer[7] == 0x06)
             {
                 if (buffer.Length != 0x0C)
                 {
@@ -731,7 +731,7 @@ namespace HslCommunication.ModBus
                     return true;
                 }
             }
-            else if (buffer[7] == 0x05 || buffer[7] == 0x06 || buffer[7] == 0x0F || buffer[7] == 0x10)
+            else if (buffer[7] == 0x0F || buffer[7] == 0x10)
             {
                 if (buffer.Length < 13)
                 {
