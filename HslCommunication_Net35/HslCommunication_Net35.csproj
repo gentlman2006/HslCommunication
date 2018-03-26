@@ -127,6 +127,7 @@
       <DependentUpon>UserVerticalProgress.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\IMessage\FetchWriteMessage.cs" />
+    <Compile Include="Core\IMessage\FinsMessage.cs" />
     <Compile Include="Core\IMessage\HslMessage.cs" />
     <Compile Include="Core\IMessage\MelsecQnA3EAsciiMessage.cs" />
     <Compile Include="Core\IMessage\MelsecQnA3EBinaryMessage.cs" />

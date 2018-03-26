@@ -585,7 +585,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<string> GetStringResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes<string>( result, byteTransform.TransString );
+            return GetResultFromBytes( result, byteTransform.TransString );
         }
         
 
