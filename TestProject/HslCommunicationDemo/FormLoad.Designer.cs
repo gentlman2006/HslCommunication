@@ -29,6 +29,7 @@
         private void InitializeComponent( )
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button10 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -42,10 +43,11 @@
             this.label2 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             this.label20 = new System.Windows.Forms.Label();
-            this.button10 = new System.Windows.Forms.Button();
+            this.linkLabel3 = new System.Windows.Forms.LinkLabel();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -59,7 +61,7 @@
             this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Location = new System.Drawing.Point(422, 41);
+            this.groupBox1.Location = new System.Drawing.Point(425, 74);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -67,6 +69,17 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "西门子PLC";
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(18, 184);
+            this.button10.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(150, 32);
+            this.button10.TabIndex = 4;
+            this.button10.Text = "Fetch/Write 协议";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // button5
             // 
@@ -115,7 +128,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.button6);
-            this.groupBox2.Location = new System.Drawing.Point(217, 41);
+            this.groupBox2.Location = new System.Drawing.Point(220, 74);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -139,7 +152,7 @@
             // 
             this.groupBox3.Controls.Add(this.button7);
             this.groupBox3.Controls.Add(this.button4);
-            this.groupBox3.Location = new System.Drawing.Point(14, 41);
+            this.groupBox3.Location = new System.Drawing.Point(17, 74);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -206,7 +219,7 @@
             // 
             this.groupBox4.Controls.Add(this.button9);
             this.groupBox4.Controls.Add(this.button8);
-            this.groupBox4.Location = new System.Drawing.Point(14, 274);
+            this.groupBox4.Location = new System.Drawing.Point(17, 307);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -214,17 +227,6 @@
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "HslServer";
-            // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(15, 24);
-            this.button8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(150, 32);
-            this.button8.TabIndex = 0;
-            this.button8.Text = "Simplify Net";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button9
             // 
@@ -237,6 +239,17 @@
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(15, 24);
+            this.button8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(150, 32);
+            this.button8.TabIndex = 0;
+            this.button8.Text = "Simplify Net";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
             // label20
             // 
             this.label20.AutoSize = true;
@@ -247,22 +260,32 @@
             this.label20.TabIndex = 8;
             this.label20.Text = "作者：Richard Hu";
             // 
-            // button10
+            // linkLabel3
             // 
-            this.button10.Location = new System.Drawing.Point(18, 184);
-            this.button10.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(150, 32);
-            this.button10.TabIndex = 4;
-            this.button10.Text = "Fetch/Write 协议";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
+            this.linkLabel3.AutoSize = true;
+            this.linkLabel3.Location = new System.Drawing.Point(87, 37);
+            this.linkLabel3.Name = "linkLabel3";
+            this.linkLabel3.Size = new System.Drawing.Size(287, 17);
+            this.linkLabel3.TabIndex = 10;
+            this.linkLabel3.TabStop = true;
+            this.linkLabel3.Text = "http://www.cnblogs.com/dathlin/p/7703805.html";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(14, 37);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(59, 17);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "git地址：";
             // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(815, 508);
+            this.ClientSize = new System.Drawing.Size(839, 546);
+            this.Controls.Add(this.linkLabel3);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.linkLabel2);
@@ -305,6 +328,8 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.LinkLabel linkLabel3;
+        private System.Windows.Forms.Label label1;
     }
 }
 

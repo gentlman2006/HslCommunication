@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using HslCommunication.BasicFramework;
+using HslCommunication.Enthernet;
 
 namespace HslCommunication.Core.Net
 {
@@ -73,7 +74,7 @@ namespace HslCommunication.Core.Net
                 session.HybirdLockSend.Leave( );
                 if (!ex.Message.Contains( StringResources.SocketRemoteCloseException ))
                 {
-                    LogNet?.WriteException( ToString(), StringResources.SocketSendException, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.SocketSendException, ex );
                 }
             }
         }
@@ -95,8 +96,8 @@ namespace HslCommunication.Core.Net
                         stateone.WorkSocket.BeginSend( stateone.Content,
                         stateone.AlreadySendLength,
                         stateone.Content.Length - stateone.AlreadySendLength,
-                        SocketFlags.None, 
-                        new AsyncCallback( SendCallBack ), 
+                        SocketFlags.None,
+                        new AsyncCallback( SendCallBack ),
                         stateone );
                     }
                     else
@@ -114,7 +115,7 @@ namespace HslCommunication.Core.Net
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString(), StringResources.SocketEndSendException, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.SocketEndSendException, ex );
                     stateone.HybirdLockSend.Leave( );
                     stateone = null;
                 }
@@ -142,7 +143,7 @@ namespace HslCommunication.Core.Net
                 if (isProcess)
                 {
                     // 校验令牌
-                    if (CheckRemoteToken(head))
+                    if (CheckRemoteToken( head ))
                     {
                         Content = HslProtocol.CommandAnalysis( head, Content );
                         int protocol = BitConverter.ToInt32( head, 0 );
@@ -207,7 +208,7 @@ namespace HslCommunication.Core.Net
                     return;
                 }
 
-                
+
                 if (session.AlreadyReceivedHead < session.BytesHead.Length)
                 {
                     try
@@ -216,7 +217,7 @@ namespace HslCommunication.Core.Net
                         session.WorkSocket.BeginReceive( session.BytesHead, session.AlreadyReceivedHead, session.BytesHead.Length - session.AlreadyReceivedHead,
                             SocketFlags.None, new AsyncCallback( HeadBytesReceiveCallback ), session );
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         SocketReceiveException( session, ex );
                         LogNet?.WriteException( ToString( ), ex );
@@ -225,7 +226,7 @@ namespace HslCommunication.Core.Net
                 else
                 {
                     // 接收完毕，校验令牌
-                    if(!CheckRemoteToken( session.BytesHead ))
+                    if (!CheckRemoteToken( session.BytesHead ))
                     {
                         LogNet?.WriteWarn( ToString( ), StringResources.TokenCheckFailed );
                         AppSessionRemoteClose( session );
@@ -245,7 +246,7 @@ namespace HslCommunication.Core.Net
                             session.WorkSocket.BeginReceive( session.BytesContent, session.AlreadyReceivedContent, receiveSize,
                                 SocketFlags.None, new AsyncCallback( ContentReceiveCallback ), session );
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             SocketReceiveException( session, ex );
                             LogNet?.WriteException( ToString( ), ex );
@@ -261,7 +262,7 @@ namespace HslCommunication.Core.Net
         }
 
 
-       
+
 
         /// <summary>
         /// 数据内容接收方法
@@ -291,7 +292,7 @@ namespace HslCommunication.Core.Net
                 {
                     //其他乱七八糟的异常重新启用接收数据
                     ReBeginReceiveHead( receive, false );
-                    LogNet?.WriteException( ToString(), StringResources.SocketEndReceiveException, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.SocketEndReceiveException, ex );
                     return;
                 }
 
@@ -329,11 +330,11 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="headBytes">头子节数据</param>
         /// <returns>令牌是验证成功</returns>
-        protected bool CheckRemoteToken(byte[] headBytes)
+        protected bool CheckRemoteToken( byte[] headBytes )
         {
             return SoftBasic.IsByteTokenEquel( headBytes, Token );
         }
-        
+
 
         #endregion
 
@@ -347,12 +348,7 @@ namespace HslCommunication.Core.Net
         /// <param name="customer">用户指令</param>
         /// <param name="send">发送的数据</param>
         /// <returns>是否发送成功</returns>
-        protected OperateResult SendBaseAndCheckReceive(
-            Socket socket,
-            int headcode,
-            int customer,
-            byte[] send
-            )
+        protected OperateResult SendBaseAndCheckReceive( Socket socket, int headcode, int customer, byte[] send )
         {
             // 数据处理
             send = HslProtocol.CommandBytes( headcode, customer, Token, send );
@@ -367,11 +363,7 @@ namespace HslCommunication.Core.Net
         /// <param name="customer">用户指令</param>
         /// <param name="send">发送的数据</param>
         /// <returns>是否发送成功</returns>
-        protected OperateResult SendBytesAndCheckReceive(
-            Socket socket,
-            int customer,
-            byte[] send
-            )
+        protected OperateResult SendBytesAndCheckReceive( Socket socket, int customer, byte[] send )
         {
             return SendBaseAndCheckReceive( socket, HslProtocol.ProtocolUserBytes, customer, send );
         }
@@ -384,20 +376,11 @@ namespace HslCommunication.Core.Net
         /// <param name="customer">用户指令</param>
         /// <param name="send">发送的数据</param>
         /// <returns>是否发送成功</returns>
-        protected OperateResult SendStringAndCheckReceive(
-            Socket socket,
-            int customer,
-            string send
-            )
+        protected OperateResult SendStringAndCheckReceive( Socket socket, int customer, string send )
         {
             byte[] data = string.IsNullOrEmpty( send ) ? null : Encoding.Unicode.GetBytes( send );
 
-            return SendBaseAndCheckReceive(
-                socket,                                           // 套接字
-                HslProtocol.ProtocolUserString,                   // 指示字符串数据
-                customer,                                         // 用户数据
-                data                                              // 字符串的数据
-                );
+            return SendBaseAndCheckReceive( socket, HslProtocol.ProtocolUserString, customer, data );
         }
 
 
@@ -410,12 +393,7 @@ namespace HslCommunication.Core.Net
         /// <param name="filelength">文件的长度</param>
         /// <param name="report">进度报告器</param>
         /// <returns>是否发送成功</returns>
-        protected OperateResult SendFileStreamToSocket(
-            Socket socket,
-            string filename,
-            long filelength,
-            Action<long, long> report = null
-            )
+        protected OperateResult SendFileStreamToSocket( Socket socket, string filename, long filelength, Action<long, long> report = null )
         {
             try
             {
@@ -429,7 +407,7 @@ namespace HslCommunication.Core.Net
             catch (Exception ex)
             {
                 socket?.Close( );
-                LogNet?.WriteException( ToString(), ex );
+                LogNet?.WriteException( ToString( ), ex );
                 return new OperateResult( )
                 {
                     Message = ex.Message
@@ -464,7 +442,7 @@ namespace HslCommunication.Core.Net
             {
                 // 如果文件不存在
                 OperateResult stringResult = SendStringAndCheckReceive( socket, 0, "" );
-                if(!stringResult.IsSuccess)
+                if (!stringResult.IsSuccess)
                 {
                     return stringResult;
                 }
@@ -490,11 +468,11 @@ namespace HslCommunication.Core.Net
 
             // 先发送文件的信息到对方
             OperateResult sendResult = SendStringAndCheckReceive( socket, 1, json.ToString( ) );
-            if (!sendResult.IsSuccess) 
+            if (!sendResult.IsSuccess)
             {
                 return sendResult;
             }
-            
+
             // 最后发送
             return SendFileStreamToSocket( socket, filename, info.Length, sendReport );
         }
@@ -548,14 +526,10 @@ namespace HslCommunication.Core.Net
         /// [自校验] 接收一条完整的同步数据，包含头子节和内容字节，基础的数据，如果结果异常，则结束通讯
         /// </summary>
         /// <param name="socket">套接字</param>
-        /// 
         /// <param name="timeout">超时时间设置，如果为负数，则不检查超时</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">result</exception>
-        protected OperateResult<byte[],byte[]> ReceiveAndCheckBytes(
-            Socket socket,
-            int timeout
-            )
+        protected OperateResult<byte[], byte[]> ReceiveAndCheckBytes( Socket socket, int timeout )
         {
             // 30秒超时接收验证
             HslTimeOut hslTimeOut = new HslTimeOut( )
@@ -568,9 +542,9 @@ namespace HslCommunication.Core.Net
 
             if (timeout > 0) ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), hslTimeOut );
 
-
-            OperateResult<byte[]> headResult = Receive( socket, 32 );
-            if(!headResult.IsSuccess)
+            // 接收头指令
+            OperateResult<byte[]> headResult = Receive( socket, HslProtocol.HeadByteLength );
+            if (!headResult.IsSuccess)
             {
                 hslTimeOut.IsSuccessful = true;
                 return new OperateResult<byte[], byte[]>( )
@@ -579,7 +553,7 @@ namespace HslCommunication.Core.Net
                 };
             }
             hslTimeOut.IsSuccessful = true;
-            
+
             // 检查令牌
             if (!CheckRemoteToken( headResult.Content ))
             {
@@ -587,11 +561,12 @@ namespace HslCommunication.Core.Net
                 return new OperateResult<byte[], byte[]>( )
                 {
                     Message = StringResources.TokenCheckFailed
-                };;
+                };
             }
 
-            OperateResult<byte[]> contentResult = Receive( socket, BitConverter.ToInt32( headResult.Content, 28 ) );
-            if(!contentResult.IsSuccess)
+            // 接收内容
+            OperateResult<byte[]> contentResult = Receive( socket, BitConverter.ToInt32( headResult.Content, HslProtocol.HeadByteLength - 4 ) );
+            if (!contentResult.IsSuccess)
             {
                 return new OperateResult<byte[], byte[]>( )
                 {
@@ -610,7 +585,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="socket">套接字</param>
         /// <returns></returns>
-        protected OperateResult<int,string> ReceiveStringContentFromSocket(Socket socket)
+        protected OperateResult<int, string> ReceiveStringContentFromSocket( Socket socket )
         {
             OperateResult<byte[], byte[]> receive = ReceiveAndCheckBytes( socket, 10000 );
             if (!receive.IsSuccess)
@@ -621,14 +596,14 @@ namespace HslCommunication.Core.Net
                 };
             }
 
-            // check
+            // 检查是否是字符串信息
             if (BitConverter.ToInt32( receive.Content1, 0 ) != HslProtocol.ProtocolUserString)
             {
-                LogNet?.WriteError( ToString(), "数据头校验失败！" );
+                LogNet?.WriteError( ToString( ), StringResources.TokenHeadCodeCheckFailed );
                 socket?.Close( );
                 return new OperateResult<int, string>( )
                 {
-                    Message = "数据头校验失败！"
+                    Message = StringResources.TokenHeadCodeCheckFailed
                 };
             }
 
@@ -643,7 +618,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="socket">套接字</param>
         /// <returns></returns>
-        protected OperateResult<int,byte[]> ReceiveBytesContentFromSocket(Socket socket)
+        protected OperateResult<int, byte[]> ReceiveBytesContentFromSocket( Socket socket )
         {
             OperateResult<byte[], byte[]> receive = ReceiveAndCheckBytes( socket, 10000 );
             if (!receive.IsSuccess)
@@ -654,14 +629,14 @@ namespace HslCommunication.Core.Net
                 };
             }
 
-            // check
+            // 检查是否是字节信息
             if (BitConverter.ToInt32( receive.Content1, 0 ) != HslProtocol.ProtocolUserBytes)
             {
-                LogNet?.WriteError( ToString( ), "数据头校验失败！" );
+                LogNet?.WriteError( ToString( ), StringResources.TokenHeadCodeCheckFailed );
                 socket?.Close( );
                 return new OperateResult<int, byte[]>( )
                 {
-                    Message = "数据头校验失败！"
+                    Message = StringResources.TokenHeadCodeCheckFailed
                 };
             }
 
@@ -671,17 +646,17 @@ namespace HslCommunication.Core.Net
 
 
         /// <summary>
-        /// [自校验] 从套接字中接收文件头信息，参数顺序为文件名，文件大小，文件标识，上传人
+        /// [自校验] 从套接字中接收文件头信息
         /// </summary>
         /// <param name="socket"></param>
         /// <returns></returns>
-        protected OperateResult<string, long, string, string> ReceiveFileHeadFromSocket( Socket socket )
+        protected OperateResult<FileBaseInfo> ReceiveFileHeadFromSocket( Socket socket )
         {
             // 先接收文件头信息
             OperateResult<int, string> receiveString = ReceiveStringContentFromSocket( socket );
             if (!receiveString.IsSuccess)
             {
-                return new OperateResult<string, long, string, string>( )
+                return new OperateResult<FileBaseInfo>( )
                 {
                     Message = receiveString.Message
                 };
@@ -692,58 +667,60 @@ namespace HslCommunication.Core.Net
             if (receiveString.Content1 == 0)
             {
                 LogNet?.WriteWarn( ToString( ), "对方文件不存在，无法接收！" );
-                return new OperateResult<string, long, string, string>( )
+                return new OperateResult<FileBaseInfo>( )
                 {
                     Message = StringResources.FileNotExist
                 };
             }
 
-            OperateResult<string, long, string, string> result = new OperateResult<string, long, string, string>( );
-            result.IsSuccess = true;
-
-            // 提取信息
-            Newtonsoft.Json.Linq.JObject json = Newtonsoft.Json.Linq.JObject.Parse( receiveString.Content2 );
-            result.Content1 = SoftBasic.GetValueFromJsonObject( json, "FileName", "" );
-            result.Content2 = SoftBasic.GetValueFromJsonObject( json, "FileSize", 0L );
-            result.Content3 = SoftBasic.GetValueFromJsonObject( json, "FileTag", "" );
-            result.Content4 = SoftBasic.GetValueFromJsonObject( json, "FileUpload", "" );
+            OperateResult<FileBaseInfo> result = new OperateResult<FileBaseInfo>( );
+            result.Content = new FileBaseInfo( );
+            try
+            {
+                // 提取信息
+                Newtonsoft.Json.Linq.JObject json = Newtonsoft.Json.Linq.JObject.Parse( receiveString.Content2 );
+                result.Content.Name = SoftBasic.GetValueFromJsonObject( json, "FileName", "" );
+                result.Content.Size = SoftBasic.GetValueFromJsonObject( json, "FileSize", 0L );
+                result.Content.Tag = SoftBasic.GetValueFromJsonObject( json, "FileTag", "" );
+                result.Content.Upload = SoftBasic.GetValueFromJsonObject( json, "FileUpload", "" );
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                result.Message = "提取信息失败，" + ex.Message;
+            }
 
             return result;
         }
 
         /// <summary>
-        /// [自校验] 从网络中接收一个文件，如果结果异常，则结束通讯，参数顺序文件名，文件大小，文件标识，上传人
+        /// [自校验] 从网络中接收一个文件，如果结果异常，则结束通讯
         /// </summary>
         /// <param name="socket">网络套接字</param>
         /// <param name="savename">接收文件后保存的文件名</param>
         /// <param name="receiveReport">接收进度报告</param>
         /// <returns></returns>
-        protected OperateResult<string, long, string, string> ReceiveFileFromSocket( Socket socket, string savename, Action<long, long> receiveReport )
+        protected OperateResult<FileBaseInfo> ReceiveFileFromSocket( Socket socket, string savename, Action<long, long> receiveReport )
         {
-            OperateResult<string, long, string, string> fileResult = ReceiveFileHeadFromSocket( socket );
-            if (!fileResult.IsSuccess)
-            {
-                return new OperateResult<string, long, string, string>( )
-                {
-                    Message = fileResult.Message
-                };
-            }
+            // 先接收文件头信息
+            OperateResult<FileBaseInfo> fileResult = ReceiveFileHeadFromSocket( socket );
+            if (!fileResult.IsSuccess) return fileResult;
 
 
             try
             {
-                using (FileStream fs = new FileStream( fileResult.Content1, FileMode.Create, FileAccess.Write ))
+                using (FileStream fs = new FileStream( savename, FileMode.Create, FileAccess.Write ))
                 {
-                    WriteStream( socket, fs, fileResult.Content2, receiveReport, true );
+                    WriteStream( socket, fs, fileResult.Content.Size, receiveReport, true );
                 }
 
-                return OperateResult.CreateSuccessResult( fileResult.Content1, fileResult.Content2, fileResult.Content3, fileResult.Content4 );
+                return fileResult;
             }
             catch (Exception ex)
             {
                 LogNet?.WriteException( ToString( ), ex );
                 socket?.Close( );
-                return new OperateResult<string, long, string, string>( )
+                return new OperateResult<FileBaseInfo>( )
                 {
                     Message = ex.Message
                 };
@@ -758,32 +735,22 @@ namespace HslCommunication.Core.Net
         /// <param name="stream">等待写入的数据流</param>
         /// <param name="receiveReport">接收进度报告</param>
         /// <returns></returns>
-        protected OperateResult<string, long, string, string> ReceiveFileFromSocket(
-            Socket socket,
-            Stream stream,
-            Action<long, long> receiveReport
-            )
+        protected OperateResult<FileBaseInfo> ReceiveFileFromSocket( Socket socket, Stream stream, Action<long, long> receiveReport )
         {
             // 先接收文件头信息
-            OperateResult<string, long, string, string> fileResult = ReceiveFileHeadFromSocket( socket );
-            if (!fileResult.IsSuccess)
-            {
-                return new OperateResult<string, long, string, string>( )
-                {
-                    Message = fileResult.Message
-                };
-            }
+            OperateResult<FileBaseInfo> fileResult = ReceiveFileHeadFromSocket( socket );
+            if (!fileResult.IsSuccess) return fileResult;
 
             try
             {
-                WriteStream( socket, stream, fileResult.Content2, receiveReport, true );
-                return OperateResult.CreateSuccessResult( fileResult.Content1, fileResult.Content2, fileResult.Content3, fileResult.Content4 );
+                WriteStream( socket, stream, fileResult.Content.Size, receiveReport, true );
+                return fileResult;
             }
             catch (Exception ex)
             {
                 LogNet?.WriteException( ToString( ), ex );
                 socket?.Close( );
-                return new OperateResult<string, long, string, string>( )
+                return new OperateResult<FileBaseInfo>( )
                 {
                     Message = ex.Message
                 };
@@ -809,7 +776,7 @@ namespace HslCommunication.Core.Net
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString(), "delete file failed:" + filename, ex );
+                LogNet?.WriteException( ToString( ), "delete file failed:" + filename, ex );
                 return false;
             }
         }
@@ -830,7 +797,7 @@ namespace HslCommunication.Core.Net
                 return folder;
             }
         }
-        
+
 
         #endregion
 
@@ -873,11 +840,15 @@ namespace HslCommunication.Core.Net
 
         #region Receive Long And Send Long
 
-
-        private OperateResult<long> ReceiveLong(Socket socket)
+        /// <summary>
+        /// 从网络中接收Long数据
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <returns></returns>
+        private OperateResult<long> ReceiveLong( Socket socket )
         {
             OperateResult<byte[]> read = Receive( socket, 8 );
-            if(read.IsSuccess)
+            if (read.IsSuccess)
             {
                 return OperateResult.CreateSuccessResult( BitConverter.ToInt64( read.Content, 8 ) );
             }
@@ -890,6 +861,12 @@ namespace HslCommunication.Core.Net
             }
         }
 
+        /// <summary>
+        /// 将long数据发送到套接字
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private OperateResult SendLong( Socket socket, long value )
         {
             return Send( socket, BitConverter.GetBytes( value ) );
@@ -899,7 +876,7 @@ namespace HslCommunication.Core.Net
         #endregion
 
         #region StreamWriteRead
-        
+
 
         /// <summary>
         /// 发送一个流的所有数据到网络套接字
@@ -934,7 +911,7 @@ namespace HslCommunication.Core.Net
                 byte[] newBuffer = new byte[readCount];
                 Array.Copy( buffer, 0, newBuffer, 0, newBuffer.Length );
                 OperateResult write = Send( socket, buffer );
-                if(!write.IsSuccess)
+                if (!write.IsSuccess)
                 {
                     return new OperateResult( )
                     {
@@ -946,7 +923,7 @@ namespace HslCommunication.Core.Net
                 while (true)
                 {
                     OperateResult<long> check = ReceiveLong( socket );
-                    if(!check.IsSuccess)
+                    if (!check.IsSuccess)
                     {
                         return new OperateResult( )
                         {
@@ -954,7 +931,7 @@ namespace HslCommunication.Core.Net
                         };
                     }
 
-                    if(check.Content == SendTotal)
+                    if (check.Content == SendTotal)
                     {
                         break;
                     }
@@ -999,7 +976,7 @@ namespace HslCommunication.Core.Net
                 // 先从流中异步接收数据
                 int receiveCount = (receive - count_receive) > 1024 ? 1024 : (int)(receive - count_receive);
                 OperateResult<byte[]> read = Receive( socket, receiveCount );
-                if(!read.IsSuccess)
+                if (!read.IsSuccess)
                 {
                     return new OperateResult( )
                     {
@@ -1009,7 +986,7 @@ namespace HslCommunication.Core.Net
                 count_receive += receiveCount;
                 // 开始写入文件流
                 OperateResult write = WriteStream( stream, read.Content );
-                if(!write.IsSuccess)
+                if (!write.IsSuccess)
                 {
                     return new OperateResult( )
                     {
@@ -1034,7 +1011,7 @@ namespace HslCommunication.Core.Net
 
                 // 回发进度
                 OperateResult check = SendLong( socket, count_receive );
-                if(!check.IsSuccess)
+                if (!check.IsSuccess)
                 {
                     return new OperateResult( )
                     {

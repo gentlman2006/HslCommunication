@@ -61,9 +61,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(337, 54);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(327, 17);
+            this.label2.Size = new System.Drawing.Size(363, 17);
             this.label2.TabIndex = 2;
-            this.label2.Text = "多少无所谓，请量力而行，尽量不要超过5元，心意到了就行";
+            this.label2.Text = "多少无所谓，请量力而行，没有收入的不要超过5元，心意到了就行";
             // 
             // label3
             // 

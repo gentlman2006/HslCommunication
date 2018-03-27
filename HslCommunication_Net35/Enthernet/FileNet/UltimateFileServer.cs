@@ -91,7 +91,7 @@ namespace HslCommunication.Enthernet
             string guidName = CreateRandomFileName( );
             string fileName = info.DirectoryName + "\\" + guidName;
 
-            OperateResult<string,long,string,string> receive = ReceiveFileFromSocket( socket, fileName, null );
+            OperateResult<FileBaseInfo> receive = ReceiveFileFromSocket( socket, fileName, null );
             if(!receive.IsSuccess)
             {
                 DeleteFileByName( fileName );
@@ -102,10 +102,10 @@ namespace HslCommunication.Enthernet
             GroupFileContainer fileManagment = GetGroupFromFilePath( info.DirectoryName );
             string oldName = fileManagment.UpdateFileMappingName(
                 info.Name,
-                receive.Content2,
+                receive.Content.Size,
                 guidName,
-                receive.Content4,
-                receive.Content3
+                receive.Content.Upload,
+                receive.Content.Tag
                 );
 
             // 删除旧的文件

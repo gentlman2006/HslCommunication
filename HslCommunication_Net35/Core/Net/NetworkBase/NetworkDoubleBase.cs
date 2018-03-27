@@ -467,12 +467,20 @@ namespace HslCommunication.Core.Net
         private OperateResult<TResult> GetResultFromBytes<TResult>( OperateResult<byte[]> result, Func<byte[], TResult> translator )
         {
             var tmp = new OperateResult<TResult>( );
-            if (result.IsSuccess)
+            try
             {
-                tmp.Content = translator( result.Content );
+                if (result.IsSuccess)
+                {
+                    tmp.Content = translator( result.Content );
+                    tmp.IsSuccess = result.IsSuccess;
+                }
+                tmp.CopyErrorFromOther( result );
             }
-            tmp.IsSuccess = result.IsSuccess;
-            tmp.CopyErrorFromOther( result );
+            catch(Exception ex)
+            {
+                tmp.Message = "数据转化失败，源数据：" + BasicFramework.SoftBasic.ByteToHexString( result.Content ) + " 消息：" + ex.Message;
+            }
+
             return tmp;
         }
 

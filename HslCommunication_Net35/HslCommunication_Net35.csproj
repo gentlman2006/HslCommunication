@@ -167,6 +167,7 @@
     <Compile Include="Core\Types\HslPieItem.cs" />
     <Compile Include="Enthernet\DeviceNet\ClassDeviceNet.cs" />
     <Compile Include="Enthernet\FileNet\AdvancedFileServer.cs" />
+    <Compile Include="Enthernet\FileNet\FileBaseInfo.cs" />
     <Compile Include="Enthernet\FileNet\FileClientBase.cs" />
     <Compile Include="Enthernet\FileNet\FileMarkId.cs" />
     <Compile Include="Enthernet\FileNet\GroupFileContainer.cs" />
@@ -179,7 +180,6 @@
     <Compile Include="Enthernet\DeviceNet\DeviceState.cs" />
     <Compile Include="Enthernet\SimplifyNet\NetSimplifyClient.cs" />
     <Compile Include="Enthernet\SimplifyNet\NetSimplifyServer.cs" />
-    <Compile Include="Enthernet\SocketState.cs" />
     <Compile Include="Core\Types\HslTimeOut.cs" />
     <Compile Include="Enthernet\UdpNet\NetUdpClient.cs" />
     <Compile Include="Enthernet\UdpNet\NetUdpServer.cs" />
