@@ -90,6 +90,18 @@ namespace HslCommunicationDemo
             }
         }
 
+        private void linkLabel3_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            try
+            {
+                System.Diagnostics.Process.Start( linkLabel2.Text );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show( ex.Message );
+            }
+        }
+
         private void button7_Click( object sender, EventArgs e )
         {
             Hide( );
@@ -135,5 +147,17 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button11_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormOmron form = new FormOmron( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
+
+
     }
 }

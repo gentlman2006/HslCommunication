@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormOmron.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormOmron.Designer.cs">
+      <DependentUpon>FormOmron.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSiemensFW.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -96,6 +102,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormOmron.resx">
+      <DependentUpon>FormOmron.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormSiemensFW.resx">
       <DependentUpon>FormSiemensFW.cs</DependentUpon>
     </EmbeddedResource>

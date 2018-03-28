@@ -48,8 +48,9 @@ namespace HslCommunication.Profinet.Omron
         /// 系统使用的内部信息
         /// </summary>
         public byte RSV { get; private set; } = 0x00;
+
         /// <summary>
-        /// 网络层信息，如果有八层消息，就设置为0x07
+        /// 网络层信息，默认0x02，如果有八层消息，就设置为0x07
         /// </summary>
         public byte GCT { get; set; } = 0x02;
 
@@ -675,7 +676,7 @@ namespace HslCommunication.Profinet.Omron
             }
 
             // 数据有效性分析
-            OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, true );
+            OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, false );
             if (!valid.IsSuccess)
             {
                 result.CopyErrorFromOther( command );
@@ -788,7 +789,7 @@ namespace HslCommunication.Profinet.Omron
             }
 
             // 数据有效性分析
-            OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, true );
+            OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, false );
             if (!valid.IsSuccess)
             {
                 result.CopyErrorFromOther( command );

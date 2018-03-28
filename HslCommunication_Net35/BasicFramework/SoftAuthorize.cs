@@ -170,13 +170,14 @@ namespace HslCommunication.BasicFramework
         public static string GetInfo()
         {
             string unique = "";
+            // 获取处理器信息
             ManagementClass cimobject = new ManagementClass("Win32_Processor");
             ManagementObjectCollection moc = cimobject.GetInstances();
             foreach (ManagementObject mo in moc)
             {
                 unique += mo.Properties["ProcessorId"].Value.ToString();
             }
-            //获取硬盘ID  
+            // 获取硬盘ID  
             ManagementClass cimobject1 = new ManagementClass("Win32_DiskDrive");
             ManagementObjectCollection moc1 = cimobject1.GetInstances();
             foreach (ManagementObject mo in moc1)
@@ -185,7 +186,7 @@ namespace HslCommunication.BasicFramework
                 break;
             }
 
-            //获取BIOS
+            // 获取BIOS
             ManagementObjectSearcher searcher =
                 new ManagementObjectSearcher("Select SerialNumber From Win32_BIOS");
             ManagementObjectCollection moc2 = searcher.Get();

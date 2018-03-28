@@ -48,10 +48,13 @@
             this.label20 = new System.Windows.Forms.Label();
             this.linkLabel3 = new System.Windows.Forms.LinkLabel();
             this.label1 = new System.Windows.Forms.Label();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.button11 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -265,10 +268,11 @@
             this.linkLabel3.AutoSize = true;
             this.linkLabel3.Location = new System.Drawing.Point(87, 37);
             this.linkLabel3.Name = "linkLabel3";
-            this.linkLabel3.Size = new System.Drawing.Size(287, 17);
+            this.linkLabel3.Size = new System.Drawing.Size(272, 17);
             this.linkLabel3.TabIndex = 10;
             this.linkLabel3.TabStop = true;
-            this.linkLabel3.Text = "http://www.cnblogs.com/dathlin/p/7703805.html";
+            this.linkLabel3.Text = "https://github.com/dathlin/HslCommunication";
+            this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
             // 
             // label1
             // 
@@ -279,11 +283,35 @@
             this.label1.TabIndex = 9;
             this.label1.Text = "git地址：";
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.button11);
+            this.groupBox5.Location = new System.Drawing.Point(631, 74);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox5.Size = new System.Drawing.Size(185, 225);
+            this.groupBox5.TabIndex = 11;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Omron";
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(19, 24);
+            this.button11.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(150, 32);
+            this.button11.TabIndex = 0;
+            this.button11.Text = "Fins Tcp";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(839, 546);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.linkLabel3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label20);
@@ -303,6 +331,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -330,6 +359,8 @@
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.LinkLabel linkLabel3;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Button button11;
     }
 }
 

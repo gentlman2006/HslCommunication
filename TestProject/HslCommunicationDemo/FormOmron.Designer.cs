@@ -1,6 +1,6 @@
 ﻿namespace HslCommunicationDemo
 {
-    partial class FormSiemens
+    partial class FormOmron
     {
         /// <summary>
         /// Required designer variable.
@@ -98,8 +98,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.button23 = new System.Windows.Forms.Button();
-            this.button_read_byte = new System.Windows.Forms.Button();
+            this.textBox15 = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -114,6 +114,8 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.textBox15);
+            this.panel1.Controls.Add(this.label23);
             this.panel1.Controls.Add(this.label22);
             this.panel1.Controls.Add(this.label21);
             this.panel1.Controls.Add(this.button2);
@@ -134,7 +136,7 @@
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(197, 45);
             this.label22.TabIndex = 7;
-            this.label22.Text = "M100  I100  Q100 DB100.20   T100 C100";
+            this.label22.Text = "D100 C100 W100 H100 A100";
             // 
             // label21
             // 
@@ -148,7 +150,7 @@
             // button2
             // 
             this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(584, 11);
+            this.button2.Location = new System.Drawing.Point(589, 11);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(91, 28);
             this.button2.TabIndex = 5;
@@ -158,7 +160,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(477, 11);
+            this.button1.Location = new System.Drawing.Point(484, 11);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(91, 28);
             this.button1.TabIndex = 4;
@@ -168,17 +170,16 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(305, 14);
+            this.textBox2.Location = new System.Drawing.Point(238, 14);
             this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(141, 23);
+            this.textBox2.Size = new System.Drawing.Size(69, 23);
             this.textBox2.TabIndex = 3;
-            this.textBox2.Text = "102";
+            this.textBox2.Text = "1000";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(251, 17);
+            this.label3.Location = new System.Drawing.Point(184, 17);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(56, 17);
             this.label3.TabIndex = 2;
@@ -188,7 +189,7 @@
             // 
             this.textBox1.Location = new System.Drawing.Point(62, 14);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(141, 23);
+            this.textBox1.Size = new System.Drawing.Size(114, 23);
             this.textBox1.TabIndex = 1;
             this.textBox1.Text = "192.168.0.100";
             // 
@@ -448,7 +449,6 @@
             this.groupBox2.Controls.Add(this.button20);
             this.groupBox2.Controls.Add(this.button21);
             this.groupBox2.Controls.Add(this.button22);
-            this.groupBox2.Controls.Add(this.button23);
             this.groupBox2.Controls.Add(this.button24);
             this.groupBox2.Controls.Add(this.textBox7);
             this.groupBox2.Controls.Add(this.label9);
@@ -594,7 +594,7 @@
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(132, 23);
             this.textBox8.TabIndex = 3;
-            this.textBox8.Text = "M100";
+            this.textBox8.Text = "D100";
             // 
             // label10
             // 
@@ -617,7 +617,6 @@
             this.groupBox1.Controls.Add(this.button_read_int);
             this.groupBox1.Controls.Add(this.button_read_ushort);
             this.groupBox1.Controls.Add(this.button_read_short);
-            this.groupBox1.Controls.Add(this.button_read_byte);
             this.groupBox1.Controls.Add(this.button_read_bool);
             this.groupBox1.Controls.Add(this.textBox4);
             this.groupBox1.Controls.Add(this.label7);
@@ -763,7 +762,7 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(233, 23);
             this.textBox3.TabIndex = 3;
-            this.textBox3.Text = "M100";
+            this.textBox3.Text = "D100";
             // 
             // label6
             // 
@@ -818,9 +817,9 @@
             this.label5.ForeColor = System.Drawing.Color.Red;
             this.label5.Location = new System.Drawing.Point(540, 9);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(82, 17);
+            this.label5.Size = new System.Drawing.Size(116, 17);
             this.label5.TabIndex = 5;
-            this.label5.Text = "西门子S7协议";
+            this.label5.Text = "欧姆龙Fins-Tcp协议";
             // 
             // label20
             // 
@@ -832,27 +831,24 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
-            // button23
+            // textBox15
             // 
-            this.button23.Location = new System.Drawing.Point(326, 24);
-            this.button23.Name = "button23";
-            this.button23.Size = new System.Drawing.Size(82, 28);
-            this.button23.TabIndex = 7;
-            this.button23.Text = "byte写入";
-            this.button23.UseVisualStyleBackColor = true;
-            this.button23.Click += new System.EventHandler(this.button23_Click);
+            this.textBox15.Location = new System.Drawing.Point(397, 14);
+            this.textBox15.Name = "textBox15";
+            this.textBox15.Size = new System.Drawing.Size(56, 23);
+            this.textBox15.TabIndex = 9;
+            this.textBox15.Text = "10";
             // 
-            // button_read_byte
+            // label23
             // 
-            this.button_read_byte.Location = new System.Drawing.Point(415, 19);
-            this.button_read_byte.Name = "button_read_byte";
-            this.button_read_byte.Size = new System.Drawing.Size(82, 28);
-            this.button_read_byte.TabIndex = 7;
-            this.button_read_byte.Text = "byte读取";
-            this.button_read_byte.UseVisualStyleBackColor = true;
-            this.button_read_byte.Click += new System.EventHandler(this.button_read_byte_Click);
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(321, 17);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(80, 17);
+            this.label23.TabIndex = 8;
+            this.label23.Text = "本机网络号：";
             // 
-            // FormSiemens
+            // FormOmron
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -866,9 +862,9 @@
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Name = "FormSiemens";
+            this.Name = "FormOmron";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "西门子PLC访问Demo";
+            this.Text = "欧姆龙PLC访问Demo";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSiemens_FormClosing);
             this.Load += new System.EventHandler(this.FormSiemens_Load);
             this.panel1.ResumeLayout(false);
@@ -961,7 +957,7 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Button button23;
-        private System.Windows.Forms.Button button_read_byte;
+        private System.Windows.Forms.TextBox textBox15;
+        private System.Windows.Forms.Label label23;
     }
 }
