@@ -216,7 +216,9 @@
     <Compile Include="Profinet\Melsec\MelsecMcDataType.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcNet.cs" />
     <Compile Include="Profinet\Melsec\MelsecNetMultiAsync.cs" />
+    <Compile Include="Profinet\Omron\OmronFinsDataType.cs" />
     <Compile Include="Profinet\Omron\OmronFinsNet.cs" />
+    <Compile Include="Profinet\Omron\OmronInfo.cs" />
     <Compile Include="Profinet\Siemens\SiemensFetchWriteNet.cs" />
     <Compile Include="Profinet\Siemens\SiemensPLCS.cs" />
     <Compile Include="Profinet\Siemens\SiemensS7Net.cs" />

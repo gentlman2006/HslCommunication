@@ -235,11 +235,11 @@ namespace HslCommunication.Enthernet
             )
         {
             // 先接收文件
-            OperateResult<string, long, string, string> fileInfo = ReceiveFileFromSocket( socket, savename, null );
-            filename = fileInfo.Content1;
-            size = fileInfo.Content2;
-            filetag = fileInfo.Content3;
-            fileupload = fileInfo.Content4;
+            OperateResult<FileBaseInfo> fileInfo = ReceiveFileFromSocket( socket, savename, null );
+            filename = fileInfo.Content.Name;
+            size = fileInfo.Content.Size;
+            filetag = fileInfo.Content.Tag;
+            fileupload = fileInfo.Content.Upload;
 
             if (!fileInfo.IsSuccess)                          
             {

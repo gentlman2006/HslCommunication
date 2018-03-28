@@ -111,10 +111,11 @@ namespace HslCommunication.Profinet.Omron
         /// 解析数据地址，Omron手册第188页
         /// </summary>
         /// <param name="address">数据地址</param>
+        /// <param name="isBit">是否是位地址</param>
         /// <returns></returns>
-        private OperateResult<ushort> AnalysisAddress( string address )
+        private OperateResult<OmronFinsDataType,byte[]> AnalysisAddress( string address ,bool isBit)
         {
-            var result = new OperateResult<ushort>( );
+            var result = new OperateResult<OmronFinsDataType, byte[]>( );
             try
             {
                 switch (address[0])
@@ -122,10 +123,66 @@ namespace HslCommunication.Profinet.Omron
                     case 'D':
                     case 'd':
                         {
-
+                            // DM区数据
+                            result.Content1 = OmronFinsDataType.DM;
+                            break;
+                        }
+                    case 'C':
+                    case 'c':
+                        {
+                            // CIO区数据
+                            result.Content1 = OmronFinsDataType.CIO;
+                            break;
+                        }
+                    case 'W':
+                    case 'w':
+                        {
+                            // WR区
+                            result.Content1 = OmronFinsDataType.WR;
+                            break;
+                        }
+                    case 'H':
+                    case 'h':
+                        {
+                            // HR区
+                            result.Content1 = OmronFinsDataType.HR;
+                            break;
+                        }
+                    case 'A':
+                    case 'a':
+                        {
+                            // AR区
+                            result.Content1 = OmronFinsDataType.AR;
                             break;
                         }
                     default: throw new Exception( "输入的类型不支持，请重新输入" );
+                }
+
+                if(isBit)
+                {
+                    // 位操作
+                    string[] splits = address.Substring( 1 ).Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries );
+                    ushort addr = ushort.Parse( splits[0] );
+                    result.Content2 = new byte[3];
+                    result.Content2[0] = BitConverter.GetBytes( addr )[1];
+                    result.Content2[1] = BitConverter.GetBytes( addr )[0];
+
+                    if (splits.Length > 1)
+                    {
+                        result.Content2[2] = byte.Parse( splits[2] );
+                        if (result.Content2[2] > 15)
+                        {
+                            throw new Exception( "输入的位地址只能在0-15之间。" );
+                        }
+                    }
+                }
+                else
+                {
+                    // 字操作
+                    ushort addr = ushort.Parse( address.Substring( 1 ) );
+                    result.Content2 = new byte[3];
+                    result.Content2[0] = BitConverter.GetBytes( addr )[1];
+                    result.Content2[1] = BitConverter.GetBytes( addr )[0];
                 }
             }
             catch (Exception ex)
@@ -138,50 +195,196 @@ namespace HslCommunication.Profinet.Omron
             return result;
         }
 
+
+
+        private OperateResult<byte[]> ResponseValidAnalysis(byte[] response,bool isRead)
+        {
+            // 数据有效性分析
+            if (response.Length >= 16)
+            {
+                // 提取错误码
+                byte[] buffer = new byte[4];
+                buffer[0] = response[15];
+                buffer[1] = response[14];
+                buffer[2] = response[13];
+                buffer[3] = response[12];
+                int err = BitConverter.ToInt32( buffer, 0 );
+                if (err > 0)
+                {
+                    return new OperateResult<byte[]>( )
+                    {
+                        ErrorCode = err,
+                        Message = OmronInfo.GetStatusDescription( err ),
+                    };
+                }
+
+                if (response.Length >= 30)
+                {
+                    err = response[28] * 256 + response[29];
+                    if (err > 0)
+                    {
+                        return new OperateResult<byte[]>( )
+                        {
+                            ErrorCode = err,
+                            Message = "结束码错误，为：" + err,
+                        };
+                    }
+
+                    if (!isRead)
+                    {
+                        // 写入操作
+                        return OperateResult.CreateSuccessResult( new byte[0] );
+                    }
+                    else
+                    {
+                        // 读取操作
+                        byte[] content = new byte[response.Length - 30];
+                        if (content.Length > 0)
+                        {
+                            Array.Copy( response, 30, content, 0, content.Length );
+                        }
+                        return OperateResult.CreateSuccessResult( content );
+                    }
+                }
+            }
+
+            return new OperateResult<byte[]>( )
+            {
+                Message = "数据长度接收错误",
+            };
+        }
+        
+
+
+
+
         #endregion
 
         #region Build Command
+
+
+        /// <summary>
+        /// 将普通的指令打包成完整的指令
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <returns></returns>
+        private byte[] PackCommand(byte[] cmd)
+        {
+            byte[] buffer = new byte[26 + cmd.Length];
+            Array.Copy( handSingle, 0, buffer, 0, 4 );
+            byte[] tmp = BitConverter.GetBytes( buffer.Length - 8 );
+            Array.Reverse( tmp );
+            tmp.CopyTo( buffer, 4 );
+
+            buffer[16] = ICF;
+            buffer[17] = RSV;
+            buffer[18] = GCT;
+            buffer[19] = DNA;
+            buffer[20] = DA1;
+            buffer[21] = DA2;
+            buffer[22] = SNA;
+            buffer[23] = SA1;
+            buffer[24] = SA2;
+            buffer[25] = SID;
+            cmd.CopyTo( buffer, 26 );
+
+            return buffer;
+        }
+
+
 
         /// <summary>
         /// 根据类型地址长度确认需要读取的指令头
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="length">长度</param>
+        /// <param name="isBit">是否是位读取</param>
         /// <returns>带有成功标志的指令数据</returns>
-        private OperateResult<byte[]> BuildReadCommand( string address, ushort length )
+        private OperateResult<byte[]> BuildReadCommand( string address, ushort length ,bool isBit)
         {
             var result = new OperateResult<byte[]>( );
-            var analysis = AnalysisAddress( address );
+            var analysis = AnalysisAddress( address, false );
             if (!analysis.IsSuccess)
             {
                 result.CopyErrorFromOther( analysis );
                 return result;
             }
 
+            byte[] _PLCCommand = new byte[8];
+            _PLCCommand[0] = 0x01;    // 读取存储区数据
+            _PLCCommand[1] = 0x01;
+            if(isBit)
+            {
+                _PLCCommand[2] = analysis.Content1.BitCode;
+            }
+            else
+            {
+                _PLCCommand[2] = analysis.Content1.WordCode;
+            }
+            analysis.Content2.CopyTo( _PLCCommand, 3 );
+            _PLCCommand[6] = (byte)(length / 256);                       // 长度
+            _PLCCommand[7] = (byte)(length % 256);
+
+            try
+            {
+                result.Content = PackCommand( _PLCCommand );
+                result.IsSuccess = true;
+            }
+            catch(Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), ex );
+                result.Message = ex.Message;
+            }
             return result;
         }
+
+
 
         /// <summary>
         /// 根据类型地址以及需要写入的数据来生成指令头
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="value"></param>
-        /// <param name="length">指定长度</param>
+        /// <param name="isBit">是否是位操作</param>
         /// <returns></returns>
-        private OperateResult<byte[]> BuildWriteCommand( string address, byte[] value, int length = -1 )
+        private OperateResult<byte[]> BuildWriteCommand( string address, byte[] value, bool isBit )
         {
             var result = new OperateResult<byte[]>( );
-            var analysis = AnalysisAddress( address );
+            var analysis = AnalysisAddress( address, false );
             if (!analysis.IsSuccess)
             {
                 result.CopyErrorFromOther( analysis );
                 return result;
             }
 
-            // 默认信息----注意：高低字节交错
+            byte[] _PLCCommand = new byte[8 + value.Length];
+            _PLCCommand[0] = 0x01;    // 读取存储区数据
+            _PLCCommand[1] = 0x02;
+            if (isBit)
+            {
+                _PLCCommand[2] = analysis.Content1.BitCode;
+            }
+            else
+            {
+                _PLCCommand[2] = analysis.Content1.WordCode;
+            }
+            analysis.Content2.CopyTo( _PLCCommand, 3 );
+            _PLCCommand[6] = (byte)(value.Length / 256);                       // 长度
+            _PLCCommand[7] = (byte)(value.Length % 256);
 
-            byte[] _PLCCommand = new byte[21 + value.Length];
-            
+            value.CopyTo( _PLCCommand, 8 );
+
+
+            try
+            {
+                result.Content = PackCommand( _PLCCommand );
+                result.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), ex );
+                result.Message = ex.Message;
+            }
             return result;
         }
 
@@ -271,7 +474,7 @@ namespace HslCommunication.Profinet.Omron
         #region Read Support
 
         /// <summary>
-        /// 从三菱PLC中读取想要的数据，返回读取结果
+        /// 从欧姆龙PLC中读取想要的数据，返回读取结果，读取单位为字
         /// </summary>
         /// <param name="address">读取地址，格式为"M100","D100","W1A0"</param>
         /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
@@ -280,21 +483,36 @@ namespace HslCommunication.Profinet.Omron
         {
             var result = new OperateResult<byte[]>( );
             //获取指令
-            var command = BuildReadCommand( address, length );
+            var command = BuildReadCommand( address, length, false );
             if (!command.IsSuccess)
             {
                 result.CopyErrorFromOther( command );
                 return result;
             }
-            
 
-            return result;
+            // 核心数据交互
+            OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
+            if(!read.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            // 数据有效性分析
+            OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, true );
+            if(!valid.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            return OperateResult.CreateSuccessResult( valid.Content );
         }
 
 
 
         /// <summary>
-        /// 从三菱PLC中批量读取位软元件，返回读取结果
+        /// 从欧姆龙PLC中批量读取位软元件，返回读取结果
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="length">读取的长度</param>
@@ -302,15 +520,37 @@ namespace HslCommunication.Profinet.Omron
         public OperateResult<bool[]> ReadBool( string address, ushort length )
         {
             var result = new OperateResult<bool[]>( );
-            var analysis = AnalysisAddress( address );
-           
-            result.IsSuccess = true;
-            return result;
+
+            //获取指令
+            var command = BuildReadCommand( address, length, true );
+            if (!command.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            // 核心数据交互
+            OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
+            if (!read.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            // 数据有效性分析
+            OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, true );
+            if (!valid.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            return OperateResult.CreateSuccessResult( valid.Content.Select( m => m != 0x00 ? true : false ).ToArray( ) );
         }
 
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的short数据
+        /// 读取欧姆龙PLC中字软元件指定地址的short数据
         /// </summary>
         /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
         /// <returns>带成功标志的结果数据对象</returns>
@@ -321,7 +561,7 @@ namespace HslCommunication.Profinet.Omron
 
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的ushort数据
+        /// 读取欧姆龙PLC中字软元件指定地址的ushort数据
         /// </summary>
         /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
         /// <returns>带成功标志的结果数据对象</returns>
@@ -331,7 +571,7 @@ namespace HslCommunication.Profinet.Omron
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的int数据
+        /// 读取欧姆龙PLC中字软元件指定地址的int数据
         /// </summary>
         /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
         /// <returns>带成功标志的结果数据对象</returns>
@@ -341,7 +581,7 @@ namespace HslCommunication.Profinet.Omron
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的uint数据
+        /// 读取欧姆龙PLC中字软元件指定地址的uint数据
         /// </summary>
         /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
         /// <returns>带成功标志的结果数据对象</returns>
@@ -351,7 +591,7 @@ namespace HslCommunication.Profinet.Omron
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的float数据
+        /// 读取欧姆龙PLC中字软元件指定地址的float数据
         /// </summary>
         /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
         /// <returns>带成功标志的结果数据对象</returns>
@@ -361,7 +601,7 @@ namespace HslCommunication.Profinet.Omron
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的long数据
+        /// 读取欧姆龙PLC中字软元件指定地址的long数据
         /// </summary>
         /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
         /// <returns>带成功标志的结果数据对象</returns>
@@ -371,7 +611,7 @@ namespace HslCommunication.Profinet.Omron
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的ulong数据
+        /// 读取欧姆龙PLC中字软元件指定地址的ulong数据
         /// </summary>
         /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
         /// <returns>带成功标志的结果数据对象</returns>
@@ -381,7 +621,7 @@ namespace HslCommunication.Profinet.Omron
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的double数据
+        /// 读取欧姆龙PLC中字软元件指定地址的double数据
         /// </summary>
         /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
         /// <returns>带成功标志的结果数据对象</returns>
@@ -391,7 +631,7 @@ namespace HslCommunication.Profinet.Omron
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件地址地址的String数据，编码为ASCII
+        /// 读取欧姆龙PLC中字软元件地址地址的String数据，编码为ASCII
         /// </summary>
         /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
         /// <param name="length">字符串长度</param>
@@ -416,17 +656,33 @@ namespace HslCommunication.Profinet.Omron
         /// <returns>结果</returns>
         public OperateResult Write( string address, byte[] value )
         {
-            OperateResult<byte[]> result = new OperateResult<byte[]>( );
+            OperateResult result = new OperateResult( );
 
             //获取指令
-            var analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
+            var command = BuildWriteCommand( address, value, false );
+            if (!command.IsSuccess)
             {
-                result.CopyErrorFromOther( analysis );
+                result.CopyErrorFromOther( command );
                 return result;
             }
 
-            return result;
+            // 核心数据交互
+            OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
+            if (!read.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            // 数据有效性分析
+            OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, true );
+            if (!valid.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            return OperateResult.CreateSuccessResult( ) ;
         }
 
 
@@ -513,7 +769,33 @@ namespace HslCommunication.Profinet.Omron
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, bool[] values )
         {
-            return Write( address, values.Select( m => m ? (byte)0x01 : (byte)0x00 ).ToArray( ) );
+            OperateResult result = new OperateResult( );
+
+            //获取指令
+            var command = BuildWriteCommand( address, values.Select( m => m ? (byte)0x01 : (byte)0x00 ).ToArray( ), true );
+            if (!command.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            // 核心数据交互
+            OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
+            if (!read.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            // 数据有效性分析
+            OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, true );
+            if (!valid.IsSuccess)
+            {
+                result.CopyErrorFromOther( command );
+                return result;
+            }
+
+            return OperateResult.CreateSuccessResult( );
         }
 
 
@@ -754,7 +1036,7 @@ namespace HslCommunication.Profinet.Omron
         /// <returns>字符串信息</returns>
         public override string ToString( )
         {
-            return "MelsecMcNet";
+            return "OmronFinsNet";
         }
 
         #endregion
