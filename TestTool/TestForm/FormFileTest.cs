@@ -28,11 +28,11 @@ namespace TestTool.TestForm
         #region 服务器端代码
 
 
-        private UltimateFileServer2 ultimateFileServer;                                            // 引擎对象
+        private UltimateFileServer ultimateFileServer;                                            // 引擎对象
 
         private void UltimateFileServerInitialization()
         {
-            ultimateFileServer = new UltimateFileServer2();                                        // 实例化对象
+            ultimateFileServer = new UltimateFileServer();                                        // 实例化对象
             ultimateFileServer.FilesDirectoryPath = Application.StartupPath + @"\UltimateFile";   // 所有文件存储的基础路径
             ultimateFileServer.ServerStart(34567);                                                // 启动一个端口的引擎
         }
@@ -51,14 +51,14 @@ namespace TestTool.TestForm
 
         #region 客户端核心引擎
 
-        private IntegrationFileClient2 integrationFileClient;
+        private IntegrationFileClient integrationFileClient;
 
         private void IntegrationFileClientInitialization()
         {
             // 定义连接服务器的一些属性，超时时间，IP及端口信息
-            integrationFileClient = new IntegrationFileClient2()
+            integrationFileClient = new IntegrationFileClient()
             {
-                ConnectTimeout = 5000,
+                ConnectTimeOut = 5000,
                 ServerIpEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("127.0.0.1"), 34567),
             };
         }
