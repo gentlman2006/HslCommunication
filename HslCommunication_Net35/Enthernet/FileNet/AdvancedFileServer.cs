@@ -69,9 +69,10 @@ namespace HslCommunication.Enthernet
                     string fullFileName = ReturnAbsoluteFileName( Factory, Group, Identify, fileName );
 
                     // 发送文件数据
-                    if (!SendFileAndCheckReceive( socket, fullFileName, fileName, "", "").IsSuccess)
+                    OperateResult sendFile = SendFileAndCheckReceive( socket, fullFileName, fileName, "", "" );
+                    if (!sendFile.IsSuccess)
                     {
-                        LogNet?.WriteError( ToString(), $"{StringResources.FileDownloadFailed}:{relativeName} ip:{IpAddress}" );
+                        LogNet?.WriteError( ToString( ), $"{StringResources.FileDownloadFailed}:{relativeName} ip:{IpAddress} 原因：{sendFile.Message}" );
                         return;
                     }
                     else
@@ -114,6 +115,7 @@ namespace HslCommunication.Enthernet
                         out string FileUpload
                         ).IsSuccess)
                     {
+                        Thread.Sleep( 100 );
                         socket?.Close( );
                         LogNet?.WriteInfo( ToString( ), StringResources.FileUploadSuccess + ":" + relativeName );
                     }
@@ -138,7 +140,7 @@ namespace HslCommunication.Enthernet
                         socket?.Close( );
                     }
 
-                    if (deleteResult) LogNet?.WriteInfo( ToString( ), StringResources.FileDeleteSuccess + ":" + fullFileName );
+                    if (deleteResult) LogNet?.WriteInfo( ToString( ), StringResources.FileDeleteSuccess + ":" + relativeName );
                 }
                 else if (customer == HslProtocol.ProtocolFileDirectoryFiles)
                 {
@@ -236,17 +238,21 @@ namespace HslCommunication.Enthernet
         {
             // 先接收文件
             OperateResult<FileBaseInfo> fileInfo = ReceiveFileFromSocket( socket, savename, null );
+            if (!fileInfo.IsSuccess)
+            {
+                DeleteFileByName( savename );
+                filename = null;
+                size = 0;
+                filetag = null;
+                fileupload = null;
+                return fileInfo;
+            }
+
             filename = fileInfo.Content.Name;
             size = fileInfo.Content.Size;
             filetag = fileInfo.Content.Tag;
             fileupload = fileInfo.Content.Upload;
-
-            if (!fileInfo.IsSuccess)                          
-            {
-                DeleteFileByName( savename );
-                return fileInfo;
-            }
-
+            
 
             // 标记移动文件，失败尝试三次
             int customer = 0;
@@ -291,6 +297,19 @@ namespace HslCommunication.Enthernet
         #region Private Member
 
         private string m_FilesDirectoryPathTemp = null;
+
+        #endregion
+
+        #region Object Override
+
+        /// <summary>
+        /// 获取本对象的字符串标识形式
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "AdvancedFileServer";
+        }
 
         #endregion
 

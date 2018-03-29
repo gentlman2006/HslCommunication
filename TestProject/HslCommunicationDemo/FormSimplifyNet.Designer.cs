@@ -34,6 +34,7 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button5 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
@@ -56,7 +57,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -114,6 +115,7 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.button6);
             this.panel1.Controls.Add(this.button5);
             this.panel1.Controls.Add(this.textBox3);
             this.panel1.Controls.Add(this.label6);
@@ -128,6 +130,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(978, 83);
             this.panel1.TabIndex = 7;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(875, 11);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(91, 28);
+            this.button5.TabIndex = 8;
+            this.button5.Text = "启动短连接";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // textBox3
             // 
@@ -337,15 +349,14 @@
             this.label7.TabIndex = 7;
             this.label7.Text = "指令头：";
             // 
-            // button5
+            // button6
             // 
-            this.button5.Location = new System.Drawing.Point(875, 11);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(91, 28);
-            this.button5.TabIndex = 8;
-            this.button5.Text = "启动短连接";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.button6.Location = new System.Drawing.Point(875, 45);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(91, 28);
+            this.button6.TabIndex = 9;
+            this.button6.Text = "压力测试";
+            this.button6.UseVisualStyleBackColor = true;
             // 
             // FormSimplifyNet
             // 
@@ -405,5 +416,6 @@
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
     }
 }

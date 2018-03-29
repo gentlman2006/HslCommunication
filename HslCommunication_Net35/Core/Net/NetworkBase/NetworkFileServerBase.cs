@@ -389,7 +389,7 @@ namespace HslCommunication.Core.Net
         #region Object Override
 
         /// <summary>
-        /// 获取本地方的字符串标识形式
+        /// 获取本对象的字符串标识形式
         /// </summary>
         /// <returns></returns>
         public override string ToString( )

@@ -135,6 +135,11 @@ namespace HslCommunication.Enthernet
             return fileManagment.GetCurrentFileMappingName( fileName );
         }
 
+        /// <summary>
+        /// 删除已经存在的文件信息
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="fileName"></param>
         private void DeleteExsistingFile( string path, string fileName )
         {
             if (!string.IsNullOrEmpty( fileName ))

@@ -157,6 +157,7 @@ namespace HslCommunication.Core.Net
             // 远程关闭了连接
             if (state.IsClose)
             {
+                result.IsSuccess = true;
                 result.Message = "远程关闭了连接";
                 socket?.Close( );
                 return result;
@@ -225,9 +226,9 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 发送消息给套接字，直到完成的时候返回
         /// </summary>
-        /// <param name="socket"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
+        /// <param name="socket">网络套接字</param>
+        /// <param name="data">字节数据</param>
+        /// <returns>发送是否成功的结果</returns>
         protected OperateResult Send( Socket socket, byte[] data )
         {
             if (data == null) return OperateResult.CreateSuccessResult( );

@@ -158,6 +158,14 @@ namespace HslCommunicationDemo
             Show( );
         }
 
-
+        private void button12_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormFileClient form = new FormFileClient( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

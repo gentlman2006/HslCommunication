@@ -214,7 +214,7 @@ namespace HslCommunication.Enthernet
             string fileUpload,
             Action<long, long> processReport )
         {
-            HslReadWriteLock readWriteLock = new HslReadWriteLock( );
+            // HslReadWriteLock readWriteLock = new HslReadWriteLock( );
 
             // 创建套接字并连接服务器
             OperateResult<Socket> socketResult = CreateSocketAndConnect( ServerIpEndPoint, ConnectTimeOut );

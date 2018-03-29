@@ -50,6 +50,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -220,6 +221,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.button12);
             this.groupBox4.Controls.Add(this.button9);
             this.groupBox4.Controls.Add(this.button8);
             this.groupBox4.Location = new System.Drawing.Point(17, 307);
@@ -306,10 +308,22 @@
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(15, 104);
+            this.button12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(150, 32);
+            this.button12.TabIndex = 2;
+            this.button12.Text = "File Net";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(839, 546);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.linkLabel3);
@@ -361,6 +375,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Button button12;
     }
 }
 
