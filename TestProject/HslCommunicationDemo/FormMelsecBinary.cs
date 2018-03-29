@@ -357,7 +357,7 @@ namespace HslCommunicationDemo
         {
             try
             {
-                OperateResult<byte[]> read = melsec_net.Read( textBox3.Text, ushort.Parse( textBox9.Text ) );
+                OperateResult<byte[]> read = melsec_net.Read( textBox6.Text, ushort.Parse( textBox9.Text ) );
                 if (read.IsSuccess)
                 {
                     textBox10.Text = "结果：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( read.Content );

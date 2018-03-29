@@ -61,19 +61,17 @@ namespace HslCommunication.ModBus
         /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
         private OperateResult<int> AnalysisAddress( string address )
         {
-            var result = new OperateResult<int>( );
             try
             {
-                result.Content = Convert.ToInt32( address );
+                return OperateResult.CreateSuccessResult( Convert.ToInt32( address ) );
             }
             catch (Exception ex)
             {
-                result.Message = ex.Message;
-                return result;
+                return new OperateResult<int>( )
+                {
+                    Message = ex.Message
+                };
             }
-
-            result.IsSuccess = true;
-            return result;
         }
 
 
@@ -483,15 +481,36 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的字节信息</returns>
         public OperateResult<byte[]> Read( string address, ushort length )
         {
-            var result = new OperateResult<byte[]>( );
-            var command = BuildReadCommandBase( ModbusInfo.ReadRegister, address, length );
-            if (!command.IsSuccess)
+            OperateResult<int> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess)
             {
-                result.CopyErrorFromOther( command );
-                return result;
+                return new OperateResult<byte[]>( )
+                {
+                    Message = analysis.Message,
+                };
             }
 
-            return ReadModBusBase( ModbusInfo.ReadRegister, address, length );
+            List<byte> lists = new List<byte>( );
+            ushort alreadyFinished = 0;
+            while (alreadyFinished < length)
+            {
+                ushort lengthTmp = (ushort)Math.Min( (length - alreadyFinished), 120 );
+                OperateResult<byte[]> read = ReadModBusBase( ModbusInfo.ReadRegister, (analysis.Content + alreadyFinished).ToString( ), lengthTmp );
+                if(!read.IsSuccess)
+                {
+                    return new OperateResult<byte[]>( )
+                    {
+                        ErrorCode = read.ErrorCode,
+                        Message = read.Message
+                    };
+                }
+
+                lists.AddRange( read.Content );
+
+                alreadyFinished += lengthTmp;
+            }
+
+            return OperateResult.CreateSuccessResult( lists.ToArray( ) );
         }
 
         /// <summary>

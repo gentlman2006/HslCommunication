@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormFileClient.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFileClient.Designer.cs">
+      <DependentUpon>FormFileClient.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormOmron.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -102,6 +108,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormFileClient.resx">
+      <DependentUpon>FormFileClient.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormOmron.resx">
       <DependentUpon>FormOmron.cs</DependentUpon>
     </EmbeddedResource>
