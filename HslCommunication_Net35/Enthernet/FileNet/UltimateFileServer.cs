@@ -211,7 +211,10 @@ namespace HslCommunication.Enthernet
 
                     fileMarkId.LeaveReadOperator( );
                     // 关闭连接
-                    socket?.Close( );
+                    if (Receive( socket, HslProtocol.HeadByteLength ).IsSuccess)
+                    {
+                        socket?.Close( );
+                    }
                 }
                 else if (customer == HslProtocol.ProtocolFileUpload)
                 {
@@ -239,7 +242,10 @@ namespace HslCommunication.Enthernet
                         socket,                    // 网络套接字
                         fullFileName).IsSuccess)
                     {
-                        socket?.Close( );
+                        if (Receive( socket, HslProtocol.HeadByteLength ).IsSuccess)
+                        {
+                            socket?.Close( );
+                        }
                         LogNet?.WriteInfo( ToString( ), StringResources.FileUploadSuccess + ":" + relativeName );
                     }
                     else
@@ -264,7 +270,10 @@ namespace HslCommunication.Enthernet
                         "成功"                                                                // 没啥含意
                         ).IsSuccess)
                     {
-                        socket?.Close( );
+                        if (Receive( socket, HslProtocol.HeadByteLength ).IsSuccess)
+                        {
+                            socket?.Close( );
+                        }
                     }
 
                     LogNet?.WriteInfo( ToString( ), StringResources.FileDeleteSuccess + ":" + relativeName );
@@ -278,7 +287,10 @@ namespace HslCommunication.Enthernet
                         HslProtocol.ProtocolFileDirectoryFiles,
                         fileManagment.JsonArrayContent ).IsSuccess)
                     {
-                        socket?.Close( );
+                        if (Receive( socket, HslProtocol.HeadByteLength ).IsSuccess)
+                        {
+                            socket?.Close( );
+                        }
                     }
                 }
                 else if (customer == HslProtocol.ProtocolFileDirectories)
@@ -296,7 +308,10 @@ namespace HslCommunication.Enthernet
                         HslProtocol.ProtocolFileDirectoryFiles,
                         jArray.ToString( )).IsSuccess)
                     {
-                        socket?.Close( );
+                        if (Receive( socket, HslProtocol.HeadByteLength ).IsSuccess)
+                        {
+                            socket?.Close( );
+                        }
                     }
                 }
                 else

@@ -26,6 +26,9 @@ namespace HslCommunication.Core.Net
     /// <summary>
     /// 本系统所有网络类的基类，该类为抽象类，无法进行实例化
     /// </summary>
+    /// <remarks>
+    /// network base class, support basic operation with socket
+    /// </remarks>
     public abstract class NetworkBase
     {
         #region Constructor
@@ -108,11 +111,16 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 接收固定长度的字节数组
         /// </summary>
+        /// <remarks>
+        /// Receive Special Length Bytes
+        /// </remarks>
         /// <param name="socket">网络通讯的套接字</param>
         /// <param name="length">准备接收的数据长度</param>
         /// <returns>包含了字节数据的结果类</returns>
         protected OperateResult<byte[]> Receive( Socket socket, int length )
         {
+            if (length == 0) return OperateResult.CreateSuccessResult( new byte[0] );
+
             var result = new OperateResult<byte[]>( );
             var receiveDone = new ManualResetEvent( false );
             var state = new StateObject( length );
@@ -429,6 +437,7 @@ namespace HslCommunication.Core.Net
 
 
         #endregion
+
 
         /*****************************************************************************
          * 

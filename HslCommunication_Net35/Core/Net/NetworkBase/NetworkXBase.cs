@@ -352,7 +352,14 @@ namespace HslCommunication.Core.Net
         {
             // 数据处理
             send = HslProtocol.CommandBytes( headcode, customer, Token, send );
-            return Send( socket, send );
+            OperateResult sendResult = Send( socket, send );
+            if(!sendResult.IsSuccess)
+            {
+                return sendResult;
+            }
+
+            // 检查接收
+            return ReceiveLong( socket );
         }
 
 
@@ -448,7 +455,6 @@ namespace HslCommunication.Core.Net
                 }
                 else
                 {
-                    Thread.Sleep( 100 );
                     socket?.Close( );
                     return new OperateResult( )
                     {
@@ -541,7 +547,8 @@ namespace HslCommunication.Core.Net
             };
 
             if (timeout > 0) ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), hslTimeOut );
-            
+
+            Console.WriteLine( "ReceiveAndCheckBytes:接收指令头" );
             // 接收头指令
             OperateResult<byte[]> headResult = Receive( socket, HslProtocol.HeadByteLength );
             if (!headResult.IsSuccess)
@@ -563,7 +570,10 @@ namespace HslCommunication.Core.Net
                     Message = StringResources.TokenCheckFailed
                 };
             }
-            
+
+            Console.WriteLine( "ReceiveAndCheckBytes:接收内容" );
+
+
             // 接收内容
             OperateResult<byte[]> contentResult = Receive( socket, BitConverter.ToInt32( headResult.Content, HslProtocol.HeadByteLength - 4 ) );
             if (!contentResult.IsSuccess)
@@ -573,7 +583,19 @@ namespace HslCommunication.Core.Net
                     Message = contentResult.Message
                 };
             }
-            
+
+
+            // 返回成功信息
+            OperateResult check = SendLong( socket, contentResult.Content.Length );
+            if(!check.IsSuccess)
+            {
+                return new OperateResult<byte[], byte[]>( )
+                {
+                    Message = check.Message
+                };
+            }
+
+            Console.WriteLine( "ReceiveAndCheckBytes:接收成功" );
             byte[] head = headResult.Content;
             byte[] content = contentResult.Content;
             content = HslProtocol.CommandAnalysis( head, content );
@@ -595,7 +617,8 @@ namespace HslCommunication.Core.Net
                     Message = receive.Message
                 };
             }
-            
+
+            Console.WriteLine( "ReceiveStringContentFromSocket", "检查字符串" );
             // 检查是否是字符串信息
             if (BitConverter.ToInt32( receive.Content1, 0 ) != HslProtocol.ProtocolUserString)
             {
@@ -666,6 +689,7 @@ namespace HslCommunication.Core.Net
             // 判断文件是否存在
             if (receiveString.Content1 == 0)
             {
+                socket?.Close( );
                 LogNet?.WriteWarn( ToString( ), "对方文件不存在，无法接收！" );
                 return new OperateResult<FileBaseInfo>( )
                 {
@@ -687,6 +711,7 @@ namespace HslCommunication.Core.Net
             }
             catch (Exception ex)
             {
+                socket?.Close( );
                 result.Message = "提取信息失败，" + ex.Message;
             }
 

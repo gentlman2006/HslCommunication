@@ -26,6 +26,19 @@ namespace HslCommunication
     /// </summary>
     public class OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult()
+        {
+
+        }
+
+        #endregion
+
+
         /// <summary>
         /// 指示本次访问是否成功
         /// </summary>

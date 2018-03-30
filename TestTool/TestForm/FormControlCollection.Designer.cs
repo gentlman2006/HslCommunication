@@ -159,13 +159,13 @@
             // 
             this.userGaugeChart4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
             this.userGaugeChart4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart4.Location = new System.Drawing.Point(444, 641);
+            this.userGaugeChart4.Location = new System.Drawing.Point(417, 623);
             this.userGaugeChart4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart4.Name = "userGaugeChart4";
             this.userGaugeChart4.PointerColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.userGaugeChart4.Size = new System.Drawing.Size(274, 165);
+            this.userGaugeChart4.Size = new System.Drawing.Size(301, 183);
             this.userGaugeChart4.TabIndex = 28;
-            this.userGaugeChart4.Value = 60D;
+            this.userGaugeChart4.Value = 50D;
             // 
             // userSwitch2
             // 
@@ -231,13 +231,14 @@
             // 
             this.userGaugeChart2.BackColor = System.Drawing.Color.Transparent;
             this.userGaugeChart2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart2.IsTextUnderPointer = false;
             this.userGaugeChart2.Location = new System.Drawing.Point(12, 599);
             this.userGaugeChart2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart2.Name = "userGaugeChart2";
             this.userGaugeChart2.Size = new System.Drawing.Size(399, 207);
             this.userGaugeChart2.TabIndex = 19;
             this.userGaugeChart2.UnitText = "km/H";
-            this.userGaugeChart2.Value = 60D;
+            this.userGaugeChart2.Value = 50D;
             // 
             // userPieChart2
             // 
@@ -384,13 +385,15 @@
             // userGaugeChart1
             // 
             this.userGaugeChart1.BackColor = System.Drawing.Color.Transparent;
-            this.userGaugeChart1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart1.IsTextUnderPointer = false;
             this.userGaugeChart1.Location = new System.Drawing.Point(12, 354);
             this.userGaugeChart1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart1.Name = "userGaugeChart1";
             this.userGaugeChart1.Size = new System.Drawing.Size(380, 207);
             this.userGaugeChart1.TabIndex = 18;
-            this.userGaugeChart1.Value = 60D;
+            this.userGaugeChart1.UnitText = "km/h";
+            this.userGaugeChart1.Value = 50D;
             // 
             // userCurve1
             // 
