@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HslCommunication.Profinet;
-using HslCommunication.Profinet.Melsec;
 using System.Threading;
+using HslCommunication.Profinet.Melsec;
 using HslCommunication;
 
 namespace HslCommunicationDemo
@@ -466,6 +466,64 @@ namespace HslCommunicationDemo
 
         #endregion
 
-        
+        #region 测试使用
+
+        private void test1()
+        {
+            OperateResult<bool[]> read = melsec_net.ReadBool( "M100", 10 );
+            if(read.IsSuccess)
+            {
+                bool m100 = read.Content[0];
+                // and so on
+                bool m109 = read.Content[9];
+            }
+            else
+            {
+                // failed
+            }
+        }
+
+        private void test2( )
+        {
+            bool[] values = new bool[] { true, false, true, true, false, true, false, true, true, false };
+            OperateResult read = melsec_net.Write( "M100", values );
+            if (read.IsSuccess)
+            {
+                // success
+            }
+            else
+            {
+                // failed
+            }
+        }
+
+
+        private void test3( )
+        {
+            short d100_short = melsec_net.ReadInt16( "D100" ).Content;
+            ushort d100_ushort = melsec_net.ReadUInt16( "D100" ).Content;
+            int d100_int = melsec_net.ReadInt32( "D100" ).Content;
+            uint d100_uint = melsec_net.ReadUInt32( "D100" ).Content;
+            long d100_long = melsec_net.ReadInt64( "D100" ).Content;
+            ulong d100_ulong = melsec_net.ReadUInt64( "D100" ).Content;
+            float d100_float = melsec_net.ReadFloat( "D100" ).Content;
+            double d100_double = melsec_net.ReadDouble( "D100" ).Content;
+            // need to specify the text length
+            string d100_string = melsec_net.ReadString( "D100", 10 ).Content;
+        }
+        private void test4( )
+        {
+            melsec_net.Write( "D100", (short)5 );
+            melsec_net.Write( "D100", (ushort)5 );
+            melsec_net.Write( "D100", 5 );
+            melsec_net.Write( "D100", (uint)5 );
+            melsec_net.Write( "D100", (long)5 );
+            melsec_net.Write( "D100", (ulong)5 );
+            melsec_net.Write( "D100", 5f );
+            melsec_net.Write( "D100", 5d );
+            // length should Multiples of 2 
+            melsec_net.Write( "D100", "12345678" );
+        }
+        #endregion
     }
 }
