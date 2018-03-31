@@ -14,8 +14,10 @@ Email: hsl200909@163.com
 ## Prepare
 在三菱PLC侧进行相关的参数配置，步骤参照下面的图片
 
-![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/melsec/melsec2.png)
-![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/melsec/melsec1.png)
+Configure the relevant parameters on the Mitsubishi PLC side. Refer to the picture below
+
+![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/melsec/melsec2.jpg)
+![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/melsec/melsec1.jpg)
 
 
 ## Instantiation
@@ -138,3 +140,95 @@ melsec_net.Write( "D100", "12345678" );
 
 Not only  'D' dataType, but also 'D','W','R'
 
+This library alse support write array values.
+
+
+5. Read complex data, for example, D100-D109 contains all data you want
+
+Data name | Data section | Data type | Data Length
+count | D100-D101 | int | 4-byte
+temp | D102-D103 | float | 4-byte
+name1 | D104 | short | 2-byte
+barcode | D105-D109 | string | 10-byte
+
+So we can do like this
+
+'''
+
+OperateResult<byte[]> read = melsec_net.Read( "D100", 10 );
+if(read.IsSuccess)
+{
+    int count = melsec_net.ByteTransform.TransInt32( read.Content, 0 );
+    float temp = melsec_net.ByteTransform.TransSingle( read.Content, 4 );
+    short name1 = melsec_net.ByteTransform.TransInt16( read.Content, 8 );
+    string barcode = Encoding.ASCII.GetString( read.Content, 10, 10 );
+}
+
+'''
+
+6. Implementing custom type reads and writes
+
+We found the code above is awkward and we want to improve.
+
+First, Inherit and implement interface methods
+
+'''
+
+public class UserType : HslCommunication.IDataTransfer
+{
+    #region IDataTransfer
+
+    private HslCommunication.Core.IByteTransform ByteTransform = new HslCommunication.Core.RegularByteTransform();
+
+
+    public ushort ReadCount => 10;
+
+    public void ParseSource( byte[] Content )
+    {
+        int count = ByteTransform.TransInt32( Content, 0 );
+        float temp = ByteTransform.TransSingle( Content, 4 );
+        short name1 = ByteTransform.TransInt16( Content, 8 );
+        string barcode = Encoding.ASCII.GetString( Content, 10, 10 );
+    }
+
+    public byte[] ToSource( )
+    {
+        byte[] buffer = new byte[20];
+        ByteTransform.TransByte( count ).CopyTo( buffer, 0 );
+        ByteTransform.TransByte( temp ).CopyTo( buffer, 4 );
+        ByteTransform.TransByte( name1 ).CopyTo( buffer, 8 );
+        Encoding.ASCII.GetBytes( barcode ).CopyTo( buffer, 10 );
+        return buffer;
+    }
+
+
+    #endregion
+
+
+    #region Public Data
+
+    public int count { get; set; }
+
+    public float temp { get; set; }
+
+    public short name1 { get; set; }
+
+    public string barcode { get; set; }
+
+    #endregion
+}
+
+'''
+
+So we can do like this
+
+'''
+
+OperateResult<UserType> read = melsec_net.ReadCustomer<UserType>( "D100" );
+if (read.IsSuccess)
+{
+    UserType value = read.Content;
+}
+
+
+'''

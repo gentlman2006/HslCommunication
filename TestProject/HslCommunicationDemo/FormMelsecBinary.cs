@@ -524,6 +524,73 @@ namespace HslCommunicationDemo
             // length should Multiples of 2 
             melsec_net.Write( "D100", "12345678" );
         }
+
+
+        private void test5( )
+        {
+            OperateResult<byte[]> read = melsec_net.Read( "D100", 10 );
+            if(read.IsSuccess)
+            {
+                int count = melsec_net.ByteTransform.TransInt32( read.Content, 0 );
+                float temp = melsec_net.ByteTransform.TransSingle( read.Content, 4 );
+                short name1 = melsec_net.ByteTransform.TransInt16( read.Content, 8 );
+                string barcode = Encoding.ASCII.GetString( read.Content, 10, 10 );
+            }
+        }
+
+        private void test6( )
+        {
+            OperateResult<UserType> read = melsec_net.ReadCustomer<UserType>( "D100" );
+            if (read.IsSuccess)
+            {
+                UserType value = read.Content;
+            }
+        }
+
+        #endregion
+    }
+
+    public class UserType : HslCommunication.IDataTransfer
+    {
+        #region IDataTransfer
+
+        private HslCommunication.Core.IByteTransform ByteTransform = new HslCommunication.Core.RegularByteTransform();
+
+
+        public ushort ReadCount => 10;
+
+        public void ParseSource( byte[] Content )
+        {
+            int count = ByteTransform.TransInt32( Content, 0 );
+            float temp = ByteTransform.TransSingle( Content, 4 );
+            short name1 = ByteTransform.TransInt16( Content, 8 );
+            string barcode = Encoding.ASCII.GetString( Content, 10, 10 );
+        }
+
+        public byte[] ToSource( )
+        {
+            byte[] buffer = new byte[20];
+            ByteTransform.TransByte( count ).CopyTo( buffer, 0 );
+            ByteTransform.TransByte( temp ).CopyTo( buffer, 4 );
+            ByteTransform.TransByte( name1 ).CopyTo( buffer, 8 );
+            Encoding.ASCII.GetBytes( barcode ).CopyTo( buffer, 10 );
+            return buffer;
+        }
+
+
+        #endregion
+
+
+        #region Public Data
+
+        public int count { get; set; }
+
+        public float temp { get; set; }
+
+        public short name1 { get; set; }
+
+        public string barcode { get; set; }
+
         #endregion
     }
 }
