@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent( )
         {
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("文件列表");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("文件列表");
             this.label20 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -54,21 +54,15 @@
             this.label24 = new System.Windows.Forms.Label();
             this.textBox_file_fileSize = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
-            this.textBox_file_id = new System.Windows.Forms.TextBox();
-            this.label18 = new System.Windows.Forms.Label();
-            this.textBox_file_group = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.textBox_file_factory = new System.Windows.Forms.TextBox();
-            this.label22 = new System.Windows.Forms.Label();
             this.textBox_file_fileName = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.textBox_delete_fileName = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.textBox_delete_id = new System.Windows.Forms.TextBox();
             this.label_delete_id = new System.Windows.Forms.Label();
-            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.textBox_delete_group = new System.Windows.Forms.TextBox();
             this.label_delete_group = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
             this.textBox_delete_factory = new System.Windows.Forms.TextBox();
@@ -102,6 +96,10 @@
             this.button2 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.button6 = new System.Windows.Forms.Button();
+            this.label18 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -252,6 +250,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.label18);
+            this.groupBox4.Controls.Add(this.button6);
             this.groupBox4.Controls.Add(this.textBox_file_date);
             this.groupBox4.Controls.Add(this.label32);
             this.groupBox4.Controls.Add(this.textBox_file_tag);
@@ -262,12 +262,6 @@
             this.groupBox4.Controls.Add(this.label24);
             this.groupBox4.Controls.Add(this.textBox_file_fileSize);
             this.groupBox4.Controls.Add(this.label23);
-            this.groupBox4.Controls.Add(this.textBox_file_id);
-            this.groupBox4.Controls.Add(this.label18);
-            this.groupBox4.Controls.Add(this.textBox_file_group);
-            this.groupBox4.Controls.Add(this.label19);
-            this.groupBox4.Controls.Add(this.textBox_file_factory);
-            this.groupBox4.Controls.Add(this.label22);
             this.groupBox4.Controls.Add(this.textBox_file_fileName);
             this.groupBox4.Controls.Add(this.label11);
             this.groupBox4.Controls.Add(this.treeView1);
@@ -358,54 +352,6 @@
             this.label23.TabIndex = 22;
             this.label23.Text = "文件大小：";
             // 
-            // textBox_file_id
-            // 
-            this.textBox_file_id.Location = new System.Drawing.Point(849, 31);
-            this.textBox_file_id.Name = "textBox_file_id";
-            this.textBox_file_id.Size = new System.Drawing.Size(84, 23);
-            this.textBox_file_id.TabIndex = 21;
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(816, 34);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(32, 17);
-            this.label18.TabIndex = 20;
-            this.label18.Text = "Id：";
-            // 
-            // textBox_file_group
-            // 
-            this.textBox_file_group.Location = new System.Drawing.Point(722, 31);
-            this.textBox_file_group.Name = "textBox_file_group";
-            this.textBox_file_group.Size = new System.Drawing.Size(84, 23);
-            this.textBox_file_group.TabIndex = 19;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(666, 34);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(57, 17);
-            this.label19.TabIndex = 18;
-            this.label19.Text = "Group：";
-            // 
-            // textBox_file_factory
-            // 
-            this.textBox_file_factory.Location = new System.Drawing.Point(576, 31);
-            this.textBox_file_factory.Name = "textBox_file_factory";
-            this.textBox_file_factory.Size = new System.Drawing.Size(84, 23);
-            this.textBox_file_factory.TabIndex = 17;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(502, 34);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(62, 17);
-            this.label22.TabIndex = 16;
-            this.label22.Text = "Factory：";
-            // 
             // textBox_file_fileName
             // 
             this.textBox_file_fileName.Location = new System.Drawing.Point(576, 68);
@@ -426,20 +372,22 @@
             // 
             this.treeView1.Location = new System.Drawing.Point(9, 22);
             this.treeView1.Name = "treeView1";
-            treeNode3.Name = "节点0";
-            treeNode3.Text = "文件列表";
+            treeNode2.Name = "节点0";
+            treeNode2.Text = "文件列表";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3});
-            this.treeView1.Size = new System.Drawing.Size(446, 209);
+            treeNode2});
+            this.treeView1.Size = new System.Drawing.Size(409, 209);
             this.treeView1.TabIndex = 0;
+            this.treeView1.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView1_BeforeExpand);
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.textBox_delete_fileName);
             this.groupBox3.Controls.Add(this.label8);
-            this.groupBox3.Controls.Add(this.textBox9);
+            this.groupBox3.Controls.Add(this.textBox_delete_id);
             this.groupBox3.Controls.Add(this.label_delete_id);
-            this.groupBox3.Controls.Add(this.textBox10);
+            this.groupBox3.Controls.Add(this.textBox_delete_group);
             this.groupBox3.Controls.Add(this.label_delete_group);
             this.groupBox3.Controls.Add(this.button5);
             this.groupBox3.Controls.Add(this.textBox_delete_factory);
@@ -467,12 +415,13 @@
             this.label8.TabIndex = 16;
             this.label8.Text = "文件名：";
             // 
-            // textBox9
+            // textBox_delete_id
             // 
-            this.textBox9.Location = new System.Drawing.Point(353, 25);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(84, 23);
-            this.textBox9.TabIndex = 15;
+            this.textBox_delete_id.Location = new System.Drawing.Point(353, 25);
+            this.textBox_delete_id.Name = "textBox_delete_id";
+            this.textBox_delete_id.Size = new System.Drawing.Size(84, 23);
+            this.textBox_delete_id.TabIndex = 15;
+            this.textBox_delete_id.Text = "Admin";
             // 
             // label_delete_id
             // 
@@ -483,12 +432,13 @@
             this.label_delete_id.TabIndex = 14;
             this.label_delete_id.Text = "Id：";
             // 
-            // textBox10
+            // textBox_delete_group
             // 
-            this.textBox10.Location = new System.Drawing.Point(226, 25);
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(84, 23);
-            this.textBox10.TabIndex = 13;
+            this.textBox_delete_group.Location = new System.Drawing.Point(226, 25);
+            this.textBox_delete_group.Name = "textBox_delete_group";
+            this.textBox_delete_group.Size = new System.Drawing.Size(84, 23);
+            this.textBox_delete_group.TabIndex = 13;
+            this.textBox_delete_group.Text = "Personal";
             // 
             // label_delete_group
             // 
@@ -515,6 +465,7 @@
             this.textBox_delete_factory.Name = "textBox_delete_factory";
             this.textBox_delete_factory.Size = new System.Drawing.Size(84, 23);
             this.textBox_delete_factory.TabIndex = 5;
+            this.textBox_delete_factory.Text = "Files";
             // 
             // label17
             // 
@@ -527,6 +478,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.textBox_download_fileName);
             this.groupBox2.Controls.Add(this.label16);
             this.groupBox2.Controls.Add(this.textBox_download_id);
@@ -567,6 +519,7 @@
             this.textBox_download_id.Name = "textBox_download_id";
             this.textBox_download_id.Size = new System.Drawing.Size(84, 23);
             this.textBox_download_id.TabIndex = 15;
+            this.textBox_download_id.Text = "Admin";
             // 
             // label15
             // 
@@ -583,6 +536,7 @@
             this.textBox_download_group.Name = "textBox_download_group";
             this.textBox_download_group.Size = new System.Drawing.Size(84, 23);
             this.textBox_download_group.TabIndex = 13;
+            this.textBox_download_group.Text = "Personal";
             // 
             // label14
             // 
@@ -597,7 +551,7 @@
             // 
             this.progressBar2.Location = new System.Drawing.Point(80, 56);
             this.progressBar2.Name = "progressBar2";
-            this.progressBar2.Size = new System.Drawing.Size(864, 17);
+            this.progressBar2.Size = new System.Drawing.Size(669, 17);
             this.progressBar2.TabIndex = 9;
             // 
             // label12
@@ -625,6 +579,7 @@
             this.textBox_download_factory.Name = "textBox_download_factory";
             this.textBox_download_factory.Size = new System.Drawing.Size(84, 23);
             this.textBox_download_factory.TabIndex = 5;
+            this.textBox_download_factory.Text = "Files";
             // 
             // label13
             // 
@@ -637,6 +592,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label10);
             this.groupBox1.Controls.Add(this.textBox_upload_tag);
             this.groupBox1.Controls.Add(this.label31);
             this.groupBox1.Controls.Add(this.textBox_upload_name);
@@ -662,15 +618,16 @@
             // 
             // textBox_upload_tag
             // 
-            this.textBox_upload_tag.Location = new System.Drawing.Point(779, 56);
+            this.textBox_upload_tag.Location = new System.Drawing.Point(709, 56);
             this.textBox_upload_tag.Name = "textBox_upload_tag";
-            this.textBox_upload_tag.Size = new System.Drawing.Size(165, 23);
+            this.textBox_upload_tag.Size = new System.Drawing.Size(235, 23);
             this.textBox_upload_tag.TabIndex = 25;
+            this.textBox_upload_tag.Text = "test test for example it is import";
             // 
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(705, 59);
+            this.label31.Location = new System.Drawing.Point(669, 59);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(44, 17);
             this.label31.TabIndex = 24;
@@ -678,15 +635,16 @@
             // 
             // textBox_upload_name
             // 
-            this.textBox_upload_name.Location = new System.Drawing.Point(601, 56);
+            this.textBox_upload_name.Location = new System.Drawing.Point(578, 56);
             this.textBox_upload_name.Name = "textBox_upload_name";
             this.textBox_upload_name.Size = new System.Drawing.Size(84, 23);
             this.textBox_upload_name.TabIndex = 23;
+            this.textBox_upload_name.Text = "you name";
             // 
             // label30
             // 
             this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(527, 59);
+            this.label30.Location = new System.Drawing.Point(521, 59);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(56, 17);
             this.label30.TabIndex = 22;
@@ -698,6 +656,7 @@
             this.textBox_upload_id.Name = "textBox_upload_id";
             this.textBox_upload_id.Size = new System.Drawing.Size(84, 23);
             this.textBox_upload_id.TabIndex = 21;
+            this.textBox_upload_id.Text = "Admin";
             // 
             // label27
             // 
@@ -714,6 +673,7 @@
             this.textBox_upload_group.Name = "textBox_upload_group";
             this.textBox_upload_group.Size = new System.Drawing.Size(84, 23);
             this.textBox_upload_group.TabIndex = 19;
+            this.textBox_upload_group.Text = "Personal";
             // 
             // label28
             // 
@@ -730,6 +690,7 @@
             this.textBox_upload_factory.Name = "textBox_upload_factory";
             this.textBox_upload_factory.Size = new System.Drawing.Size(84, 23);
             this.textBox_upload_factory.TabIndex = 17;
+            this.textBox_upload_factory.Text = "Files";
             // 
             // label29
             // 
@@ -744,7 +705,7 @@
             // 
             this.progressBar1.Location = new System.Drawing.Point(80, 87);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(864, 17);
+            this.progressBar1.Size = new System.Drawing.Size(669, 17);
             this.progressBar1.TabIndex = 9;
             // 
             // label7
@@ -791,6 +752,43 @@
             this.label6.Size = new System.Drawing.Size(68, 17);
             this.label6.TabIndex = 4;
             this.label6.Text = "文件路径：";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(762, 56);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(27, 17);
+            this.label9.TabIndex = 18;
+            this.label9.Text = "0/0";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(762, 87);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(27, 17);
+            this.label10.TabIndex = 26;
+            this.label10.Text = "0/0";
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(424, 22);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(70, 28);
+            this.button6.TabIndex = 32;
+            this.button6.Text = "刷新";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // label18
+            // 
+            this.label18.ForeColor = System.Drawing.Color.Red;
+            this.label18.Location = new System.Drawing.Point(509, 22);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(425, 43);
+            this.label18.TabIndex = 33;
+            this.label18.Text = "注意：当服务器是AFS时，只有文件名和文件大小是有效的，而UFS时，下面数据都是有效的";
             // 
             // FormFileClient
             // 
@@ -860,21 +858,15 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.TextBox textBox_file_fileSize;
         private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.TextBox textBox_file_id;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.TextBox textBox_file_group;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.TextBox textBox_file_factory;
-        private System.Windows.Forms.Label label22;
         private System.Windows.Forms.TextBox textBox_file_fileName;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox textBox_delete_fileName;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.TextBox textBox_delete_id;
         private System.Windows.Forms.Label label_delete_id;
-        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.TextBox textBox_delete_group;
         private System.Windows.Forms.Label label_delete_group;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.TextBox textBox_delete_factory;
@@ -901,5 +893,9 @@
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.TextBox textBox_upload_factory;
         private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label18;
     }
 }

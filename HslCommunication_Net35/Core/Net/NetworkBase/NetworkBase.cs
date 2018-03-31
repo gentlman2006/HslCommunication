@@ -67,14 +67,14 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
-        #region Static Method
+        #region Protect Method
 
 
         /// <summary>
         /// 检查网络套接字是否操作超时，需要对套接字进行封装
         /// </summary>
         /// <param name="obj"></param>
-        internal void ThreadPoolCheckTimeOut( object obj )
+        protected void ThreadPoolCheckTimeOut( object obj )
         {
             if (obj is HslTimeOut timeout)
             {
@@ -95,6 +95,7 @@ namespace HslCommunication.Core.Net
                 }
             }
         }
+        
 
 
         #endregion
@@ -180,8 +181,6 @@ namespace HslCommunication.Core.Net
             return result;
         }
 
-
-
         private void ReceiveCallback( IAsyncResult ar )
         {
             if (ar.AsyncState is StateObject state)
@@ -214,6 +213,106 @@ namespace HslCommunication.Core.Net
                         state.IsClose = true;
                         state.WaitDone.Set( );
                     }
+                }
+                catch (Exception ex)
+                {
+                    state.IsError = true;
+                    LogNet?.WriteException( ToString( ), ex );
+                    state.ErrerMsg = ex.Message;
+                    state.WaitDone.Set( );
+                }
+            }
+        }
+
+        /// <summary>
+        /// 接收不定长数据到网络套接字
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
+        protected OperateResult<int> Receive( Socket socket, byte[] buffer )
+        {
+            var result = new OperateResult<int>( );
+            var receiveDone = new ManualResetEvent( false );
+            var state = new StateObject( buffer.Length );
+
+            try
+            {
+                state.WaitDone = receiveDone;
+                state.WorkSocket = socket;
+
+                // Begin receiving the data from the remote device.
+                socket.BeginReceive( buffer, 0, buffer.Length, SocketFlags.None,
+                    new AsyncCallback( ReceiveBufferCallback ), state );
+            }
+            catch (Exception ex)
+            {
+                // 发生了错误，直接返回
+                LogNet?.WriteException( ToString( ), ex );
+                result.Message = ex.Message;
+                receiveDone.Close( );
+                socket?.Close( );
+                return result;
+            }
+
+
+
+            // 等待接收完成，或是发生异常
+            receiveDone.WaitOne( );
+            receiveDone.Close( );
+
+
+            // 接收数据失败
+            if (state.IsError)
+            {
+                socket?.Close( );
+                result.Message = state.ErrerMsg;
+                return result;
+            }
+
+
+            // 远程关闭了连接
+            if (state.IsClose)
+            {
+                result.IsSuccess = true;
+                result.Message = "远程关闭了连接";
+                socket?.Close( );
+                return result;
+            }
+
+
+            // 正常接收到数据
+            result.Content = state.AlreadyDealLength;
+            result.IsSuccess = true;
+            state.Clear( );
+            state = null;
+            return result;
+
+        }
+
+        private void ReceiveBufferCallback( IAsyncResult ar )
+        {
+            if (ar.AsyncState is StateObject state)
+            {
+                try
+                {
+                    Socket client = state.WorkSocket;
+                    int bytesRead = client.EndReceive( ar );
+
+                    if (bytesRead > 0)
+                    {
+                        // 接收到了数据
+                        state.AlreadyDealLength += bytesRead;
+                    }
+                    else
+                    {
+                        // 对方关闭了网络通讯
+                        state.IsClose = true;
+                    }
+
+
+                    // 通知线程继续
+                    state.WaitDone.Set( );
                 }
                 catch (Exception ex)
                 {
@@ -454,14 +553,15 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="stream">数据流</param>
         /// <param name="buffer">缓冲区</param>
+        /// <param name="length">需要接收的长度</param>
         /// <returns>带有成功标志的读取数据长度</returns>
-        protected OperateResult ReadStream( Stream stream, byte[] buffer ,int length)
+        protected OperateResult<int> ReadStream( Stream stream, byte[] buffer)
         {
             ManualResetEvent WaitDone = new ManualResetEvent( false );
             FileStateObject stateObject = new FileStateObject( );
             stateObject.WaitDone = WaitDone;
             stateObject.Stream = stream;
-            stateObject.DataLength = length;
+            stateObject.DataLength = buffer.Length;
             stateObject.Buffer = buffer;
             try
             {
@@ -472,21 +572,21 @@ namespace HslCommunication.Core.Net
                 LogNet?.WriteException( ToString( ), ex );
                 stateObject = null;
                 WaitDone.Close( );
-                return new OperateResult( );
+                return new OperateResult<int>( );
             }
 
             WaitDone.WaitOne( );
             WaitDone.Close( );
             if (stateObject.IsError)
             {
-                return new OperateResult( )
+                return new OperateResult<int>( )
                 {
                     Message = stateObject.ErrerMsg
                 };
             }
             else
             {
-                return OperateResult.CreateSuccessResult( );
+                return OperateResult.CreateSuccessResult( stateObject.AlreadyDealLength );
             }
         }
 
@@ -498,17 +598,7 @@ namespace HslCommunication.Core.Net
                 try
                 {
                     stateObject.AlreadyDealLength += stateObject.Stream.EndRead( ar );
-
-                    if (stateObject.AlreadyDealLength < stateObject.DataLength)
-                    {
-                        // 继续读取剩余的数据
-                        stateObject.Stream.BeginRead( stateObject.Buffer, stateObject.AlreadyDealLength,
-                            stateObject.DataLength - stateObject.AlreadyDealLength, new AsyncCallback( ReadStreamCallBack ), stateObject );
-                    }
-                    else
-                    {
-                        stateObject.WaitDone.Set( );
-                    }
+                    stateObject.WaitDone.Set( );
                 }
                 catch (Exception ex)
                 {

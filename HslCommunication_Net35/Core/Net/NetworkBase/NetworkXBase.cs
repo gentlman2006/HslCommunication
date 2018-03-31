@@ -352,14 +352,33 @@ namespace HslCommunication.Core.Net
         {
             // 数据处理
             send = HslProtocol.CommandBytes( headcode, customer, Token, send );
+            
+
             OperateResult sendResult = Send( socket, send );
             if(!sendResult.IsSuccess)
             {
                 return sendResult;
             }
+            
+            // 检查对方接收完成
+            OperateResult<long> checkResult = ReceiveLong( socket );
+            if(!checkResult.IsSuccess)
+            {
+                return checkResult;
+            }
+            
 
-            // 检查接收
-            return ReceiveLong( socket );
+            // 检查长度接收
+            if (checkResult.Content != send.Length)
+            {
+                socket?.Close();
+                return new OperateResult( )
+                {
+                    Message = StringResources.CommandLengthCheckFailed,
+                };
+            }
+
+            return checkResult;
         }
 
 
@@ -471,14 +490,14 @@ namespace HslCommunication.Core.Net
                 { "FileTag", new Newtonsoft.Json.Linq.JValue(filetag) },
                 { "FileUpload", new Newtonsoft.Json.Linq.JValue(fileupload) }
             };
-
+            
             // 先发送文件的信息到对方
             OperateResult sendResult = SendStringAndCheckReceive( socket, 1, json.ToString( ) );
             if (!sendResult.IsSuccess)
             {
                 return sendResult;
             }
-
+            
             // 最后发送
             return SendFileStreamToSocket( socket, filename, info.Length, sendReport );
         }
@@ -547,8 +566,7 @@ namespace HslCommunication.Core.Net
             };
 
             if (timeout > 0) ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), hslTimeOut );
-
-            Console.WriteLine( "ReceiveAndCheckBytes:接收指令头" );
+            
             // 接收头指令
             OperateResult<byte[]> headResult = Receive( socket, HslProtocol.HeadByteLength );
             if (!headResult.IsSuccess)
@@ -571,11 +589,9 @@ namespace HslCommunication.Core.Net
                 };
             }
 
-            Console.WriteLine( "ReceiveAndCheckBytes:接收内容" );
-
-
+            int contentLength = BitConverter.ToInt32( headResult.Content, HslProtocol.HeadByteLength - 4 );
             // 接收内容
-            OperateResult<byte[]> contentResult = Receive( socket, BitConverter.ToInt32( headResult.Content, HslProtocol.HeadByteLength - 4 ) );
+            OperateResult<byte[]> contentResult = Receive( socket, contentLength );
             if (!contentResult.IsSuccess)
             {
                 return new OperateResult<byte[], byte[]>( )
@@ -583,19 +599,17 @@ namespace HslCommunication.Core.Net
                     Message = contentResult.Message
                 };
             }
-
-
+            
             // 返回成功信息
-            OperateResult check = SendLong( socket, contentResult.Content.Length );
-            if(!check.IsSuccess)
+            OperateResult checkResult = SendLong( socket, HslProtocol.HeadByteLength + contentLength );
+            if(!checkResult.IsSuccess)
             {
                 return new OperateResult<byte[], byte[]>( )
                 {
-                    Message = check.Message
+                    Message = checkResult.Message
                 };
             }
-
-            Console.WriteLine( "ReceiveAndCheckBytes:接收成功" );
+            
             byte[] head = headResult.Content;
             byte[] content = contentResult.Content;
             content = HslProtocol.CommandAnalysis( head, content );
@@ -617,16 +631,15 @@ namespace HslCommunication.Core.Net
                     Message = receive.Message
                 };
             }
-
-            Console.WriteLine( "ReceiveStringContentFromSocket", "检查字符串" );
+            
             // 检查是否是字符串信息
             if (BitConverter.ToInt32( receive.Content1, 0 ) != HslProtocol.ProtocolUserString)
             {
-                LogNet?.WriteError( ToString( ), StringResources.TokenHeadCodeCheckFailed );
+                LogNet?.WriteError( ToString( ), StringResources.CommandHeadCodeCheckFailed );
                 socket?.Close( );
                 return new OperateResult<int, string>( )
                 {
-                    Message = StringResources.TokenHeadCodeCheckFailed
+                    Message = StringResources.CommandHeadCodeCheckFailed
                 };
             }
 
@@ -656,11 +669,11 @@ namespace HslCommunication.Core.Net
             // 检查是否是字节信息
             if (BitConverter.ToInt32( receive.Content1, 0 ) != HslProtocol.ProtocolUserBytes)
             {
-                LogNet?.WriteError( ToString( ), StringResources.TokenHeadCodeCheckFailed );
+                LogNet?.WriteError( ToString( ), StringResources.CommandHeadCodeCheckFailed );
                 socket?.Close( );
                 return new OperateResult<int, byte[]>( )
                 {
-                    Message = StringResources.TokenHeadCodeCheckFailed
+                    Message = StringResources.CommandHeadCodeCheckFailed
                 };
             }
 
@@ -737,7 +750,6 @@ namespace HslCommunication.Core.Net
                 {
                     WriteStream( socket, fs, fileResult.Content.Size, receiveReport, true );
                 }
-
                 return fileResult;
             }
             catch (Exception ex)
@@ -920,21 +932,20 @@ namespace HslCommunication.Core.Net
             while (SendTotal < receive)
             {
                 // 先从流中接收数据
-                int readCount = (receive - SendTotal) > 1024 ? 1024 : (int)(receive - SendTotal);
-                OperateResult read = ReadStream( stream, buffer, readCount );
+                OperateResult<int> read = ReadStream( stream, buffer );
                 if (!read.IsSuccess) return new OperateResult( )
                 {
                     Message = read.Message,
                 };
                 else
                 {
-                    SendTotal += readCount;
+                    SendTotal += read.Content;
                 }
 
                 // 然后再异步写到socket中
-                byte[] newBuffer = new byte[readCount];
+                byte[] newBuffer = new byte[read.Content];
                 Array.Copy( buffer, 0, newBuffer, 0, newBuffer.Length );
-                OperateResult write = Send( socket, buffer );
+                OperateResult write = SendBytesAndCheckReceive( socket, read.Content, newBuffer );
                 if (!write.IsSuccess)
                 {
                     return new OperateResult( )
@@ -942,25 +953,6 @@ namespace HslCommunication.Core.Net
                         Message = read.Message,
                     };
                 }
-
-                // 确认对方接收
-                while (true)
-                {
-                    OperateResult<long> check = ReceiveLong( socket );
-                    if (!check.IsSuccess)
-                    {
-                        return new OperateResult( )
-                        {
-                            Message = read.Message,
-                        };
-                    }
-
-                    if (check.Content == SendTotal)
-                    {
-                        break;
-                    }
-                }
-
                 // 报告进度
                 if (reportByPercent)
                 {
@@ -986,20 +978,18 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="socket"></param>
         /// <param name="stream"></param>
-        /// <param name="receive"></param>
+        /// <param name="totleLength"></param>
         /// <param name="report"></param>
         /// <param name="reportByPercent"></param>
         /// <returns></returns>
-        protected OperateResult WriteStream( Socket socket, Stream stream, long receive, Action<long, long> report, bool reportByPercent )
+        protected OperateResult WriteStream( Socket socket, Stream stream, long totleLength, Action<long, long> report, bool reportByPercent )
         {
-            byte[] buffer = new byte[1024];
             long count_receive = 0;
             long percent = 0;
-            while (count_receive < receive)
+            while (count_receive < totleLength)
             {
                 // 先从流中异步接收数据
-                int receiveCount = (receive - count_receive) > 1024 ? 1024 : (int)(receive - count_receive);
-                OperateResult<byte[]> read = Receive( socket, receiveCount );
+                OperateResult<int,byte[]> read = ReceiveBytesContentFromSocket( socket );
                 if (!read.IsSuccess)
                 {
                     return new OperateResult( )
@@ -1007,9 +997,10 @@ namespace HslCommunication.Core.Net
                         Message = read.Message,
                     };
                 }
-                count_receive += receiveCount;
+                count_receive += read.Content1;
+                
                 // 开始写入文件流
-                OperateResult write = WriteStream( stream, read.Content );
+                OperateResult write = WriteStream( stream, read.Content2 );
                 if (!write.IsSuccess)
                 {
                     return new OperateResult( )
@@ -1021,27 +1012,18 @@ namespace HslCommunication.Core.Net
                 // 报告进度
                 if (reportByPercent)
                 {
-                    long percentCurrent = count_receive * 100 / receive;
+                    long percentCurrent = count_receive * 100 / totleLength;
                     if (percent != percentCurrent)
                     {
                         percent = percentCurrent;
-                        report?.Invoke( count_receive, receive );
+                        report?.Invoke( count_receive, totleLength );
                     }
                 }
                 else
                 {
-                    report?.Invoke( count_receive, receive );
+                    report?.Invoke( count_receive, totleLength );
                 }
-
-                // 回发进度
-                OperateResult check = SendLong( socket, count_receive );
-                if (!check.IsSuccess)
-                {
-                    return new OperateResult( )
-                    {
-                        Message = check.Message,
-                    };
-                }
+                
             }
 
             return OperateResult.CreateSuccessResult( );

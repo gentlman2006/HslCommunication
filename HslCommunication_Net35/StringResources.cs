@@ -98,7 +98,8 @@ namespace HslCommunication
 
         internal const string TokenCheckFailed = "接收验证令牌不一致";
         internal const string TokenCheckTimeout = "接收验证超时:";
-        internal const string TokenHeadCodeCheckFailed = "命令头校验失败";
+        internal const string CommandHeadCodeCheckFailed = "命令头校验失败";
+        internal const string CommandLengthCheckFailed = "命令长度检查失败";
         internal const string NetClientAliasFailed = "客户端的别名接收失败：";
         internal const string NetEngineStart = "启动引擎";
         internal const string NetEngineClose = "关闭引擎";

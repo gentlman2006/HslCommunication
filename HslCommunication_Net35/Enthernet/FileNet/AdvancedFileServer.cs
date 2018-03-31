@@ -78,12 +78,8 @@ namespace HslCommunication.Enthernet
                     }
                     else
                     {
-                        LogNet?.WriteInfo( ToString( ), StringResources.FileDownloadSuccess + ":" + relativeName );
-                    }
-                    
-                    if (Receive( socket, HslProtocol.HeadByteLength ).IsSuccess)
-                    {
                         socket?.Close( );
+                        LogNet?.WriteInfo( ToString( ), StringResources.FileDownloadSuccess + ":" + relativeName );
                     }
                 }
                 else if (customer == HslProtocol.ProtocolFileUpload)
@@ -123,13 +119,7 @@ namespace HslCommunication.Enthernet
 
                     if (receiveFile.IsSuccess)
                     {
-                        //LogNet?.WriteInfo( ToString( ), "等待正常关闭" );
-                        //// Thread.Sleep( 100 );
-                        //if (Receive( socket, HslProtocol.HeadByteLength ).IsSuccess)
-                        //{
-                        //    LogNet?.WriteInfo( ToString( ), "正常关闭" );
-                            socket?.Close( );
-                        //}
+                        socket?.Close( );
                         LogNet?.WriteInfo( ToString( ), StringResources.FileUploadSuccess + ":" + relativeName );
                     }
                     else
@@ -147,13 +137,10 @@ namespace HslCommunication.Enthernet
                     if (SendStringAndCheckReceive(
                         socket,                                                                // 网络套接字
                         deleteResult ? 1 : 0,                                                  // 是否移动成功
-                        deleteResult ? "成功" : "失败"                                        // 字符串数据
+                        deleteResult ? "成功" : "失败"                                         // 字符串数据
                         ).IsSuccess)
                     {
-                        if (Receive( socket, HslProtocol.HeadByteLength ).IsSuccess)
-                        {
-                            socket?.Close( );
-                        }
+                        socket?.Close( );
                     }
 
                     if (deleteResult) LogNet?.WriteInfo( ToString( ), StringResources.FileDeleteSuccess + ":" + relativeName );
@@ -177,10 +164,7 @@ namespace HslCommunication.Enthernet
                         HslProtocol.ProtocolFileDirectoryFiles,
                         jArray.ToString( )).IsSuccess)
                     {
-                        if (Receive( socket, HslProtocol.HeadByteLength ).IsSuccess)
-                        {
                             socket?.Close( );
-                        }
                     }
                 }
                 else if (customer == HslProtocol.ProtocolFileDirectories)
@@ -198,10 +182,7 @@ namespace HslCommunication.Enthernet
                         HslProtocol.ProtocolFileDirectoryFiles,
                         jArray.ToString( ) ).IsSuccess)
                     {
-                        if (Receive( socket, HslProtocol.HeadByteLength ).IsSuccess)
-                        {
                             socket?.Close( );
-                        }
                     }
                 }
                 else
@@ -299,7 +280,7 @@ namespace HslCommunication.Enthernet
             }
 
             // 回发消息
-            OperateResult sendString = SendStringAndCheckReceive( socket, customer, "" );
+            OperateResult sendString = SendStringAndCheckReceive( socket, customer, "success" );
             return sendString;
         }
 

@@ -215,16 +215,16 @@ namespace HslCommunication.Enthernet
             Action<long, long> processReport )
         {
             // HslReadWriteLock readWriteLock = new HslReadWriteLock( );
+            
 
             // 创建套接字并连接服务器
             OperateResult<Socket> socketResult = CreateSocketAndConnect( ServerIpEndPoint, ConnectTimeOut );
             if (!socketResult.IsSuccess) return socketResult;
-
+            
             // 上传操作暗号的文件名
             OperateResult sendString = SendStringAndCheckReceive( socketResult.Content, HslProtocol.ProtocolFileUpload, serverName );
             if (!sendString.IsSuccess) return sendString;
-
-
+            
             // 发送三级分类
             OperateResult sendClass = SendFactoryGroupId( socketResult.Content, factory, group, id );
             if (!sendClass.IsSuccess) return sendClass;
@@ -255,13 +255,12 @@ namespace HslCommunication.Enthernet
                     Message = "数据源格式不正确！",
                 };
             }
+            
 
             // 确认服务器文件保存状态
             OperateResult<int, string> resultCheck = ReceiveStringContentFromSocket( socketResult.Content );
             if (!resultCheck.IsSuccess) return resultCheck;
-
-            socketResult.Content?.Close( );
-
+            
             if (resultCheck.Content1 == 1)
             {
                 return OperateResult.CreateSuccessResult( );
