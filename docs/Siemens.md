@@ -166,7 +166,7 @@ if(read.IsSuccess)
 
 
 
-**6. Implementing custom type reads and writes**
+**5. Implementing custom type reads and writes**
 
 We found the code above is awkward and we want to improve.
 
@@ -181,7 +181,7 @@ public class UserType : HslCommunication.IDataTransfer
     private HslCommunication.Core.IByteTransform ByteTransform = new HslCommunication.Core.ReverseBytesTransform( );
 
 
-    public ushort ReadCount => 10;
+    public ushort ReadCount => 20;
 
     public void ParseSource( byte[] Content )
     {
