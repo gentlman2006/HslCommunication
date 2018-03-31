@@ -9,6 +9,7 @@ need PLC side Configure the network parameters. After the configuration is succe
 
 ## Contact
 QQ Group : [592132877](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8)
+
 Email: hsl200909@163.com
 
 ## Prepare
@@ -21,7 +22,7 @@ Configure the relevant parameters on the Mitsubishi PLC side. Refer to the pictu
 
 
 ## Instantiation
-1. Add namespace
+**1. Add namespace**
 
 ```
 using HslCommunication.Profinet.Melsec;
@@ -29,14 +30,16 @@ using HslCommunication;
 
 ```
 
-2. Declare
-<pre>
-<code>
+**2. Declare**
+```
 private MelsecMcNet melsec_net = null;
-</code>
-</pre>
+```
+if you want to us asicc format to communicate
+```
+private MelsecMcAsciiNet melsec_ascii_net = null;
+```
 
-3. Instantiation
+**3. Instantiation**
 
 ```
 
@@ -62,7 +65,7 @@ else
 
 ```
 
-4. Closed when exsis programe
+**4. Close the connection when the program exits**
 
 ```
 
@@ -103,7 +106,7 @@ else
 }
 ```
 
-Not only  'M' dataType, but also 'X','Y','L','F','V','B','S' 
+> Not only  'M' dataType, but also 'X','Y','L','F','V','B','S' 
 
 **3. Read D100 Include Many Data Types**
 ```
@@ -133,9 +136,8 @@ melsec_net.Write( "D100", 5d );
 melsec_net.Write( "D100", "12345678" );
 ```
 
-Not only  'D' dataType, but also 'D','W','R'
-
-This library alse support write array values.
+> Not only  'D' dataType, but also 'D','W','R'
+> This library alse support write array values.
 
 
 **5. Read complex data, for example, D100-D109 contains all data you want**
@@ -160,7 +162,11 @@ if(read.IsSuccess)
     string barcode = Encoding.ASCII.GetString( read.Content, 10, 10 );
 }
 
+
 ```
+
+
+
 
 **6. Implementing custom type reads and writes**
 
@@ -225,9 +231,28 @@ if (read.IsSuccess)
 {
     UserType value = read.Content;
 }
-
+// write value
+melsec_net.WriteCustomer( "D100", new UserType( ) );
 
 ```
+
+
+## Supported data types and examples
+Data Name | Data Type | Address Format | Example Address
+-|-|-|-
+X | bool | Hex | X0, X1A0
+Y | bool | Hex | X0, Y1A0
+M | bool | Decimal | M100, M200
+L | bool | Decimal | L100, L200
+F | bool | Decimal | F100, F200
+V | bool | Decimal | V100, V200
+B | bool | Hex | B0, B1A0
+S | bool | Decimal | S100, S200
+D | word | Decimal | D100, D200
+W | word | Hex | W0, W1A0
+R | word | Decimal | R100, R200
+Z | word | Decimal | Z0, Z100
+
 
 ## Log Support
 
@@ -236,3 +261,8 @@ This component can also achieve log output. Here is an example. The specific log
 ```
 melsec_net.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + "\\Logs.txt" );
 ```
+
+
+
+## Others
+For more details, you can download source code, refer to HslCommunicationDemo project
