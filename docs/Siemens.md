@@ -94,6 +94,7 @@ else
     string err = read.Message;
 }
 ```
+```
 OperateResult write = siemensTcpNet.Write( "M100.4", true );
 if(write.IsSuccess)
 {
