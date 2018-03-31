@@ -66,7 +66,7 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 
 
 Detail Introduction
-* [How to communicate with melsec plc](https://github.com/dathlin/HslCommunicationDemo/blob/master/docs/Melsec.md)
+* [How to communicate with melsec plc](https://github.com/dathlin/HslCommunication/blob/master/docs/Melsec.md)
 
 
 ## Second Extensions Project
