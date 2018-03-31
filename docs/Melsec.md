@@ -22,12 +22,12 @@ Configure the relevant parameters on the Mitsubishi PLC side. Refer to the pictu
 
 ## Instantiation
 1. Add namespace
-<pre>
-<code>
+
+```
 using HslCommunication.Profinet.Melsec;
 using HslCommunication;
-</code>
-</pre>
+
+```
 
 2. Declare
 <pre>
@@ -37,17 +37,19 @@ private MelsecMcNet melsec_net = null;
 </pre>
 
 3. Instantiation
-<pre>
-<code>
+
+```
+
  // specify plc ip address and port
  melsec_net = new MelsecMcNet("192.168.0.110",2000);
  melsec_net.ConnectServer();
-</code>
-</pre>
+
+ ```
 
 If we want to know whether connectd, we can do like this
-<pre>
-<code>
+
+```
+
 OperateResult connect = melsec_net.ConnectServer( );
 if (connect.IsSuccess)
 {
@@ -57,23 +59,23 @@ else
 {
     // failed
 }
-</code>
-</pre>
+
+```
 
 4. Closed when exsis programe
-<pre>
-<code>
+
+```
+
  melsec_net.ConnectClose( );
-</code>
-</pre>
+
+```
 
 ## Exchange Data
 
 Show some examples read from plc and write into plc
 
-1. Read M100 to M109
-<pre>
-<code>
+**1. Read M100 to M109**
+```
 OperateResult<bool[]> read = melsec_net.ReadBool( "M100", 10 );
 if(read.IsSuccess)
 {
@@ -85,12 +87,10 @@ else
 {
     // failed
 }
-</code>
-</pre>
+```
 
-2. Write M100 to M109
-<pre>
-<code>
+**2. Write M100 to M109**
+```
 bool[] values = new bool[] { true, false, true, true, false, true, false, true, true, false };
 OperateResult read = melsec_net.Write( "M100", values );
 if (read.IsSuccess)
@@ -101,14 +101,12 @@ else
 {
     // failed
 }
-</code>
-</pre>
+```
 
 Not only  'M' dataType, but also 'X','Y','L','F','V','B','S' 
 
-3. Read D100 Include Many Data Types
-<pre>
-<code>
+**3. Read D100 Include Many Data Types**
+```
 short d100_short = melsec_net.ReadInt16( "D100" ).Content;
 ushort d100_ushort = melsec_net.ReadUInt16( "D100" ).Content;
 int d100_int = melsec_net.ReadInt32( "D100" ).Content;
@@ -119,12 +117,10 @@ float d100_float = melsec_net.ReadFloat( "D100" ).Content;
 double d100_double = melsec_net.ReadDouble( "D100" ).Content;
 // need to specify the text length
 string d100_string = melsec_net.ReadString( "D100", 10 ).Content;
-</code>
-</pre>
+```
 
-4. Write D100 Include Many Data Types
-<pre>
-<code>
+**4. Write D100 Include Many Data Types**
+```
 melsec_net.Write( "D100", (short)5 );
 melsec_net.Write( "D100", (ushort)5 );
 melsec_net.Write( "D100", 5 );
@@ -135,15 +131,14 @@ melsec_net.Write( "D100", 5f );
 melsec_net.Write( "D100", 5d );
 // length should Multiples of 2 
 melsec_net.Write( "D100", "12345678" );
-</code>
-</pre>
+```
 
 Not only  'D' dataType, but also 'D','W','R'
 
 This library alse support write array values.
 
 
-5. Read complex data, for example, D100-D109 contains all data you want
+**5. Read complex data, for example, D100-D109 contains all data you want**
 
 Data name | Data section | Data type | Data Length
 -|-|-|-
@@ -167,7 +162,7 @@ if(read.IsSuccess)
 
 ```
 
-6. Implementing custom type reads and writes
+**6. Implementing custom type reads and writes**
 
 We found the code above is awkward and we want to improve.
 
@@ -232,4 +227,12 @@ if (read.IsSuccess)
 }
 
 
+```
+
+## Log Support
+
+This component can also achieve log output. Here is an example. The specific log function refers to the logbook.
+
+```
+melsec_net.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + "\\Logs.txt" );
 ```

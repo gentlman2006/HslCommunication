@@ -545,6 +545,9 @@ namespace HslCommunicationDemo
             {
                 UserType value = read.Content;
             }
+
+            melsec_net.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + "\\Logs.txt" );
+
         }
 
         #endregion
