@@ -146,6 +146,7 @@ This library alse support write array values.
 5. Read complex data, for example, D100-D109 contains all data you want
 
 Data name | Data section | Data type | Data Length
+-|-|-|-
 count | D100-D101 | int | 4-byte
 temp | D102-D103 | float | 4-byte
 name1 | D104 | short | 2-byte
@@ -153,7 +154,7 @@ barcode | D105-D109 | string | 10-byte
 
 So we can do like this
 
-'''
+```
 
 OperateResult<byte[]> read = melsec_net.Read( "D100", 10 );
 if(read.IsSuccess)
@@ -164,7 +165,7 @@ if(read.IsSuccess)
     string barcode = Encoding.ASCII.GetString( read.Content, 10, 10 );
 }
 
-'''
+```
 
 6. Implementing custom type reads and writes
 
@@ -172,7 +173,7 @@ We found the code above is awkward and we want to improve.
 
 First, Inherit and implement interface methods
 
-'''
+```
 
 public class UserType : HslCommunication.IDataTransfer
 {
@@ -218,11 +219,11 @@ public class UserType : HslCommunication.IDataTransfer
     #endregion
 }
 
-'''
+```
 
 So we can do like this
 
-'''
+```
 
 OperateResult<UserType> read = melsec_net.ReadCustomer<UserType>( "D100" );
 if (read.IsSuccess)
@@ -231,4 +232,4 @@ if (read.IsSuccess)
 }
 
 
-'''
+```
