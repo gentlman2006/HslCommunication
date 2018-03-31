@@ -545,10 +545,14 @@ namespace HslCommunicationDemo
             {
                 UserType value = read.Content;
             }
+            // write value
+            melsec_net.WriteCustomer( "D100", new UserType( ) );
 
             melsec_net.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + "\\Logs.txt" );
 
         }
+
+        private MelsecMcAsciiNet melsec_ascii_net = null;
 
         #endregion
     }

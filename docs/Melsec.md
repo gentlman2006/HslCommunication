@@ -146,8 +146,8 @@ Data name | Data section | Data type | Data Length
 -|-|-|-
 count | D100-D101 | int | 4-byte
 temp | D102-D103 | float | 4-byte
-name1 | D104 | short | 2-byte
-barcode | D105-D109 | string | 10-byte
+name1 | D104-D105 | short | 2-byte
+barcode | D106-D109 | string | 10-byte
 
 So we can do like this
 

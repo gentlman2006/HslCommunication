@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HslCommunication.Profinet;
-using HslCommunication;
 using System.Threading;
 using HslCommunication.Profinet.Siemens;
+using HslCommunication;
 
 namespace HslCommunicationDemo
 {
     public partial class FormSiemens : Form
     {
-        public FormSiemens( SiemensPLCS siemensPLCS)
+        public FormSiemens( SiemensPLCS siemensPLCS )
         {
             InitializeComponent( );
             siemensTcpNet = new SiemensS7Net( siemensPLCS );
@@ -30,7 +30,7 @@ namespace HslCommunicationDemo
             {
                 System.Diagnostics.Process.Start( linkLabel1.Text );
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show( ex.Message );
             }
@@ -442,7 +442,7 @@ namespace HslCommunicationDemo
             }
         }
 
-        private void ThreadReadServer()
+        private void ThreadReadServer( )
         {
             while (isThreadRun)
             {
@@ -473,6 +473,49 @@ namespace HslCommunicationDemo
 
         #endregion
 
-        
+        #region 测试功能代码
+
+
+        private void Test1( )
+        {
+            OperateResult<bool> read = siemensTcpNet.ReadBool( "M100.4" );
+            if (read.IsSuccess)
+            {
+                bool m100_4 = read.Content;
+            }
+            else
+            {
+                // failed
+                string err = read.Message;
+            }
+
+            OperateResult write = siemensTcpNet.Write( "M100.4", true );
+            if (write.IsSuccess)
+            {
+                // success
+            }
+            else
+            {
+                // failed
+                string err = write.Message;
+            }
+        }
+
+        private void Test2( )
+        {
+            byte m100_byte = siemensTcpNet.ReadByte( "M100" ).Content;
+            short m100_short = siemensTcpNet.ReadInt16( "M100" ).Content;
+            ushort m100_ushort = siemensTcpNet.ReadUInt16( "M100" ).Content;
+            int m100_int = siemensTcpNet.ReadInt32( "M100" ).Content;
+            uint m100_uint = siemensTcpNet.ReadUInt32( "M100" ).Content;
+            float m100_float = siemensTcpNet.ReadFloat( "M100" ).Content;
+            double m100_double = siemensTcpNet.ReadDouble( "M100" ).Content;
+            string m100_string = siemensTcpNet.ReadString( "M100", 10 ).Content;
+
+            HslCommunication.Core.IByteTransform ByteTransform = new HslCommunication.Core.ReverseBytesTransform( );
+
+        }
+
+        #endregion
     }
 }
