@@ -98,7 +98,7 @@ This library include some controls render upside picture. u can easily use them
 ![控件图](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/controls.png)
 
 ## 创作不易，感谢打赏
-If this library really helped u, alse can support me by AliPay.
+If this library really helps you, you can support me by AliPay. Please choose the amount according to your actual ability.
 
 ![打赏](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/support.png)
 
