@@ -137,6 +137,7 @@ melsec_net.Write( "D100", "12345678" );
 ```
 
 > Not only  'D' dataType, but also 'D','W','R'
+
 > This library alse support write array values.
 
 

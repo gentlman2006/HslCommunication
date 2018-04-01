@@ -136,6 +136,7 @@ siemensTcpNet.Write( "M100", "12345678" );
 
 
 > Not only  'M' dataType, but also 'I','Q','DB', **DB block should like this:"DB20.30"**
+
 > This library alse support write array values.
 
 **4. Read complex data, for example, M100-M119 contains all data you want**

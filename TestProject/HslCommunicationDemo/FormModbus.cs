@@ -524,6 +524,44 @@ namespace HslCommunicationDemo
 
         #endregion
 
+        #region Test Function
+
+
+        private void Test1()
+        {
+            OperateResult<bool[]> read = busTcpClient.ReadCoil( "100", 10 );
+            if(read.IsSuccess)
+            {
+                bool coil_100 = read.Content[0];
+                // and so on 
+                bool coil_109 = read.Content[9];
+            }
+            else
+            {
+                // failed
+                string err = read.Message;
+            }
+        }
+
+
+        private void Test2()
+        {
+            bool[] values = new bool[] { true, false, false, false, true, true, false, true, false, false };
+            OperateResult write = busTcpClient.WriteCoil( "100", values );
+            if (write.IsSuccess)
+            {
+                // success
+            }
+            else
+            {
+                // failed
+                string err = write.Message;
+            }
+
+            HslCommunication.Core.IByteTransform ByteTransform = new HslCommunication.Core.ReverseWordTransform( );
+        }
+
+        #endregion
 
     }
 }
