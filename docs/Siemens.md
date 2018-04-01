@@ -225,13 +225,13 @@ So we can do like this
 
 ```
 
-OperateResult<UserType> read = siemensTcpNet.ReadCustomer<UserType>( "D100" );
+OperateResult<UserType> read = siemensTcpNet.ReadCustomer<UserType>( "M100" );
 if (read.IsSuccess)
 {
     UserType value = read.Content;
 }
 // write value
-siemensTcpNet.WriteCustomer( "D100", new UserType( ) );
+siemensTcpNet.WriteCustomer( "M100", new UserType( ) );
 
 ```
 

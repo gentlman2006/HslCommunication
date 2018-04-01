@@ -208,6 +208,7 @@ namespace HslCommunicationDemo
             thread.IsBackground = true;
             thread.Start( textBox_download_fileName.Text );
             progressBar2.Value = 0;
+            button4.Enabled = false;
         }
 
 
@@ -227,6 +228,7 @@ namespace HslCommunicationDemo
                 // 切换到UI前台显示结果
                 Invoke( new Action<OperateResult>( operateResult =>
                 {
+                    button4.Enabled = true;
                     if (result.IsSuccess)
                     {
                         // message: file download success
@@ -260,6 +262,7 @@ namespace HslCommunicationDemo
             // thread-safe code
             int value = (int)(receive * 100L / totle);
             progressBar2.Value = value;
+            label9.Text = receive + "/" + totle;
         }
 
 

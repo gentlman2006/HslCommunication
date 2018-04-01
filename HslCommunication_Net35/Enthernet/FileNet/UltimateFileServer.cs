@@ -149,9 +149,9 @@ namespace HslCommunication.Enthernet
 
                 fileMarkId.AddOperation( ( ) =>
                 {
-                    if (DeleteFileByName( fileUltimatePath ))
+                    if (!DeleteFileByName( fileUltimatePath ))
                     {
-                        LogNet?.WriteInfo( ToString(), "文件删除成功:" + fileUltimatePath );
+                        LogNet?.WriteInfo( ToString(), StringResources.FileDeleteFailed + fileUltimatePath );
                     }
                 } );
             }
@@ -229,7 +229,7 @@ namespace HslCommunication.Enthernet
                     }
                     catch (Exception ex)
                     {
-                        LogNet?.WriteException( ToString( ), "创建文件夹失败：" + fullFileName, ex );
+                        LogNet?.WriteException( ToString( ), StringResources.FilePathCreateFailed + fullFileName, ex );
                         socket?.Close( );
                         return;
                     }
@@ -261,7 +261,7 @@ namespace HslCommunication.Enthernet
                     if (SendStringAndCheckReceive(
                         socket,                                                                // 网络套接字
                         1,                                                                     // 没啥含义
-                        "成功"                                                                // 没啥含意
+                        "success"                                                              // 没啥含意
                         ).IsSuccess)
                     {
                         socket?.Close( );
@@ -301,6 +301,7 @@ namespace HslCommunication.Enthernet
                 }
                 else
                 {
+                    // close not supported client
                     socket?.Close( );
                 }
             }

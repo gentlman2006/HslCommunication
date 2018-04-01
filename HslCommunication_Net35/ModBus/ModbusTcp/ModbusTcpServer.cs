@@ -1041,7 +1041,7 @@ namespace HslCommunication.ModBus
             }
             catch(Exception ex)
             {
-                LogNet?.WriteException( ToString( ), "读取线圈异常", ex );
+                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpReadCoilException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1071,7 +1071,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), "读取寄存器异常", ex );
+                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpReadRegisterException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1094,7 +1094,7 @@ namespace HslCommunication.ModBus
             }
             catch(Exception ex)
             {
-                LogNet?.WriteException( ToString( ), "写入单个线圈异常", ex );
+                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpWriteCoilException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1117,7 +1117,7 @@ namespace HslCommunication.ModBus
             }
             catch(Exception ex)
             {
-                LogNet?.WriteException( ToString( ), "写入单个寄存器异常", ex );
+                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpWriteRegisterException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1147,7 +1147,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), "写入线圈异常", ex );
+                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpWriteCoilException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1198,7 +1198,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), "写入寄存器异常", ex );
+                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpWriteRegisterException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }

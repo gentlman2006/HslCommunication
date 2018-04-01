@@ -21,13 +21,10 @@ namespace HslCommunication.Enthernet
             FileName = fileName;
         }
 
-        private ILogNet LogNet;
-
-        private string FileName = null;
-
-        private Queue<Action> queues = new Queue<Action>( );
-
-        private SimpleHybirdLock hybirdLock = new SimpleHybirdLock( );
+        private ILogNet LogNet;                                                     // 日志
+        private string FileName = null;                                             // 文件名称
+        private Queue<Action> queues = new Queue<Action>( );                        // 操作的队列
+        private SimpleHybirdLock hybirdLock = new SimpleHybirdLock( );              // 状态的锁
 
 
         /// <summary>

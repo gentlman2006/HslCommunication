@@ -89,6 +89,7 @@ namespace HslCommunication
         internal const string FileSendClientFailed = "文件发送的时候发生了异常";
         internal const string FileWriteToNetFailed = "文件写入网络异常";
         internal const string FileReadFromNetFailed = "从网络读取文件异常";
+        internal const string FilePathCreateFailed = "文件夹路径创建失败";
 
         /***********************************************************************************
          * 
@@ -112,11 +113,17 @@ namespace HslCommunication
 
         /***********************************************************************************
          * 
-         *    服务器的引擎相关数据
+         *    Modbus-Tcp相关
          * 
          ************************************************************************************/
 
         internal const string ModbusTcpFunctionCodeNotSupport = "不支持的功能码";
         internal const string ModbusTcpFunctionCodeOverBound = "读取的数据越界";
+        internal const string ModbusTcpFunctionCodeQuantityOver = "读取长度超过最大值";
+        internal const string ModbusTcpFunctionCodeReadWriteException = "读写异常";
+        internal const string ModbusTcpReadCoilException = "读取线圈异常";
+        internal const string ModbusTcpWriteCoilException = "写入线圈异常";
+        internal const string ModbusTcpReadRegisterException = "读取寄存器异常";
+        internal const string ModbusTcpWriteRegisterException = "写入寄存器异常";
     }
 }

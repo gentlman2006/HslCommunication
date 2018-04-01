@@ -22,7 +22,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 实例化一个MOdbus-Tcp协议的客户端对象
         /// </summary>
-        public ModbusTcpNet()
+        public ModbusTcpNet( )
         {
             softIncrementCount = new SoftIncrementCount( ushort.MaxValue );
         }
@@ -309,11 +309,11 @@ namespace HslCommunication.ModBus
         {
             switch (code)
             {
-                case ModbusInfo.FunctionCodeNotSupport: return "不支持该功能码";
-                case ModbusInfo.FunctionCodeOverBound: return "越界";
-                case ModbusInfo.FunctionCodeQuantityOver: return "寄存器数量超出范围";
-                case ModbusInfo.FunctionCodeReadWriteException: return "读写异常";
-                default: return "未知异常";
+                case ModbusInfo.FunctionCodeNotSupport: return StringResources.ModbusTcpFunctionCodeNotSupport;
+                case ModbusInfo.FunctionCodeOverBound: return StringResources.ModbusTcpFunctionCodeOverBound;
+                case ModbusInfo.FunctionCodeQuantityOver: return StringResources.ModbusTcpFunctionCodeQuantityOver;
+                case ModbusInfo.FunctionCodeReadWriteException: return StringResources.ModbusTcpFunctionCodeReadWriteException;
+                default: return StringResources.UnknownError;
             }
         }
 
@@ -496,7 +496,7 @@ namespace HslCommunication.ModBus
             {
                 ushort lengthTmp = (ushort)Math.Min( (length - alreadyFinished), 120 );
                 OperateResult<byte[]> read = ReadModBusBase( ModbusInfo.ReadRegister, (analysis.Content + alreadyFinished).ToString( ), lengthTmp );
-                if(!read.IsSuccess)
+                if (!read.IsSuccess)
                 {
                     return new OperateResult<byte[]>( )
                     {
@@ -1023,13 +1023,13 @@ namespace HslCommunication.ModBus
         /// 获取当前对象的字符串标识形式
         /// </summary>
         /// <returns>字符串信息</returns>
-        public override string ToString()
+        public override string ToString( )
         {
             return "ModbusTcpNet";
         }
 
         #endregion
 
-        
+
     }
 }

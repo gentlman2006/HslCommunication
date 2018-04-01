@@ -69,7 +69,8 @@ namespace ModbusTcpServer
 
         #region Server Start
 
-   
+
+        private HslCommunication.ModBus.ModbusTcpServer busTcpServer;
 
         private void button1_Click( object sender, EventArgs e )
         {
@@ -109,6 +110,11 @@ namespace ModbusTcpServer
             textBox1.AppendText( "接收数据：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString(modbus) + Environment.NewLine );
         }
 
+        /// <summary>
+        /// 当有日志记录的时候，触发，将日志信息也在主界面进行输出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LogNet_BeforeSaveToFile( object sender, HslCommunication.LogNet.HslEventArgs e )
         {
             if(InvokeRequired)
@@ -120,7 +126,6 @@ namespace ModbusTcpServer
             textBox1.AppendText( e.HslMessage.ToString( ) + Environment.NewLine );
         }
         
-        private HslCommunication.ModBus.ModbusTcpServer busTcpServer;
         
 
         #endregion
@@ -381,6 +386,31 @@ namespace ModbusTcpServer
             {
                 form.ShowDialog( );
             }
+        }
+
+
+        private void Test1()
+        {
+            bool Coil100 = busTcpServer.ReadCoil( 100 );                  // 读线圈100的值
+            bool[] Coil100_109 = busTcpServer.ReadCoil( 100, 10 );        // 读线圈数组
+            short Short100 = busTcpServer.ReadInt16( 100 );       // 读取寄存器值
+            ushort UShort100 = busTcpServer.ReadUInt16( 100 );    // 读取寄存器ushort值
+            int Int100 = busTcpServer.ReadInt32( 100 );             // 读取寄存器int值
+            uint UInt100 = busTcpServer.ReadUInt32( 100 );          // 读取寄存器uint值
+            float Float100 = busTcpServer.ReadFloat( 100 );       // 读取寄存器Float值
+            long Long100 = busTcpServer.ReadInt64( 100 );          // 读取寄存器long值
+            ulong ULong100 = busTcpServer.ReadUInt64( 100 );       // 读取寄存器ulong值
+            double Double100 = busTcpServer.ReadDouble( 100 );    // 读取寄存器double值
+
+            busTcpServer.WriteCoil( 100, true );              // 写线圈的通断
+            busTcpServer.Write( 100, (short)5 );      // 写入short值
+            busTcpServer.Write( 100, (ushort)45678 ); // 写入ushort值
+            busTcpServer.Write( 100, 12345667 );      // 写入int值
+            busTcpServer.Write( 100, (uint)12312312 );// 写入uint值
+            busTcpServer.Write( 100, 123.456f );      // 写入float值
+            busTcpServer.Write( 100, 1231231231233L );// 写入long值
+            busTcpServer.Write( 100, 1212312313UL );  // 写入ulong值
+            busTcpServer.Write( 100, 123.456d );      // 写入double值
         }
     }
 }
