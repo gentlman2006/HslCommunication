@@ -109,5 +109,14 @@ namespace HslCommunication
         internal const string NetClientFull = "服务器承载上限，收到超出的请求连接。";
         internal const string NetClientLoginFailed = "客户端登录中错误：";
 
+
+        /***********************************************************************************
+         * 
+         *    服务器的引擎相关数据
+         * 
+         ************************************************************************************/
+
+        internal const string ModbusTcpFunctionCodeNotSupport = "不支持的功能码";
+        internal const string ModbusTcpFunctionCodeOverBound = "读取的数据越界";
     }
 }

@@ -101,6 +101,11 @@ namespace ModbusTcpServer
 
         private void BusTcpServer_OnDataReceived( byte[] modbus )
         {
+            if (InvokeRequired)
+            {
+                BeginInvoke( new Action<byte[]>( BusTcpServer_OnDataReceived ), modbus );
+                return;
+            }
             textBox1.AppendText( "接收数据：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString(modbus) + Environment.NewLine );
         }
 

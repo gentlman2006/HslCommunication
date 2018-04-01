@@ -139,7 +139,7 @@ So we can do like this
 
 ```
 
-OperateResult<byte[]> read = busTcpClient.Read( "D100", 10 );
+OperateResult<byte[]> read = busTcpClient.Read( "100", 10 );
 if(read.IsSuccess)
 {
     int count = busTcpClient.ByteTransform.TransInt32( read.Content, 0 );
