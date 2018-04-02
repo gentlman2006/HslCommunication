@@ -795,7 +795,7 @@
             this.linkLabel1.Size = new System.Drawing.Size(287, 17);
             this.linkLabel1.TabIndex = 3;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "http://www.cnblogs.com/dathlin/p/7469679.html";
+            this.linkLabel1.Text = "http://www.cnblogs.com/dathlin/p/8685855.html";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // label4

@@ -7,24 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HslCommunication.Profinet;
-using HslCommunication;
 using System.Threading;
-using HslCommunication.Profinet.Omron;
+using HslCommunication.Profinet.Melsec;
+using HslCommunication;
 
 namespace HslCommunicationDemo
 {
-    public partial class FormOmron : Form
+    public partial class FormMelsec1EBinary : Form
     {
-        public FormOmron( )
+        public FormMelsec1EBinary( )
         {
             InitializeComponent( );
-            omronFinsNet = new OmronFinsNet( );
-            omronFinsNet.ConnectTimeOut = 2000;
-            omronFinsNet.LogNet = new HslCommunication.LogNet.LogNetSingle( "omron.log.txt" );
+            melsec_net = new MelsecA1ENet( );
         }
 
 
-        private OmronFinsNet omronFinsNet = null;
+        private MelsecA1ENet melsec_net = null;
 
         private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
         {
@@ -99,41 +97,21 @@ namespace HslCommunicationDemo
                 return;
             }
 
-            if (!int.TryParse( textBox2.Text, out int port ))
+            melsec_net.IpAddress = textBox1.Text;
+
+            if(!int.TryParse(textBox2.Text,out int port))
             {
-                MessageBox.Show( "端口号输入不正确！" );
+                MessageBox.Show( "端口输入格式不正确！" );
                 return;
             }
 
+            melsec_net.Port = port;
 
-            if(!byte.TryParse(textBox15.Text,out byte SA1))
-            {
-                MessageBox.Show( "本机网络号输入不正确！" );
-                return;
-            }
-
-
-            if(!byte.TryParse(textBox16.Text,out byte DA2 ))
-            {
-                MessageBox.Show( "PLC的单元号输入不正确！" );
-                return;
-            }
-
-            if(!byte.TryParse(textBox17.Text,out byte DA1))
-            {
-                MessageBox.Show( "PLC的节点号输入不正确！" );
-                return;
-            }
-
-            omronFinsNet.IpAddress = textBox1.Text;
-            omronFinsNet.Port = port;
-            omronFinsNet.SA1 = SA1;
-            omronFinsNet.DA1 = DA1;
-            omronFinsNet.DA2 = DA2;
+            melsec_net.ConnectClose( );
 
             try
             {
-                OperateResult connect = omronFinsNet.ConnectServer( );
+                OperateResult connect = melsec_net.ConnectServer( );
                 if (connect.IsSuccess)
                 {
                     MessageBox.Show( "连接成功！" );
@@ -155,7 +133,7 @@ namespace HslCommunicationDemo
         private void button2_Click( object sender, EventArgs e )
         {
             // 断开连接
-            omronFinsNet.ConnectClose( );
+            melsec_net.ConnectClose( );
             button2.Enabled = false;
             button1.Enabled = true;
             panel2.Enabled = false;
@@ -175,58 +153,59 @@ namespace HslCommunicationDemo
         private void button_read_bool_Click( object sender, EventArgs e )
         {
             // 读取bool变量
-            readResultRender( omronFinsNet.ReadBool( textBox3.Text, 1 ), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadBool( textBox3.Text ,1), textBox3.Text, textBox4 );
         }
+
         private void button_read_short_Click( object sender, EventArgs e )
         {
             // 读取short变量
-            readResultRender( omronFinsNet.ReadInt16( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadInt16( textBox3.Text ), textBox3.Text, textBox4 );
         }
 
         private void button_read_ushort_Click( object sender, EventArgs e )
         {
             // 读取ushort变量
-            readResultRender( omronFinsNet.ReadUInt16( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadUInt16( textBox3.Text ), textBox3.Text, textBox4 );
         }
 
         private void button_read_int_Click( object sender, EventArgs e )
         {
             // 读取int变量
-            readResultRender( omronFinsNet.ReadInt32( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadInt32( textBox3.Text ), textBox3.Text, textBox4 );
         }
         private void button_read_uint_Click( object sender, EventArgs e )
         {
             // 读取uint变量
-            readResultRender( omronFinsNet.ReadUInt32( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadUInt32( textBox3.Text ), textBox3.Text, textBox4 );
         }
         private void button_read_long_Click( object sender, EventArgs e )
         {
             // 读取long变量
-            readResultRender( omronFinsNet.ReadInt64( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadInt64( textBox3.Text ), textBox3.Text, textBox4 );
         }
 
         private void button_read_ulong_Click( object sender, EventArgs e )
         {
             // 读取ulong变量
-            readResultRender( omronFinsNet.ReadUInt64( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadUInt64( textBox3.Text ), textBox3.Text, textBox4 );
         }
 
         private void button_read_float_Click( object sender, EventArgs e )
         {
             // 读取float变量
-            readResultRender( omronFinsNet.ReadFloat( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadFloat( textBox3.Text ), textBox3.Text, textBox4 );
         }
 
         private void button_read_double_Click( object sender, EventArgs e )
         {
             // 读取double变量
-            readResultRender( omronFinsNet.ReadDouble( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadDouble( textBox3.Text ), textBox3.Text, textBox4 );
         }
 
         private void button_read_string_Click( object sender, EventArgs e )
         {
             // 读取字符串
-            readResultRender( omronFinsNet.ReadString( textBox3.Text, ushort.Parse( textBox5.Text ) ), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadString( textBox3.Text, ushort.Parse( textBox5.Text ) ), textBox3.Text, textBox4 );
         }
 
 
@@ -240,7 +219,7 @@ namespace HslCommunicationDemo
             // bool写入
             try
             {
-                writeResultRender( omronFinsNet.Write( textBox8.Text, bool.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( melsec_net.Write( textBox8.Text,new bool[] { bool.Parse( textBox7.Text ) } ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -253,7 +232,7 @@ namespace HslCommunicationDemo
             // short写入
             try
             {
-                writeResultRender( omronFinsNet.Write( textBox8.Text, short.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( melsec_net.Write( textBox8.Text, short.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -266,7 +245,7 @@ namespace HslCommunicationDemo
             // ushort写入
             try
             {
-                writeResultRender( omronFinsNet.Write( textBox8.Text, ushort.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( melsec_net.Write( textBox8.Text, ushort.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -280,7 +259,7 @@ namespace HslCommunicationDemo
             // int写入
             try
             {
-                writeResultRender( omronFinsNet.Write( textBox8.Text, int.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( melsec_net.Write( textBox8.Text, int.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -293,7 +272,7 @@ namespace HslCommunicationDemo
             // uint写入
             try
             {
-                writeResultRender( omronFinsNet.Write( textBox8.Text, uint.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( melsec_net.Write( textBox8.Text, uint.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -306,7 +285,7 @@ namespace HslCommunicationDemo
             // long写入
             try
             {
-                writeResultRender( omronFinsNet.Write( textBox8.Text, long.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( melsec_net.Write( textBox8.Text, long.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -319,7 +298,7 @@ namespace HslCommunicationDemo
             // ulong写入
             try
             {
-                writeResultRender( omronFinsNet.Write( textBox8.Text, ulong.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( melsec_net.Write( textBox8.Text, ulong.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -332,7 +311,7 @@ namespace HslCommunicationDemo
             // float写入
             try
             {
-                writeResultRender( omronFinsNet.Write( textBox8.Text, float.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( melsec_net.Write( textBox8.Text, float.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -345,7 +324,7 @@ namespace HslCommunicationDemo
             // double写入
             try
             {
-                writeResultRender( omronFinsNet.Write( textBox8.Text, double.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( melsec_net.Write( textBox8.Text, double.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -359,7 +338,7 @@ namespace HslCommunicationDemo
             // string写入
             try
             {
-                writeResultRender( omronFinsNet.Write( textBox8.Text, textBox7.Text ), textBox8.Text );
+                writeResultRender( melsec_net.Write( textBox8.Text, textBox7.Text ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -378,7 +357,7 @@ namespace HslCommunicationDemo
         {
             try
             {
-                OperateResult<byte[]> read = omronFinsNet.Read( textBox6.Text, ushort.Parse( textBox9.Text ) );
+                OperateResult<byte[]> read = melsec_net.Read( textBox6.Text, ushort.Parse( textBox9.Text ) );
                 if (read.IsSuccess)
                 {
                     textBox10.Text = "结果：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( read.Content );
@@ -405,7 +384,7 @@ namespace HslCommunicationDemo
         {
             try
             {
-                OperateResult<byte[]> read = omronFinsNet.ReadFromCoreServer( HslCommunication.BasicFramework.SoftBasic.HexStringToBytes( textBox13.Text ) );
+                OperateResult<byte[]> read = melsec_net.ReadFromCoreServer( HslCommunication.BasicFramework.SoftBasic.HexStringToBytes( textBox13.Text ) );
                 if (read.IsSuccess)
                 {
                     textBox11.Text = "结果：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( read.Content );
@@ -464,7 +443,7 @@ namespace HslCommunicationDemo
 
                 try
                 {
-                    OperateResult<short> read = omronFinsNet.ReadInt16( textBox12.Text );
+                    OperateResult<short> read = melsec_net.ReadInt16( textBox12.Text );
                     if (read.IsSuccess)
                     {
                         // 显示曲线
@@ -487,6 +466,6 @@ namespace HslCommunicationDemo
 
         #endregion
 
-        
     }
+    
 }

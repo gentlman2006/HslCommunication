@@ -52,6 +52,12 @@
     <Compile Include="FormFileClient.Designer.cs">
       <DependentUpon>FormFileClient.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormMelsec1EBinary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMelsec1EBinary.Designer.cs">
+      <DependentUpon>FormMelsec1EBinary.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormOmron.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,6 +116,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormFileClient.resx">
       <DependentUpon>FormFileClient.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMelsec1EBinary.resx">
+      <DependentUpon>FormMelsec1EBinary.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormOmron.resx">
       <DependentUpon>FormOmron.cs</DependentUpon>

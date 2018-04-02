@@ -71,6 +71,7 @@
             this.button20 = new System.Windows.Forms.Button();
             this.button21 = new System.Windows.Forms.Button();
             this.button22 = new System.Windows.Forms.Button();
+            this.button23 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
             this.textBox7 = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -87,6 +88,7 @@
             this.button_read_int = new System.Windows.Forms.Button();
             this.button_read_ushort = new System.Windows.Forms.Button();
             this.button_read_short = new System.Windows.Forms.Button();
+            this.button_read_byte = new System.Windows.Forms.Button();
             this.button_read_bool = new System.Windows.Forms.Button();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -98,8 +100,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.button23 = new System.Windows.Forms.Button();
-            this.button_read_byte = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -560,6 +560,16 @@
             this.button22.UseVisualStyleBackColor = true;
             this.button22.Click += new System.EventHandler(this.button22_Click);
             // 
+            // button23
+            // 
+            this.button23.Location = new System.Drawing.Point(326, 24);
+            this.button23.Name = "button23";
+            this.button23.Size = new System.Drawing.Size(82, 28);
+            this.button23.TabIndex = 7;
+            this.button23.Text = "byte写入";
+            this.button23.UseVisualStyleBackColor = true;
+            this.button23.Click += new System.EventHandler(this.button23_Click);
+            // 
             // button24
             // 
             this.button24.Location = new System.Drawing.Point(226, 24);
@@ -729,6 +739,16 @@
             this.button_read_short.UseVisualStyleBackColor = true;
             this.button_read_short.Click += new System.EventHandler(this.button_read_short_Click);
             // 
+            // button_read_byte
+            // 
+            this.button_read_byte.Location = new System.Drawing.Point(415, 19);
+            this.button_read_byte.Name = "button_read_byte";
+            this.button_read_byte.Size = new System.Drawing.Size(82, 28);
+            this.button_read_byte.TabIndex = 7;
+            this.button_read_byte.Text = "byte读取";
+            this.button_read_byte.UseVisualStyleBackColor = true;
+            this.button_read_byte.Click += new System.EventHandler(this.button_read_byte_Click);
+            // 
             // button_read_bool
             // 
             this.button_read_bool.Location = new System.Drawing.Point(315, 19);
@@ -800,7 +820,7 @@
             this.linkLabel1.Size = new System.Drawing.Size(287, 17);
             this.linkLabel1.TabIndex = 3;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "http://www.cnblogs.com/dathlin/p/7469679.html";
+            this.linkLabel1.Text = "http://www.cnblogs.com/dathlin/p/8685855.html";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // label4
@@ -831,26 +851,6 @@
             this.label20.Size = new System.Drawing.Size(108, 17);
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
-            // 
-            // button23
-            // 
-            this.button23.Location = new System.Drawing.Point(326, 24);
-            this.button23.Name = "button23";
-            this.button23.Size = new System.Drawing.Size(82, 28);
-            this.button23.TabIndex = 7;
-            this.button23.Text = "byte写入";
-            this.button23.UseVisualStyleBackColor = true;
-            this.button23.Click += new System.EventHandler(this.button23_Click);
-            // 
-            // button_read_byte
-            // 
-            this.button_read_byte.Location = new System.Drawing.Point(415, 19);
-            this.button_read_byte.Name = "button_read_byte";
-            this.button_read_byte.Size = new System.Drawing.Size(82, 28);
-            this.button_read_byte.TabIndex = 7;
-            this.button_read_byte.Text = "byte读取";
-            this.button_read_byte.UseVisualStyleBackColor = true;
-            this.button_read_byte.Click += new System.EventHandler(this.button_read_byte_Click);
             // 
             // FormSiemens
             // 

@@ -93,7 +93,21 @@ namespace HslCommunication.Core.Net
             BytesContent = null;
             AlreadyReceivedContent = 0;
         }
-        
+
+
+        #region Object Override
+
+        /// <summary>
+        /// 返回表示当前对象的字符串，以IP，端口，客户端名称组成
+        /// </summary>
+        /// <returns>字符串数据</returns>
+        public override string ToString()
+        {
+            return $"[{IpEndPoint}] [{LoginAlias}]";
+        }
+
+        #endregion
+
 
     }
 }

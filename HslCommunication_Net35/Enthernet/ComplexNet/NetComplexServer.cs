@@ -354,27 +354,27 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 服务器端用于数据发送文本的方法
         /// </summary>
-        /// <param name="stateone">数据发送对象</param>
+        /// <param name="session">数据发送对象</param>
         /// <param name="customer">用户自定义的数据对象，如不需要，赋值为0</param>
         /// <param name="str">发送的文本</param>
-        public void Send( AppSession stateone, NetHandle customer, string str )
+        public void Send( AppSession session, NetHandle customer, string str )
         {
-            SendBytes( stateone, HslProtocol.CommandBytes( customer, Token, str ) );
+            SendBytes( session, HslProtocol.CommandBytes( customer, Token, str ) );
         }
         /// <summary>
         /// 服务器端用于发送字节的方法
         /// </summary>
-        /// <param name="stateone">数据发送对象</param>
+        /// <param name="session">数据发送对象</param>
         /// <param name="customer">用户自定义的数据对象，如不需要，赋值为0</param>
         /// <param name="bytes">实际发送的数据</param>
-        public void Send( AppSession stateone, NetHandle customer, byte[] bytes )
+        public void Send( AppSession session, NetHandle customer, byte[] bytes )
         {
-            SendBytes( stateone, HslProtocol.CommandBytes( customer, Token, bytes ) );
+            SendBytes( session, HslProtocol.CommandBytes( customer, Token, bytes ) );
         }
 
-        private void SendBytes( AppSession stateone, byte[] content )
+        private void SendBytes( AppSession session, byte[] content )
         {
-            SendBytesAsync( stateone, content );
+            SendBytesAsync( session, content );
         }
 
 

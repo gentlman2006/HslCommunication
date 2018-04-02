@@ -90,7 +90,9 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 
 ## Thanks
 * 混合锁及可序列化异常类，读写锁，并发模型部分代码及思路参考《CLR Via C#》，感谢作者Jeffrey Richter
-* 感谢 **ligihtdev** 的打赏支持
+* 感谢 **CKernal** 推送的Qna兼容1E帧协议的三菱代码
+* 感谢 **ligihtdev** 打赏支持
+* 感谢 **Wzhigang** 打赏支持
 
 ## Controls
 This library include some controls render upside picture. u can easily use them

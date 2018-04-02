@@ -43,6 +43,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.button12 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.label20 = new System.Windows.Forms.Label();
@@ -50,7 +51,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
-            this.button12 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -154,6 +155,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.button13);
             this.groupBox3.Controls.Add(this.button7);
             this.groupBox3.Controls.Add(this.button4);
             this.groupBox3.Location = new System.Drawing.Point(17, 74);
@@ -233,6 +235,17 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "HslServer";
             // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(15, 104);
+            this.button12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(150, 32);
+            this.button12.TabIndex = 2;
+            this.button12.Text = "File Net";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
             // button9
             // 
             this.button9.Location = new System.Drawing.Point(15, 64);
@@ -308,16 +321,15 @@
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
-            // button12
+            // button13
             // 
-            this.button12.Location = new System.Drawing.Point(15, 104);
-            this.button12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(150, 32);
-            this.button12.TabIndex = 2;
-            this.button12.Text = "File Net";
-            this.button12.UseVisualStyleBackColor = true;
-            this.button12.Click += new System.EventHandler(this.button12_Click);
+            this.button13.Location = new System.Drawing.Point(15, 104);
+            this.button13.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(150, 32);
+            this.button13.TabIndex = 3;
+            this.button13.Text = "A-1E帧【二进制】";
+            this.button13.UseVisualStyleBackColor = true;
             // 
             // FormLoad
             // 
@@ -376,6 +388,7 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Button button13;
     }
 }
 

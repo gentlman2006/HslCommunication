@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileNetServer", "TestProjec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdpNetServer", "TestProject\UdpNetServer\UdpNetServer.csproj", "{15BC8EBD-0920-4696-A1A7-1C3D7C2E6DE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNetServer", "TestProject\ComplexNetServer\ComplexNetServer.csproj", "{8E94BA91-5ACB-4C89-9279-BE6A06DA1859}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{15BC8EBD-0920-4696-A1A7-1C3D7C2E6DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15BC8EBD-0920-4696-A1A7-1C3D7C2E6DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15BC8EBD-0920-4696-A1A7-1C3D7C2E6DE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E94BA91-5ACB-4C89-9279-BE6A06DA1859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E94BA91-5ACB-4C89-9279-BE6A06DA1859}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E94BA91-5ACB-4C89-9279-BE6A06DA1859}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E94BA91-5ACB-4C89-9279-BE6A06DA1859}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +88,7 @@ Global
 		{46EC6BE3-58FB-43DD-A729-C6C3CE4EE2F1} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 		{1F22638D-76CB-4680-A715-3E305EA3486D} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 		{15BC8EBD-0920-4696-A1A7-1C3D7C2E6DE1} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
+		{8E94BA91-5ACB-4C89-9279-BE6A06DA1859} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECF517CD-FF89-4611-A2F7-AB7771FCC542}

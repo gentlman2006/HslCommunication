@@ -35,6 +35,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.userButton1 = new HslCommunication.Controls.UserButton();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // textBox1
@@ -106,11 +108,31 @@
             this.userButton1.UIText = "启动服务";
             this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(605, 13);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(368, 17);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "特点：需要客户端进行请求，然后响应客户端的请求，完成一次通讯";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(617, 35);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(296, 17);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "      通常用于客户端向服务器进行安全数据的请求交互";
+            // 
             // FormServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(995, 641);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
@@ -137,6 +159,8 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
     }
 }
 
