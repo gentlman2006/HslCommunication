@@ -837,7 +837,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(160, 17);
             this.label5.TabIndex = 5;
-            this.label5.Text = "三菱MC协议，格式为二进制";
+            this.label5.Text = "MC-Qna-3E，格式为二进制";
             // 
             // label20
             // 

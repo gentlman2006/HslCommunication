@@ -837,7 +837,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(160, 17);
             this.label5.TabIndex = 5;
-            this.label5.Text = "三菱MC协议，格式为二进制";
+            this.label5.Text = "MC-Qna-1E，格式为二进制";
             // 
             // label20
             // 
@@ -849,7 +849,7 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
-            // FormMelsecBinary
+            // FormMelsec1EBinary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -863,7 +863,7 @@
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Name = "FormMelsecBinary";
+            this.Name = "FormMelsec1EBinary";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "三菱PLC访问Demo";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSiemens_FormClosing);

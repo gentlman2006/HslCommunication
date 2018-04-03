@@ -837,7 +837,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(155, 17);
             this.label5.TabIndex = 5;
-            this.label5.Text = "三菱MC协议，格式为ASCII";
+            this.label5.Text = "MC-Qna-3E，格式为ASCII";
             // 
             // label20
             // 
