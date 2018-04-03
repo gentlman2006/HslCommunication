@@ -70,6 +70,13 @@ namespace SimplifyNetTest
             {
                 simplifyServer.SendMessage( session, handle, "不支持的消息" );
             }
+
+
+            // 显示出来，谁发的，发了什么
+            textBox2.Invoke( new Action( ( ) => {
+                textBox2.AppendText( $"[{session}] [{handle}] {value}" + Environment.NewLine );
+            } ) );
+
         }
 
 

@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormComplexNet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormComplexNet.Designer.cs">
+      <DependentUpon>FormComplexNet.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormFileClient.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,6 +120,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormComplexNet.resx">
+      <DependentUpon>FormComplexNet.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormFileClient.resx">
       <DependentUpon>FormFileClient.cs</DependentUpon>
     </EmbeddedResource>

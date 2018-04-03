@@ -27,28 +27,37 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
-        #region 基本属性块
+        #region Private Member
+
         /// <summary>
         /// 客户端的核心连接块
         /// </summary>
         private AppSession stateone = new AppSession( );
-        /// <summary>
-        /// 客户端系统是否启动
-        /// </summary>
-        public bool Is_Client_Start { get; set; } = false;
 
-        /// <summary>
-        /// 重连接失败的次数
-        /// </summary>
-        public int Connect_Failed_Count { get; set; } = 0;
         /// <summary>
         /// 指示客户端是否处于正在连接服务器中
         /// </summary>
-        private bool Is_Client_Connecting = false;
+        private bool IsClientConnecting = false;
+
+
         /// <summary>
         /// 登录服务器的判断锁
         /// </summary>
         private object lock_connecting = new object( );
+
+
+        #endregion
+
+        #region 基本属性块
+        /// <summary>
+        /// 客户端系统是否启动
+        /// </summary>
+        public bool IsClientStart { get; set; } = false;
+
+        /// <summary>
+        /// 重连接失败的次数
+        /// </summary>
+        public int ConnectFailedCount { get; set; } = 0;
         /// <summary>
         /// 客户端登录的标识名称，可以为ID号，也可以为登录名
         /// </summary>
@@ -111,11 +120,11 @@ namespace HslCommunication.Enthernet
         public void ClientClose( )
         {
             IsQuie = true;
-            if (Is_Client_Start)
+            if (IsClientStart)
                 SendBytes( stateone, HslProtocol.CommandBytes( HslProtocol.ProtocolClientQuit, 0, Token, null ) );
 
             thread_heart_check?.Abort( );
-            Is_Client_Start = false;
+            IsClientStart = false;
             Thread.Sleep( 5 );
             LoginSuccess = null;
             LoginFailed = null;
@@ -130,7 +139,7 @@ namespace HslCommunication.Enthernet
         /// </summary>
         public void ClientStart( )
         {
-            if (Is_Client_Start) return;
+            if (IsClientStart) return;
             Thread thread_login = new Thread( new ThreadStart( ThreadLogin ) );
             thread_login.IsBackground = true;
             thread_login.Start( );
@@ -147,12 +156,12 @@ namespace HslCommunication.Enthernet
         {
             lock (lock_connecting)
             {
-                if (Is_Client_Connecting) return;
-                Is_Client_Connecting = true;
+                if (IsClientConnecting) return;
+                IsClientConnecting = true;
             }
 
 
-            if (Connect_Failed_Count == 0)
+            if (ConnectFailedCount == 0)
             {
                 MessageAlerts?.Invoke( "正在连接服务器..." );
             }
@@ -165,12 +174,12 @@ namespace HslCommunication.Enthernet
                     MessageAlerts?.Invoke( "连接断开，等待" + count-- + "秒后重新连接" );
                     Thread.Sleep( 1000 );
                 }
-                MessageAlerts?.Invoke( "正在尝试第" + Connect_Failed_Count + "次连接服务器..." );
+                MessageAlerts?.Invoke( "正在尝试第" + ConnectFailedCount + "次连接服务器..." );
             }
 
 
             stateone.HeartTime = DateTime.Now;
-            LogNet?.WriteDebug( ToString( ), "Begin Connect Server, Times: " + Connect_Failed_Count );
+            LogNet?.WriteDebug( ToString( ), "Begin Connect Server, Times: " + ConnectFailedCount );
 
 
             OperateResult result = new OperateResult( );
@@ -178,10 +187,10 @@ namespace HslCommunication.Enthernet
             OperateResult<Socket> connectResult = CreateSocketAndConnect( EndPointServer, 10000 );
             if (!connectResult.IsSuccess)
             {
-                Connect_Failed_Count++;
-                Is_Client_Connecting = false;
-                LoginFailed?.Invoke( Connect_Failed_Count );
-                LogNet?.WriteDebug( ToString( ), "Connected Failed, Times: " + Connect_Failed_Count );
+                ConnectFailedCount++;
+                IsClientConnecting = false;
+                LoginFailed?.Invoke( ConnectFailedCount );
+                LogNet?.WriteDebug( ToString( ), "Connected Failed, Times: " + ConnectFailedCount );
                 // 连接失败，重新连接服务器
                 ReconnectServer( );
                 return;
@@ -194,17 +203,17 @@ namespace HslCommunication.Enthernet
 
             if (!sendResult.IsSuccess)
             {
-                Connect_Failed_Count++;
-                Is_Client_Connecting = false;
-                LogNet?.WriteDebug( ToString( ), "Login Server Failed, Times: " + Connect_Failed_Count );
-                LoginFailed?.Invoke( Connect_Failed_Count );
+                ConnectFailedCount++;
+                IsClientConnecting = false;
+                LogNet?.WriteDebug( ToString( ), "Login Server Failed, Times: " + ConnectFailedCount );
+                LoginFailed?.Invoke( ConnectFailedCount );
                 // 连接失败，重新连接服务器
                 ReconnectServer( );
                 return;
             }
 
             // 登录成功
-            Connect_Failed_Count = 0;
+            ConnectFailedCount = 0;
             stateone.IpEndPoint = (IPEndPoint)connectResult.Content.RemoteEndPoint;
             stateone.LoginAlias = ClientAlias;
             stateone.WorkSocket = connectResult.Content;
@@ -220,12 +229,12 @@ namespace HslCommunication.Enthernet
 
 
             stateone.HeartTime = DateTime.Now;
-            Is_Client_Start = true;
+            IsClientStart = true;
             LoginSuccess?.Invoke( );
 
-            LogNet?.WriteDebug( ToString( ), "Login Server Success, Times: " + Connect_Failed_Count );
+            LogNet?.WriteDebug( ToString( ), "Login Server Success, Times: " + ConnectFailedCount );
 
-            Is_Client_Connecting = false;
+            IsClientConnecting = false;
 
             Thread.Sleep( 1000 );
         }
@@ -239,7 +248,7 @@ namespace HslCommunication.Enthernet
         private void ReconnectServer( )
         {
             // 是否连接服务器中，已经在连接的话，则不再连接
-            if (Is_Client_Connecting) return;
+            if (IsClientConnecting) return;
             // 是否退出了系统，退出则不再重连
             if (IsQuie) return;
 
@@ -288,7 +297,7 @@ namespace HslCommunication.Enthernet
         /// <param name="str">发送的文本</param>
         public void Send( NetHandle customer, string str )
         {
-            if (Is_Client_Start)
+            if (IsClientStart)
             {
                 SendBytes( stateone, HslProtocol.CommandBytes( customer, Token, str ) );
             }
@@ -300,7 +309,7 @@ namespace HslCommunication.Enthernet
         /// <param name="bytes">实际发送的数据</param>
         public void Send( NetHandle customer, byte[] bytes )
         {
-            if (Is_Client_Start)
+            if (IsClientStart)
             {
                 SendBytes( stateone, HslProtocol.CommandBytes( customer, Token, bytes ) );
             }

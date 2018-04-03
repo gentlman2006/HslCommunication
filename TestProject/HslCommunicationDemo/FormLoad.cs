@@ -167,5 +167,15 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button14_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormComplexNet form = new FormComplexNet( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

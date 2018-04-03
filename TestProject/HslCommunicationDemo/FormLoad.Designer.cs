@@ -37,6 +37,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button6 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button13 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -51,7 +52,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
+            this.button14 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -167,6 +168,16 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "三菱PLC";
             // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(15, 104);
+            this.button13.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(150, 32);
+            this.button13.TabIndex = 3;
+            this.button13.Text = "A-1E帧【二进制】";
+            this.button13.UseVisualStyleBackColor = true;
+            // 
             // button7
             // 
             this.button7.Location = new System.Drawing.Point(15, 64);
@@ -223,6 +234,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.button14);
             this.groupBox4.Controls.Add(this.button12);
             this.groupBox4.Controls.Add(this.button9);
             this.groupBox4.Controls.Add(this.button8);
@@ -230,14 +242,14 @@
             this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox4.Size = new System.Drawing.Size(183, 219);
+            this.groupBox4.Size = new System.Drawing.Size(183, 226);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "HslServer";
             // 
             // button12
             // 
-            this.button12.Location = new System.Drawing.Point(15, 104);
+            this.button12.Location = new System.Drawing.Point(15, 144);
             this.button12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(150, 32);
@@ -248,7 +260,7 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(15, 64);
+            this.button9.Location = new System.Drawing.Point(15, 104);
             this.button9.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(150, 32);
@@ -321,15 +333,16 @@
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
-            // button13
+            // button14
             // 
-            this.button13.Location = new System.Drawing.Point(15, 104);
-            this.button13.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(150, 32);
-            this.button13.TabIndex = 3;
-            this.button13.Text = "A-1E帧【二进制】";
-            this.button13.UseVisualStyleBackColor = true;
+            this.button14.Location = new System.Drawing.Point(15, 64);
+            this.button14.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(150, 32);
+            this.button14.TabIndex = 3;
+            this.button14.Text = "Complex Net";
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
             // FormLoad
             // 
@@ -389,6 +402,7 @@
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.Button button14;
     }
 }
 
