@@ -44,18 +44,25 @@ namespace HslCommunicationDemo
                 return;
             }
 
-            // 连接 connect
-            complexClient = new NetComplexClient( );
-            complexClient.ClientAlias = textBox9.Text;
-            complexClient.EndPointServer = new IPEndPoint( address, port );
-            complexClient.Token = new Guid( textBox3.Text );
-            complexClient.AcceptString += ComplexClient_AcceptString;
-            complexClient.AcceptByte += ComplexClient_AcceptByte;
-            complexClient.ClientStart( );
+            try
+            {
+                // 连接 connect
+                complexClient = new NetComplexClient( );
+                complexClient.ClientAlias = textBox9.Text;
+                complexClient.EndPointServer = new IPEndPoint( address, port );
+                complexClient.Token = new Guid( textBox3.Text );
+                complexClient.AcceptString += ComplexClient_AcceptString;
+                complexClient.AcceptByte += ComplexClient_AcceptByte;
+                complexClient.ClientStart( );
 
-            button1.Enabled = false;
-
-            panel2.Enabled = true;
+                button1.Enabled = false;
+                button2.Enabled = true;
+                panel2.Enabled = true;
+            }
+            catch(Exception ex)
+            {
+                HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
+            }
         }
 
         private void ComplexClient_AcceptByte( HslCommunication.Core.Net.AppSession session, NetHandle handle, byte[] data )
@@ -74,17 +81,46 @@ namespace HslCommunicationDemo
         {
             // 断开连接 disconnect
             complexClient.ClientClose( );
+            button1.Enabled = true;
+            button2.Enabled = false;
         }
 
         private void ShowTextInfo( string text )
         {
             if (InvokeRequired)
             {
-                Invoke( new Action<string>( ShowTextInfo ) );
+                Invoke( new Action<string>( ShowTextInfo ),text );
                 return;
             }
 
-            textBox2.AppendText( text + Environment.NewLine );
+            textBox8.AppendText( text + Environment.NewLine );
+        }
+
+        private void button3_Click( object sender, EventArgs e )
+        {
+            // 数据发送
+            NetHandle handle = new NetHandle( );
+            if (textBox5.Text.IndexOf( '.' ) >= 0)
+            {
+                string[] values = textBox5.Text.Split( '.' );
+                handle = new NetHandle( byte.Parse( values[0] ), byte.Parse( values[1] ), ushort.Parse( values[2] ) );
+            }
+            else
+            {
+                handle = int.Parse( textBox5.Text );
+            }
+
+
+            if(!int.TryParse(textBox6.Text,out int count))
+            {
+                MessageBox.Show( "数据发送次数输入异常" );
+                return;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                complexClient.Send( handle, textBox4.Text );
+            }
         }
     }
 }

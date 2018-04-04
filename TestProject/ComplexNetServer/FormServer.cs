@@ -89,7 +89,7 @@ namespace ComplexNetServer
         {
             if(InvokeRequired)
             {
-                Invoke( new Action<string>( ShowTextInfo ) );
+                Invoke( new Action<string>( ShowTextInfo ), text );
                 return;
             }
 

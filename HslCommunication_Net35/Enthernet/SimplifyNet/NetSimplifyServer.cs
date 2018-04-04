@@ -15,7 +15,9 @@ namespace HslCommunication.Enthernet
     {
         #region Constructor
 
-
+        /// <summary>
+        /// 实例化一个服务器消息请求的信息
+        /// </summary>
         public NetSimplifyServer()
         {
 
@@ -140,6 +142,7 @@ namespace HslCommunication.Enthernet
             if (protocol == HslProtocol.ProtocolCheckSecends)
             {
                 // 初始化时候的测试消息
+                session.HeartTime = DateTime.Now;
                 SendMessage( session, customer, content );
             }
             else if (protocol == HslProtocol.ProtocolUserBytes)

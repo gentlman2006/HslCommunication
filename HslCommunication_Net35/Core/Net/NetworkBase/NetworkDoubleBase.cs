@@ -355,7 +355,7 @@ namespace HslCommunication.Core.Net
         public OperateResult<byte[]> ReadFromCoreServer( byte[] send )
         {
             var result = new OperateResult<byte[]>( );
-            //string tmp1 = BasicFramework.SoftBasic.ByteToHexString( send );
+            // string tmp1 = BasicFramework.SoftBasic.ByteToHexString( send, '-' );
             
             InteractiveLock.Enter( );
 
@@ -379,7 +379,7 @@ namespace HslCommunication.Core.Net
                 if (read.Content1.Length > 0) read.Content1.CopyTo( result.Content, 0 );
                 if (read.Content2.Length > 0) read.Content2.CopyTo( result.Content, read.Content1.Length );
 
-                //string tmp2 = BasicFramework.SoftBasic.ByteToHexString( result.Content ) ;
+                // string tmp2 = BasicFramework.SoftBasic.ByteToHexString( result.Content ) ;
             }
             else
             {

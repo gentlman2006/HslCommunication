@@ -46,6 +46,8 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.button6 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -55,8 +57,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox9 = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -83,6 +83,7 @@
             // 
             // textBox8
             // 
+            this.textBox8.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.textBox8.Location = new System.Drawing.Point(62, 214);
             this.textBox8.Multiline = true;
             this.textBox8.Name = "textBox8";
@@ -133,6 +134,7 @@
             this.button3.TabIndex = 12;
             this.button3.Text = "发送";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // textBox4
             // 
@@ -247,6 +249,23 @@
             this.panel1.Size = new System.Drawing.Size(978, 83);
             this.panel1.TabIndex = 14;
             // 
+            // textBox9
+            // 
+            this.textBox9.Location = new System.Drawing.Point(444, 14);
+            this.textBox9.Name = "textBox9";
+            this.textBox9.Size = new System.Drawing.Size(107, 23);
+            this.textBox9.TabIndex = 11;
+            this.textBox9.Text = "test name";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(390, 17);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(44, 17);
+            this.label13.TabIndex = 10;
+            this.label13.Text = "别名：";
+            // 
             // button6
             // 
             this.button6.Location = new System.Drawing.Point(875, 11);
@@ -299,7 +318,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(85, 23);
             this.textBox2.TabIndex = 3;
-            this.textBox2.Text = "12345";
+            this.textBox2.Text = "12346";
             // 
             // label3
             // 
@@ -326,23 +345,6 @@
             this.label1.Size = new System.Drawing.Size(56, 17);
             this.label1.TabIndex = 0;
             this.label1.Text = "Ip地址：";
-            // 
-            // textBox9
-            // 
-            this.textBox9.Location = new System.Drawing.Point(444, 14);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(107, 23);
-            this.textBox9.TabIndex = 11;
-            this.textBox9.Text = "test name";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(390, 17);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(44, 17);
-            this.label13.TabIndex = 10;
-            this.label13.Text = "别名：";
             // 
             // FormComplexNet
             // 

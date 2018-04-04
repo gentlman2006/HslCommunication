@@ -133,7 +133,8 @@ namespace HslCommunicationDemo
 
             try
             {
-                OperateResult connect = omronFinsNet.ConnectServer( );
+                // OperateResult connect = OperateResult.CreateSuccessResult( ); 
+                OperateResult connect = omronFinsNet.ConnectServer( ); 
                 if (connect.IsSuccess)
                 {
                     MessageBox.Show( "连接成功！" );

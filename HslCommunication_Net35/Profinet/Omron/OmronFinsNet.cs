@@ -276,6 +276,7 @@ namespace HslCommunication.Profinet.Omron
             byte[] tmp = BitConverter.GetBytes( buffer.Length - 8 );
             Array.Reverse( tmp );
             tmp.CopyTo( buffer, 4 );
+            buffer[11] = 0x02;
 
             buffer[16] = ICF;
             buffer[17] = RSV;
@@ -370,8 +371,17 @@ namespace HslCommunication.Profinet.Omron
                 _PLCCommand[2] = analysis.Content1.WordCode;
             }
             analysis.Content2.CopyTo( _PLCCommand, 3 );
-            _PLCCommand[6] = (byte)(value.Length / 256);                       // 长度
-            _PLCCommand[7] = (byte)(value.Length % 256);
+
+            if (isBit)
+            {
+                _PLCCommand[6] = (byte)(value.Length / 256);                       // 长度
+                _PLCCommand[7] = (byte)(value.Length % 256);
+            }
+            else
+            {
+                _PLCCommand[6] = (byte)(value.Length / 2 / 256);                       // 长度
+                _PLCCommand[7] = (byte)(value.Length / 2 % 256);
+            }
 
             value.CopyTo( _PLCCommand, 8 );
 
@@ -443,15 +453,15 @@ namespace HslCommunication.Profinet.Omron
         /// <returns></returns>
         protected override OperateResult InitilizationOnConnect( Socket socket )
         {
-            OperateResult<byte[]> read = ReadFromCoreServer( handSingle );
+            OperateResult<byte[], byte[]> read = ReadFromCoreServerBase( socket, handSingle );
             if (!read.IsSuccess) return read;
-
+            
             // 检查返回的状态
             byte[] buffer = new byte[4];
-            buffer[0] = read.Content[15];
-            buffer[1] = read.Content[14];
-            buffer[2] = read.Content[13];
-            buffer[3] = read.Content[12];
+            buffer[0] = read.Content2[7];
+            buffer[1] = read.Content2[6];
+            buffer[2] = read.Content2[5];
+            buffer[3] = read.Content2[4];
             int status = BitConverter.ToInt32( buffer, 0 );
             if(status != 0)
             {
@@ -463,9 +473,9 @@ namespace HslCommunication.Profinet.Omron
             }
 
             // 提取PLC的节点地址
-            if (read.Content.Length >= 24)
+            if (read.Content2.Length >= 16)
             {
-                DA1 = read.Content[23];
+                DA1 = read.Content2[15];
             }
             return OperateResult.CreateSuccessResult( ) ;
         }
@@ -477,7 +487,7 @@ namespace HslCommunication.Profinet.Omron
         /// <summary>
         /// 从欧姆龙PLC中读取想要的数据，返回读取结果，读取单位为字
         /// </summary>
-        /// <param name="address">读取地址，格式为"M100","D100","W1A0"</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<byte[]> Read( string address, ushort length )
@@ -515,7 +525,7 @@ namespace HslCommunication.Profinet.Omron
         /// <summary>
         /// 从欧姆龙PLC中批量读取位软元件，返回读取结果
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <param name="length">读取的长度</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<bool[]> ReadBool( string address, ushort length )
@@ -553,88 +563,88 @@ namespace HslCommunication.Profinet.Omron
         /// <summary>
         /// 读取欧姆龙PLC中字软元件指定地址的short数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<short> ReadInt16( string address )
         {
-            return GetInt16ResultFromBytes( Read( address, 2 ) );
+            return GetInt16ResultFromBytes( Read( address, 1 ) );
         }
 
 
         /// <summary>
         /// 读取欧姆龙PLC中字软元件指定地址的ushort数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ushort> ReadUInt16( string address )
         {
-            return GetUInt16ResultFromBytes( Read( address, 2 ) );
+            return GetUInt16ResultFromBytes( Read( address, 1 ) );
         }
 
         /// <summary>
         /// 读取欧姆龙PLC中字软元件指定地址的int数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<int> ReadInt32( string address )
         {
-            return GetInt32ResultFromBytes( Read( address, 4 ) );
+            return GetInt32ResultFromBytes( Read( address, 2 ) );
         }
 
         /// <summary>
         /// 读取欧姆龙PLC中字软元件指定地址的uint数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<uint> ReadUInt32( string address )
         {
-            return GetUInt32ResultFromBytes( Read( address, 4 ) );
+            return GetUInt32ResultFromBytes( Read( address, 2 ) );
         }
 
         /// <summary>
         /// 读取欧姆龙PLC中字软元件指定地址的float数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<float> ReadFloat( string address )
         {
-            return GetSingleResultFromBytes( Read( address, 4 ) );
+            return GetSingleResultFromBytes( Read( address, 2 ) );
         }
 
         /// <summary>
         /// 读取欧姆龙PLC中字软元件指定地址的long数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<long> ReadInt64( string address )
         {
-            return GetInt64ResultFromBytes( Read( address, 8 ) );
+            return GetInt64ResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
         /// 读取欧姆龙PLC中字软元件指定地址的ulong数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ulong> ReadUInt64( string address )
         {
-            return GetUInt64ResultFromBytes( Read( address, 8 ) );
+            return GetUInt64ResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
         /// 读取欧姆龙PLC中字软元件指定地址的double数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<double> ReadDouble( string address )
         {
-            return GetDoubleResultFromBytes( Read( address, 8 ) );
+            return GetDoubleResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
         /// 读取欧姆龙PLC中字软元件地址地址的String数据，编码为ASCII
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <param name="length">字符串长度</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<string> ReadString( string address, ushort length )
@@ -752,7 +762,7 @@ namespace HslCommunication.Profinet.Omron
 
 
         /// <summary>
-        /// 向PLC中位软元件写入bool数组，返回值说明，比如你写入M100,values[0]对应M100
+        /// 向PLC中位软元件写入bool数组，返回值说明，比如你写入D100,values[0]对应D100.0
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据，长度为8的倍数</param>
@@ -763,7 +773,7 @@ namespace HslCommunication.Profinet.Omron
         }
 
         /// <summary>
-        /// 向PLC中位软元件写入bool数组，返回值说明，比如你写入M100,values[0]对应M100
+        /// 向PLC中位软元件写入bool数组，返回值说明，比如你写入D100,values[0]对应D100.0
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据，可以指定任意的长度</param>
@@ -1016,7 +1026,8 @@ namespace HslCommunication.Profinet.Omron
 
         #region Hand Single
 
-        //46494E530000000C0000000000000000000000D6 
+        // 握手信号
+        // 46494E530000000C0000000000000000000000D6 
         private byte[] handSingle = new byte[]
         {
             0x46,0x49,0x4E,0x53, // FINS

@@ -29,6 +29,10 @@
         private void InitializeComponent( )
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.textBox17 = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.textBox16 = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
             this.textBox15 = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
@@ -47,7 +51,6 @@
             this.label17 = new System.Windows.Forms.Label();
             this.textBox12 = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.userCurve1 = new HslCommunication.Controls.UserCurve();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBox11 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -100,10 +103,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.textBox16 = new System.Windows.Forms.TextBox();
-            this.label24 = new System.Windows.Forms.Label();
-            this.textBox17 = new System.Windows.Forms.TextBox();
-            this.label25 = new System.Windows.Forms.Label();
+            this.userCurve1 = new HslCommunication.Controls.UserCurve();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -138,13 +138,47 @@
             this.panel1.Size = new System.Drawing.Size(978, 54);
             this.panel1.TabIndex = 0;
             // 
+            // textBox17
+            // 
+            this.textBox17.Location = new System.Drawing.Point(389, 27);
+            this.textBox17.Name = "textBox17";
+            this.textBox17.Size = new System.Drawing.Size(56, 23);
+            this.textBox17.TabIndex = 13;
+            this.textBox17.Text = "33";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(313, 30);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(77, 17);
+            this.label25.TabIndex = 12;
+            this.label25.Text = "PLC网络号：";
+            // 
+            // textBox16
+            // 
+            this.textBox16.Location = new System.Drawing.Point(389, 2);
+            this.textBox16.Name = "textBox16";
+            this.textBox16.Size = new System.Drawing.Size(56, 23);
+            this.textBox16.TabIndex = 11;
+            this.textBox16.Text = "0";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(313, 5);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(77, 17);
+            this.label24.TabIndex = 10;
+            this.label24.Text = "PLC单元号：";
+            // 
             // textBox15
             // 
             this.textBox15.Location = new System.Drawing.Point(527, 14);
             this.textBox15.Name = "textBox15";
             this.textBox15.Size = new System.Drawing.Size(56, 23);
             this.textBox15.TabIndex = 9;
-            this.textBox15.Text = "10";
+            this.textBox15.Text = "192";
             // 
             // label23
             // 
@@ -304,7 +338,7 @@
             this.textBox12.Name = "textBox12";
             this.textBox12.Size = new System.Drawing.Size(132, 23);
             this.textBox12.TabIndex = 5;
-            this.textBox12.Text = "M100";
+            this.textBox12.Text = "D100";
             // 
             // label15
             // 
@@ -314,17 +348,6 @@
             this.label15.Size = new System.Drawing.Size(44, 17);
             this.label15.TabIndex = 4;
             this.label15.Text = "地址：";
-            // 
-            // userCurve1
-            // 
-            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.userCurve1.Location = new System.Drawing.Point(13, 82);
-            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userCurve1.Name = "userCurve1";
-            this.userCurve1.Size = new System.Drawing.Size(400, 189);
-            this.userCurve1.TabIndex = 0;
-            this.userCurve1.ValueMaxLeft = 200F;
-            this.userCurve1.ValueMaxRight = 200F;
             // 
             // groupBox4
             // 
@@ -451,7 +474,7 @@
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(102, 23);
             this.textBox6.TabIndex = 5;
-            this.textBox6.Text = "M100";
+            this.textBox6.Text = "D100";
             // 
             // label11
             // 
@@ -856,39 +879,16 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
-            // textBox16
+            // userCurve1
             // 
-            this.textBox16.Location = new System.Drawing.Point(389, 2);
-            this.textBox16.Name = "textBox16";
-            this.textBox16.Size = new System.Drawing.Size(56, 23);
-            this.textBox16.TabIndex = 11;
-            this.textBox16.Text = "0";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(313, 5);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(77, 17);
-            this.label24.TabIndex = 10;
-            this.label24.Text = "PLC单元号：";
-            // 
-            // textBox17
-            // 
-            this.textBox17.Location = new System.Drawing.Point(389, 27);
-            this.textBox17.Name = "textBox17";
-            this.textBox17.Size = new System.Drawing.Size(56, 23);
-            this.textBox17.TabIndex = 13;
-            this.textBox17.Text = "100";
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(313, 30);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(77, 17);
-            this.label25.TabIndex = 12;
-            this.label25.Text = "PLC网络号：";
+            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.userCurve1.Location = new System.Drawing.Point(13, 82);
+            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userCurve1.Name = "userCurve1";
+            this.userCurve1.Size = new System.Drawing.Size(400, 189);
+            this.userCurve1.TabIndex = 0;
+            this.userCurve1.ValueMaxLeft = 200F;
+            this.userCurve1.ValueMaxRight = 200F;
             // 
             // FormOmron
             // 

@@ -11,4 +11,10 @@
      \\/        \\/              \\\\\\\\\/             \\\\\\\\\\\\\/ 
 
 
-
+[调试] 2018-04-04 15:27:21.256 thread:[01] OmronFinsNet : Connect Success
+[调试] 2018-04-04 15:27:21.259 thread:[01] OmronFinsNet : Start Initiliza
+[调试] 2018-04-04 15:27:21.263 thread:[01] OmronFinsNet : Data:46-49-4E-53-00-00-00-0C-00-00-00-00-00-00-00-00-00-00-00-26
+[调试] 2018-04-04 15:27:21.263 thread:[01] OmronFinsNet : Enter Tran Lock
+[调试] 2018-04-04 15:27:21.271 thread:[01] OmronFinsNet : Connect Success
+[调试] 2018-04-04 15:27:21.271 thread:[01] OmronFinsNet : Start Initiliza
+[调试] 2018-04-04 15:27:21.271 thread:[01] OmronFinsNet : Data:46-49-4E-53-00-00-00-0C-00-00-00-00-00-00-00-00-00-00-00-26
