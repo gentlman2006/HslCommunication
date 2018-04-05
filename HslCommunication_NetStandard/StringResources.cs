@@ -35,6 +35,7 @@ namespace HslCommunication
         internal const string ExceptionStackTrace = "错误堆栈：";
         internal const string ExceptopnTargetSite = "错误方法：";
         internal const string ExceprionCustomer = "用户自定义方法出错：";
+        internal const string SuccessText = "Success";
 
 
 
@@ -88,6 +89,7 @@ namespace HslCommunication
         internal const string FileSendClientFailed = "文件发送的时候发生了异常";
         internal const string FileWriteToNetFailed = "文件写入网络异常";
         internal const string FileReadFromNetFailed = "从网络读取文件异常";
+        internal const string FilePathCreateFailed = "文件夹路径创建失败";
 
         /***********************************************************************************
          * 
@@ -97,6 +99,8 @@ namespace HslCommunication
 
         internal const string TokenCheckFailed = "接收验证令牌不一致";
         internal const string TokenCheckTimeout = "接收验证超时:";
+        internal const string CommandHeadCodeCheckFailed = "命令头校验失败";
+        internal const string CommandLengthCheckFailed = "命令长度检查失败";
         internal const string NetClientAliasFailed = "客户端的别名接收失败：";
         internal const string NetEngineStart = "启动引擎";
         internal const string NetEngineClose = "关闭引擎";
@@ -106,5 +110,20 @@ namespace HslCommunication
         internal const string NetClientFull = "服务器承载上限，收到超出的请求连接。";
         internal const string NetClientLoginFailed = "客户端登录中错误：";
 
+
+        /***********************************************************************************
+         * 
+         *    Modbus-Tcp相关
+         * 
+         ************************************************************************************/
+
+        internal const string ModbusTcpFunctionCodeNotSupport = "不支持的功能码";
+        internal const string ModbusTcpFunctionCodeOverBound = "读取的数据越界";
+        internal const string ModbusTcpFunctionCodeQuantityOver = "读取长度超过最大值";
+        internal const string ModbusTcpFunctionCodeReadWriteException = "读写异常";
+        internal const string ModbusTcpReadCoilException = "读取线圈异常";
+        internal const string ModbusTcpWriteCoilException = "写入线圈异常";
+        internal const string ModbusTcpReadRegisterException = "读取寄存器异常";
+        internal const string ModbusTcpWriteRegisterException = "写入寄存器异常";
     }
 }

@@ -81,16 +81,16 @@ namespace HslCommunication.BasicFramework
 
 
         #endregion
-        
+
         #region 数组处理方法
 
         /// <summary>
-        /// 一个通用的数组新增个数方法，会自动判断越界情况
+        /// 一个通用的数组新增个数方法，会自动判断越界情况，越界的情况下，会自动的截断或是填充
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="array"></param>
-        /// <param name="data"></param>
-        /// <param name="max"></param>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <param name="array">原数据</param>
+        /// <param name="data">等待新增的数据</param>
+        /// <param name="max">原数据的最大值</param>
         public static void AddArrayData<T>( ref T[] array, T[] data, int max )
         {
             if (data == null) return;           // 数据为空
@@ -140,6 +140,100 @@ namespace HslCommunication.BasicFramework
                 }
             }
         }
+
+        /// <summary>
+        /// 将一个数组进行扩充到指定长度，或是缩短到指定长度
+        /// </summary>
+        /// <typeparam name="T">数组的类型</typeparam>
+        /// <param name="data">原先数据的数据</param>
+        /// <param name="length">新数组的长度</param>
+        /// <returns>新数组长度信息</returns>
+        public static T[] ArrayExpandToLength<T>( T[] data, int length )
+        {
+            if (data == null) return new T[length];
+
+            if (data.Length == length) return data;
+
+            T[] buffer = new T[length];
+
+            Array.Copy( data, buffer, Math.Min( data.Length, buffer.Length ) );
+
+            return buffer;
+        }
+
+
+        /// <summary>
+        /// 将一个数组进行扩充到偶数长度
+        /// </summary>
+        /// <typeparam name="T">数组的类型</typeparam>
+        /// <param name="data">原先数据的数据</param>
+        /// <returns>新数组长度信息</returns>
+        public static T[] ArrayExpandToLengthEven<T>( T[] data )
+        {
+            if (data == null) return new T[0];
+
+            if (data.Length % 2 == 1)
+            {
+                return ArrayExpandToLength( data, data.Length + 1 );
+            }
+            else
+            {
+                return data;
+            }
+        }
+
+        #endregion
+
+        #region 数组比较
+
+        /// <summary>
+        /// 判断两个字节的指定部分是否相同
+        /// </summary>
+        /// <param name="b1">第一个字节</param>
+        /// <param name="start1">第一个字节的起始位置</param>
+        /// <param name="b2">第二个字节</param>
+        /// <param name="start2">第二个字节的起始位置</param>
+        /// <param name="length">校验的长度</param>
+        /// <returns>返回是否相等</returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        public static bool IsTwoBytesEquel(byte[] b1, int start1, byte[] b2, int start2, int length)
+        {
+            if (b1 == null || b2 == null) return false;
+            for (int i = 0; i < length; i++)
+            {
+                if (b1[i + start1] != b2[i + start2])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        /// <summary>
+        /// 判断两个数据的令牌是否相等
+        /// </summary>
+        /// <param name="head">字节数据</param>
+        /// <param name="token">GUID数据</param>
+        /// <returns>返回是否相等</returns>
+        public static bool IsByteTokenEquel(byte[] head, Guid token)
+        {
+            return IsTwoBytesEquel(head, 12, token.ToByteArray(), 0, 16);
+        }
+
+
+        /// <summary>
+        /// 判断两个数据的令牌是否相等
+        /// </summary>
+        /// <param name="token1">第一个令牌</param>
+        /// <param name="token2">第二个令牌</param>
+        /// <returns>返回是否相等</returns>
+        public static bool IsTwoTokenEquel(Guid token1, Guid token2)
+        {
+            return IsTwoBytesEquel(token1.ToByteArray(), 0, token2.ToByteArray(), 0, 16);
+        }
+
+
 
         #endregion
 
@@ -411,6 +505,80 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
+        #region byte[]数组和short,ushort相互转化
+
+
+        /*******************************************************************************************************
+         * 
+         *    2018年3月19日 10:57:11
+         *    感谢：毛毛虫 提供的BUG报告 316664767@qq.com
+         * 
+         ********************************************************************************************************/
+
+        /// <summary>
+        /// 从byte数组中提取出short数组，并指定是否需要高地位置换
+        /// </summary>
+        /// <param name="InBytes"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        public static short[] ByteToShortArray( byte[] InBytes, bool reverse )
+        {
+            if (InBytes == null) return null;
+
+            short[] array = new short[InBytes.Length / 2];
+            for (int i = 0; i < array.Length; i++)
+            {
+                byte[] temp = new byte[2];
+
+                if (reverse)
+                {
+                    temp[0] = InBytes[2 * i + 1];
+                    temp[1] = InBytes[2 * i + 0];
+                }
+                else
+                {
+                    temp[0] = InBytes[2 * i + 0];
+                    temp[1] = InBytes[2 * i + 1];
+                }
+                array[i] = BitConverter.ToInt16( temp, 0 );
+            }
+
+            return array;
+        }
+
+        /// <summary>
+        /// 从byte数组中提取出ushort数组，并指定是否需要高地位置换
+        /// </summary>
+        /// <param name="InBytes"></param>
+        /// <param name="reverse"></param>
+        /// <returns></returns>
+        public static ushort[] ByteToUShortArray( byte[] InBytes, bool reverse )
+        {
+            if (InBytes == null) return null;
+
+            ushort[] array = new ushort[InBytes.Length / 2];
+            for (int i = 0; i < array.Length; i++)
+            {
+                byte[] temp = new byte[2];
+
+                if (reverse)
+                {
+                    temp[0] = InBytes[2 * i + 1];
+                    temp[1] = InBytes[2 * i + 0];
+                }
+                else
+                {
+                    temp[0] = InBytes[2 * i + 0];
+                    temp[1] = InBytes[2 * i + 1];
+                }
+                array[i] = BitConverter.ToUInt16( temp, 0 );
+            }
+
+            return array;
+        }
+
+        #endregion
+
         #region 基础框架块
 
         /// <summary>
@@ -443,6 +611,20 @@ namespace HslCommunication.BasicFramework
             }
         }
 
+
+        #endregion
+
+        #region 获取唯一的一串字符串
+
+        /// <summary>
+        /// 获取一串唯一的随机字符串，长度为20，由Guid码和4位数的随机数组成，保证字符串的唯一性
+        /// </summary>
+        /// <returns>随机字符串数据</returns>
+        public static string GetUniqueStringByGuidAndRandom()
+        {
+            Random random = new Random();
+            return Guid.NewGuid().ToString("N") + random.Next(1000, 10000);
+        }
 
         #endregion
     }

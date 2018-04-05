@@ -18,7 +18,10 @@
 本组件版权归Richard.Hu所有 [ (C) 2018 Richard.Hu, All Rights Reserved ]
 
 ## Version Declaration
-当前为最新的5.0版本的开发版，很有可能无法编译，改动量较大，4.3.5版本源代码请查看willow分支
+版本5的计划：
+* 提升组件的稳定性，尤其是在高并发的情况下
+* 扩展其他的PLC或是设备通讯支持
+* 文档手册的编写
 
 Current master branch is 5.0 pre, stable version review willow branch. 
 
