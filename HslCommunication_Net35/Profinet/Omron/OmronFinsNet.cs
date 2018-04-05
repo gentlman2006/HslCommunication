@@ -6,6 +6,7 @@ using HslCommunication.Core.IMessage;
 using HslCommunication.Core.Net;
 using HslCommunication.Core;
 using System.Net.Sockets;
+using HslCommunication.BasicFramework;
 
 namespace HslCommunication.Profinet.Omron
 {
@@ -170,7 +171,7 @@ namespace HslCommunication.Profinet.Omron
 
                     if (splits.Length > 1)
                     {
-                        result.Content2[2] = byte.Parse( splits[2] );
+                        result.Content2[2] = byte.Parse( splits[1] );
                         if (result.Content2[2] > 15)
                         {
                             throw new Exception( "输入的位地址只能在0-15之间。" );
@@ -305,7 +306,7 @@ namespace HslCommunication.Profinet.Omron
         private OperateResult<byte[]> BuildReadCommand( string address, ushort length ,bool isBit)
         {
             var result = new OperateResult<byte[]>( );
-            var analysis = AnalysisAddress( address, false );
+            var analysis = AnalysisAddress( address, isBit );
             if (!analysis.IsSuccess)
             {
                 result.CopyErrorFromOther( analysis );
@@ -352,7 +353,7 @@ namespace HslCommunication.Profinet.Omron
         private OperateResult<byte[]> BuildWriteCommand( string address, byte[] value, bool isBit )
         {
             var result = new OperateResult<byte[]>( );
-            var analysis = AnalysisAddress( address, false );
+            var analysis = AnalysisAddress( address, isBit );
             if (!analysis.IsSuccess)
             {
                 result.CopyErrorFromOther( analysis );
@@ -561,6 +562,25 @@ namespace HslCommunication.Profinet.Omron
 
 
         /// <summary>
+        /// 从欧姆龙PLC中批量读取位软元件，返回读取结果
+        /// </summary>
+        /// <param name="address">读取地址，格式为"D100.0","C100.15","W100.7","H100.4","A100.9"</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<bool> ReadBool( string address )
+        {
+            OperateResult<bool[]> read = ReadBool( address, 1 );
+            if (read.IsSuccess)
+            {
+                return OperateResult.CreateSuccessResult( read.Content[0] );
+            }
+            else
+            {
+                return OperateResult.CreateFailedResult<bool>( read );
+            }
+        }
+
+
+        /// <summary>
         /// 读取欧姆龙PLC中字软元件指定地址的short数据
         /// </summary>
         /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
@@ -713,6 +733,7 @@ namespace HslCommunication.Profinet.Omron
         public OperateResult Write( string address, string value )
         {
             byte[] temp = Encoding.ASCII.GetBytes( value );
+            temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
         }
 
@@ -726,7 +747,8 @@ namespace HslCommunication.Profinet.Omron
         public OperateResult Write( string address, string value, int length )
         {
             byte[] temp = Encoding.ASCII.GetBytes( value );
-            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length );
+            temp = SoftBasic.ArrayExpandToLength( temp, length );
+            temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
         }
 
@@ -752,7 +774,7 @@ namespace HslCommunication.Profinet.Omron
         public OperateResult WriteUnicodeString( string address, string value, int length )
         {
             byte[] temp = Encoding.Unicode.GetBytes( value );
-            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length * 2 );
+            temp = SoftBasic.ArrayExpandToLength( temp, length * 2 );
             return Write( address, temp );
         }
 

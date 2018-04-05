@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HslCommunication.BasicFramework;
 using HslCommunication.Core;
 using HslCommunication.Core.IMessage;
 using HslCommunication.Core.Net;
@@ -616,6 +617,7 @@ namespace HslCommunication.Profinet.Melsec
         public OperateResult Write( string address, string value )
         {
             byte[] temp = Encoding.ASCII.GetBytes( value );
+            temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
         }
 
@@ -629,7 +631,8 @@ namespace HslCommunication.Profinet.Melsec
         public OperateResult Write( string address, string value, int length )
         {
             byte[] temp = Encoding.ASCII.GetBytes( value );
-            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length );
+            temp = SoftBasic.ArrayExpandToLength( temp, length );
+            temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
         }
 

@@ -169,17 +169,31 @@ namespace HslCommunication.BasicFramework
 
             if (data.Length == length) return data;
 
-            if (data.Length < length)
+            T[] buffer = new T[length];
+
+            Array.Copy( data, buffer, Math.Min( data.Length, buffer.Length ) );
+
+            return buffer;
+        }
+
+
+        /// <summary>
+        /// 将一个数组进行扩充到偶数长度
+        /// </summary>
+        /// <typeparam name="T">数组的类型</typeparam>
+        /// <param name="data">原先数据的数据</param>
+        /// <returns>新数组长度信息</returns>
+        public static T[] ArrayExpandToLengthEven<T>( T[] data )
+        {
+            if (data == null) return new T[0];
+
+            if (data.Length % 2 == 1)
             {
-                T[] tmp = new T[length];
-                Array.Copy( data, tmp, data.Length );
-                return tmp;
+                return ArrayExpandToLength( data, data.Length + 1 );
             }
             else
             {
-                T[] tmp = new T[length];
-                Array.Copy( data, tmp, tmp.Length );
-                return tmp;
+                return data;
             }
         }
 
