@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HslCommunication.Profinet;
-using HslCommunication;
 using System.Threading;
+using HslCommunication;
 using HslCommunication.Profinet.Omron;
 
 namespace HslCommunicationDemo
@@ -488,6 +488,47 @@ namespace HslCommunicationDemo
 
         #endregion
 
-        
+        private void test()
+        {
+            // 读取操作，这里的D100可以替换成C100,A100,W100,H100效果时一样的
+            bool D100_7 = omronFinsNet.ReadBool( "D100.7" ).Content;  // 读取D100.7是否通断，注意D100.0等同于D100
+            short short_D100 = omronFinsNet.ReadInt16( "D100" ).Content; // 读取D100组成的字
+            ushort ushort_D100 = omronFinsNet.ReadUInt16( "D100" ).Content; // 读取D100组成的无符号的值
+            int int_D100 = omronFinsNet.ReadInt32( "D100" ).Content;         // 读取D100-D101组成的有符号的数据
+            uint uint_D100 = omronFinsNet.ReadUInt32( "D100" ).Content;      // 读取D100-D101组成的无符号的值
+            float float_D100 = omronFinsNet.ReadFloat( "D100" ).Content;   // 读取D100-D101组成的单精度值
+            long long_D100 = omronFinsNet.ReadInt64( "D100" ).Content;      // 读取D100-D103组成的大数据值
+            ulong ulong_D100 = omronFinsNet.ReadUInt64( "D100" ).Content;   // 读取D100-D103组成的无符号大数据
+            double double_D100 = omronFinsNet.ReadDouble( "D100" ).Content; // 读取D100-D103组成的双精度值
+            string str_D100 = omronFinsNet.ReadString( "D100", 5 ).Content;// 读取D100-D104组成的ASCII字符串数据
+
+            // 写入操作，这里的D100可以替换成C100,A100,W100,H100效果时一样的
+            omronFinsNet.Write( "D100", (byte)0x33 );            // 写单个字节
+            omronFinsNet.Write( "D100", (short)12345 );          // 写双字节有符号
+            omronFinsNet.Write( "D100", (ushort)45678 );         // 写双字节无符号
+            omronFinsNet.Write( "D100", (uint)3456789123 );      // 写双字无符号
+            omronFinsNet.Write( "D100", 123.456f );              // 写单精度
+            omronFinsNet.Write( "D100", 1234556434534545L );     // 写大整数有符号
+            omronFinsNet.Write( "D100", 523434234234343UL );     // 写大整数无符号
+            omronFinsNet.Write( "D100", 123.456d );              // 写双精度
+            omronFinsNet.Write( "D100", "K123456789" );// 写ASCII字符串
+
+            OperateResult<byte[]> read = omronFinsNet.Read( "D100", 5 );
+            {
+                if (read.IsSuccess)
+                {
+                    // 此处需要根据实际的情况来自定义来处理复杂的数据
+                    short D100 = omronFinsNet.ByteTransform.TransInt16( read.Content, 0 );
+                    short D101 = omronFinsNet.ByteTransform.TransInt16( read.Content, 2 );
+                    short D102 = omronFinsNet.ByteTransform.TransInt16( read.Content, 4 );
+                    short D103 = omronFinsNet.ByteTransform.TransInt16( read.Content, 6 );
+                    short D104 = omronFinsNet.ByteTransform.TransInt16( read.Content, 7 );
+                }
+                else
+                {
+                    // 发生了异常
+                }
+            }
+        }        
     }
 }

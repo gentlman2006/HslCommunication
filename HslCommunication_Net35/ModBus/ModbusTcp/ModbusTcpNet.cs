@@ -89,14 +89,8 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         private OperateResult<byte[]> BuildReadCommandBase( byte code, string address, ushort count )
         {
-            var result = new OperateResult<byte[]>( );
-
             OperateResult<int> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
             byte[] buffer = new byte[12];
@@ -112,11 +106,11 @@ namespace HslCommunication.ModBus
             buffer[9] = (byte)(analysis.Content % 256);
             buffer[10] = (byte)(count / 256);
             buffer[11] = (byte)(count % 256);
-
-            result.Content = buffer;
-            result.IsSuccess = true;
-            return result;
+            
+            return OperateResult.CreateSuccessResult( buffer );
         }
+
+
 
         /// <summary>
         /// 生成一个读取线圈的指令头
@@ -158,14 +152,8 @@ namespace HslCommunication.ModBus
 
         private OperateResult<byte[]> BuildWriteOneCoilCommand( string address, bool value )
         {
-            var result = new OperateResult<byte[]>( );
-
             OperateResult<int> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
             byte[] buffer = new byte[12];
@@ -181,10 +169,8 @@ namespace HslCommunication.ModBus
             buffer[9] = (byte)(analysis.Content % 256);
             buffer[10] = (byte)(value ? 0xFF : 0x00);
             buffer[11] = 0x00;
-
-            result.Content = buffer;
-            result.IsSuccess = true;
-            return result;
+            
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
@@ -193,14 +179,8 @@ namespace HslCommunication.ModBus
 
         private OperateResult<byte[]> BuildWriteOneRegisterCommand( string address, byte[] data )
         {
-            var result = new OperateResult<byte[]>( );
-
             OperateResult<int> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
             byte[] buffer = new byte[12];
@@ -217,24 +197,17 @@ namespace HslCommunication.ModBus
             buffer[10] = data[1];
             buffer[11] = data[0];
 
-            result.Content = buffer;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
 
         private OperateResult<byte[]> BuildWriteCoilCommand( string address, bool[] values )
         {
-            var result = new OperateResult<byte[]>( );
             byte[] data = SoftBasic.BoolArrayToByte( values );
 
             OperateResult<int> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
             byte[] buffer = new byte[13 + data.Length];
@@ -254,22 +227,14 @@ namespace HslCommunication.ModBus
             buffer[12] = (byte)(data.Length);
             data.CopyTo( buffer, 13 );
 
-            result.Content = buffer;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
         private OperateResult<byte[]> BuildWriteRegisterCommand( string address, byte[] data )
         {
-            var result = new OperateResult<byte[]>( );
-
             OperateResult<int> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
             byte[] buffer = new byte[13 + data.Length];
@@ -288,10 +253,7 @@ namespace HslCommunication.ModBus
 
             buffer[12] = (byte)(data.Length);
             data.CopyTo( buffer, 13 );
-
-            result.Content = buffer;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
@@ -389,14 +351,7 @@ namespace HslCommunication.ModBus
         private OperateResult<byte[]> ReadModBusBase( byte code, string address, ushort length )
         {
             OperateResult<byte[]> command = BuildReadCommandBase( code, address, length );
-            if (!command.IsSuccess)
-            {
-                return new OperateResult<byte[]>( )
-                {
-                    ErrorCode = command.ErrorCode,
-                    Message = command.Message,
-                };
-            }
+            if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
             OperateResult<byte[]> resultBytes = CheckModbusTcpResponse( command.Content );
             if (resultBytes.IsSuccess)
@@ -420,13 +375,8 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的bool对象</returns>
         public OperateResult<bool> ReadCoil( string address )
         {
-            var result = new OperateResult<bool>( );
             var read = ReadModBusBase( ModbusInfo.ReadCoil, address, 1 );
-            if (!read.IsSuccess)
-            {
-                result.CopyErrorFromOther( read );
-                return result;
-            }
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool>( read );
 
             return GetBoolResultFromBytes( read );
         }
@@ -439,17 +389,10 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的bool数组对象</returns>
         public OperateResult<bool[]> ReadCoil( string address, ushort length )
         {
-            var result = new OperateResult<bool[]>( );
             var read = ReadModBusBase( ModbusInfo.ReadCoil, address, length );
-            if (!read.IsSuccess)
-            {
-                result.CopyErrorFromOther( read );
-                return result;
-            }
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read );
 
-            result.Content = SoftBasic.ByteToBoolArray( read.Content, length );
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( SoftBasic.ByteToBoolArray( read.Content, length ) );
         }
 
         /// <summary>
@@ -460,17 +403,10 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的bool数组对象</returns>
         public OperateResult<bool[]> ReadDiscrete( string address, ushort length )
         {
-            var result = new OperateResult<bool[]>( );
             var read = ReadModBusBase( ModbusInfo.ReadDiscrete, address, length );
-            if (!read.IsSuccess)
-            {
-                result.CopyErrorFromOther( read );
-                return result;
-            }
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read );
 
-            result.Content = SoftBasic.ByteToBoolArray( read.Content, length );
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( SoftBasic.ByteToBoolArray( read.Content, length ) );
         }
 
         /// <summary>
@@ -482,13 +418,7 @@ namespace HslCommunication.ModBus
         public OperateResult<byte[]> Read( string address, ushort length )
         {
             OperateResult<int> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                return new OperateResult<byte[]>( )
-                {
-                    Message = analysis.Message,
-                };
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             List<byte> lists = new List<byte>( );
             ushort alreadyFinished = 0;
@@ -496,32 +426,16 @@ namespace HslCommunication.ModBus
             {
                 ushort lengthTmp = (ushort)Math.Min( (length - alreadyFinished), 120 );
                 OperateResult<byte[]> read = ReadModBusBase( ModbusInfo.ReadRegister, (analysis.Content + alreadyFinished).ToString( ), lengthTmp );
-                if (!read.IsSuccess)
-                {
-                    return new OperateResult<byte[]>( )
-                    {
-                        ErrorCode = read.ErrorCode,
-                        Message = read.Message
-                    };
-                }
+                if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );
 
                 lists.AddRange( read.Content );
-
                 alreadyFinished += lengthTmp;
             }
 
             return OperateResult.CreateSuccessResult( lists.ToArray( ) );
         }
-
-        /// <summary>
-        /// 读取指定地址的byte数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
-        /// <returns>带有成功标志的byte数据</returns>
-        public OperateResult<byte> ReadByte( string address )
-        {
-            return GetByteResultFromBytes( Read( address, 1 ) );
-        }
+        
+        
 
 
         /// <summary>
@@ -531,7 +445,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的short数据</returns>
         public OperateResult<short> ReadInt16( string address )
         {
-            return GetInt16ResultFromBytes( Read( address, 2 ) );
+            return GetInt16ResultFromBytes( Read( address, 1 ) );
         }
 
 
@@ -542,7 +456,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的ushort数据</returns>
         public OperateResult<ushort> ReadUInt16( string address )
         {
-            return GetUInt16ResultFromBytes( Read( address, 2 ) );
+            return GetUInt16ResultFromBytes( Read( address, 1 ) );
         }
 
         /// <summary>
@@ -552,7 +466,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的int数据</returns>
         public OperateResult<int> ReadInt32( string address )
         {
-            return GetInt32ResultFromBytes( Read( address, 4 ) );
+            return GetInt32ResultFromBytes( Read( address, 2 ) );
         }
 
         /// <summary>
@@ -562,7 +476,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的uint数据</returns>
         public OperateResult<uint> ReadUInt32( string address )
         {
-            return GetUInt32ResultFromBytes( Read( address, 4 ) );
+            return GetUInt32ResultFromBytes( Read( address, 2 ) );
         }
 
         /// <summary>
@@ -572,7 +486,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的float数据</returns>
         public OperateResult<float> ReadFloat( string address )
         {
-            return GetSingleResultFromBytes( Read( address, 4 ) );
+            return GetSingleResultFromBytes( Read( address, 2 ) );
         }
 
         /// <summary>
@@ -582,7 +496,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的long数据</returns>
         public OperateResult<long> ReadInt64( string address )
         {
-            return GetInt64ResultFromBytes( Read( address, 8 ) );
+            return GetInt64ResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
@@ -592,7 +506,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的ulong数据</returns>
         public OperateResult<ulong> ReadUInt64( string address )
         {
-            return GetUInt64ResultFromBytes( Read( address, 8 ) );
+            return GetUInt64ResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
@@ -602,7 +516,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的double数据</returns>
         public OperateResult<double> ReadDouble( string address )
         {
-            return GetDoubleResultFromBytes( Read( address, 8 ) );
+            return GetDoubleResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>

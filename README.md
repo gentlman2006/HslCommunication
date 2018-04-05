@@ -55,6 +55,8 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 * [文件管理引擎](http://www.cnblogs.com/dathlin/p/7746113.html)
 * [异步网络通讯功能](http://www.cnblogs.com/dathlin/p/8097897.html)
 * [三菱及西门子PLC访问](http://www.cnblogs.com/dathlin/p/7469679.html)
+* [西门子PLC访问](http://www.cnblogs.com/dathlin/p/8685855.html)
+* [欧姆龙PLC访问](http://www.cnblogs.com/dathlin/p/8723961.html)
 * [邮件功能使用](http://www.cnblogs.com/dathlin/p/8463613.html)
 * [流水号生成器](http://www.cnblogs.com/dathlin/p/7811489.html)
 * [软件注册码功能](http://www.cnblogs.com/dathlin/p/7832315.html)
@@ -69,6 +71,7 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 
 * [How to communicate with melsec plc](https://github.com/dathlin/HslCommunication/blob/master/docs/Melsec.md)
 * [How to communicate with siemens plc](https://github.com/dathlin/HslCommunication/blob/master/docs/Siemens.md)
+* [How to communicate with omron plc](https://github.com/dathlin/HslCommunication/blob/master/docs/Omron.md)
 * [How to communicate with modbus-tcp device](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusTcp.md)
 * [How to build you own modbus-tcp server](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusServer.md)
 

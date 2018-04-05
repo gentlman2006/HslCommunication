@@ -307,11 +307,7 @@ namespace HslCommunication.Profinet.Omron
         {
             var result = new OperateResult<byte[]>( );
             var analysis = AnalysisAddress( address, isBit );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             byte[] _PLCCommand = new byte[8];
             _PLCCommand[0] = 0x01;    // 读取存储区数据
@@ -354,11 +350,7 @@ namespace HslCommunication.Profinet.Omron
         {
             var result = new OperateResult<byte[]>( );
             var analysis = AnalysisAddress( address, isBit );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             byte[] _PLCCommand = new byte[8 + value.Length];
             _PLCCommand[0] = 0x01;    // 读取存储区数据
@@ -454,6 +446,7 @@ namespace HslCommunication.Profinet.Omron
         /// <returns></returns>
         protected override OperateResult InitilizationOnConnect( Socket socket )
         {
+            // handSingle就是握手信号字节
             OperateResult<byte[], byte[]> read = ReadFromCoreServerBase( socket, handSingle );
             if (!read.IsSuccess) return read;
             
@@ -493,31 +486,19 @@ namespace HslCommunication.Profinet.Omron
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<byte[]> Read( string address, ushort length )
         {
-            var result = new OperateResult<byte[]>( );
             //获取指令
             var command = BuildReadCommand( address, length, false );
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
             // 核心数据交互
             OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
-            if(!read.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if(!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );
 
             // 数据有效性分析
             OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, true );
-            if(!valid.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if(!valid.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( valid );
 
+            // 读取到了正确的数据
             return OperateResult.CreateSuccessResult( valid.Content );
         }
 
@@ -531,32 +512,19 @@ namespace HslCommunication.Profinet.Omron
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<bool[]> ReadBool( string address, ushort length )
         {
-            var result = new OperateResult<bool[]>( );
-
             //获取指令
             var command = BuildReadCommand( address, length, true );
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!command.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( command );
 
             // 核心数据交互
             OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
-            if (!read.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read );
 
             // 数据有效性分析
             OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, true );
-            if (!valid.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!valid.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( valid );
 
+            // 返回正确的数据信息
             return OperateResult.CreateSuccessResult( valid.Content.Select( m => m != 0x00 ? true : false ).ToArray( ) );
         }
 
@@ -687,32 +655,19 @@ namespace HslCommunication.Profinet.Omron
         /// <returns>结果</returns>
         public OperateResult Write( string address, byte[] value )
         {
-            OperateResult result = new OperateResult( );
-
             //获取指令
             var command = BuildWriteCommand( address, value, false );
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!command.IsSuccess) return OperateResult.CreateFailedResult( command );
 
             // 核心数据交互
             OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
-            if (!read.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult( read );
 
             // 数据有效性分析
             OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, false );
-            if (!valid.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!valid.IsSuccess) return OperateResult.CreateFailedResult( valid );
 
+            // 成功
             return OperateResult.CreateSuccessResult( ) ;
         }
 
@@ -806,28 +761,17 @@ namespace HslCommunication.Profinet.Omron
 
             //获取指令
             var command = BuildWriteCommand( address, values.Select( m => m ? (byte)0x01 : (byte)0x00 ).ToArray( ), true );
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!command.IsSuccess) return OperateResult.CreateFailedResult( command );
 
             // 核心数据交互
             OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
-            if (!read.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult( read );
 
             // 数据有效性分析
             OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, false );
-            if (!valid.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!valid.IsSuccess) return OperateResult.CreateFailedResult( valid );
 
+            // 写入成功
             return OperateResult.CreateSuccessResult( );
         }
 
