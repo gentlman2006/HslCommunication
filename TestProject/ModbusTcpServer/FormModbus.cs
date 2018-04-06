@@ -102,6 +102,8 @@ namespace ModbusTcpServer
 
         private void BusTcpServer_OnDataReceived( byte[] modbus )
         {
+            if (!checkBox1.Checked) return;
+
             if (InvokeRequired)
             {
                 BeginInvoke( new Action<byte[]>( BusTcpServer_OnDataReceived ), modbus );
@@ -119,7 +121,7 @@ namespace ModbusTcpServer
         {
             if(InvokeRequired)
             {
-                BeginInvoke( new Action<object, HslCommunication.LogNet.HslEventArgs>( LogNet_BeforeSaveToFile ), sender, e );
+                Invoke( new Action<object, HslCommunication.LogNet.HslEventArgs>( LogNet_BeforeSaveToFile ), sender, e );
                 return;
             }
 

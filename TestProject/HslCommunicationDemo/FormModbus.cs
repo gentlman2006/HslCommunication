@@ -476,15 +476,23 @@ namespace HslCommunicationDemo
 
         #region 压力测试
 
+        // 共分两种测试，一种是建立1000个连接，第二种是一个连接的重复数据请求
+        // 第一种参照PressureTest1( )
+        // 第二种参照PressureTest2( )
+
         private ToolTip toolTip;
         private void button3_Click( object sender, EventArgs e )
+        {
+            PressureTest1( );
+        }
+
+        private void PressureTest1( )
         {
             Thread thread = new Thread( new ThreadStart( PressureTest ) );
             thread.IsBackground = true;
             thread.Start( );
             button3.Enabled = false;
         }
-
 
         private void PressureTest()
         {
@@ -516,10 +524,47 @@ namespace HslCommunicationDemo
                 clients[i].ConnectClose( );
             }
 
-            BeginInvoke( new Action( () =>
+            Invoke( new Action( () =>
              {
                  button3.Enabled = true;
              } ) );
+        }
+
+
+        private int thread_status = 0;
+        private DateTime thread_time_start = DateTime.Now;
+        private void PressureTest2( )
+        {
+            thread_status = 3;
+            thread_time_start = DateTime.Now;
+            new Thread( new ThreadStart( thread_test2 ) ) { IsBackground = true, }.Start( );
+            new Thread( new ThreadStart( thread_test2 ) ) { IsBackground = true, }.Start( );
+            new Thread( new ThreadStart( thread_test2 ) ) { IsBackground = true, }.Start( );
+            button3.Enabled = false;
+        }
+
+        private void thread_test2()
+        {
+            int count = 3000;
+            while (count > 0)
+            {
+                busTcpClient.Write( "100", 100 );
+                count--;
+            }
+            thread_end( );
+        }
+
+        private void thread_end( )
+        {
+            if (Interlocked.Decrement( ref thread_status ) == 0)
+            {
+                // 执行完成
+                Invoke( new Action( ( ) =>
+                {
+                    button3.Enabled = true;
+                    MessageBox.Show( "耗时：" + (DateTime.Now - thread_time_start).TotalSeconds );
+                } ) );
+            }
         }
 
         #endregion
