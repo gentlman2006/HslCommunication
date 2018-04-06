@@ -20,7 +20,7 @@ namespace HslCommunicationDemo
             InitializeComponent( );
             omronFinsNet = new OmronFinsNet( );
             omronFinsNet.ConnectTimeOut = 2000;
-            omronFinsNet.LogNet = new HslCommunication.LogNet.LogNetSingle( "omron.log.txt" );
+            // omronFinsNet.LogNet = new HslCommunication.LogNet.LogNetSingle( "omron.log.txt" );
         }
 
 
