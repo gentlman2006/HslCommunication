@@ -117,26 +117,26 @@ namespace TestTool.TestForm
         private void userButton21_Click(object sender, EventArgs e)
         {
             // X100-X10F读取显示
-            OperateResult<byte[]> read = melsec_net.Read("X200", 16);
+            OperateResult<bool[]> read = melsec_net.ReadBool("X200", 16);
             if (read.IsSuccess)
             {
                 // 成功读取，True代表通，False代表不通
-                bool X200 = read.Content[0] == 1;
-                bool X201 = read.Content[1] == 1;
-                bool X202 = read.Content[2] == 1;
-                bool X203 = read.Content[3] == 1;
-                bool X204 = read.Content[4] == 1;
-                bool X205 = read.Content[5] == 1;
-                bool X206 = read.Content[6] == 1;
-                bool X207 = read.Content[7] == 1;
-                bool X208 = read.Content[8] == 1;
-                bool X209 = read.Content[9] == 1;
-                bool X20A = read.Content[10] == 1;
-                bool X20B = read.Content[11] == 1;
-                bool X20C = read.Content[12] == 1;
-                bool X20D = read.Content[13] == 1;
-                bool X20E = read.Content[14] == 1;
-                bool X20F = read.Content[15] == 1;
+                bool X200 = read.Content[0];
+                bool X201 = read.Content[1];
+                bool X202 = read.Content[2];
+                bool X203 = read.Content[3];
+                bool X204 = read.Content[4];
+                bool X205 = read.Content[5];
+                bool X206 = read.Content[6];
+                bool X207 = read.Content[7];
+                bool X208 = read.Content[8];
+                bool X209 = read.Content[9];
+                bool X20A = read.Content[10];
+                bool X20B = read.Content[11];
+                bool X20C = read.Content[12];
+                bool X20D = read.Content[13];
+                bool X20E = read.Content[14];
+                bool X20F = read.Content[15];
                 // 显示
             }
             else
@@ -255,13 +255,6 @@ namespace TestTool.TestForm
                 TextBoxAppendStringLine("D102:" + D102);
                 TextBoxAppendStringLine("D103:" + D103);
                 TextBoxAppendStringLine("D104:" + D104);
-                //================================================================================
-                //这两种方式一样的，如果是无符号的，则使用 ushort D100 = BitConverter.ToUInt16(read.Content, 0);//0-65535
-                //short D100 = BitConverter.ToInt16(read.Content, 0);
-                //short D101 = BitConverter.ToInt16(read.Content, 2);
-                //short D102 = BitConverter.ToInt16(read.Content, 4);
-                //short D103 = BitConverter.ToInt16(read.Content, 6);
-                //short D104 = BitConverter.ToInt16(read.Content, 8);
             }
             else
             {
@@ -271,56 +264,41 @@ namespace TestTool.TestForm
 
         }
 
-        private void userButton4_Click(object sender, EventArgs e)
+        private void userButton4_Click( object sender, EventArgs e )
         {
-            float[] values = new float[] { 123.456f };
-            byte[] buffer = new byte[values.Length * 4];
-            for (int i = 0; i < values.Length; i++)
-            {
-                BitConverter.GetBytes(values[i]).CopyTo(buffer, i * 4);
-            }
-            OperateResult write = melsec_net.Write("D1000", buffer);
-            if (write.IsSuccess)
-            {
-                MessageBox.Show("写入成功！");
-            }
-            else
-            {
-                MessageBox.Show("写入失败！" + write.ToMessageShowString());
-            }
 
-
-
-
-            // short[] values = new short[5] { 1335, 8765, 1234, 4567,-2563 };
+            short[] values = new short[5] { 1335, 8765, 1234, 4567, -2563 };
             // D100为1234,D101为8765,D102为1234,D103为4567,D104为-2563
-            write = melsec_net.Write("D6000", values);
+            OperateResult write = melsec_net.Write( "D6000", values );
             if (write.IsSuccess)
             {
                 //成功写入
-                TextBoxAppendStringLine("写入成功");
+                TextBoxAppendStringLine( "写入成功" );
             }
             else
             {
-                MessageBox.Show(write.ToMessageShowString());
+                MessageBox.Show( write.ToMessageShowString( ) );
             }
         }
 
 
-
-        #endregion
-
+        
 
 
 
+#endregion
 
 
 
 
-        #region 西门子篇二S7通讯协议读取
 
 
-        private SiemensS7Net siemensTcpNet = new SiemensS7Net( SiemensPLCS.S1200 )
+
+
+#region 西门子篇二S7通讯协议读取
+
+
+private SiemensS7Net siemensTcpNet = new SiemensS7Net( SiemensPLCS.S1200 )
         {
             IpAddress = "192.168.1.195",
         };
