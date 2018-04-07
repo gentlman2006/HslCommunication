@@ -293,8 +293,6 @@ namespace HslCommunication.Core.Net
         /// <returns>是否成功，如果成功，使用这个套接字</returns>
         private OperateResult<Socket> GetAvailableSocket( )
         {
-            var result = new OperateResult<Socket>( );
-
             if (IsPersistentConn)
             {
                 // 长连接模式
@@ -304,8 +302,7 @@ namespace HslCommunication.Core.Net
                     if (!connect.IsSuccess)
                     {
                         IsSocketError = true;
-                        result.CopyErrorFromOther( connect );
-                        return result;
+                        return OperateResult.CreateFailedResult<Socket>( connect );
                     }
                     else
                     {
