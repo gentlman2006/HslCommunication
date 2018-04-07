@@ -107,12 +107,27 @@ namespace HslCommunication
         /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
         /// </summary>
         /// <typeparam name="T">目标数据类型</typeparam>
-        /// <typeparam name="TOrigin">元数据类型</typeparam>
         /// <param name="result">之前的结果对象</param>
         /// <returns></returns>
         public static OperateResult<T> CreateFailedResult<T>( OperateResult result ) 
         {
             return new OperateResult<T>( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+        /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T1">目标数据类型一</typeparam>
+        /// <typeparam name="T2">目标数据类型二</typeparam>
+        /// <param name="result">之前的结果对象</param>
+        /// <returns></returns>
+        public static OperateResult<T1, T2> CreateFailedResult<T1, T2>( OperateResult result )
+        {
+            return new OperateResult<T1, T2>( )
             {
                 ErrorCode = result.ErrorCode,
                 Message = result.Message,

@@ -28,7 +28,7 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
-        #region Private Member
+        #region Protect Member
 
 
         #endregion
@@ -572,10 +572,7 @@ namespace HslCommunication.Core.Net
             if (!headResult.IsSuccess)
             {
                 hslTimeOut.IsSuccessful = true;
-                return new OperateResult<byte[], byte[]>( )
-                {
-                    Message = headResult.Message
-                };
+                return OperateResult.CreateFailedResult<byte[],byte[]>( headResult );
             }
             hslTimeOut.IsSuccessful = true;
             
@@ -592,24 +589,12 @@ namespace HslCommunication.Core.Net
             int contentLength = BitConverter.ToInt32( headResult.Content, HslProtocol.HeadByteLength - 4 );
             // 接收内容
             OperateResult<byte[]> contentResult = Receive( socket, contentLength );
-            if (!contentResult.IsSuccess)
-            {
-                return new OperateResult<byte[], byte[]>( )
-                {
-                    Message = contentResult.Message
-                };
-            }
-            
+            if (!contentResult.IsSuccess) return OperateResult.CreateFailedResult<byte[], byte[]>( contentResult );
+
             // 返回成功信息
             OperateResult checkResult = SendLong( socket, HslProtocol.HeadByteLength + contentLength );
-            if(!checkResult.IsSuccess)
-            {
-                return new OperateResult<byte[], byte[]>( )
-                {
-                    Message = checkResult.Message
-                };
-            }
-            
+            if(!checkResult.IsSuccess) return OperateResult.CreateFailedResult<byte[], byte[]>( checkResult );
+
             byte[] head = headResult.Content;
             byte[] content = contentResult.Content;
             content = HslProtocol.CommandAnalysis( head, content );
@@ -624,14 +609,8 @@ namespace HslCommunication.Core.Net
         protected OperateResult<int, string> ReceiveStringContentFromSocket( Socket socket )
         {
             OperateResult<byte[], byte[]> receive = ReceiveAndCheckBytes( socket, 10000 );
-            if (!receive.IsSuccess)
-            {
-                return new OperateResult<int, string>( )
-                {
-                    Message = receive.Message
-                };
-            }
-            
+            if (!receive.IsSuccess) return OperateResult.CreateFailedResult<int, string>( receive );
+
             // 检查是否是字符串信息
             if (BitConverter.ToInt32( receive.Content1, 0 ) != HslProtocol.ProtocolUserString)
             {
@@ -658,13 +637,7 @@ namespace HslCommunication.Core.Net
         protected OperateResult<int, byte[]> ReceiveBytesContentFromSocket( Socket socket )
         {
             OperateResult<byte[], byte[]> receive = ReceiveAndCheckBytes( socket, 10000 );
-            if (!receive.IsSuccess)
-            {
-                return new OperateResult<int, byte[]>( )
-                {
-                    Message = receive.Message
-                };
-            }
+            if (!receive.IsSuccess) return OperateResult.CreateFailedResult<int, byte[]>( receive );
 
             // 检查是否是字节信息
             if (BitConverter.ToInt32( receive.Content1, 0 ) != HslProtocol.ProtocolUserBytes)
@@ -691,13 +664,7 @@ namespace HslCommunication.Core.Net
         {
             // 先接收文件头信息
             OperateResult<int, string> receiveString = ReceiveStringContentFromSocket( socket );
-            if (!receiveString.IsSuccess)
-            {
-                return new OperateResult<FileBaseInfo>( )
-                {
-                    Message = receiveString.Message
-                };
-            }
+            if (!receiveString.IsSuccess) return OperateResult.CreateFailedResult<FileBaseInfo>( receiveString );
             
             // 判断文件是否存在
             if (receiveString.Content1 == 0)
@@ -925,7 +892,7 @@ namespace HslCommunication.Core.Net
         /// <returns></returns>
         protected OperateResult SendStream( Socket socket, Stream stream, long receive, Action<long, long> report, bool reportByPercent )
         {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[102400]; // 100K的数据缓存池
             long SendTotal = 0;
             long percent = 0;
             stream.Position = 0;

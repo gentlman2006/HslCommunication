@@ -553,7 +553,6 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="stream">数据流</param>
         /// <param name="buffer">缓冲区</param>
-        /// <param name="length">需要接收的长度</param>
         /// <returns>带有成功标志的读取数据长度</returns>
         protected OperateResult<int> ReadStream( Stream stream, byte[] buffer)
         {
