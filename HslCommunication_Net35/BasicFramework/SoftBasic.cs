@@ -342,7 +342,7 @@ namespace HslCommunication.BasicFramework
         /// 获取一个异常的完整错误信息
         /// </summary>
         /// <param name="ex">异常对象</param>
-        /// <returns></returns>
+        /// <returns>完整的字符串数据</returns>
         /// <exception cref="NullReferenceException"></exception>
         public static string GetExceptionMessage(Exception ex)
         {
@@ -356,7 +356,7 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="extraMsg">额外的信息</param>
         /// <param name="ex">异常对象</param>
-        /// <returns></returns>
+        /// <returns>完整的字符串数据</returns>
         /// <exception cref="NullReferenceException"></exception>
         public static string GetExceptionMessage(string extraMsg, Exception ex)
         {

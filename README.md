@@ -12,18 +12,17 @@
 </pre>
 
 # HslCommunication Library 
-![Build status](https://img.shields.io/badge/Build-Failed-red.svg) [![NuGet Status](https://img.shields.io/nuget/v/HslCommunication.svg)](https://www.nuget.org/packages/HslCommunication/) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8) [![NetFramework](https://img.shields.io/badge/Language-C%23%207.0-orange.svg)](https://blogs.msdn.microsoft.com/dotnet/2016/08/24/whats-new-in-csharp-7-0/) [![Visual Studio](https://img.shields.io/badge/Visual%20Studio-2017-red.svg)](https://www.visualstudio.com/zh-hans/) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
+![Build status](https://img.shields.io/badge/Build-Success-green.svg) [![NuGet Status](https://img.shields.io/nuget/v/HslCommunication.svg)](https://www.nuget.org/packages/HslCommunication/) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8) [![NetFramework](https://img.shields.io/badge/Language-C%23%207.0-orange.svg)](https://blogs.msdn.microsoft.com/dotnet/2016/08/24/whats-new-in-csharp-7-0/) [![Visual Studio](https://img.shields.io/badge/Visual%20Studio-2017-red.svg)](https://www.visualstudio.com/zh-hans/) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
 
 ## CopyRight
 本组件版权归Richard.Hu所有 [ (C) 2018 Richard.Hu, All Rights Reserved ]
 
 ## Version Declaration
-版本5的计划：
+Version 5.X 的计划：
 * 提升组件的稳定性，尤其是在高并发的情况下
-* 扩展其他的PLC或是设备通讯支持
+* 扩展其他的PLC和设备通讯支持
 * 文档手册的编写
 
-Current master branch is 5.0 pre, stable version review willow branch. 
 
 ## License
 使用请遵循LGPL-3.0协议说明，除了协议中已经规定的内容外，附加下面三个条款（与原协议如有冲突以附加条款为准）：
@@ -33,7 +32,7 @@ Current master branch is 5.0 pre, stable version review willow branch.
 * 源代码仅作为个人学习使用。
 
 ## Install From NuGet
-说明：NuGet为稳定版本，组件的使用必须从NuGet下载，此处发布的项目有可能为还没有通过编译的测试版，NuGet安装如下：
+说明：NuGet为稳定版本，支持在线升级，组件的使用最好从NuGet下载，此处发布的项目有可能为还没有通过编译的测试版，NuGet安装如下：
 
 Install-Package HslCommunication
 
@@ -78,18 +77,18 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 * [How to communicate with modbus-tcp device](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusTcp.md)
 * [How to build you own modbus-tcp server](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusServer.md)
 
-## Second Extensions Project
+## Second Extensions Project (内含几个Demo)
 * 基于本组件开发的一个CS架构的项目模版，该模版采用本组件进行开发，完成了账户管理，角色管理，个人文件管理，头像机制，自动升级，完善的日志等等功能。项目地址为：[https://github.com/dathlin/ClientServerProject](https://github.com/dathlin/ClientServerProject)
-
-* 基于本组件开发的一个Modbus Tcp测试工具，可以方便的测试客户端和服务端功能。[https://github.com/dathlin/ModBusTcpTools](https://github.com/dathlin/ModBusTcpTools)
-
-* 基于本组件开发的一个西门子PLC后台读取显示数据，并推送给在线客户端显示实时曲线的示例项目。[https://github.com/dathlin/RemoteMonitor](https://github.com/dathlin/RemoteMonitor)
-
-* 基于本组件开发的一个文件管理引擎，实现服务器端文件存储，客户端进行文件上传，下载，删除，查看文件信息等等。[https://github.com/dathlin/FileManagment](https://github.com/dathlin/FileManagment)
 
 * 基于本组件开发的一个局域网多人聊天的程序，支持在线客户端信息查看，服务器强制关闭客户端。[https://github.com/dathlin/NetChatRoom](https://github.com/dathlin/NetChatRoom)
 
-* 基于本组件开发的一个西门子，三菱，Modbus-Tcp的通讯测试工具，方便的进行读写测试，不需要额外的编写代码。[https://github.com/dathlin/HslCommunicationDemo](https://github.com/dathlin/HslCommunicationDemo)
+* 基于本组件开发的一个西门子PLC后台读取显示数据，并推送给在线客户端显示实时曲线的示例项目。[https://github.com/dathlin/RemoteMonitor](https://github.com/dathlin/RemoteMonitor)
+
+* **ModbusTcpServer项目** 基于本组件开发的一个Modbus Tcp服务器工具，可以方便的快速搭建一个性能可靠稳定的服务器。
+
+* **FileNetServer项目** 基于本组件开发的一个文件管理引擎，实现服务器端文件存储，支持客户端进行文件上传，下载，删除，查看文件信息等等。
+
+* **HslCommunicationDemo项目** 基于本组件开发的一个西门子，三菱，欧姆龙，Modbus-Tcp，SimplifyNet，ComplexNet，FileNet等的通讯测试工具，方便的进行读写测试，不需要额外的编写代码。
 
 ## Contribution
 热烈欢迎对本项目的代码提出改进意见，可以发起Pull Request，对于代码量贡献较多的小伙伴，会有额外的组件使用权，并在特别感谢里写明。
