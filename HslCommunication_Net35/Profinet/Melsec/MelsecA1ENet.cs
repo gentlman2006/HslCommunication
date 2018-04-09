@@ -374,6 +374,21 @@ namespace HslCommunication.Profinet.Melsec
         }
 
 
+
+        /// <summary>
+        /// 从三菱PLC中批量读取位软元件，返回读取结果
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<bool> ReadBool( string address )
+        {
+            OperateResult<bool[]> read = ReadBool( address, 1 );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool>( read );
+
+            return OperateResult.CreateSuccessResult<bool>( read.Content[0] );
+        }
+
+
         /// <summary>
         /// 读取三菱PLC中字软元件指定地址的short数据
         /// </summary>

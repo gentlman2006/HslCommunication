@@ -44,6 +44,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.button14 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
@@ -52,7 +53,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
-            this.button14 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -177,6 +177,7 @@
             this.button13.TabIndex = 3;
             this.button13.Text = "A-1E帧【二进制】";
             this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
             // 
             // button7
             // 
@@ -246,6 +247,17 @@
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "HslServer";
+            // 
+            // button14
+            // 
+            this.button14.Location = new System.Drawing.Point(15, 64);
+            this.button14.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(150, 32);
+            this.button14.TabIndex = 3;
+            this.button14.Text = "Complex Net";
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
             // button12
             // 
@@ -332,17 +344,6 @@
             this.button11.Text = "Fins Tcp";
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
-            // 
-            // button14
-            // 
-            this.button14.Location = new System.Drawing.Point(15, 64);
-            this.button14.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(150, 32);
-            this.button14.TabIndex = 3;
-            this.button14.Text = "Complex Net";
-            this.button14.UseVisualStyleBackColor = true;
-            this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
             // FormLoad
             // 

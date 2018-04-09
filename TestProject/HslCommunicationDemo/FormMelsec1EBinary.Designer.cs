@@ -100,6 +100,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -437,6 +438,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Controls.Add(this.label24);
             this.groupBox2.Controls.Add(this.label19);
             this.groupBox2.Controls.Add(this.button14);
@@ -849,6 +851,16 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(13, 192);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(184, 28);
+            this.button3.TabIndex = 22;
+            this.button3.Text = "压力测试，快速读写3000次";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // FormMelsec1EBinary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -960,5 +972,6 @@
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Button button3;
     }
 }

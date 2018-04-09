@@ -177,5 +177,15 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button13_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormMelsec1EBinary form = new FormMelsec1EBinary( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }
