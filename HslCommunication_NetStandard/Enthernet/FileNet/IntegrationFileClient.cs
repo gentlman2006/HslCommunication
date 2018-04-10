@@ -96,7 +96,6 @@ namespace HslCommunication.Enthernet
 
 
 
-
         #endregion
 
         #region Upload File
@@ -150,7 +149,6 @@ namespace HslCommunication.Enthernet
         {
             return UploadFileBase( stream, serverName, factory, group, id, fileTag, fileUpload, processReport );
         }
-
 
 
 
