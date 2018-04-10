@@ -45,6 +45,7 @@
             this.label17 = new System.Windows.Forms.Label();
             this.textBox12 = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.userCurve1 = new HslCommunication.Controls.UserCurve();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBox11 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -97,8 +98,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
-            this.userCurve1 = new HslCommunication.Controls.UserCurve();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -113,7 +114,7 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.button3);
+            this.panel1.Controls.Add(this.checkBox1);
             this.panel1.Controls.Add(this.textBox15);
             this.panel1.Controls.Add(this.label21);
             this.panel1.Controls.Add(this.button2);
@@ -130,16 +131,16 @@
             // 
             // textBox15
             // 
-            this.textBox15.Location = new System.Drawing.Point(517, 14);
+            this.textBox15.Location = new System.Drawing.Point(404, 14);
             this.textBox15.Name = "textBox15";
-            this.textBox15.Size = new System.Drawing.Size(141, 23);
+            this.textBox15.Size = new System.Drawing.Size(81, 23);
             this.textBox15.TabIndex = 7;
             this.textBox15.Text = "1";
             // 
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(463, 17);
+            this.label21.Location = new System.Drawing.Point(350, 17);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(44, 17);
             this.label21.TabIndex = 6;
@@ -148,7 +149,7 @@
             // button2
             // 
             this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(793, 11);
+            this.button2.Location = new System.Drawing.Point(875, 11);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(91, 28);
             this.button2.TabIndex = 5;
@@ -158,7 +159,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(696, 11);
+            this.button1.Location = new System.Drawing.Point(772, 11);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(91, 28);
             this.button1.TabIndex = 4;
@@ -168,16 +169,16 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(305, 14);
+            this.textBox2.Location = new System.Drawing.Point(250, 14);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(141, 23);
+            this.textBox2.Size = new System.Drawing.Size(76, 23);
             this.textBox2.TabIndex = 3;
             this.textBox2.Text = "502";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(251, 17);
+            this.label3.Location = new System.Drawing.Point(196, 17);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(56, 17);
             this.label3.TabIndex = 2;
@@ -187,7 +188,7 @@
             // 
             this.textBox1.Location = new System.Drawing.Point(62, 14);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(141, 23);
+            this.textBox1.Size = new System.Drawing.Size(128, 23);
             this.textBox1.TabIndex = 1;
             this.textBox1.Text = "192.168.0.100";
             // 
@@ -287,6 +288,17 @@
             this.label15.Size = new System.Drawing.Size(44, 17);
             this.label15.TabIndex = 4;
             this.label15.Text = "地址：";
+            // 
+            // userCurve1
+            // 
+            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.userCurve1.Location = new System.Drawing.Point(13, 82);
+            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userCurve1.Name = "userCurve1";
+            this.userCurve1.Size = new System.Drawing.Size(400, 189);
+            this.userCurve1.TabIndex = 0;
+            this.userCurve1.ValueMaxLeft = 200F;
+            this.userCurve1.ValueMaxRight = 200F;
             // 
             // groupBox4
             // 
@@ -427,6 +439,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Controls.Add(this.label19);
             this.groupBox2.Controls.Add(this.button14);
             this.groupBox2.Controls.Add(this.button15);
@@ -819,26 +832,27 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(507, 16);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(106, 21);
+            this.checkBox1.TabIndex = 9;
+            this.checkBox1.Text = "首地址从0开始";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(886, 11);
+            this.button3.Location = new System.Drawing.Point(24, 187);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(87, 28);
-            this.button3.TabIndex = 8;
-            this.button3.Text = "压力测试";
+            this.button3.Size = new System.Drawing.Size(184, 28);
+            this.button3.TabIndex = 23;
+            this.button3.Text = "压力测试，快速读写3000次";
             this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // userCurve1
-            // 
-            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.userCurve1.Location = new System.Drawing.Point(13, 82);
-            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userCurve1.Name = "userCurve1";
-            this.userCurve1.Size = new System.Drawing.Size(400, 189);
-            this.userCurve1.TabIndex = 0;
-            this.userCurve1.ValueMaxLeft = 200F;
-            this.userCurve1.ValueMaxRight = 200F;
+            this.button3.Click += new System.EventHandler(this.button4_Click);
             // 
             // FormModbus
             // 
@@ -949,6 +963,7 @@
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.TextBox textBox15;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button3;
     }
 }

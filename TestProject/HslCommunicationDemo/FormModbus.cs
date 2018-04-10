@@ -39,9 +39,7 @@ namespace HslCommunicationDemo
         {
             panel2.Enabled = false;
             userCurve1.SetLeftCurve( "A", new float[0], Color.Tomato );
-
-            toolTip = new ToolTip( );
-            toolTip.SetToolTip( button3, "压力测试，生成一千个客户端往服务器写数据，持续一分钟" );
+            
         }
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )
@@ -115,6 +113,7 @@ namespace HslCommunicationDemo
 
             busTcpClient?.ConnectClose( );
             busTcpClient = new ModbusTcpNet( textBox1.Text, port, station );
+            busTcpClient.AddressStartWithZero = checkBox1.Checked;
 
             try
             {
@@ -476,66 +475,19 @@ namespace HslCommunicationDemo
 
         #region 压力测试
 
-        // 共分两种测试，一种是建立1000个连接，第二种是一个连接的重复数据请求
-        // 第一种参照PressureTest1( )
-        // 第二种参照PressureTest2( )
-
-        private ToolTip toolTip;
-        private void button3_Click( object sender, EventArgs e )
+        private void button4_Click( object sender, EventArgs e )
         {
-            PressureTest1( );
+            PressureTest2( );
         }
-
-        private void PressureTest1( )
-        {
-            Thread thread = new Thread( new ThreadStart( PressureTest ) );
-            thread.IsBackground = true;
-            thread.Start( );
-            button3.Enabled = false;
-        }
-
-        private void PressureTest()
-        {
-            DateTime dateStart = DateTime.Now;
-
-            ModbusTcpNet[] clients = new ModbusTcpNet[1000];
-            for (int i = 0; i < clients.Length; i++)
-            {
-                clients[i] = new ModbusTcpNet( textBox1.Text, int.Parse( textBox2.Text ) );
-                clients[i].ConnectServer( );
-            }
-
-            while (true)
-            {
-                if ((DateTime.Now - dateStart).TotalSeconds > 60)
-                {
-                    break;
-                }
-
-                for (int i = 0; i < clients.Length; i++)
-                {
-                    clients[i].Write( (i * 4).ToString( ), (i * 4) );
-                }
-
-                System.Threading.Thread.Sleep( 100 );
-            }
-            for (int i = 0; i < clients.Length; i++)
-            {
-                clients[i].ConnectClose( );
-            }
-
-            Invoke( new Action( () =>
-             {
-                 button3.Enabled = true;
-             } ) );
-        }
-
 
         private int thread_status = 0;
+        private int failed = 0;
         private DateTime thread_time_start = DateTime.Now;
+        // 压力测试，开3个线程，每个线程进行读写操作，看使用时间
         private void PressureTest2( )
         {
             thread_status = 3;
+            failed = 0;
             thread_time_start = DateTime.Now;
             new Thread( new ThreadStart( thread_test2 ) ) { IsBackground = true, }.Start( );
             new Thread( new ThreadStart( thread_test2 ) ) { IsBackground = true, }.Start( );
@@ -543,12 +495,13 @@ namespace HslCommunicationDemo
             button3.Enabled = false;
         }
 
-        private void thread_test2()
+        private void thread_test2( )
         {
-            int count = 3000;
+            int count = 500;
             while (count > 0)
             {
-                busTcpClient.Write( "100", 100 );
+                if (!busTcpClient.Write( "100", (short)1234 ).IsSuccess) failed++;
+                if (!busTcpClient.ReadInt16( "100" ).IsSuccess) failed++;
                 count--;
             }
             thread_end( );
@@ -562,11 +515,11 @@ namespace HslCommunicationDemo
                 Invoke( new Action( ( ) =>
                 {
                     button3.Enabled = true;
-                    MessageBox.Show( "耗时：" + (DateTime.Now - thread_time_start).TotalSeconds );
+                    MessageBox.Show( "耗时：" + (DateTime.Now - thread_time_start).TotalSeconds + Environment.NewLine + "失败次数：" + failed );
                 } ) );
             }
         }
-
+        
         #endregion
 
         #region Test Function
@@ -607,6 +560,7 @@ namespace HslCommunicationDemo
         }
 
         #endregion
+
 
     }
 }
