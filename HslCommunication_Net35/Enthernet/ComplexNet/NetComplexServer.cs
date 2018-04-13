@@ -15,123 +15,57 @@ namespace HslCommunication.Enthernet
     /// </summary>
     public class NetComplexServer : NetworkServerBase
     {
-        #region 构造方法块
+        #region Constructor
 
         /// <summary>
         /// 实例化一个网络服务器类对象
         /// </summary>
         public NetComplexServer( )
         {
-            AsyncCoordinator = new HslAsyncCoordinator( new Action( CalculateOnlineClients ) );
+            appSessions = new List<AppSession>( );
+            lockSessions = new SimpleHybirdLock( );
         }
-
 
         #endregion
 
-        #region 基本属性块
+        #region Private Member
+        
+        private int connectMaxClient = 1000;                                   // 允许同时登录的最大客户端数量
+        private List<AppSession> appSessions = null;                           // 所有客户端连接的对象信息   
+        private SimpleHybirdLock lockSessions = null;                          // 对象列表操作的锁
 
+        #endregion
 
-        private int m_Connect_Max = 1000;
-
-
+        #region Public Properties
+        
         /// <summary>
         /// 所支持的同时在线客户端的最大数量，商用限制1000个，最小10个
         /// </summary>
         public int ConnectMax
         {
-            get { return m_Connect_Max; }
+            get { return connectMaxClient; }
             set
             {
                 if (value >= 10 && value < 1001)
                 {
-                    m_Connect_Max = value;
+                    connectMaxClient = value;
                 }
             }
         }
-
-        /// <summary>
-        /// 客户端在线信息显示的格式化文本，如果自定义，必须#开头，
-        /// 示例："#IP:{0} Name:{1}"
-        /// </summary>
-        public string FormatClientOnline { get; set; } = "#IP:{0} Name:{1}";
-
-
-        /// <summary>
-        /// 客户端在线信息缓存
-        /// </summary>
-        private string m_AllClients = string.Empty;
-
-
-        #region 高性能乐观并发模型的上下线控制
-
-        private void CalculateOnlineClients( )
-        {
-            StringBuilder builder = new StringBuilder( );
-
-            HybirdLockSockets.Enter( );
-            for (int i = 0; i < All_sockets_connect.Count; i++)
-            {
-
-                builder.Append( string.Format( FormatClientOnline, All_sockets_connect[i].IpAddress
-                    , All_sockets_connect[i].LoginAlias ) );
-            }
-            HybirdLockSockets.Leave( );
-
-
-            if (builder.Length > 0)
-            {
-                m_AllClients = builder.Remove( 0, 1 ).ToString( );
-            }
-            else
-            {
-                m_AllClients = string.Empty;
-            }
-            // 触发状态变更
-            AllClientsStatusChange?.Invoke( m_AllClients );
-        }
-
-        /// <summary>
-        /// 一个计算上线下线的高性能缓存对象
-        /// </summary>
-        private HslAsyncCoordinator AsyncCoordinator { get; set; }
-
-
-
-
-        #endregion
-
-
-
-
-
-        /// <summary>
-        /// 计算所有客户端在线的信息
-        /// </summary>
-
+        
         /// <summary>
         /// 获取或设置服务器是否记录客户端上下线信息
         /// </summary>
         public bool IsSaveLogClientLineChange { get; set; } = true;
+
         /// <summary>
         /// 所有在线客户端的数量
         /// </summary>
-        public int ClientCount => All_sockets_connect.Count;
-
-        /// <summary>
-        /// 所有的客户端连接的核心对象
-        /// </summary>
-        private List<AppSession> All_sockets_connect { get; set; } = new List<AppSession>( );
-
-
-        /// <summary>
-        /// 客户端数组操作的线程混合锁
-        /// </summary>
-        private SimpleHybirdLock HybirdLockSockets = new SimpleHybirdLock( );
+        public int ClientCount => appSessions.Count;
 
         #endregion
 
-        #region 启动停止块
-
+        #region NetworkServerBase Override
 
         /// <summary>
         /// 初始化操作
@@ -159,66 +93,90 @@ namespace HslCommunication.Enthernet
             AcceptByte = null;
 
             //关闭所有的网络
-            All_sockets_connect.ForEach( m => m.WorkSocket?.Close( ) );
+            appSessions.ForEach( m => m.WorkSocket?.Close( ) );
             base.CloseAction( );
+        }
+
+
+        /// <summary>
+        /// 异常下线
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="ex"></param>
+        internal override void SocketReceiveException( AppSession session, Exception ex )
+        {
+            if (ex.Message.Contains( StringResources.SocketRemoteCloseException ))
+            {
+                //异常掉线
+                TcpStateDownLine( session, false );
+            }
+        }
+
+
+        /// <summary>
+        /// 正常下线
+        /// </summary>
+        /// <param name="session"></param>
+        internal override void AppSessionRemoteClose( AppSession session )
+        {
+            TcpStateDownLine( session, true );
         }
 
 
 
         #endregion
 
-        #region 客户端上下线块
+        #region Client Online Offline
 
         private void TcpStateUpLine( AppSession state )
         {
-            HybirdLockSockets.Enter( );
-            All_sockets_connect.Add( state );
-            HybirdLockSockets.Leave( );
+            lockSessions.Enter( );
+            appSessions.Add( state );
+            lockSessions.Leave( );
 
             // 提示上线
             ClientOnline?.Invoke( state );
+
+            AllClientsStatusChange?.Invoke( ClientCount );
             // 是否保存上线信息
             if (IsSaveLogClientLineChange)
             {
-                LogNet?.WriteInfo( ToString(), "IP:" + state.IpAddress + " Name:" + state?.LoginAlias + " " + StringResources.NetClientOnline );
+                LogNet?.WriteInfo( ToString( ), $"[{state.IpEndPoint}] Name:{ state?.LoginAlias } { StringResources.NetClientOnline }" );
             }
-            // 计算客户端在线情况
-            AsyncCoordinator.StartOperaterInfomation( );
         }
 
         private void TcpStateClose( AppSession state )
         {
-            state?.WorkSocket.Close( );
+            state?.WorkSocket?.Close( );
         }
 
-        private void TcpStateDownLine( AppSession state, bool is_regular )
+        private void TcpStateDownLine( AppSession state, bool is_regular, bool logSave = true)
         {
-            HybirdLockSockets.Enter( );
-            All_sockets_connect.Remove( state );
-            HybirdLockSockets.Leave( );
+            lockSessions.Enter( );
+            appSessions.Remove( state );
+            lockSessions.Leave( );
             // 关闭连接
             TcpStateClose( state );
             // 判断是否正常下线
             string str = is_regular ? StringResources.NetClientOffline : StringResources.NetClientBreak;
             ClientOffline?.Invoke( state, str );
+            AllClientsStatusChange?.Invoke( ClientCount );
             // 是否保存上线信息
-            if (IsSaveLogClientLineChange)
+            if (IsSaveLogClientLineChange && logSave)
             {
-                LogNet?.WriteInfo( ToString(), "IP:" + state.IpAddress + " Name:" + state?.LoginAlias + " " + str );
+                LogNet?.WriteInfo( ToString(), $"[{state.IpEndPoint}] Name:{ state?.LoginAlias } { str }" );
             }
-            // 计算客户端在线情况
-            AsyncCoordinator.StartOperaterInfomation( );
         }
 
         #endregion
 
-        #region 事件委托块
+        #region Event Handle
 
 
         /// <summary>
         /// 客户端的上下限状态变更时触发，仅作为在线客户端识别
         /// </summary>
-        public event Action<string> AllClientsStatusChange;
+        public event Action<int> AllClientsStatusChange;
 
         /// <summary>
         /// 当客户端上线的时候，触发此事件
@@ -237,12 +195,12 @@ namespace HslCommunication.Enthernet
         /// </summary>
         public event Action<AppSession, NetHandle, byte[]> AcceptByte;
 
-
-
+        
 
         #endregion
 
-        #region 请求接入块
+        #region Login Server
+
         /// <summary>
         /// 登录后的处理方法
         /// </summary>
@@ -252,7 +210,7 @@ namespace HslCommunication.Enthernet
             if (obj is Socket socket)
             {
                 // 判断连接数是否超出规定
-                if (All_sockets_connect.Count > ConnectMax)
+                if (appSessions.Count > ConnectMax)
                 {
                     socket?.Close( );
                     LogNet?.WriteWarn( ToString(), StringResources.NetClientFull );
@@ -262,14 +220,8 @@ namespace HslCommunication.Enthernet
                 // 接收用户别名并验证令牌
                 OperateResult result = new OperateResult( );
                 OperateResult<int, string> readResult = ReceiveStringContentFromSocket( socket );
-                if (!readResult.IsSuccess)
-                {
-                    socket?.Close( );
-                    return;
-                }
-
-
-
+                if (!readResult.IsSuccess) return;
+                
                 // 登录成功
                 AppSession session = new AppSession( )
                 {
@@ -306,7 +258,7 @@ namespace HslCommunication.Enthernet
                         session.BytesHead.Length - session.AlreadyReceivedHead, SocketFlags.None,
                         new AsyncCallback( HeadBytesReceiveCallback ), session );
                     TcpStateUpLine( session );
-                    Thread.Sleep( 500 );//留下一些时间进行反应
+                    Thread.Sleep( 100 );//留下一些时间进行反应
                 }
                 catch (Exception ex)
                 {
@@ -321,36 +273,8 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
-        #region 异步接收发送块
-
-        /// <summary>
-        /// 异常下线
-        /// </summary>
-        /// <param name="session"></param>
-        /// <param name="ex"></param>
-        internal override void SocketReceiveException( AppSession session, Exception ex )
-        {
-            if (ex.Message.Contains( StringResources.SocketRemoteCloseException ))
-            {
-                //异常掉线
-                TcpStateDownLine( session, false );
-            }
-        }
-
-
-        /// <summary>
-        /// 正常下线
-        /// </summary>
-        /// <param name="session"></param>
-        internal override void AppSessionRemoteClose( AppSession session )
-        {
-            TcpStateDownLine( session, true );
-        }
-
-
-
-
-
+        #region SendAsync Support
+        
         /// <summary>
         /// 服务器端用于数据发送文本的方法
         /// </summary>
@@ -385,9 +309,9 @@ namespace HslCommunication.Enthernet
         /// <param name="str">需要传送的实际的数据</param>
         public void SendAllClients( NetHandle customer, string str )
         {
-            for (int i = 0; i < All_sockets_connect.Count; i++)
+            for (int i = 0; i < appSessions.Count; i++)
             {
-                Send( All_sockets_connect[i], customer, str );
+                Send( appSessions[i], customer, str );
             }
         }
 
@@ -398,9 +322,9 @@ namespace HslCommunication.Enthernet
         /// <param name="data">需要群发客户端的字节数据</param>
         public void SendAllClients( NetHandle customer, byte[] data )
         {
-            for (int i = 0; i < All_sockets_connect.Count; i++)
+            for (int i = 0; i < appSessions.Count; i++)
             {
-                Send( All_sockets_connect[i], customer, data );
+                Send( appSessions[i], customer, data );
             }
         }
 
@@ -412,11 +336,11 @@ namespace HslCommunication.Enthernet
         /// <param name="str">需要传送的实际的数据</param>
         public void SendClientByAlias( string Alias, NetHandle customer, string str )
         {
-            for (int i = 0; i < All_sockets_connect.Count; i++)
+            for (int i = 0; i < appSessions.Count; i++)
             {
-                if (All_sockets_connect[i].LoginAlias == Alias)
+                if (appSessions[i].LoginAlias == Alias)
                 {
-                    Send( All_sockets_connect[i], customer, str );
+                    Send( appSessions[i], customer, str );
                 }
             }
         }
@@ -430,11 +354,11 @@ namespace HslCommunication.Enthernet
         /// <param name="data">需要传送的实际的数据</param>
         public void SendClientByAlias( string Alias, NetHandle customer, byte[] data )
         {
-            for (int i = 0; i < All_sockets_connect.Count; i++)
+            for (int i = 0; i < appSessions.Count; i++)
             {
-                if (All_sockets_connect[i].LoginAlias == Alias)
+                if (appSessions[i].LoginAlias == Alias)
                 {
-                    Send( All_sockets_connect[i], customer, data );
+                    Send( appSessions[i], customer, data );
                 }
             }
         }
@@ -442,7 +366,7 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
-        #region 数据中心处理块
+        #region DataProcessingCenter
 
         /// <summary>
         /// 数据处理中心
@@ -496,18 +420,18 @@ namespace HslCommunication.Enthernet
 
                 try
                 {
-                    for (int i = All_sockets_connect.Count - 1; i >= 0; i--)
+                    for (int i = appSessions.Count - 1; i >= 0; i--)
                     {
-                        if (All_sockets_connect[i] == null)
+                        if (appSessions[i] == null)
                         {
-                            All_sockets_connect.RemoveAt( i );
+                            appSessions.RemoveAt( i );
                             continue;
                         }
 
-                        if ((DateTime.Now - All_sockets_connect[i].HeartTime).TotalSeconds > 1 * 8)//8次没有收到失去联系
+                        if ((DateTime.Now - appSessions[i].HeartTime).TotalSeconds > 1 * 8)//8次没有收到失去联系
                         {
-                            LogNet?.WriteWarn( ToString(), "心跳验证超时，强制下线：" + All_sockets_connect[i].IpAddress.ToString( ) );
-                            TcpStateDownLine( All_sockets_connect[i], false );
+                            LogNet?.WriteWarn( ToString(), "心跳验证超时，强制下线：" + appSessions[i].IpAddress.ToString( ) );
+                            TcpStateDownLine( appSessions[i], false, false );
                             continue;
                         }
                     }

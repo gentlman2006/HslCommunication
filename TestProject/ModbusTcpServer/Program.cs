@@ -13,9 +13,20 @@ namespace ModbusTcpServer
         [STAThread]
         static void Main( )
         {
+            HslCommunication.BasicFramework.SoftMail.MailSystem163.MailSendAddress = "hsl200909@163.com";
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             Application.EnableVisualStyles( );
             Application.SetCompatibleTextRenderingDefault( false );
             Application.Run( new FormModbus( ) );
+        }
+
+        private static void CurrentDomain_UnhandledException( object sender, UnhandledExceptionEventArgs e )
+        {
+            if(e.ExceptionObject is Exception ex)
+            {
+                HslCommunication.BasicFramework.SoftMail.MailSystem163.SendMail( ex );
+            }
         }
     }
 }

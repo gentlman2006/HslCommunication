@@ -13,8 +13,14 @@ namespace HslCommunicationDemo
         [STAThread]
         static void Main( )
         {
+
+
+
             Application.EnableVisualStyles( );
             Application.SetCompatibleTextRenderingDefault( false );
+
+
+            System.Threading.ThreadPool.SetMaxThreads( 2000, 800 );
             Application.Run( new FormLoad( ) );
         }
     }

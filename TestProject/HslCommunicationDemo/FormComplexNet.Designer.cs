@@ -234,8 +234,8 @@
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.textBox9);
             this.panel1.Controls.Add(this.label13);
-            this.panel1.Controls.Add(this.button6);
             this.panel1.Controls.Add(this.textBox3);
+            this.panel1.Controls.Add(this.button6);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.button1);
@@ -268,12 +268,13 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(875, 11);
+            this.button6.Location = new System.Drawing.Point(833, 11);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(91, 28);
+            this.button6.Size = new System.Drawing.Size(140, 28);
             this.button6.TabIndex = 9;
-            this.button6.Text = "压力测试";
+            this.button6.Text = "多客户端压力测试";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // textBox3
             // 

@@ -35,7 +35,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.userButton1 = new HslCommunication.Controls.UserButton();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.textBox4 = new System.Windows.Forms.TextBox();
@@ -45,6 +44,9 @@
             this.label7 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
+            this.userButton1 = new HslCommunication.Controls.UserButton();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,7 +85,7 @@
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox2.Size = new System.Drawing.Size(937, 310);
+            this.textBox2.Size = new System.Drawing.Size(935, 308);
             this.textBox2.TabIndex = 13;
             // 
             // label2
@@ -111,20 +113,6 @@
             this.textBox1.Size = new System.Drawing.Size(133, 23);
             this.textBox1.TabIndex = 10;
             this.textBox1.Text = "12346";
-            // 
-            // userButton1
-            // 
-            this.userButton1.BackColor = System.Drawing.Color.Transparent;
-            this.userButton1.CustomerInformation = "";
-            this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton1.Location = new System.Drawing.Point(261, 15);
-            this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton1.Name = "userButton1";
-            this.userButton1.Size = new System.Drawing.Size(118, 39);
-            this.userButton1.TabIndex = 9;
-            this.userButton1.UIText = "启动服务";
-            this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
             // label5
             // 
@@ -189,6 +177,7 @@
             // 
             // panel1
             // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.label2);
@@ -214,11 +203,46 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // userButton1
+            // 
+            this.userButton1.BackColor = System.Drawing.Color.Transparent;
+            this.userButton1.CustomerInformation = "";
+            this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton1.Location = new System.Drawing.Point(261, 15);
+            this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton1.Name = "userButton1";
+            this.userButton1.Size = new System.Drawing.Size(118, 39);
+            this.userButton1.TabIndex = 9;
+            this.userButton1.UIText = "启动服务";
+            this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(527, 72);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(80, 17);
+            this.label10.TabIndex = 27;
+            this.label10.Text = "客户端数量：";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.ForeColor = System.Drawing.Color.Blue;
+            this.label11.Location = new System.Drawing.Point(613, 72);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(15, 17);
+            this.label11.TabIndex = 28;
+            this.label11.Text = "0";
+            // 
             // FormServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1011, 643);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.label10);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -259,6 +283,8 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
     }
 }
 

@@ -180,10 +180,7 @@ namespace HslCommunication.Enthernet
 
             stateone.HeartTime = DateTime.Now;
             LogNet?.WriteDebug( ToString( ), "Begin Connect Server, Times: " + ConnectFailedCount );
-
-
-            OperateResult result = new OperateResult( );
-
+            
             OperateResult<Socket> connectResult = CreateSocketAndConnect( EndPointServer, 10000 );
             if (!connectResult.IsSuccess)
             {
@@ -200,7 +197,6 @@ namespace HslCommunication.Enthernet
 
             // 连接成功，发送数据信息
             OperateResult sendResult = SendStringAndCheckReceive( connectResult.Content, 1, ClientAlias );
-
             if (!sendResult.IsSuccess)
             {
                 ConnectFailedCount++;
@@ -231,11 +227,8 @@ namespace HslCommunication.Enthernet
             stateone.HeartTime = DateTime.Now;
             IsClientStart = true;
             LoginSuccess?.Invoke( );
-
             LogNet?.WriteDebug( ToString( ), "Login Server Success, Times: " + ConnectFailedCount );
-
             IsClientConnecting = false;
-
             Thread.Sleep( 1000 );
         }
 

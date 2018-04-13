@@ -1296,7 +1296,7 @@ namespace HslCommunication.Profinet.Siemens
                 0xC1,  // 15
                 0x02,  // 16
                 0x01,  // 17
-                0x00,  // 18
+                0x02,  // 18
                 0xC2,  // 19 指示cpu
                 0x02,  // 20
                 0x01,  // 21

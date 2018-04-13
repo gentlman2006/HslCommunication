@@ -32,13 +32,13 @@ namespace HslCommunicationDemo
         private void button1_Click( object sender, EventArgs e )
         {
 
-            if(!IPAddress.TryParse(textBox1.Text,out IPAddress address))
+            if (!IPAddress.TryParse( textBox1.Text, out IPAddress address ))
             {
                 MessageBox.Show( "IP地址填写不正确" );
                 return;
             }
 
-            if(!int.TryParse(textBox2.Text,out int port))
+            if (!int.TryParse( textBox2.Text, out int port ))
             {
                 MessageBox.Show( "port填写不正确" );
                 return;
@@ -59,7 +59,7 @@ namespace HslCommunicationDemo
                 button2.Enabled = true;
                 panel2.Enabled = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
             }
@@ -89,7 +89,7 @@ namespace HslCommunicationDemo
         {
             if (InvokeRequired)
             {
-                Invoke( new Action<string>( ShowTextInfo ),text );
+                Invoke( new Action<string>( ShowTextInfo ), text );
                 return;
             }
 
@@ -111,7 +111,7 @@ namespace HslCommunicationDemo
             }
 
 
-            if(!int.TryParse(textBox6.Text,out int count))
+            if (!int.TryParse( textBox6.Text, out int count ))
             {
                 MessageBox.Show( "数据发送次数输入异常" );
                 return;
@@ -122,5 +122,49 @@ namespace HslCommunicationDemo
                 complexClient.Send( handle, textBox4.Text );
             }
         }
+
+        private void button6_Click( object sender, EventArgs e )
+        {
+            // 多客户端压力测试
+            System.Threading.Thread thread = new System.Threading.Thread( ServerPressureTest );
+            thread.IsBackground = true;
+            thread.Start( );
+            button6.Enabled = false;
+        }
+
+        private void ServerPressureTest( )
+        {
+            NetComplexClient[] netComplices = new NetComplexClient[1000];
+            for (int i = 0; i < 1000; i++)
+            {
+                netComplices[i] = new NetComplexClient( );
+                netComplices[i].EndPointServer = new IPEndPoint( IPAddress.Parse( textBox1.Text ), int.Parse( textBox2.Text ) );
+                netComplices[i].ClientAlias = "Client" + (i + 1);
+                netComplices[i].ClientStart( );
+            }
+
+            for (int j = 0; j < 1000; j++)
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    netComplices[i].Send( 1, "测试消息" + (i + 1) );
+                }
+                System.Threading.Thread.Sleep( 1000 );
+            }
+
+
+            System.Threading.Thread.Sleep( 2000 );
+            for (int i = 0; i < 1000; i++)
+            {
+                netComplices[i].ClientClose( );
+            }
+
+
+            Invoke( new Action( ( ) =>
+             {
+                 button6.Enabled = true;
+             } ) );
+        }
+
     }
 }

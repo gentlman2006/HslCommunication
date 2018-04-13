@@ -39,19 +39,26 @@ namespace ComplexNetServer
             complexServer.AcceptByte += ComplexServer_AcceptByte;
             complexServer.ClientOnline += ComplexServer_ClientOnline;
             complexServer.ClientOffline += ComplexServer_ClientOffline;
+            complexServer.AllClientsStatusChange += ComplexServer_AllClientsStatusChange;
             complexServer.ServerStart( port );
+        }
+
+        private void ComplexServer_AllClientsStatusChange( int count )
+        {
+            Invoke( new Action<int>( m =>
+             {
+                 label11.Text = count.ToString( );
+             } ), count );
         }
 
         private void ComplexServer_ClientOffline( HslCommunication.Core.Net.AppSession session, string reason )
         {
-            // 下线
-            ShowTextInfo( $"[{session.IpEndPoint}] Offline" );
+            // 下线触发
         }
 
         private void ComplexServer_ClientOnline( HslCommunication.Core.Net.AppSession session )
         {
-            // 上线
-            ShowTextInfo( $"[{session.IpEndPoint}] Online" );
+            // 上线触发
         }
 
         private void ComplexServer_AcceptByte( HslCommunication.Core.Net.AppSession session, NetHandle handle, byte[] data )
