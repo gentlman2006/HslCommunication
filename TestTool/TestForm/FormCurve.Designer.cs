@@ -226,6 +226,7 @@
             this.Controls.Add(this.userCurve1);
             this.Name = "FormCurve";
             this.Text = "FormCurve";
+            this.Load += new System.EventHandler(this.FormCurve_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

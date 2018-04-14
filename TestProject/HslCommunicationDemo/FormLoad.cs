@@ -197,5 +197,35 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button16_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormBasicControl form = new FormBasicControl( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
+
+        private void button17_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormGauge form = new FormGauge( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
+
+        private void button18_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormCurve form = new FormCurve( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

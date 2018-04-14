@@ -177,5 +177,10 @@ namespace TestTool.TestForm
             userCurve1.SetCurveText( text );
             userCurve1.SetLeftCurve( "A", data, Color.Tomato );            // 每个月用户1的销售金额
         }
+
+        private void FormCurve_Load( object sender, EventArgs e )
+        {
+
+        }
     }
 }

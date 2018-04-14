@@ -44,6 +44,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.button15 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
@@ -53,12 +54,16 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
-            this.button15 = new System.Windows.Forms.Button();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.button16 = new System.Windows.Forms.Button();
+            this.button17 = new System.Windows.Forms.Button();
+            this.button18 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -68,7 +73,7 @@
             this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Location = new System.Drawing.Point(425, 74);
+            this.groupBox1.Location = new System.Drawing.Point(220, 74);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -135,7 +140,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.button6);
-            this.groupBox2.Location = new System.Drawing.Point(220, 74);
+            this.groupBox2.Location = new System.Drawing.Point(425, 74);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -250,6 +255,17 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Hsl Support";
             // 
+            // button15
+            // 
+            this.button15.Location = new System.Drawing.Point(15, 184);
+            this.button15.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(150, 32);
+            this.button15.TabIndex = 4;
+            this.button15.Text = "Log 日志记录";
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
             // button14
             // 
             this.button14.Location = new System.Drawing.Point(15, 64);
@@ -347,16 +363,52 @@
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
-            // button15
+            // groupBox6
             // 
-            this.button15.Location = new System.Drawing.Point(15, 184);
-            this.button15.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(150, 32);
-            this.button15.TabIndex = 4;
-            this.button15.Text = "Log 日志记录";
-            this.button15.UseVisualStyleBackColor = true;
-            this.button15.Click += new System.EventHandler(this.button15_Click);
+            this.groupBox6.Controls.Add(this.button18);
+            this.groupBox6.Controls.Add(this.button17);
+            this.groupBox6.Controls.Add(this.button16);
+            this.groupBox6.Location = new System.Drawing.Point(220, 308);
+            this.groupBox6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox6.Size = new System.Drawing.Size(185, 225);
+            this.groupBox6.TabIndex = 12;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Controls";
+            // 
+            // button16
+            // 
+            this.button16.Location = new System.Drawing.Point(19, 24);
+            this.button16.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(150, 32);
+            this.button16.TabIndex = 0;
+            this.button16.Text = "Simple Control";
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Click += new System.EventHandler(this.button16_Click);
+            // 
+            // button17
+            // 
+            this.button17.Location = new System.Drawing.Point(19, 63);
+            this.button17.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(150, 32);
+            this.button17.TabIndex = 1;
+            this.button17.Text = "Gauge (仪表盘)";
+            this.button17.UseVisualStyleBackColor = true;
+            this.button17.Click += new System.EventHandler(this.button17_Click);
+            // 
+            // button18
+            // 
+            this.button18.Location = new System.Drawing.Point(19, 103);
+            this.button18.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button18.Name = "button18";
+            this.button18.Size = new System.Drawing.Size(150, 32);
+            this.button18.TabIndex = 2;
+            this.button18.Text = "Curve (曲线)";
+            this.button18.UseVisualStyleBackColor = true;
+            this.button18.Click += new System.EventHandler(this.button18_Click);
             // 
             // FormLoad
             // 
@@ -364,6 +416,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(839, 546);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.linkLabel3);
             this.Controls.Add(this.label1);
@@ -385,6 +438,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -418,6 +472,10 @@
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Button button14;
         private System.Windows.Forms.Button button15;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Button button16;
+        private System.Windows.Forms.Button button18;
+        private System.Windows.Forms.Button button17;
     }
 }
 

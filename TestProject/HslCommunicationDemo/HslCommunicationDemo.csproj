@@ -46,17 +46,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormBasicControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBasicControl.Designer.cs">
+      <DependentUpon>FormBasicControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormComplexNet.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormComplexNet.Designer.cs">
       <DependentUpon>FormComplexNet.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormCurve.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCurve.Designer.cs">
+      <DependentUpon>FormCurve.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormFileClient.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormFileClient.Designer.cs">
       <DependentUpon>FormFileClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormGauge.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormGauge.Designer.cs">
+      <DependentUpon>FormGauge.cs</DependentUpon>
     </Compile>
     <Compile Include="FormLogNet.cs">
       <SubType>Form</SubType>
@@ -126,11 +144,20 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormBasicControl.resx">
+      <DependentUpon>FormBasicControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormComplexNet.resx">
       <DependentUpon>FormComplexNet.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormCurve.resx">
+      <DependentUpon>FormCurve.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormFileClient.resx">
       <DependentUpon>FormFileClient.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormGauge.resx">
+      <DependentUpon>FormGauge.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLogNet.resx">
       <DependentUpon>FormLogNet.cs</DependentUpon>
