@@ -20,15 +20,17 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 自定义的消息记录
         /// </summary>
-        /// <param name="degree"></param>
-        /// <param name="text"></param>
-        void RecordMessage(HslMessageDegree degree, string text);
+        /// <param name="degree">消息等级</param>
+        /// <param name="keyWord">关键字</param>
+        /// <param name="text">日志内容</param>
+        void RecordMessage(HslMessageDegree degree, string keyWord, string text);
 
         /// <summary>
         /// 写入一条调试日志
         /// </summary>
         /// <param name="text">日志内容</param>
         void WriteDebug(string text);
+
         /// <summary>
         /// 写入一条调试日志
         /// </summary>
@@ -126,5 +128,11 @@ namespace HslCommunication.LogNet
         /// </summary>
         /// <returns></returns>
         string[] GetExistLogFileNames();
+
+        /// <summary>
+        /// 过滤掉指定的关键字的日志，该信息不存储，但仍然触发BeforeSaveToFile事件
+        /// </summary>
+        /// <param name="keyword"></param>
+        void FiltrateKeyword( string keyword );
     }
 }

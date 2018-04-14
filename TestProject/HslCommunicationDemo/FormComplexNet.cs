@@ -135,7 +135,7 @@ namespace HslCommunicationDemo
         private void ServerPressureTest( )
         {
             NetComplexClient[] netComplices = new NetComplexClient[1000];
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 netComplices[i] = new NetComplexClient( );
                 netComplices[i].EndPointServer = new IPEndPoint( IPAddress.Parse( textBox1.Text ), int.Parse( textBox2.Text ) );
@@ -143,18 +143,20 @@ namespace HslCommunicationDemo
                 netComplices[i].ClientStart( );
             }
 
+            // 等待连接完成
+            System.Threading.Thread.Sleep( 2000 );
+
             for (int j = 0; j < 1000; j++)
             {
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < 100; i++)
                 {
                     netComplices[i].Send( 1, "测试消息" + (i + 1) );
                 }
-                System.Threading.Thread.Sleep( 1000 );
             }
 
 
             System.Threading.Thread.Sleep( 2000 );
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 netComplices[i].ClientClose( );
             }

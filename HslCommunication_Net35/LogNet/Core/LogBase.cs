@@ -13,26 +13,43 @@ namespace HslCommunication.LogNet
     /// </summary>    
     public abstract class LogNetBase : IDisposable
     {
-        #region 私有字段
+        #region Constructor
 
-
-        private HslMessageDegree m_messageDegree = HslMessageDegree.DEBUG;
-
-        private Queue<HslMessageItem> m_WaitForSave = new Queue<HslMessageItem>();
-
-        private SimpleHybirdLock m_simpleHybirdLock = new SimpleHybirdLock();
         /// <summary>
-        /// 文件读写锁
+        /// 实例化一个日志对象
         /// </summary>
-        protected SimpleHybirdLock m_fileSaveLock = new SimpleHybirdLock();
-
-        private int m_SaveStatus = 0;
-
-
+        public LogNetBase()
+        {
+            m_fileSaveLock = new SimpleHybirdLock( );
+            m_simpleHybirdLock = new SimpleHybirdLock( );
+            m_WaitForSave = new Queue<HslMessageItem>( );
+            filtrateKeyword = new List<string>( );
+            filtrateLock = new SimpleHybirdLock( );
+        }
 
         #endregion
 
-        #region 事件存储处
+        #region Private Member
+
+        private HslMessageDegree m_messageDegree = HslMessageDegree.DEBUG;                     // 默认的存储规则
+        private Queue<HslMessageItem> m_WaitForSave ;                                          // 待存储数据的缓存
+        private SimpleHybirdLock m_simpleHybirdLock ;                                          // 缓存列表的锁
+        private int m_SaveStatus = 0;                                                          // 存储状态
+        private List<string> filtrateKeyword;                                                  // 需要过滤的存储对象
+        private SimpleHybirdLock filtrateLock;                                                 // 过滤列表的锁
+
+        #endregion
+
+        #region Protect Member
+
+        /// <summary>
+        /// 文件存储的锁
+        /// </summary>
+        protected SimpleHybirdLock m_fileSaveLock;                                             // 文件的锁
+
+        #endregion
+        
+        #region Event Handle
 
         /// <summary>
         /// 在存储到文件的时候将会触发的事件
@@ -46,18 +63,17 @@ namespace HslCommunication.LogNet
 
         #endregion
 
-        #region 公开的属性
+        #region Public Member
 
         /// <summary>
         /// 日志存储模式，1:单文件，2:按大小存储，3:按时间存储
         /// </summary>
         public int LogSaveMode { get; protected set; }
 
-
-
+        
         #endregion
 
-        #region 消息记录方法
+        #region Log Method
 
         /// <summary>
         /// 写入一条调试信息
@@ -65,7 +81,7 @@ namespace HslCommunication.LogNet
         /// <param name="text"></param>
         public void WriteDebug(string text)
         {
-            RecordMessage(HslMessageDegree.DEBUG, text);
+            WriteDebug( string.Empty, text );
         }
 
         /// <summary>
@@ -75,14 +91,7 @@ namespace HslCommunication.LogNet
         /// <param name="text">文本内容</param>
         public void WriteDebug(string keyWord, string text)
         {
-            if (string.IsNullOrEmpty(keyWord))
-            {
-                WriteDebug(text);
-            }
-            else
-            {
-                WriteDebug(keyWord + " : " + text);
-            }
+            RecordMessage( HslMessageDegree.DEBUG, keyWord, text );
         }
 
         /// <summary>
@@ -91,7 +100,7 @@ namespace HslCommunication.LogNet
         /// <param name="text">文本内容</param>
         public void WriteInfo(string text)
         {
-            RecordMessage(HslMessageDegree.INFO, text);
+            WriteInfo( string.Empty, text );
         }
 
         /// <summary>
@@ -101,14 +110,7 @@ namespace HslCommunication.LogNet
         /// <param name="text">文本内容</param>
         public void WriteInfo(string keyWord, string text)
         {
-            if (string.IsNullOrEmpty(keyWord))
-            {
-                WriteInfo(text);
-            }
-            else
-            {
-                WriteInfo(keyWord + " : " + text);
-            }
+            RecordMessage( HslMessageDegree.INFO, keyWord, text );
         }
 
         /// <summary>
@@ -117,7 +119,7 @@ namespace HslCommunication.LogNet
         /// <param name="text">文本内容</param>
         public void WriteWarn(string text)
         {
-            RecordMessage(HslMessageDegree.WARN, text);
+            WriteWarn( string.Empty, text );
         }
 
         /// <summary>
@@ -127,14 +129,7 @@ namespace HslCommunication.LogNet
         /// <param name="text">文本内容</param>
         public void WriteWarn(string keyWord, string text)
         {
-            if (string.IsNullOrEmpty(keyWord))
-            {
-                WriteWarn(text);
-            }
-            else
-            {
-                WriteWarn(keyWord + " : " + text);
-            }
+            RecordMessage( HslMessageDegree.WARN, keyWord, text );
         }
 
 
@@ -144,7 +139,7 @@ namespace HslCommunication.LogNet
         /// <param name="text">文本内容</param>
         public void WriteError(string text)
         {
-            RecordMessage(HslMessageDegree.ERROR, text);
+            WriteError( string.Empty, text );
         }
 
         /// <summary>
@@ -154,14 +149,7 @@ namespace HslCommunication.LogNet
         /// <param name="text">文本内容</param>
         public void WriteError(string keyWord, string text)
         {
-            if (string.IsNullOrEmpty(keyWord))
-            {
-                WriteError(text);
-            }
-            else
-            {
-                WriteError(keyWord + " : " + text);
-            }
+            RecordMessage( HslMessageDegree.ERROR, keyWord, text );
         }
 
         /// <summary>
@@ -170,7 +158,7 @@ namespace HslCommunication.LogNet
         /// <param name="text">文本内容</param>
         public void WriteFatal(string text)
         {
-            RecordMessage(HslMessageDegree.FATAL, text);
+            WriteFatal( string.Empty, text );
         }
 
 
@@ -181,14 +169,7 @@ namespace HslCommunication.LogNet
         /// <param name="text">文本内容</param>
         public void WriteFatal(string keyWord, string text)
         {
-            if (string.IsNullOrEmpty(keyWord))
-            {
-                WriteFatal(text);
-            }
-            else
-            {
-                WriteFatal(keyWord + " : " + text);
-            }
+            RecordMessage( HslMessageDegree.FATAL, keyWord, text );
         }
 
         /// <summary>
@@ -198,7 +179,7 @@ namespace HslCommunication.LogNet
         /// <param name="ex"></param>
         public void WriteException(string keyWord, Exception ex)
         {
-            RecordMessage(HslMessageDegree.FATAL, LogNetManagment.GetSaveStringFromException(keyWord, ex));
+            WriteException( keyWord, string.Empty, ex );
         }
 
         /// <summary>
@@ -209,24 +190,18 @@ namespace HslCommunication.LogNet
         /// <param name="ex">异常</param>
         public void WriteException(string keyWord, string text, Exception ex)
         {
-            if (string.IsNullOrEmpty(keyWord))
-            {
-                WriteException(text, ex);
-            }
-            else
-            {
-                WriteException(keyWord + " : " + text, ex);
-            }
+            RecordMessage( HslMessageDegree.FATAL, keyWord, LogNetManagment.GetSaveStringFromException( text, ex ) );
         }
 
         /// <summary>
         /// 记录一条自定义的消息
         /// </summary>
-        /// <param name="degree"></param>
-        /// <param name="text"></param>
-        public void RecordMessage(HslMessageDegree degree, string text)
+        /// <param name="degree">消息的等级</param>
+        /// <param name="keyWord">关键字</param>
+        /// <param name="text">文本</param>
+        public void RecordMessage( HslMessageDegree degree, string keyWord, string text )
         {
-            WriteToFile(degree, text);
+            WriteToFile( degree, keyWord, text );
         }
 
         /// <summary>
@@ -279,7 +254,6 @@ namespace HslCommunication.LogNet
             }
 
             stringBuilder.Append("/");
-
             stringBuilder.Append(Environment.NewLine);
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadPoolSaveText), stringBuilder.ToString());
@@ -307,21 +281,37 @@ namespace HslCommunication.LogNet
 
         #endregion
 
-        #region 文件读写块
+        #region Filtrate Keyword
+
+        /// <summary>
+        /// 过滤指定的关键字存储
+        /// </summary>
+        /// <param name="keyWord">关键字</param>
+        public void FiltrateKeyword(string keyWord)
+        {
+            filtrateLock.Enter( );
+            if (!filtrateKeyword.Contains(keyWord))
+            {
+                filtrateKeyword.Add( keyWord );
+            }
+            filtrateLock.Leave( );
+        }
+
+        #endregion
+
+        #region File Write
 
 
 
-
-        private void WriteToFile(HslMessageDegree degree, string text)
+        private void WriteToFile( HslMessageDegree degree, string keyWord, string text )
         {
             // 过滤事件
             if (degree <= m_messageDegree)
             {
                 // 需要记录数据
-                HslMessageItem item = GetHslMessageItem(degree, text);
-                AddItemToCache(item);
+                HslMessageItem item = GetHslMessageItem( degree, keyWord, text );
+                AddItemToCache( item );
             }
-
         }
 
 
@@ -382,8 +372,19 @@ namespace HslCommunication.LogNet
                         // 触发事件
                         OnBeforeSaveToFile( new HslEventArgs( ) { HslMessage = current } );
 
-                        sw.Write(HslMessageFormate(current));
-                        sw.Write(Environment.NewLine);
+                        // 检查是否需要真的进行存储
+                        bool isSave = true;
+                        filtrateLock.Enter( );
+                        isSave = !filtrateKeyword.Contains( current.KeyWord );
+                        filtrateLock.Leave( );
+
+                        // 如果需要存储的就过滤掉
+                        if (isSave)
+                        {
+                            sw.Write( HslMessageFormate( current ) );
+                            sw.Write( Environment.NewLine );
+                        }
+
                         current = GetAndRemoveLogItem();
                     }
                 }
@@ -426,6 +427,12 @@ namespace HslCommunication.LogNet
             stringBuilder.Append(" thread:[");
             stringBuilder.Append(hslMessage.ThreadId.ToString("D2"));
             stringBuilder.Append("] ");
+
+            if(!string.IsNullOrEmpty(hslMessage.KeyWord))
+            {
+                stringBuilder.Append( hslMessage.KeyWord );
+                stringBuilder.Append( " : " );
+            }
 
             stringBuilder.Append(hslMessage.Text);
 
@@ -470,11 +477,9 @@ namespace HslCommunication.LogNet
 
         #endregion
 
-        #region 辅助方法
+        #region Helper Method
 
-
-
-
+        
         /// <summary>
         /// 获取要存储的文件的名称
         /// </summary>
@@ -508,10 +513,11 @@ namespace HslCommunication.LogNet
 
 
 
-        private HslMessageItem GetHslMessageItem(HslMessageDegree degree, string text)
+        private HslMessageItem GetHslMessageItem(HslMessageDegree degree, string keyWord, string text)
         {
             return new HslMessageItem()
             {
+                KeyWord = keyWord,
                 Degree = degree,
                 Text = text,
                 ThreadId = Thread.CurrentThread.ManagedThreadId,
@@ -549,6 +555,7 @@ namespace HslCommunication.LogNet
         #endregion
 
         #region IDisposable Support
+
         private bool disposedValue = false; // 要检测冗余调用
 
         /// <summary>

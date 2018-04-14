@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 
 namespace HslCommunication.Enthernet
-{ 
+{
     /// <summary>
     /// 高性能的异步网络服务器类，适合搭建局域网聊天程序，消息推送程序
     /// </summary>
@@ -20,7 +20,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 实例化一个网络服务器类对象
         /// </summary>
-        public NetComplexServer( )
+        public NetComplexServer()
         {
             appSessions = new List<AppSession>( );
             lockSessions = new SimpleHybirdLock( );
@@ -29,7 +29,7 @@ namespace HslCommunication.Enthernet
         #endregion
 
         #region Private Member
-        
+
         private int connectMaxClient = 1000;                                   // 允许同时登录的最大客户端数量
         private List<AppSession> appSessions = null;                           // 所有客户端连接的对象信息   
         private SimpleHybirdLock lockSessions = null;                          // 对象列表操作的锁
@@ -37,7 +37,7 @@ namespace HslCommunication.Enthernet
         #endregion
 
         #region Public Properties
-        
+
         /// <summary>
         /// 所支持的同时在线客户端的最大数量，商用限制1000个，最小10个
         /// </summary>
@@ -52,7 +52,7 @@ namespace HslCommunication.Enthernet
                 }
             }
         }
-        
+
         /// <summary>
         /// 获取或设置服务器是否记录客户端上下线信息
         /// </summary>
@@ -70,7 +70,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 初始化操作
         /// </summary>
-        protected override void StartInitialization( )
+        protected override void StartInitialization()
         {
             Thread_heart_check = new Thread( new ThreadStart( ThreadHeartCheck ) )
             {
@@ -84,7 +84,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 关闭网络时的操作
         /// </summary>
-        protected override void CloseAction( )
+        protected override void CloseAction()
         {
             Thread_heart_check?.Abort( );
             ClientOffline = null;
@@ -150,7 +150,7 @@ namespace HslCommunication.Enthernet
             state?.WorkSocket?.Close( );
         }
 
-        private void TcpStateDownLine( AppSession state, bool is_regular, bool logSave = true)
+        private void TcpStateDownLine( AppSession state, bool is_regular, bool logSave = true )
         {
             lockSessions.Enter( );
             appSessions.Remove( state );
@@ -164,7 +164,7 @@ namespace HslCommunication.Enthernet
             // 是否保存上线信息
             if (IsSaveLogClientLineChange && logSave)
             {
-                LogNet?.WriteInfo( ToString(), $"[{state.IpEndPoint}] Name:{ state?.LoginAlias } { str }" );
+                LogNet?.WriteInfo( ToString( ), $"[{state.IpEndPoint}] Name:{ state?.LoginAlias } { str }" );
             }
         }
 
@@ -195,7 +195,7 @@ namespace HslCommunication.Enthernet
         /// </summary>
         public event Action<AppSession, NetHandle, byte[]> AcceptByte;
 
-        
+
 
         #endregion
 
@@ -213,7 +213,7 @@ namespace HslCommunication.Enthernet
                 if (appSessions.Count > ConnectMax)
                 {
                     socket?.Close( );
-                    LogNet?.WriteWarn( ToString(), StringResources.NetClientFull );
+                    LogNet?.WriteWarn( ToString( ), StringResources.NetClientFull );
                     return;
                 }
 
@@ -221,7 +221,7 @@ namespace HslCommunication.Enthernet
                 OperateResult result = new OperateResult( );
                 OperateResult<int, string> readResult = ReceiveStringContentFromSocket( socket );
                 if (!readResult.IsSuccess) return;
-                
+
                 // 登录成功
                 AppSession session = new AppSession( )
                 {
@@ -235,7 +235,7 @@ namespace HslCommunication.Enthernet
                     session.IpEndPoint = (IPEndPoint)socket.RemoteEndPoint;
                     session.IpAddress = ((IPEndPoint)socket.RemoteEndPoint).Address.ToString( );
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     LogNet?.WriteException( ToString( ), "客户端地址获取失败：", ex );
                 }
@@ -264,7 +264,7 @@ namespace HslCommunication.Enthernet
                 {
                     //登录前已经出错
                     TcpStateClose( session );
-                    LogNet?.WriteException( ToString(), StringResources.NetClientLoginFailed, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.NetClientLoginFailed, ex );
                 }
             }
         }
@@ -274,7 +274,7 @@ namespace HslCommunication.Enthernet
         #endregion
 
         #region SendAsync Support
-        
+
         /// <summary>
         /// 服务器端用于数据发送文本的方法
         /// </summary>
@@ -371,10 +371,10 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 数据处理中心
         /// </summary>
-        /// <param name="session"></param>
-        /// <param name="protocol"></param>
-        /// <param name="customer"></param>
-        /// <param name="content"></param>
+        /// <param name="session">会话对象</param>
+        /// <param name="protocol">消息的代码</param>
+        /// <param name="customer">用户消息</param>
+        /// <param name="content">数据内容</param>
         internal override void DataProcessingCenter( AppSession session, int protocol, int customer, byte[] content )
         {
             if (protocol == HslProtocol.ProtocolCheckSecends)
@@ -408,11 +408,11 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
-        #region 心跳线程块
+        #region Heart Check
 
         private Thread Thread_heart_check { get; set; } = null;
 
-        private void ThreadHeartCheck( )
+        private void ThreadHeartCheck()
         {
             while (true)
             {
@@ -430,7 +430,7 @@ namespace HslCommunication.Enthernet
 
                         if ((DateTime.Now - appSessions[i].HeartTime).TotalSeconds > 1 * 8)//8次没有收到失去联系
                         {
-                            LogNet?.WriteWarn( ToString(), "心跳验证超时，强制下线：" + appSessions[i].IpAddress.ToString( ) );
+                            LogNet?.WriteWarn( ToString( ), "心跳验证超时，强制下线：" + appSessions[i].IpAddress.ToString( ) );
                             TcpStateDownLine( appSessions[i], false, false );
                             continue;
                         }
@@ -438,7 +438,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString(), "心跳线程异常：", ex );
+                    LogNet?.WriteException( ToString( ), "心跳线程异常：", ex );
                 }
 
 
@@ -456,7 +456,7 @@ namespace HslCommunication.Enthernet
         /// 获取本对象的字符串表示形式
         /// </summary>
         /// <returns></returns>
-        public override string ToString( )
+        public override string ToString()
         {
             return "NetComplexServer";
         }

@@ -53,6 +53,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
+            this.button15 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -235,6 +236,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.button15);
             this.groupBox4.Controls.Add(this.button14);
             this.groupBox4.Controls.Add(this.button12);
             this.groupBox4.Controls.Add(this.button9);
@@ -246,7 +248,7 @@
             this.groupBox4.Size = new System.Drawing.Size(183, 226);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "HslServer";
+            this.groupBox4.Text = "Hsl Support";
             // 
             // button14
             // 
@@ -345,6 +347,17 @@
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
+            // button15
+            // 
+            this.button15.Location = new System.Drawing.Point(15, 184);
+            this.button15.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(150, 32);
+            this.button15.TabIndex = 4;
+            this.button15.Text = "Log 日志记录";
+            this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.button15_Click);
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -404,6 +417,7 @@
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.Button button15;
     }
 }
 

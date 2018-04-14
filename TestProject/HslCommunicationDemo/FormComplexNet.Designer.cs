@@ -48,8 +48,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.button6 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
+            this.button6 = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
@@ -266,6 +266,13 @@
             this.label13.TabIndex = 10;
             this.label13.Text = "别名：";
             // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(62, 47);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(489, 23);
+            this.textBox3.TabIndex = 7;
+            // 
             // button6
             // 
             this.button6.Location = new System.Drawing.Point(833, 11);
@@ -275,13 +282,6 @@
             this.button6.Text = "多客户端压力测试";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(62, 47);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(489, 23);
-            this.textBox3.TabIndex = 7;
             // 
             // label6
             // 
@@ -362,6 +362,7 @@
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "FormComplexNet";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FormComplexNet";
             this.Load += new System.EventHandler(this.FormComplexNet_Load);
             this.panel2.ResumeLayout(false);

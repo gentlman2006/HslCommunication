@@ -58,6 +58,12 @@
     <Compile Include="FormFileClient.Designer.cs">
       <DependentUpon>FormFileClient.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormLogNet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLogNet.Designer.cs">
+      <DependentUpon>FormLogNet.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMelsec1EBinary.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +131,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormFileClient.resx">
       <DependentUpon>FormFileClient.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLogNet.resx">
+      <DependentUpon>FormLogNet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMelsec1EBinary.resx">
       <DependentUpon>FormMelsec1EBinary.cs</DependentUpon>
