@@ -657,15 +657,15 @@ namespace HslCommunication.Profinet.Omron
         {
             //获取指令
             var command = BuildWriteCommand( address, value, false );
-            if (!command.IsSuccess) return OperateResult.CreateFailedResult( command );
+            if (!command.IsSuccess) return command;
 
             // 核心数据交互
             OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult( read );
+            if (!read.IsSuccess) return read;
 
             // 数据有效性分析
             OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, false );
-            if (!valid.IsSuccess) return OperateResult.CreateFailedResult( valid );
+            if (!valid.IsSuccess) return valid;
 
             // 成功
             return OperateResult.CreateSuccessResult( ) ;
@@ -761,15 +761,15 @@ namespace HslCommunication.Profinet.Omron
 
             //获取指令
             var command = BuildWriteCommand( address, values.Select( m => m ? (byte)0x01 : (byte)0x00 ).ToArray( ), true );
-            if (!command.IsSuccess) return OperateResult.CreateFailedResult( command );
+            if (!command.IsSuccess) return command;
 
             // 核心数据交互
             OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult( read );
+            if (!read.IsSuccess) return read;
 
             // 数据有效性分析
             OperateResult<byte[]> valid = ResponseValidAnalysis( read.Content, false );
-            if (!valid.IsSuccess) return OperateResult.CreateFailedResult( valid );
+            if (!valid.IsSuccess) return valid;
 
             // 写入成功
             return OperateResult.CreateSuccessResult( );

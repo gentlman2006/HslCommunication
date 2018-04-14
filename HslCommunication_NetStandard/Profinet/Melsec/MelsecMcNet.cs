@@ -343,11 +343,7 @@ namespace HslCommunication.Profinet.Melsec
             var result = new OperateResult<byte[]>( );
             //获取指令
             var command = BuildReadCommand( address, length );
-            if(!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
             var read = ReadFromCoreServer( command.Content2 );
             if (read.IsSuccess)
@@ -413,16 +409,12 @@ namespace HslCommunication.Profinet.Melsec
             {
                 if (analysis.Content1.DataType == 0x00)
                 {
-                    result.Message = "读取位变量数组只能针对位软元件，如果读取字软元件，请自行转化";
+                    result.Message = "读取位变量数组只能针对位软元件，如果读取字软元件，请调用Read方法";
                     return result;
                 }
             }
             var read = Read( address, length );
-            if (!read.IsSuccess)
-            {
-                result.CopyErrorFromOther( read );
-                return result;
-            }
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read );
 
             result.Content = new bool[read.Content.Length];
             for (int i = 0; i < read.Content.Length; i++)
@@ -431,6 +423,20 @@ namespace HslCommunication.Profinet.Melsec
             }
             result.IsSuccess = true;
             return result;
+        }
+
+
+        /// <summary>
+        /// 从三菱PLC中批量读取位软元件，返回读取结果
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<bool> ReadBool( string address )
+        {
+            OperateResult<bool[]> read = ReadBool( address, 1 );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool>( read );
+
+            return OperateResult.CreateSuccessResult<bool>( read.Content[0] );
         }
 
 

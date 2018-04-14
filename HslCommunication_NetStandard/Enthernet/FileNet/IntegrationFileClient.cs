@@ -93,9 +93,7 @@ namespace HslCommunication.Enthernet
         {
             return DownloadFileBase( factory, group, id, fileName, processReport, stream );
         }
-
-
-
+        
         #endregion
 
         #region Upload File
@@ -149,8 +147,7 @@ namespace HslCommunication.Enthernet
         {
             return UploadFileBase( stream, serverName, factory, group, id, fileTag, fileUpload, processReport );
         }
-
-
+        
 
         #endregion
 

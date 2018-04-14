@@ -8,22 +8,40 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "软件自动更新", "软件自动更新\软件自动更新.csproj", "{4FADD98F-9C73-4D2F-9AC1-CF8993265D8E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTool", "TestTool\TestTool.csproj", "{D68DEDE9-1610-4872-9AED-0E4F90D191EC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3710B78-1B32-4D53-9604-0451A795A2F5} = {D3710B78-1B32-4D53-9604-0451A795A2F5}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HslCommunication_NetStandard", "HslCommunication_NetStandard\HslCommunication_NetStandard.csproj", "{309E5DDB-AC43-4C6E-824F-D66AA8027324}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProject", "TestProject", "{C21F81D5-E4E2-470C-8208-518ADF28F364}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunicationDemo", "TestProject\HslCommunicationDemo\HslCommunicationDemo.csproj", "{3878075B-B8D7-4090-B094-29622581442F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3710B78-1B32-4D53-9604-0451A795A2F5} = {D3710B78-1B32-4D53-9604-0451A795A2F5}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModbusTcpServer", "TestProject\ModbusTcpServer\ModbusTcpServer.csproj", "{FFA24A72-D9E6-492F-BD04-2F30B8E5415F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3710B78-1B32-4D53-9604-0451A795A2F5} = {D3710B78-1B32-4D53-9604-0451A795A2F5}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplifyNetServer", "TestProject\SimplifyNetTest\SimplifyNetServer.csproj", "{46EC6BE3-58FB-43DD-A729-C6C3CE4EE2F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileNetServer", "TestProject\FileNetServer\FileNetServer.csproj", "{1F22638D-76CB-4680-A715-3E305EA3486D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3710B78-1B32-4D53-9604-0451A795A2F5} = {D3710B78-1B32-4D53-9604-0451A795A2F5}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdpNetServer", "TestProject\UdpNetServer\UdpNetServer.csproj", "{15BC8EBD-0920-4696-A1A7-1C3D7C2E6DE1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3710B78-1B32-4D53-9604-0451A795A2F5} = {D3710B78-1B32-4D53-9604-0451A795A2F5}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNetServer", "TestProject\ComplexNetServer\ComplexNetServer.csproj", "{8E94BA91-5ACB-4C89-9279-BE6A06DA1859}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3710B78-1B32-4D53-9604-0451A795A2F5} = {D3710B78-1B32-4D53-9604-0451A795A2F5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

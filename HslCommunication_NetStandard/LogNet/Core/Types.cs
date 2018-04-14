@@ -8,16 +8,16 @@ namespace HslCommunication.LogNet
 {
 
 
-    #region 自定义的消息
+    #region Log EventArgs
 
 
     /// <summary>
-    /// 带有存储消息的事件
+    /// 带有日志消息的事件
     /// </summary>
     public class HslEventArgs : EventArgs
     {
         /// <summary>
-        /// 
+        /// 消息信息
         /// </summary>
         public HslMessageItem HslMessage { get; set; }
 
@@ -26,7 +26,7 @@ namespace HslCommunication.LogNet
 
     #endregion
 
-    #region 日志文件的输出模式
+    #region Log Output Format
 
     /// <summary>
     /// 日志文件输出模式
@@ -62,7 +62,7 @@ namespace HslCommunication.LogNet
 
     #endregion
     
-    #region 消息等级
+    #region Message Degree
 
     /// <summary>
     /// 记录消息的等级
@@ -97,7 +97,7 @@ namespace HslCommunication.LogNet
 
     #endregion
 
-    #region MyRegion
+    #region LogMessage
 
     /// <summary>
     /// 单个日志的记录信息
@@ -140,8 +140,35 @@ namespace HslCommunication.LogNet
         /// </summary>
         public DateTime Time { get; set; }
 
+        /// <summary>
+        /// 消息的关键字
+        /// </summary>
+        public string KeyWord { get; set; }
+        
+        /// <summary>
+        /// 返回表示当前对象的字符串
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            if (string.IsNullOrEmpty( KeyWord ))
+            {
+                return $"[{Degree}] {Time.ToString( "yyyy-MM-dd HH:mm:ss.fff" )} Thread [{ThreadId.ToString( "D2" )}] {Text}";
+            }
+            else
+            {
+                return $"[{Degree}] {Time.ToString( "yyyy-MM-dd HH:mm:ss.fff" )} Thread [{ThreadId.ToString( "D2" )}] {KeyWord} : {Text}";
+            }
+        }
 
-
+        /// <summary>
+        /// 返回表示当前对象的字符串，剔除了关键字
+        /// </summary>
+        /// <returns></returns>
+        public string ToStringWithoutKeyword()
+        {
+            return $"[{Degree}] {Time.ToString( "yyyy-MM-dd HH:mm:ss.fff" )} Thread [{ThreadId.ToString( "D2" )}] {Text}";
+        }
     }
 
     #endregion
