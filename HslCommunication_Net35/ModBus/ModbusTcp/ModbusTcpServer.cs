@@ -702,7 +702,7 @@ namespace HslCommunication.ModBus
                 catch (Exception ex)
                 {
                     state = null;
-                    state.WorkSocket.Close( );
+                    state.WorkSocket?.Close( );
                     LogNet?.WriteException( ToString(), $"客户端 [ {state.IpEndPoint} ] 头子节接收失败！", ex );
                 }
             }

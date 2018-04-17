@@ -207,6 +207,7 @@
     <Compile Include="ModBus\ModbusInfo.cs" />
     <Compile Include="ModBus\ModBusMonitorAddress.cs" />
     <Compile Include="ModBus\ModBusState.cs" />
+    <Compile Include="ModBus\ModbusTcp\ModbusTcpAlien.cs" />
     <Compile Include="ModBus\ModbusTcp\ModbusTcpNet.cs" />
     <Compile Include="Core\Types\IDataTransfer.cs" />
     <Compile Include="ModBus\ModbusTcp\ModbusTcpServer.cs" />
