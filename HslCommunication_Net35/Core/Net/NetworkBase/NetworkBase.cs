@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using System.Net;
+using HslCommunication.Core.IMessage;
 
 /*************************************************************************************
  * 
@@ -224,107 +225,75 @@ namespace HslCommunication.Core.Net
             }
         }
 
+
+        #endregion
+
+        #region Receive Message
+        
         /// <summary>
-        /// 接收不定长数据到网络套接字
+        /// 接收一条完整的数据，使用异步接收完成，包含了指令头信息
         /// </summary>
-        /// <param name="socket"></param>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
-        protected OperateResult<int> Receive( Socket socket, byte[] buffer )
+        /// <param name="socket">已经打开的网络套接字</param>
+        /// <param name="timeOut">超时时间</param>
+        /// <param name="netMsg">消息规则</param>
+        /// <returns>数据的接收结果对象</returns>
+        protected OperateResult<TNetMessage> ReceiveMessage<TNetMessage>( Socket socket, int timeOut, TNetMessage netMsg ) where TNetMessage : INetMessage
         {
-            var result = new OperateResult<int>( );
-            var receiveDone = new ManualResetEvent( false );
-            var state = new StateObject( buffer.Length );
+            OperateResult<TNetMessage> result = new OperateResult<TNetMessage>( );
 
-            try
+            // 超时接收的代码验证
+            HslTimeOut hslTimeOut = new HslTimeOut( )
             {
-                state.WaitDone = receiveDone;
-                state.WorkSocket = socket;
+                DelayTime = timeOut,
+                WorkSocket = socket,
+            };
+            if (timeOut > 0) ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), hslTimeOut );
 
-                // Begin receiving the data from the remote device.
-                socket.BeginReceive( buffer, 0, buffer.Length, SocketFlags.None,
-                    new AsyncCallback( ReceiveBufferCallback ), state );
+            // 接收指令头
+            OperateResult<byte[]> headResult = Receive( socket, netMsg.ProtocolHeadBytesLength );
+            if (!headResult.IsSuccess)
+            {
+                hslTimeOut.IsSuccessful = true;
+                result.CopyErrorFromOther( headResult );
+                return result;
             }
-            catch (Exception ex)
+
+            netMsg.HeadBytes = headResult.Content;
+            if (!netMsg.CheckHeadBytesLegal( Token.ToByteArray( ) ))
             {
-                // 发生了错误，直接返回
-                LogNet?.WriteException( ToString( ), ex );
-                result.Message = ex.Message;
-                receiveDone.Close( );
+                // 令牌校验失败
+                hslTimeOut.IsSuccessful = true;
                 socket?.Close( );
+                LogNet?.WriteError( ToString( ), StringResources.TokenCheckFailed );
+                result.Message = StringResources.TokenCheckFailed;
                 return result;
             }
 
 
-
-            // 等待接收完成，或是发生异常
-            receiveDone.WaitOne( );
-            receiveDone.Close( );
-
-
-            // 接收数据失败
-            if (state.IsError)
+            int contentLength = netMsg.GetContentLengthByHeadBytes( );
+            if (contentLength == 0)
             {
-                socket?.Close( );
-                result.Message = state.ErrerMsg;
-                return result;
+                netMsg.ContentBytes = new byte[0];
+            }
+            else
+            {
+                OperateResult<byte[]> contentResult = Receive( socket, contentLength );
+                if (!headResult.IsSuccess)
+                {
+                    hslTimeOut.IsSuccessful = true;
+                    result.CopyErrorFromOther( contentResult );
+                    return result;
+                }
+
+                netMsg.ContentBytes = contentResult.Content;
             }
 
-
-            // 远程关闭了连接
-            if (state.IsClose)
-            {
-                result.IsSuccess = true;
-                result.Message = "远程关闭了连接";
-                socket?.Close( );
-                return result;
-            }
-
-
-            // 正常接收到数据
-            result.Content = state.AlreadyDealLength;
+            hslTimeOut.IsSuccessful = true;
+            result.Content = netMsg;
             result.IsSuccess = true;
-            state.Clear( );
-            state = null;
             return result;
-
         }
-
-        private void ReceiveBufferCallback( IAsyncResult ar )
-        {
-            if (ar.AsyncState is StateObject state)
-            {
-                try
-                {
-                    Socket client = state.WorkSocket;
-                    int bytesRead = client.EndReceive( ar );
-
-                    if (bytesRead > 0)
-                    {
-                        // 接收到了数据
-                        state.AlreadyDealLength += bytesRead;
-                    }
-                    else
-                    {
-                        // 对方关闭了网络通讯
-                        state.IsClose = true;
-                    }
-
-
-                    // 通知线程继续
-                    state.WaitDone.Set( );
-                }
-                catch (Exception ex)
-                {
-                    state.IsError = true;
-                    LogNet?.WriteException( ToString( ), ex );
-                    state.ErrerMsg = ex.Message;
-                    state.WaitDone.Set( );
-                }
-            }
-        }
-
-
+        
 
         #endregion
 
