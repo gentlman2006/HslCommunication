@@ -158,7 +158,8 @@ namespace HslCommunication.Core
         /// <returns>string对象</returns>
         public string TransString( byte[] buffer )
         {
-            return Encoding.ASCII.GetString( buffer );
+            // 大小端进行转化一下
+            return Encoding.ASCII.GetString( ReverseBytesByWord( buffer ) );
         }
 
 
