@@ -412,7 +412,10 @@ namespace HslCommunication.Core
         /// <returns>buffer数据</returns>
         public byte[] TransByte( string value )
         {
-            return Encoding.ASCII.GetBytes( value );
+            // return Encoding.ASCII.GetBytes( value );
+            byte[] buffer = Encoding.ASCII.GetBytes( value );
+            buffer = BasicFramework.SoftBasic.ArrayExpandToLengthEven( buffer );
+            return ReverseBytesByWord( buffer );
         }
 
 
