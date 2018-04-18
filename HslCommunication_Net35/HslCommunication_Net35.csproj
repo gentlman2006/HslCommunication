@@ -150,9 +150,11 @@
     </Compile>
     <Compile Include="Core\IMessage\INetMessage.cs" />
     <Compile Include="Core\Net\IReadWriteNet.cs" />
+    <Compile Include="Core\Net\NetworkBase\NetworkAlienBase.cs" />
     <Compile Include="Core\Net\NetworkBase\NetworkBase.cs" />
     <Compile Include="Core\Net\NetworkBase\NetworkFileServerBase.cs" />
     <Compile Include="Core\Net\NetworkBase\NetworkServerBase.cs" />
+    <Compile Include="Core\Net\StateOne\AlienSession.cs" />
     <Compile Include="Core\Net\StateOne\AppSession.cs" />
     <Compile Include="Core\Net\StateOne\AsyncStateSend.cs" />
     <Compile Include="Core\Net\StateOne\StateObject.cs" />

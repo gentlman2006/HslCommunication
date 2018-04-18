@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using HslCommunication.Core.IMessage;
 
 namespace HslCommunication.ModBus
 {
@@ -34,7 +35,6 @@ namespace HslCommunication.ModBus
             if(obj is Socket socket)
             {
                 // 登录验证
-                OperateResult<byte[]> read = Receive( socket, 4 );
 
                 // 0x48 0x73 0x6E 0x00 0x17 0x31 0x32 0x33 0x34 0x35 0x36 0x37 0x38 0x39 0x30 0x31 0x14 0x45 0x7E 0x1A 0xA0 0xAA 0xC0 0xA8 0x00 0x01 0x17 0x10
                 // +------------+ +--+ +--+ +----------------------------------------------------+ +---------------------------+ +-----------------+ +-------+
@@ -51,6 +51,11 @@ namespace HslCommunication.ModBus
                 // 0x02: DTU禁止登录
                 // 0x03: 密码验证失败 
                 // 0x04: DTU
+
+                OperateResult<AlienMessage> check = ReceiveMessage( socket, 5000, new AlienMessage( ) );
+                if (!check.IsSuccess) return;
+
+
             }
         }
 
@@ -69,14 +74,6 @@ namespace HslCommunication.ModBus
 
         #endregion
         
-        #region Private Member
-
-
-        private byte station = 0x01;                     // Modbus-Tcp客户端的站号
-        private ILogNet logNet;                          // 日志存储
-
-
-        #endregion
 
     }
 }
