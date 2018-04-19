@@ -79,20 +79,20 @@ namespace ModbusTcpServer
                 MessageBox.Show( "端口输入不正确！" );
                 return;
             }
-
-
+            
 
             try
             {
 
-                busTcpServer = new HslCommunication.ModBus.ModbusTcpServer( );
-                busTcpServer.LogNet = new HslCommunication.LogNet.LogNetSingle( "logs.txt" );
+                busTcpServer = new HslCommunication.ModBus.ModbusTcpServer( );                       // 实例化对象
+                busTcpServer.LogNet = new HslCommunication.LogNet.LogNetSingle( "logs.txt" );        // 配置日志信息
                 busTcpServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
                 busTcpServer.OnDataReceived += BusTcpServer_OnDataReceived;
                 busTcpServer.ServerStart( port );
 
                 button1.Enabled = false;
                 panel2.Enabled = true;
+                button4.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -413,6 +413,26 @@ namespace ModbusTcpServer
             busTcpServer.Write( 100, 1231231231233L );// 写入long值
             busTcpServer.Write( 100, 1212312313UL );  // 写入ulong值
             busTcpServer.Write( 100, 123.456d );      // 写入double值
+        }
+
+        private void button4_Click( object sender, EventArgs e )
+        {
+            // 连接异形客户端
+            using (FormInputAlien form = new FormInputAlien( ))
+            {
+                if(form.ShowDialog() == DialogResult.OK)
+                {
+                    OperateResult connect = busTcpServer.ConnectHslAlientClient( form.IpAddress, form.Port, form.DTU );
+                    if(connect.IsSuccess)
+                    {
+                        MessageBox.Show( "连接成功！" );
+                    }
+                    else
+                    {
+                        MessageBox.Show( "连接失败！原因：" + connect.Message );
+                    }
+                }
+            }
         }
     }
 }

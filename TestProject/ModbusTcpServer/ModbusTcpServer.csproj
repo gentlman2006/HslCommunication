@@ -45,6 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormInputAlien.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormInputAlien.Designer.cs">
+      <DependentUpon>FormInputAlien.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormModbus.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,6 +65,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormInputAlien.resx">
+      <DependentUpon>FormInputAlien.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormModbus.resx">
       <DependentUpon>FormModbus.cs</DependentUpon>
     </EmbeddedResource>

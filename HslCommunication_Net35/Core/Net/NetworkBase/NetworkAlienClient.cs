@@ -12,14 +12,14 @@ namespace HslCommunication.Core.Net
     /// <summary>
     /// 异形客户端的基类，提供了基础的异形操作
     /// </summary>
-    public class NetworkAlienBase : NetworkServerBase
+    public class NetworkAlienClient : NetworkServerBase
     {
         #region Constructor
 
         /// <summary>
         /// 默认的无参构造方法
         /// </summary>
-        public NetworkAlienBase( )
+        public NetworkAlienClient( )
         {
             password = new byte[6];
             alreadyLock = new SimpleHybirdLock( );
@@ -29,7 +29,6 @@ namespace HslCommunication.Core.Net
         }
 
         #endregion
-
 
         #region NetworkServerBase Override
 
@@ -41,12 +40,11 @@ namespace HslCommunication.Core.Net
         {
             if (obj is Socket socket)
             {
-                // 登录验证
-
+                // 注册包
                 // 0x48 0x73 0x6E 0x00 0x17 0x31 0x32 0x33 0x34 0x35 0x36 0x37 0x38 0x39 0x30 0x31 0x00 0x00 0x00 0x00 0x00 0x00 0xC0 0xA8 0x00 0x01 0x17 0x10
                 // +------------+ +--+ +--+ +----------------------------------------------------+ +---------------------------+ +-----------------+ +-------+
-                // +  固定消息头 + 备用 长度            DTU码 12345678901 (唯一标识)                      登录密码(不受信的排除)      Ip:192.168.0.1      端口10000
-                // +------------+
+                // + 固定消息头  +备用 长度           DTU码 12345678901 (唯一标识)                  登录密码(不受信的排除)     Ip:192.168.0.1    端口10000
+                // +------------+ +--+ +--+ +----------------------------------------------------+ +---------------------------+ +-----------------+
 
                 // 返回
                 // 0x48 0x73 0x6E 0x00 0x01 0x00
@@ -79,30 +77,73 @@ namespace HslCommunication.Core.Net
                         break;
                     }
                 }
+                string dtu = Encoding.ASCII.GetString( check.Content.ContentBytes, 0, 11 );
 
                 // 密码失败的情况
-                if(!isPasswrodRight)
+                if (!isPasswrodRight)
                 {
                     OperateResult send = Send( socket, GetResponse( StatusPasswodWrong ) );
                     if (send.IsSuccess) socket?.Close( );
+                    LogNet?.WriteWarn( ToString( ), "Login Password Wrong, Id:" + dtu );
                     return;
                 }
 
-                string dtu = Encoding.ASCII.GetString( check.Content.ContentBytes, 0, 11 );
+                AlienSession session = new AlienSession( )
+                {
+                    DTU = dtu,
+                    Socket = socket,
+                };
 
                 // 检测是否禁止登录
-                if(!IsClientPermission( dtu ))
+                if (!IsClientPermission( session ))
                 {
                     OperateResult send = Send( socket, GetResponse( StatusLoginForbidden ) );
                     if (send.IsSuccess) socket?.Close( );
+                    LogNet?.WriteWarn( ToString( ), "Login Forbidden, Id:" + session.DTU );
                     return;
                 }
 
                 // 检测是否重复登录，不重复的话，也就是意味着登录成功了
+                if (IsClientOnline( session ))
+                {
+                    OperateResult send = Send( socket, GetResponse( StatusLoginRepeat ) );
+                    if (send.IsSuccess) socket?.Close( );
+                    LogNet?.WriteWarn( ToString( ), "Login Repeat, Id:" + session.DTU );
+                    return;
+                }
+                else
+                {
+                    OperateResult send = Send( socket, GetResponse( StatusOk ) );
+                    if (!send.IsSuccess) return;
+                }
 
+                // 触发上线消息
+                OnClientConnected?.Invoke( session );
             }
         }
+        
 
+        /// <summary>
+        /// 退出异形客户端
+        /// </summary>
+        /// <param name="session">异形客户端的会话</param>
+        public void AlienSessionLoginOut( AlienSession session )
+        {
+            alreadyLock.Enter( );
+
+            alreadyOnline.Remove( session );
+
+            alreadyLock.Leave( );
+        }
+
+        #endregion
+
+        #region Client Event
+
+        /// <summary>
+        /// 当有服务器连接上来的时候触发
+        /// </summary>
+        public event Action<AlienSession> OnClientConnected = null;
 
         #endregion
 
@@ -147,22 +188,28 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 检测当前的DTU是否在线
         /// </summary>
-        /// <param name="dtu"></param>
+        /// <param name="session"></param>
         /// <returns></returns>
-        private bool IsClientOnline( string dtu)
+        private bool IsClientOnline( AlienSession session )
         {
-            bool result = true;
+            bool result = false;
             alreadyLock.Enter( );
 
             for (int i = 0; i < alreadyOnline.Count; i++)
             {
-                if(alreadyOnline[i].DTU == dtu)
+                if(alreadyOnline[i].DTU == session.DTU)
                 {
-                    result = false;
+                    result = true;
                     break;
                 }
             }
 
+
+            if (!result)
+            {
+                alreadyOnline.Add( session );
+            }
+            
             alreadyLock.Leave( );
 
             return result;
@@ -171,9 +218,9 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 检测当前的dtu是否允许登录
         /// </summary>
-        /// <param name="dtu"></param>
+        /// <param name="session"></param>
         /// <returns></returns>
-        private bool IsClientPermission( string dtu )
+        private bool IsClientPermission( AlienSession session )
         {
             bool result = false;
 
@@ -187,7 +234,7 @@ namespace HslCommunication.Core.Net
             {
                 for (int i = 0; i < trustOnline.Count; i++)
                 {
-                    if (trustOnline[i] == dtu)
+                    if (trustOnline[i] == session.DTU)
                     {
                         result = true;
                         break;
@@ -203,13 +250,42 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
+        #region Public Method
+
+        /// <summary>
+        /// 设置密码，长度为6
+        /// </summary>
+        /// <param name="password"></param>
+        public void SetPassword(byte[] password)
+        {
+            if(password?.Length == 6)
+            {
+                password.CopyTo( this.password, 0 );
+            }
+        }
+
+        /// <summary>
+        /// 设置可信任的客户端列表
+        /// </summary>
+        /// <param name="clients"></param>
+        public void SetTrustClients(string[] clients)
+        {
+            trustLock.Enter( );
+
+            trustOnline = new List<string>( clients );
+
+            trustLock.Leave( );
+        }
+
+        #endregion
+
         #region Private Member
 
         private byte[] password;                    // 密码设置
         private List<AlienSession> alreadyOnline;   // 所有在线信息
         private SimpleHybirdLock alreadyLock;       // 列表的同步锁
-        private List<string> trustOnline;         // 禁止登录的客户端信息
-        private SimpleHybirdLock trustLock;     // 禁止登录的锁
+        private List<string> trustOnline;           // 禁止登录的客户端信息
+        private SimpleHybirdLock trustLock;         // 禁止登录的锁
 
         #endregion
 

@@ -288,6 +288,8 @@ namespace HslCommunication.Core.Net
                 netMsg.ContentBytes = contentResult.Content;
             }
 
+            // 防止没有实例化造成后续的操作失败
+            if (netMsg.ContentBytes == null) netMsg.ContentBytes = new byte[0];
             hslTimeOut.IsSuccessful = true;
             result.Content = netMsg;
             result.IsSuccess = true;

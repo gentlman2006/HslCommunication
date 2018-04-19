@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HslCommunication.Core.IMessage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -140,5 +141,68 @@ namespace HslCommunication.Core.Net
         }
 
 
+        #region Create Alien Connection
+
+
+        /**************************************************************************************************
+         * 
+         *    此处实现了连接Hsl异形客户端的协议，特殊的协议实现定制请联系作者
+         *    QQ群：592132877
+         * 
+         *************************************************************************************************/
+
+
+        /// <summary>
+        /// 创建一个指定的异形客户端连接，使用Hsl协议来发送注册包
+        /// </summary>
+        /// <param name="ipAddress">Ip地址</param>
+        /// <param name="port">端口号</param>
+        /// <param name="dtuId">设备唯一ID号，最长11</param>
+        /// <returns>是否成功连接</returns>
+        public OperateResult ConnectHslAlientClient( string ipAddress, int port ,string dtuId)
+        {
+            if (dtuId.Length > 11) dtuId = dtuId.Substring( 11 );
+            byte[] sendBytes = new byte[28];
+            sendBytes[0] = 0x48;
+            sendBytes[1] = 0x73;
+            sendBytes[2] = 0x6E;
+            sendBytes[4] = 0x17;
+
+            Encoding.ASCII.GetBytes( dtuId ).CopyTo( sendBytes, 5 );
+
+            OperateResult<Socket> connect = CreateSocketAndConnect( ipAddress, port, 10000 );
+            if (!connect.IsSuccess) return connect;
+
+            OperateResult send = Send( connect.Content, sendBytes );
+            if (!send.IsSuccess) return send;
+
+            OperateResult<AlienMessage> receive = ReceiveMessage( connect.Content, 10000, new AlienMessage( ) );
+            if (!receive.IsSuccess) return receive;
+
+            switch (receive.Content.ContentBytes[0])
+            {
+                case 0x01:
+                    {
+                        connect.Content?.Close( );
+                        return new OperateResult( ) { Message = "设备唯一ID重复登录" };
+                    }
+                case 0x02:
+                    {
+                        connect.Content?.Close( );
+                        return new OperateResult( ) { Message = "设备唯一ID禁止登录" };
+                    }
+                case 0x03:
+                    {
+                        connect.Content?.Close( );
+                        return new OperateResult( ) { Message = "密码验证失败" };
+                    }
+            }
+
+            ThreadPoolLogin( connect.Content );
+            return OperateResult.CreateSuccessResult( );
+        }
+
+
+        #endregion
     }
 }

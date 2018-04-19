@@ -125,6 +125,13 @@ namespace HslCommunication.Core.Net
             set { connectionId = value; }
         }
 
+
+        /// <summary>
+        /// 当前的异形连接对象，如果设置了异形连接的话
+        /// </summary>
+        public AlienSession AlienSession { get; set; }
+
+
         #endregion
 
         #region Connect Close
@@ -166,13 +173,37 @@ namespace HslCommunication.Core.Net
         /// 使用指定的套接字创建异形客户端
         /// </summary>
         /// <returns>通常都为成功</returns>
-        public OperateResult ConnectServer( Socket socket )
+        public OperateResult ConnectServer( AlienSession session )
         {
             IsPersistentConn = true;
-            CoreSocket = socket;
             isUseSpecifiedSocket = true;
 
-            return InitilizationOnConnect( socket );
+
+            if (session != null)
+            {
+                if (string.IsNullOrEmpty( ConnectionId ))
+                {
+                    ConnectionId = session.DTU;
+                }
+
+                if (ConnectionId == session.DTU)
+                {
+                    CoreSocket = session.Socket;
+                    IsSocketError = false;
+                    AlienSession = session;
+                    return InitilizationOnConnect( session.Socket );
+                }
+                else
+                {
+                    IsSocketError = true;
+                    return new OperateResult( );
+                }
+            }
+            else
+            {
+                IsSocketError = true;
+                return new OperateResult( );
+            }
         }
 
 
@@ -220,7 +251,7 @@ namespace HslCommunication.Core.Net
         }
 
         #endregion
-
+        
         #region Core Communication
 
         /***************************************************************************************
@@ -241,24 +272,39 @@ namespace HslCommunication.Core.Net
         {
             if (IsPersistentConn)
             {
-                // 长连接模式
-                if (IsSocketError || CoreSocket == null)
+                // 如果是异形模式
+                if (isUseSpecifiedSocket)
                 {
-                    OperateResult connect = ConnectServer( );
-                    if (!connect.IsSuccess)
+                    if(IsSocketError)
                     {
-                        IsSocketError = true;
-                        return OperateResult.CreateFailedResult<Socket>( connect );
+                        return new OperateResult<Socket>( ) { Message = "连接不可用" };
                     }
                     else
                     {
-                        IsSocketError = false;
                         return OperateResult.CreateSuccessResult( CoreSocket );
                     }
                 }
                 else
                 {
-                    return  OperateResult.CreateSuccessResult( CoreSocket );
+                    // 长连接模式
+                    if (IsSocketError || CoreSocket == null)
+                    {
+                        OperateResult connect = ConnectServer( );
+                        if (!connect.IsSuccess)
+                        {
+                            IsSocketError = true;
+                            return OperateResult.CreateFailedResult<Socket>( connect );
+                        }
+                        else
+                        {
+                            IsSocketError = false;
+                            return OperateResult.CreateSuccessResult( CoreSocket );
+                        }
+                    }
+                    else
+                    {
+                        return OperateResult.CreateSuccessResult( CoreSocket );
+                    }
                 }
             }
             else
@@ -326,29 +372,19 @@ namespace HslCommunication.Core.Net
         {
             var result = new OperateResult<byte[]>( );
             // string tmp1 = BasicFramework.SoftBasic.ByteToHexString( send, '-' );
-            
+
             InteractiveLock.Enter( );
 
             // 获取有用的网络通道，如果没有，就建立新的连接
-            OperateResult<Socket> resultSocket = null;
-            if (isUseSpecifiedSocket)
+            OperateResult<Socket> resultSocket = GetAvailableSocket( );
+            if (!resultSocket.IsSuccess)
             {
-                // 使用了指定的网络套接字
-                resultSocket = OperateResult.CreateSuccessResult( CoreSocket );
+                IsSocketError = true;
+                InteractiveLock.Leave( );
+                result.CopyErrorFromOther( resultSocket );
+                return result;
             }
-            else
-            {
-                // 使用了一般的网路套接字
-                resultSocket = GetAvailableSocket( );
-                if (!resultSocket.IsSuccess)
-                {
-                    IsSocketError = true;
-                    InteractiveLock.Leave( );
-                    result.CopyErrorFromOther( resultSocket );
-                    return result;
-                }
-            }
-             
+
             OperateResult<byte[]> read = ReadFromCoreServer( resultSocket.Content, send );
 
             if (read.IsSuccess)
@@ -363,7 +399,7 @@ namespace HslCommunication.Core.Net
                 IsSocketError = true;
                 result.CopyErrorFromOther( read );
             }
-            
+
             InteractiveLock.Leave( );
             if (!IsPersistentConn) resultSocket.Content?.Close( );
             return result;

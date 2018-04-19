@@ -55,9 +55,10 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.button16 = new System.Windows.Forms.Button();
-            this.button17 = new System.Windows.Forms.Button();
             this.button18 = new System.Windows.Forms.Button();
+            this.button17 = new System.Windows.Forms.Button();
+            this.button16 = new System.Windows.Forms.Button();
+            this.button19 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -139,6 +140,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button19);
             this.groupBox2.Controls.Add(this.button6);
             this.groupBox2.Location = new System.Drawing.Point(425, 74);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -377,16 +379,16 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Controls";
             // 
-            // button16
+            // button18
             // 
-            this.button16.Location = new System.Drawing.Point(19, 24);
-            this.button16.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(150, 32);
-            this.button16.TabIndex = 0;
-            this.button16.Text = "Simple Control";
-            this.button16.UseVisualStyleBackColor = true;
-            this.button16.Click += new System.EventHandler(this.button16_Click);
+            this.button18.Location = new System.Drawing.Point(19, 103);
+            this.button18.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button18.Name = "button18";
+            this.button18.Size = new System.Drawing.Size(150, 32);
+            this.button18.TabIndex = 2;
+            this.button18.Text = "Curve (曲线)";
+            this.button18.UseVisualStyleBackColor = true;
+            this.button18.Click += new System.EventHandler(this.button18_Click);
             // 
             // button17
             // 
@@ -399,16 +401,27 @@
             this.button17.UseVisualStyleBackColor = true;
             this.button17.Click += new System.EventHandler(this.button17_Click);
             // 
-            // button18
+            // button16
             // 
-            this.button18.Location = new System.Drawing.Point(19, 103);
-            this.button18.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button18.Name = "button18";
-            this.button18.Size = new System.Drawing.Size(150, 32);
-            this.button18.TabIndex = 2;
-            this.button18.Text = "Curve (曲线)";
-            this.button18.UseVisualStyleBackColor = true;
-            this.button18.Click += new System.EventHandler(this.button18_Click);
+            this.button16.Location = new System.Drawing.Point(19, 24);
+            this.button16.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(150, 32);
+            this.button16.TabIndex = 0;
+            this.button16.Text = "Simple Control";
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Click += new System.EventHandler(this.button16_Click);
+            // 
+            // button19
+            // 
+            this.button19.Location = new System.Drawing.Point(19, 64);
+            this.button19.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button19.Name = "button19";
+            this.button19.Size = new System.Drawing.Size(150, 32);
+            this.button19.TabIndex = 1;
+            this.button19.Text = "异形 Modbus Tcp";
+            this.button19.UseVisualStyleBackColor = true;
+            this.button19.Click += new System.EventHandler(this.button19_Click);
             // 
             // FormLoad
             // 
@@ -476,6 +489,7 @@
         private System.Windows.Forms.Button button16;
         private System.Windows.Forms.Button button18;
         private System.Windows.Forms.Button button17;
+        private System.Windows.Forms.Button button19;
     }
 }
 

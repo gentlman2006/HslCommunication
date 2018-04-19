@@ -447,7 +447,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<short> ReadInt16( string address )
         {
-            return GetInt16ResultFromBytes( Read( address, 2 ) );
+            return GetInt16ResultFromBytes( Read( address, 1 ) );
         }
 
 
@@ -458,7 +458,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ushort> ReadUInt16( string address )
         {
-            return GetUInt16ResultFromBytes( Read( address, 2 ) );
+            return GetUInt16ResultFromBytes( Read( address, 1 ) );
         }
 
         /// <summary>
@@ -468,7 +468,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<int> ReadInt32( string address )
         {
-            return GetInt32ResultFromBytes( Read( address, 4 ) );
+            return GetInt32ResultFromBytes( Read( address, 2 ) );
         }
 
         /// <summary>
@@ -478,7 +478,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<uint> ReadUInt32( string address )
         {
-            return GetUInt32ResultFromBytes( Read( address, 4 ) );
+            return GetUInt32ResultFromBytes( Read( address, 2 ) );
         }
 
         /// <summary>
@@ -488,7 +488,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<float> ReadFloat( string address )
         {
-            return GetSingleResultFromBytes( Read( address, 4 ) );
+            return GetSingleResultFromBytes( Read( address, 2 ) );
         }
 
         /// <summary>
@@ -498,7 +498,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<long> ReadInt64( string address )
         {
-            return GetInt64ResultFromBytes( Read( address, 8 ) );
+            return GetInt64ResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
@@ -508,7 +508,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ulong> ReadUInt64( string address )
         {
-            return GetUInt64ResultFromBytes( Read( address, 8 ) );
+            return GetUInt64ResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
@@ -518,7 +518,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<double> ReadDouble( string address )
         {
-            return GetDoubleResultFromBytes( Read( address, 8 ) );
+            return GetDoubleResultFromBytes( Read( address, 4 ) );
         }
 
         /// <summary>
