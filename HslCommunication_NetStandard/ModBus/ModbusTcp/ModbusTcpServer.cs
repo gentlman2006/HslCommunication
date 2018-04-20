@@ -7,6 +7,7 @@ using HslCommunication;
 using HslCommunication.Core.Net;
 using System.Net.Sockets;
 using HslCommunication.Core.IMessage;
+using System.
 
 namespace HslCommunication.ModBus
 {
@@ -1338,7 +1339,21 @@ namespace HslCommunication.ModBus
 
 
         #endregion
-        
+
+        #region Serial Support
+
+        // 服务器的串口支持
+
+            private Ser
+
+        public OperateResult OpenSerial()
+        {
+
+        }
+
+
+        #endregion
+
         #region Object Override
 
         /// <summary>

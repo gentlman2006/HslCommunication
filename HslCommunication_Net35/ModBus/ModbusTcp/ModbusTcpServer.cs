@@ -7,6 +7,7 @@ using HslCommunication;
 using HslCommunication.Core.Net;
 using System.Net.Sockets;
 using HslCommunication.Core.IMessage;
+using System.IO.Ports;
 
 namespace HslCommunication.ModBus
 {
@@ -1338,7 +1339,107 @@ namespace HslCommunication.ModBus
 
 
         #endregion
-        
+
+        #region Serial Support
+
+        private SerialPort serialPort;            // 核心的串口对象
+
+        /// <summary>
+        /// 使用默认的
+        /// </summary>
+        /// <param name="com"></param>
+        public void StartSerialPort( string com )
+        {
+            StartSerialPort( sp =>
+             {
+                 sp.PortName = com;
+                 sp.BaudRate = 9600;
+                 sp.DataBits = 8;
+                 sp.Parity = Parity.None;
+                 sp.StopBits = StopBits.One;
+             } );
+            
+
+            serialPort.Open( );
+            serialPort.DataReceived += SerialPort_DataReceived;
+        }
+
+        private void SerialPort_DataReceived( object sender, SerialDataReceivedEventArgs e )
+        {
+            byte[] buffer = new byte[serialPort.BytesToRead];
+            int count = serialPort.Read( buffer, 0, buffer.Length );
+            byte[] receive = new byte[count];
+            Array.Copy( buffer, 0, receive, 0, count );
+            if(Serial.SoftCRC16.CheckCRC16(receive))
+            {
+
+            }
+            else
+            {
+                LogNet?.WriteWarn( "CRC 校验失败" );
+            }
+        }
+
+
+
+        /// <summary>
+        /// 检测当前的Modbus接收的指定是否是合法的
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
+        private bool CheckModbusRtuMessageLegal( byte[] buffer )
+        {
+            if (buffer[1] == ModbusInfo.ReadCoil || 
+                buffer[1] == ModbusInfo.ReadDiscrete || 
+                buffer[1] == ModbusInfo.ReadRegister || 
+                buffer[1] == ModbusInfo.WriteOneCoil || 
+                buffer[1] == ModbusInfo.WriteOneRegister)
+            {
+                if (buffer.Length != 0x08)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else if (buffer[1] == 0x0F || buffer[1] == 0x10)
+            {
+                if (buffer.Length < 13)
+                {
+                    return false;
+                }
+                else
+                {
+                    if (buffer[12] == (buffer.Length - 13))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// 使用自定义的初始化方法初始化串口的参数
+        /// </summary>
+        /// <param name="inni"></param>
+        public void StartSerialPort( Action<SerialPort> inni )
+        {
+            inni?.Invoke( serialPort );
+        }
+
+
+        #endregion
+
         #region Object Override
 
         /// <summary>
