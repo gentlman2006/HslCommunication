@@ -27,6 +27,7 @@ namespace HslCommunication.Core.Net
         {
             InteractiveLock = new SimpleHybirdLock( );                    // 实例化数据访问锁
             byteTransform = new TTransform( );                            // 实例化数据转换规则
+            connectionId = BasicFramework.SoftBasic.GetUniqueStringByGuidAndRandom( );
         }
 
         #endregion
@@ -41,7 +42,8 @@ namespace HslCommunication.Core.Net
         private bool IsPersistentConn = false;           // 是否处于长连接的状态
         private SimpleHybirdLock InteractiveLock;        // 一次正常的交互的互斥锁
         private bool IsSocketError = false;              // 指示长连接的套接字是否处于错误的状态
-
+        private bool isUseSpecifiedSocket = false;       // 指示是否使用指定的网络套接字访问数据
+        private string connectionId = string.Empty;      // 当前连接
 
         #endregion
 
@@ -61,14 +63,8 @@ namespace HslCommunication.Core.Net
         /// </summary>
         public int ConnectTimeOut
         {
-            get
-            {
-                return connectTimeOut;
-            }
-            set
-            {
-                connectTimeOut = value;
-            }
+            get{return connectTimeOut;}
+            set { connectTimeOut = value;}
         }
 
         /// <summary>
@@ -76,14 +72,8 @@ namespace HslCommunication.Core.Net
         /// </summary>
         public int ReceiveTimeOut
         {
-            get
-            {
-                return receiveTimeOut;
-            }
-            set
-            {
-                receiveTimeOut = value;
-            }
+            get{return receiveTimeOut;}
+            set{ receiveTimeOut = value;}
         }
 
         /// <summary>
@@ -123,9 +113,28 @@ namespace HslCommunication.Core.Net
             }
         }
 
+        /// <summary>
+        /// 当前连接的唯一ID号，默认为长度20的guid码加随机数组成，也可以自己指定
+        /// </summary>
+        /// <remarks>
+        /// Current Connection ID, conclude guid and random data, also, you can spcified
+        /// </remarks>
+        public string ConnectionId
+        {
+            get { return connectionId; }
+            set { connectionId = value; }
+        }
+
+
+        /// <summary>
+        /// 当前的异形连接对象，如果设置了异形连接的话
+        /// </summary>
+        public AlienSession AlienSession { get; set; }
+
+
         #endregion
 
-        #region Open Close
+        #region Connect Close
 
         /// <summary>
         /// 切换短连接模式到长连接模式，后面的每次请求都共享一个通道
@@ -160,6 +169,42 @@ namespace HslCommunication.Core.Net
         }
 
 
+        /// <summary>
+        /// 使用指定的套接字创建异形客户端
+        /// </summary>
+        /// <returns>通常都为成功</returns>
+        public OperateResult ConnectServer( AlienSession session )
+        {
+            IsPersistentConn = true;
+            isUseSpecifiedSocket = true;
+
+
+            if (session != null)
+            {
+                if (string.IsNullOrEmpty( ConnectionId ))
+                {
+                    ConnectionId = session.DTU;
+                }
+
+                if (ConnectionId == session.DTU)
+                {
+                    CoreSocket = session.Socket;
+                    IsSocketError = false;
+                    AlienSession = session;
+                    return InitilizationOnConnect( session.Socket );
+                }
+                else
+                {
+                    IsSocketError = true;
+                    return new OperateResult( );
+                }
+            }
+            else
+            {
+                IsSocketError = true;
+                return new OperateResult( );
+            }
+        }
 
 
         /// <summary>
@@ -178,74 +223,6 @@ namespace HslCommunication.Core.Net
             CoreSocket = null;
 
             LogNet?.WriteDebug( ToString( ), StringResources.NetEngineClose );
-            return result;
-        }
-
-        #endregion
-
-        #region Receive Message
-
-        /// <summary>
-        /// 接收一条完整的数据，使用异步接收完成，包含了指令头信息
-        /// </summary>
-        /// <param name="socket">已经打开的网络套接字</param>
-        /// <param name="timeOut">超时时间</param>
-        /// <param name="netMsg">消息规则</param>
-        /// <returns>数据的接收结果对象</returns>
-        protected OperateResult<TNetMessage> ReceiveMessage( Socket socket, int timeOut , TNetMessage netMsg)
-        {
-            OperateResult<TNetMessage> result = new OperateResult<TNetMessage>( );
-
-            // 超时接收的代码验证
-            HslTimeOut hslTimeOut = new HslTimeOut( )
-            {
-                DelayTime = timeOut,
-                WorkSocket = socket,
-            };
-            if (timeOut > 0) ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), hslTimeOut );
-
-            // 接收指令头
-            OperateResult<byte[]> headResult = Receive( socket, netMsg.ProtocolHeadBytesLength );
-            if (!headResult.IsSuccess)
-            {
-                hslTimeOut.IsSuccessful = true;
-                result.CopyErrorFromOther( headResult );
-                return result;
-            }
-
-            netMsg.HeadBytes = headResult.Content;
-            if (!netMsg.CheckHeadBytesLegal( Token.ToByteArray( ) ))
-            {
-                // 令牌校验失败
-                hslTimeOut.IsSuccessful = true;
-                socket?.Close( );
-                LogNet?.WriteError( ToString( ), StringResources.TokenCheckFailed );
-                result.Message = StringResources.TokenCheckFailed;
-                return result;
-            }
-
-
-            int contentLength = netMsg.GetContentLengthByHeadBytes( );
-            if (contentLength == 0)
-            {
-                netMsg.ContentBytes = new byte[0];
-            }
-            else
-            {
-                OperateResult<byte[]> contentResult = Receive( socket, contentLength );
-                if (!headResult.IsSuccess)
-                {
-                    hslTimeOut.IsSuccessful = true;
-                    result.CopyErrorFromOther( contentResult );
-                    return result;
-                }
-
-                netMsg.ContentBytes = contentResult.Content;
-            }
-
-            hslTimeOut.IsSuccessful = true;
-            result.Content = netMsg;
-            result.IsSuccess = true;
             return result;
         }
 
@@ -274,7 +251,7 @@ namespace HslCommunication.Core.Net
         }
 
         #endregion
-
+        
         #region Core Communication
 
         /***************************************************************************************
@@ -293,29 +270,41 @@ namespace HslCommunication.Core.Net
         /// <returns>是否成功，如果成功，使用这个套接字</returns>
         private OperateResult<Socket> GetAvailableSocket( )
         {
-            var result = new OperateResult<Socket>( );
-
             if (IsPersistentConn)
             {
-                // 长连接模式
-                if (IsSocketError || CoreSocket == null)
+                // 如果是异形模式
+                if (isUseSpecifiedSocket)
                 {
-                    OperateResult connect = ConnectServer( );
-                    if (!connect.IsSuccess)
+                    if(IsSocketError)
                     {
-                        IsSocketError = true;
-                        result.CopyErrorFromOther( connect );
-                        return result;
+                        return new OperateResult<Socket>( ) { Message = "连接不可用" };
                     }
                     else
                     {
-                        IsSocketError = false;
                         return OperateResult.CreateSuccessResult( CoreSocket );
                     }
                 }
                 else
                 {
-                    return  OperateResult.CreateSuccessResult( CoreSocket );
+                    // 长连接模式
+                    if (IsSocketError || CoreSocket == null)
+                    {
+                        OperateResult connect = ConnectServer( );
+                        if (!connect.IsSuccess)
+                        {
+                            IsSocketError = true;
+                            return OperateResult.CreateFailedResult<Socket>( connect );
+                        }
+                        else
+                        {
+                            IsSocketError = false;
+                            return OperateResult.CreateSuccessResult( CoreSocket );
+                        }
+                    }
+                    else
+                    {
+                        return OperateResult.CreateSuccessResult( CoreSocket );
+                    }
                 }
             }
             else
@@ -347,6 +336,33 @@ namespace HslCommunication.Core.Net
             return result;
         }
 
+
+        /// <summary>
+        /// 在其他指定的套接字上，使用报文来通讯，传入需要发送的消息，返回一条完整的数据指令
+        /// </summary>
+        /// <param name="socket">指定的套接字</param>
+        /// <param name="send">发送的完整的报文信息</param>
+        /// <returns>接收的完整的报文信息</returns>
+        public OperateResult<byte[]> ReadFromCoreServer( Socket socket, byte[] send )
+        {
+            var result = new OperateResult<byte[]>( );
+
+            var read = ReadFromCoreServerBase( socket, send );
+            if (read.IsSuccess)
+            {
+                result.IsSuccess = read.IsSuccess;
+                result.Content = new byte[read.Content1.Length + read.Content2.Length];
+                if (read.Content1.Length > 0) read.Content1.CopyTo( result.Content, 0 );
+                if (read.Content2.Length > 0) read.Content2.CopyTo( result.Content, read.Content1.Length );
+            }
+            else
+            {
+                result.CopyErrorFromOther( read );
+            }
+            return result;
+        }
+
+
         /// <summary>
         /// 使用底层的数据报文来通讯，传入需要发送的消息，返回一条完整的数据指令
         /// </summary>
@@ -356,7 +372,7 @@ namespace HslCommunication.Core.Net
         {
             var result = new OperateResult<byte[]>( );
             // string tmp1 = BasicFramework.SoftBasic.ByteToHexString( send, '-' );
-            
+
             InteractiveLock.Enter( );
 
             // 获取有用的网络通道，如果没有，就建立新的连接
@@ -369,16 +385,13 @@ namespace HslCommunication.Core.Net
                 return result;
             }
 
-            var read = ReadFromCoreServerBase( resultSocket.Content, send );
+            OperateResult<byte[]> read = ReadFromCoreServer( resultSocket.Content, send );
 
             if (read.IsSuccess)
             {
                 IsSocketError = false;
                 result.IsSuccess = read.IsSuccess;
-                result.Content = new byte[read.Content1.Length + read.Content2.Length];
-                if (read.Content1.Length > 0) read.Content1.CopyTo( result.Content, 0 );
-                if (read.Content2.Length > 0) read.Content2.CopyTo( result.Content, read.Content1.Length );
-
+                result.Content = read.Content;
                 // string tmp2 = BasicFramework.SoftBasic.ByteToHexString( result.Content ) ;
             }
             else
@@ -386,7 +399,6 @@ namespace HslCommunication.Core.Net
                 IsSocketError = true;
                 result.CopyErrorFromOther( read );
             }
-
 
             InteractiveLock.Leave( );
             if (!IsPersistentConn) resultSocket.Content?.Close( );

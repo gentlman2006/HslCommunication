@@ -370,7 +370,9 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 8];
             for (int i = 0; i < values.Length; i++)
             {
-                BitConverter.GetBytes( values[i] ).CopyTo( buffer, 8 * i );
+                byte[] tmp = BitConverter.GetBytes( values[i] );
+                Array.Reverse( tmp );
+                tmp.CopyTo( buffer, 8 * i );
             }
 
             return buffer;
@@ -397,7 +399,9 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 8];
             for (int i = 0; i < values.Length; i++)
             {
-                BitConverter.GetBytes( values[i] ).CopyTo( buffer, 8 * i );
+                byte[] tmp = BitConverter.GetBytes( values[i] );
+                Array.Reverse( tmp );
+                tmp.CopyTo( buffer, 8 * i );
             }
 
             return buffer;
@@ -424,7 +428,9 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 4];
             for (int i = 0; i < values.Length; i++)
             {
-                BitConverter.GetBytes( values[i] ).CopyTo( buffer, 4 * i );
+                byte[] tmp = BitConverter.GetBytes( values[i] );
+                Array.Reverse( tmp );
+                tmp.CopyTo( buffer, 4 * i );
             }
 
             return buffer;
@@ -451,7 +457,9 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 8];
             for (int i = 0; i < values.Length; i++)
             {
-                BitConverter.GetBytes( values[i] ).CopyTo( buffer, 8 * i );
+                byte[] tmp = BitConverter.GetBytes( values[i] );
+                Array.Reverse( tmp );
+                tmp.CopyTo( buffer, 8 * i );
             }
 
             return buffer;

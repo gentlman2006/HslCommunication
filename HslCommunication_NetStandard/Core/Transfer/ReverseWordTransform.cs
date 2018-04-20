@@ -158,7 +158,8 @@ namespace HslCommunication.Core
         /// <returns>string对象</returns>
         public string TransString( byte[] buffer )
         {
-            return Encoding.ASCII.GetString( buffer );
+            // 大小端进行转化一下
+            return Encoding.ASCII.GetString( ReverseBytesByWord( buffer ) );
         }
 
 
@@ -412,7 +413,10 @@ namespace HslCommunication.Core
         /// <returns>buffer数据</returns>
         public byte[] TransByte( string value )
         {
-            return Encoding.ASCII.GetBytes( value );
+            // return Encoding.ASCII.GetBytes( value );
+            byte[] buffer = Encoding.ASCII.GetBytes( value );
+            buffer = BasicFramework.SoftBasic.ArrayExpandToLengthEven( buffer );
+            return ReverseBytesByWord( buffer );
         }
 
 

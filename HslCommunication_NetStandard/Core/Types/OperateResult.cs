@@ -86,28 +86,12 @@ namespace HslCommunication
          *    主要是方便获取到一些特殊状态的结果对象
          * 
          ******************************************************************************************************/
+         
 
         /// <summary>
         /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
         /// </summary>
         /// <typeparam name="T">目标数据类型</typeparam>
-        /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
-        public static OperateResult CreateFailedResult<T>(T result) where T : OperateResult
-        {
-            return new OperateResult( )
-            {
-                ErrorCode = result.ErrorCode,
-                Message = result.Message,
-            };
-        }
-
-
-        /// <summary>
-        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
-        /// </summary>
-        /// <typeparam name="T">目标数据类型</typeparam>
-        /// <typeparam name="TOrigin">元数据类型</typeparam>
         /// <param name="result">之前的结果对象</param>
         /// <returns></returns>
         public static OperateResult<T> CreateFailedResult<T>( OperateResult result ) 
@@ -118,6 +102,194 @@ namespace HslCommunication
                 Message = result.Message,
             };
         }
+
+        /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T1">目标数据类型一</typeparam>
+        /// <typeparam name="T2">目标数据类型二</typeparam>
+        /// <param name="result">之前的结果对象</param>
+        /// <returns></returns>
+        public static OperateResult<T1, T2> CreateFailedResult<T1, T2>( OperateResult result )
+        {
+            return new OperateResult<T1, T2>( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+
+        /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T1">目标数据类型一</typeparam>
+        /// <typeparam name="T2">目标数据类型二</typeparam>
+        /// <typeparam name="T3">目标数据类型三</typeparam>
+        /// <param name="result">之前的结果对象</param>
+        /// <returns></returns>
+        public static OperateResult<T1, T2, T3> CreateFailedResult<T1, T2, T3>( OperateResult result )
+        {
+            return new OperateResult<T1, T2, T3>( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+
+        /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T1">目标数据类型一</typeparam>
+        /// <typeparam name="T2">目标数据类型二</typeparam>
+        /// <typeparam name="T3">目标数据类型三</typeparam>
+        /// <typeparam name="T4">目标数据类型四</typeparam>
+        /// <param name="result">之前的结果对象</param>
+        /// <returns></returns>
+        public static OperateResult<T1, T2, T3, T4> CreateFailedResult<T1, T2, T3, T4>( OperateResult result )
+        {
+            return new OperateResult<T1, T2, T3, T4>( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+
+        /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T1">目标数据类型一</typeparam>
+        /// <typeparam name="T2">目标数据类型二</typeparam>
+        /// <typeparam name="T3">目标数据类型三</typeparam>
+        /// <typeparam name="T4">目标数据类型四</typeparam>
+        /// <typeparam name="T5">目标数据类型五</typeparam>
+        /// <param name="result">之前的结果对象</param>
+        /// <returns></returns>
+        public static OperateResult<T1, T2, T3, T4, T5> CreateFailedResult<T1, T2, T3, T4, T5>( OperateResult result )
+        {
+            return new OperateResult<T1, T2, T3, T4, T5>( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+
+        /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T1">目标数据类型一</typeparam>
+        /// <typeparam name="T2">目标数据类型二</typeparam>
+        /// <typeparam name="T3">目标数据类型三</typeparam>
+        /// <typeparam name="T4">目标数据类型四</typeparam>
+        /// <typeparam name="T5">目标数据类型五</typeparam>
+        /// <typeparam name="T6">目标数据类型六</typeparam>
+        /// <param name="result">之前的结果对象</param>
+        /// <returns></returns>
+        public static OperateResult<T1, T2, T3, T4, T5, T6> CreateFailedResult<T1, T2, T3, T4, T5, T6>( OperateResult result )
+        {
+            return new OperateResult<T1, T2, T3, T4, T5, T6>( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+        /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T1">目标数据类型一</typeparam>
+        /// <typeparam name="T2">目标数据类型二</typeparam>
+        /// <typeparam name="T3">目标数据类型三</typeparam>
+        /// <typeparam name="T4">目标数据类型四</typeparam>
+        /// <typeparam name="T5">目标数据类型五</typeparam>
+        /// <typeparam name="T6">目标数据类型六</typeparam>
+        /// <typeparam name="T7">目标数据类型七</typeparam>
+        /// <param name="result">之前的结果对象</param>
+        /// <returns></returns>
+        public static OperateResult<T1, T2, T3, T4, T5, T6, T7> CreateFailedResult<T1, T2, T3, T4, T5, T6, T7>( OperateResult result )
+        {
+            return new OperateResult<T1, T2, T3, T4, T5, T6, T7>( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+        /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T1">目标数据类型一</typeparam>
+        /// <typeparam name="T2">目标数据类型二</typeparam>
+        /// <typeparam name="T3">目标数据类型三</typeparam>
+        /// <typeparam name="T4">目标数据类型四</typeparam>
+        /// <typeparam name="T5">目标数据类型五</typeparam>
+        /// <typeparam name="T6">目标数据类型六</typeparam>
+        /// <typeparam name="T7">目标数据类型七</typeparam>
+        /// <typeparam name="T8">目标数据类型八</typeparam>
+        /// <param name="result">之前的结果对象</param>
+        /// <returns></returns>
+        public static OperateResult<T1, T2, T3, T4, T5, T6, T7, T8> CreateFailedResult<T1, T2, T3, T4, T5, T6, T7, T8>( OperateResult result )
+        {
+            return new OperateResult<T1, T2, T3, T4, T5, T6, T7, T8>( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+
+        /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T1">目标数据类型一</typeparam>
+        /// <typeparam name="T2">目标数据类型二</typeparam>
+        /// <typeparam name="T3">目标数据类型三</typeparam>
+        /// <typeparam name="T4">目标数据类型四</typeparam>
+        /// <typeparam name="T5">目标数据类型五</typeparam>
+        /// <typeparam name="T6">目标数据类型六</typeparam>
+        /// <typeparam name="T7">目标数据类型七</typeparam>
+        /// <typeparam name="T8">目标数据类型八</typeparam>
+        /// <typeparam name="T9">目标数据类型九</typeparam>
+        /// <param name="result">之前的结果对象</param>
+        /// <returns></returns>
+        public static OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9> CreateFailedResult<T1, T2, T3, T4, T5, T6, T7, T8, T9>( OperateResult result )
+        {
+            return new OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9>( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+
+        /// <summary>
+        /// 创建并返回一个失败的结果对象，该对象复制另一个结果对象的错误信息
+        /// </summary>
+        /// <typeparam name="T1">目标数据类型一</typeparam>
+        /// <typeparam name="T2">目标数据类型二</typeparam>
+        /// <typeparam name="T3">目标数据类型三</typeparam>
+        /// <typeparam name="T4">目标数据类型四</typeparam>
+        /// <typeparam name="T5">目标数据类型五</typeparam>
+        /// <typeparam name="T6">目标数据类型六</typeparam>
+        /// <typeparam name="T7">目标数据类型七</typeparam>
+        /// <typeparam name="T8">目标数据类型八</typeparam>
+        /// <typeparam name="T9">目标数据类型九</typeparam>
+        /// <typeparam name="T10">目标数据类型十</typeparam>
+        /// <param name="result">之前的结果对象</param>
+        /// <returns></returns>
+        public static OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> CreateFailedResult<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>( OperateResult result )
+        {
+            return new OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>( )
+            {
+                ErrorCode = result.ErrorCode,
+                Message = result.Message,
+            };
+        }
+
+
 
         /// <summary>
         /// 创建并返回一个成功的结果对象

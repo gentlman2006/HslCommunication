@@ -6,6 +6,7 @@ using HslCommunication.Core;
 using HslCommunication;
 using HslCommunication.Core.Net;
 using System.Net.Sockets;
+using HslCommunication.Core.IMessage;
 
 namespace HslCommunication.ModBus
 {
@@ -701,9 +702,9 @@ namespace HslCommunication.ModBus
                 }
                 catch (Exception ex)
                 {
-                    state = null;
-                    state.WorkSocket.Close( );
+                    state.WorkSocket?.Close( );
                     LogNet?.WriteException( ToString(), $"客户端 [ {state.IpEndPoint} ] 头子节接收失败！", ex );
+                    state = null;
                 }
             }
         }
@@ -957,8 +958,8 @@ namespace HslCommunication.ModBus
                 catch (Exception ex)
                 {
                     state.WorkSocket?.Close( );
-                    state = null;
                     LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，确认回发消息失败！", ex );
+                    state = null;
                 }
             }
         }
@@ -1334,10 +1335,10 @@ namespace HslCommunication.ModBus
             lock_trusted_clients.Leave( );
             return result;
         }
-        
+
 
         #endregion
-
+        
         #region Object Override
 
         /// <summary>
