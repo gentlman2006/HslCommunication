@@ -32,6 +32,8 @@ namespace HslCommunication.ModBus
             subscriptions = new List<ModBusMonitorAddress>( );
             subcriptionHybirdLock = new SimpleHybirdLock( );
             byteTransform = new ReverseWordTransform( );
+
+            serialPort = new SerialPort( );
         }
 
         #endregion
@@ -714,48 +716,8 @@ namespace HslCommunication.ModBus
         #endregion
 
         #region Private Method
+        
 
-        /// <summary>
-        /// 检测当前的Modbus接收的指定是否是合法的
-        /// </summary>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
-        private bool CheckModbusMessageLegal( byte[] buffer )
-        {
-            if (buffer[7] == 0x01 || buffer[7] == 0x02 || buffer[7] == 0x03 || buffer[7] == 0x05 || buffer[7] == 0x06)
-            {
-                if (buffer.Length != 0x0C)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            else if (buffer[7] == 0x0F || buffer[7] == 0x10)
-            {
-                if (buffer.Length < 13)
-                {
-                    return false;
-                }
-                else
-                {
-                    if (buffer[12] == (buffer.Length - 13))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                return true;
-            }
-        }
 
         private void ModbusHeadReveiveCallback( IAsyncResult ar )
         {
@@ -867,51 +829,20 @@ namespace HslCommunication.ModBus
                 state.Clear( );
 
 
+                byte[] modbusCore = ModbusTcpTransModbusCore( data );
 
-                if (!CheckModbusMessageLegal( data ))
+                if (!CheckModbusMessageLegal( modbusCore ))
                 {
                     // 指令长度验证错误，关闭网络连接
                     state.WorkSocket?.Close( );
                     LogNet?.WriteError( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线，消息长度检查失败！" );
                     return;
                 }
-                
+
 
                 // 需要回发消息
-                byte[] copy = null;
+                byte[] copy = ModbusCoreTransModbusTcp( ReadFromModbusCore( modbusCore ), data );
 
-                switch (data[7])
-                {
-                    case ModbusInfo.ReadCoil:
-                        {
-                            copy = ReadCoilBack( data ); break;
-                        }
-                    case ModbusInfo.ReadRegister:
-                        {
-                            copy = ReadRegisterBack( data ); break;
-                        }
-                    case ModbusInfo.WriteOneCoil:
-                        {
-                            copy = WriteOneCoilBack( data ); break;
-                        }
-                    case ModbusInfo.WriteOneRegister:
-                        {
-                            copy = WriteOneRegisterBack( data ); break;
-                        }
-                    case ModbusInfo.WriteCoil:
-                        {
-                            copy = WriteCoilsBack( data ); break;
-                        }
-                    case ModbusInfo.WriteRegister:
-                        {
-                            copy = WriteRegisterBack( data ); break;
-                        }
-                    default:
-                        {
-                            copy = CreateExceptionBack( data, ModbusInfo.FunctionCodeNotSupport ); break;
-                        }
-                }
-                    
 
                 try
                 {
@@ -972,34 +903,31 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 创建特殊的功能标识，然后返回该信息
         /// </summary>
-        /// <param name="modbus"></param>
+        /// <param name="modbusCore"></param>
         /// <param name="error"></param>
         /// <returns></returns>
-        private byte[] CreateExceptionBack( byte[] modbus, byte error )
+        private byte[] CreateExceptionBack( byte[] modbusCore, byte error )
         {
-            byte[] buffer = new byte[9];
-            Array.Copy( modbus, 0, buffer, 0, 7 );
-            buffer[4] = 0x00;
-            buffer[5] = 0x03;
-            buffer[7] = (byte)(modbus[7] + 0x80);
-            buffer[8] = error;
+            byte[] buffer = new byte[3];
+            buffer[0] = modbusCore[0];
+            buffer[1] = (byte)(modbusCore[1] + 0x80);
+            buffer[2] = error;
             return buffer;
         }
 
         /// <summary>
         /// 创建返回消息
         /// </summary>
-        /// <param name="modbus"></param>
+        /// <param name="modbusCore"></param>
         /// <param name="content"></param>
         /// <returns></returns>
-        private byte[] CreateReadBack( byte[] modbus, byte[] content )
+        private byte[] CreateReadBack( byte[] modbusCore, byte[] content )
         {
-            byte[] buffer = new byte[9 + content.Length];
-            Array.Copy( modbus, 0, buffer, 0, 8 );
-            buffer[4] = (byte)((buffer.Length - 6) / 256);
-            buffer[5] = (byte)((buffer.Length - 6) % 256);
-            buffer[8] = (byte)content.Length;
-            Array.Copy( content, 0, buffer, 9, content.Length );
+            byte[] buffer = new byte[3 + content.Length];
+            buffer[0] = modbusCore[0];
+            buffer[1] = modbusCore[1];
+            buffer[2] = (byte)content.Length;
+            Array.Copy( content, 0, buffer, 3, content.Length );
             return buffer;
         }
 
@@ -1010,10 +938,8 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         private byte[] CreateWriteBack(byte[] modbus)
         {
-            byte[] buffer = new byte[12];
-            Array.Copy( modbus, 0, buffer, 0, 12 );
-            buffer[4] = 0x00;
-            buffer[5] = 0x06;
+            byte[] buffer = new byte[6];
+            Array.Copy( modbus, 0, buffer, 0, 6 );
             return buffer;
         }
 
@@ -1022,8 +948,8 @@ namespace HslCommunication.ModBus
         {
             try
             {
-                ushort address = byteTransform.TransUInt16( modbus, 8 );
-                ushort length = byteTransform.TransUInt16( modbus, 10 );
+                ushort address = byteTransform.TransUInt16( modbus, 2 );
+                ushort length = byteTransform.TransUInt16( modbus, 4 );
 
                 // 越界检测
                 if ((address + length) >= ushort.MaxValue)
@@ -1053,8 +979,8 @@ namespace HslCommunication.ModBus
         {
             try
             {
-                ushort address = byteTransform.TransUInt16( modbus, 8 );
-                ushort length = byteTransform.TransUInt16( modbus, 10 );
+                ushort address = byteTransform.TransUInt16( modbus, 2 );
+                ushort length = byteTransform.TransUInt16( modbus, 4 );
 
                 // 越界检测
                 if ((address + length) >= ushort.MaxValue)
@@ -1082,13 +1008,13 @@ namespace HslCommunication.ModBus
         {
             try
             {
-                ushort address = byteTransform.TransUInt16( modbus, 8 );
+                ushort address = byteTransform.TransUInt16( modbus, 2 );
 
-                if (modbus[10] == 0xFF && modbus[11] == 0x00)
+                if (modbus[4] == 0xFF && modbus[5] == 0x00)
                 {
                     WriteCoil( address, true );
                 }
-                else if (modbus[10] == 0x00 && modbus[11] == 0x00)
+                else if (modbus[4] == 0x00 && modbus[5] == 0x00)
                 {
                     WriteCoil( address, false );
                 }
@@ -1107,10 +1033,10 @@ namespace HslCommunication.ModBus
         {
             try
             {
-                ushort address = byteTransform.TransUInt16( modbus, 8 );
+                ushort address = byteTransform.TransUInt16( modbus, 2 );
                 short ValueOld = ReadInt16( address );
                 // 写入到寄存器
-                Write( address, modbus[10], modbus[11] );
+                Write( address, modbus[4], modbus[5] );
                 short ValueNew = ReadInt16( address );
                 // 触发写入请求
                 OnRegisterBeforWrite( address, ValueOld, ValueNew );
@@ -1128,8 +1054,8 @@ namespace HslCommunication.ModBus
         {
             try
             {
-                ushort address = byteTransform.TransUInt16( modbus, 8 );
-                ushort length = byteTransform.TransUInt16( modbus, 10 );
+                ushort address = byteTransform.TransUInt16( modbus, 2 );
+                ushort length = byteTransform.TransUInt16( modbus, 4 );
 
                 if ((address + length) > ushort.MaxValue)
                 {
@@ -1141,8 +1067,8 @@ namespace HslCommunication.ModBus
                     return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeQuantityOver );
                 }
 
-                byte[] buffer = new byte[modbus.Length - 13];
-                Array.Copy( modbus, 13, buffer, 0, buffer.Length );
+                byte[] buffer = new byte[modbus.Length - 7];
+                Array.Copy( modbus, 7, buffer, 0, buffer.Length );
                 bool[] value = BasicFramework.SoftBasic.ByteToBoolArray( buffer, length );
                 WriteCoil( address, value );
                 return CreateWriteBack( modbus );
@@ -1159,8 +1085,8 @@ namespace HslCommunication.ModBus
         {
             try
             {
-                ushort address = byteTransform.TransUInt16( modbus, 8 );
-                ushort length = byteTransform.TransUInt16( modbus, 10 );
+                ushort address = byteTransform.TransUInt16( modbus, 2 );
+                ushort length = byteTransform.TransUInt16( modbus, 4 );
 
                 if ((address + length) > ushort.MaxValue)
                 {
@@ -1172,14 +1098,14 @@ namespace HslCommunication.ModBus
                     return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeQuantityOver );
                 }
 
-                byte[] buffer = new byte[modbus.Length - 13];
+                byte[] buffer = new byte[modbus.Length - 7];
 
                 // 为了使服务器的数据订阅更加的准确，决定将设计改为等待所有的数据写入完成后，再统一触发订阅，2018年3月4日 20:56:47
                 MonitorAddress[] addresses = new MonitorAddress[length];
                 for (ushort i = 0; i < length; i++)
                 {
                     short ValueOld = ReadInt16( (ushort)(address + i) );
-                    Write( (ushort)(address + i), modbus[2 * i + 13], modbus[2 * i + 14] );
+                    Write( (ushort)(address + i), modbus[2 * i + 7], modbus[2 * i + 8] );
                     short ValueNew = ReadInt16( (ushort)(address + i) );
                     // 触发写入请求
                     addresses[i] = new MonitorAddress( )
@@ -1340,6 +1266,165 @@ namespace HslCommunication.ModBus
 
         #endregion
 
+        #region Modbus Core Logic
+
+
+        /// <summary>
+        /// 检测当前的Modbus接收的指定是否是合法的
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
+        private bool CheckModbusMessageLegal( byte[] buffer )
+        {
+            try
+            {
+                if (buffer[1] == ModbusInfo.ReadCoil ||
+                    buffer[1] == ModbusInfo.ReadDiscrete ||
+                    buffer[1] == ModbusInfo.ReadRegister ||
+                    buffer[1] == ModbusInfo.WriteOneCoil ||
+                    buffer[1] == ModbusInfo.WriteOneRegister)
+                {
+                    if (buffer.Length != 0x06)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else if (buffer[1] == ModbusInfo.WriteCoil || buffer[1] == ModbusInfo.WriteRegister)
+                {
+                    if (buffer.Length < 7)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        if (buffer[6] == (buffer.Length - 7))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), ex );
+                return false;
+            }
+        }
+
+
+        private byte[] ReadFromModbusCore(byte[] modbusCore)
+        {
+            byte[] buffer = null;
+
+            switch (modbusCore[1])
+            {
+                case ModbusInfo.ReadCoil:
+                    {
+                        buffer = ReadCoilBack( modbusCore ); break;
+                    }
+                case ModbusInfo.ReadRegister:
+                    {
+                        buffer = ReadRegisterBack( modbusCore ); break;
+                    }
+                case ModbusInfo.WriteOneCoil:
+                    {
+                        buffer = WriteOneCoilBack( modbusCore ); break;
+                    }
+                case ModbusInfo.WriteOneRegister:
+                    {
+                        buffer = WriteOneRegisterBack( modbusCore ); break;
+                    }
+                case ModbusInfo.WriteCoil:
+                    {
+                        buffer = WriteCoilsBack( modbusCore ); break;
+                    }
+                case ModbusInfo.WriteRegister:
+                    {
+                        buffer = WriteRegisterBack( modbusCore ); break;
+                    }
+                default:
+                    {
+                        buffer = CreateExceptionBack( modbusCore, ModbusInfo.FunctionCodeNotSupport ); break;
+                    }
+            }
+
+            return buffer;
+        }
+
+
+        /// <summary>
+        /// 将Modbus-Tcp的报文转换成核心的Modbus报文，就是移除报文头
+        /// </summary>
+        /// <param name="modbusTcp"></param>
+        /// <returns></returns>
+        private byte[] ModbusTcpTransModbusCore( byte[] modbusTcp )
+        {
+            byte[] buffer = new byte[modbusTcp.Length - 6];
+
+            Array.Copy( modbusTcp, 6, buffer, 0, buffer.Length );
+
+            return buffer;
+        }
+
+
+        /// <summary>
+        /// 根据Modbus数据信息生成Modbus-Tcp数据信息
+        /// </summary>
+        /// <param name="modbusData"></param>
+        /// <param name="modbusOrigin"></param>
+        /// <returns></returns>
+        private byte[] ModbusCoreTransModbusTcp( byte[] modbusData, byte[] modbusOrigin )
+        {
+            byte[] buffer = new byte[modbusData.Length + 6];
+            buffer[0] = modbusOrigin[0];
+            buffer[1] = modbusOrigin[1];
+
+            modbusData.CopyTo( buffer, 6 );
+            buffer[5] = (byte)modbusData.Length;
+
+            return buffer;
+        }
+        
+        /// <summary>
+        /// 将Modbus-Rtu的报文转成核心的Modbus报文，移除了CRC校验
+        /// </summary>
+        /// <param name="modbusRtu"></param>
+        /// <returns></returns>
+        private byte[] ModbusRtuTransModbusCore( byte[] modbusRtu )
+        {
+            byte[] buffer = new byte[modbusRtu.Length - 2];
+
+            Array.Copy( modbusRtu, 0, buffer, 0, buffer.Length );
+
+            return buffer;
+        }
+
+
+        /// <summary>
+        /// 根据Modbus数据信息生成Modbus-Rtu数据信息
+        /// </summary>
+        /// <param name="modbusData"></param>
+        /// <returns></returns>
+        private byte[] ModbusCoreTransModbusRtu( byte[] modbusData )
+        {
+            return Serial.SoftCRC16.CRC16( modbusData );
+        }
+
+
+        #endregion
+
         #region Serial Support
 
         private SerialPort serialPort;            // 核心的串口对象
@@ -1347,7 +1432,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 使用默认的
         /// </summary>
-        /// <param name="com"></param>
+        /// <param name="com">串口信息</param>
         public void StartSerialPort( string com )
         {
             StartSerialPort( sp =>
@@ -1358,75 +1443,61 @@ namespace HslCommunication.ModBus
                  sp.Parity = Parity.None;
                  sp.StopBits = StopBits.One;
              } );
-            
 
+
+            serialPort.ReadBufferSize = 1024;
+            serialPort.ReceivedBytesThreshold = 1;
             serialPort.Open( );
             serialPort.DataReceived += SerialPort_DataReceived;
         }
 
+        /// <summary>
+        /// 关闭串口
+        /// </summary>
+        public void CloseSerialPort( )
+        {
+            serialPort.Close( );
+        }
+
         private void SerialPort_DataReceived( object sender, SerialDataReceivedEventArgs e )
         {
-            byte[] buffer = new byte[serialPort.BytesToRead];
-            int count = serialPort.Read( buffer, 0, buffer.Length );
+            System.Threading.Thread.Sleep( 20 );
+            byte[] buffer = new byte[1024];
+            int count = serialPort.Read( buffer, 0, serialPort.BytesToRead );
+
             byte[] receive = new byte[count];
             Array.Copy( buffer, 0, receive, 0, count );
+
+            if(receive.Length < 3)
+            {
+                LogNet?.WriteError( ToString( ), $"Uknown Data：" + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
+                return;
+            }
+
             if(Serial.SoftCRC16.CheckCRC16(receive))
             {
+                byte[] modbusCore = ModbusRtuTransModbusCore( receive );
 
+
+                if (!CheckModbusMessageLegal( modbusCore ))
+                {
+                    // 指令长度验证错误，关闭网络连接
+                    LogNet?.WriteError( ToString( ), $"接收到无效的数据信息：" + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
+                    return;
+                }
+
+                // LogNet?.WriteError( ToString( ), $"Success：" + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
+                // 需要回发消息
+                byte[] copy = ModbusCoreTransModbusRtu( ReadFromModbusCore( modbusCore ) );
+
+                serialPort.Write( copy, 0, copy.Length );
             }
             else
             {
-                LogNet?.WriteWarn( "CRC 校验失败" );
+                LogNet?.WriteWarn( "CRC 校验失败 " + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
             }
         }
-
-
-
-        /// <summary>
-        /// 检测当前的Modbus接收的指定是否是合法的
-        /// </summary>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
-        private bool CheckModbusRtuMessageLegal( byte[] buffer )
-        {
-            if (buffer[1] == ModbusInfo.ReadCoil || 
-                buffer[1] == ModbusInfo.ReadDiscrete || 
-                buffer[1] == ModbusInfo.ReadRegister || 
-                buffer[1] == ModbusInfo.WriteOneCoil || 
-                buffer[1] == ModbusInfo.WriteOneRegister)
-            {
-                if (buffer.Length != 0x08)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            else if (buffer[1] == 0x0F || buffer[1] == 0x10)
-            {
-                if (buffer.Length < 13)
-                {
-                    return false;
-                }
-                else
-                {
-                    if (buffer[12] == (buffer.Length - 13))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                return true;
-            }
-        }
+        
 
         /// <summary>
         /// 使用自定义的初始化方法初始化串口的参数
