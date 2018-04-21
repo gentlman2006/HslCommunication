@@ -39,6 +39,7 @@ namespace HslCommunication.Core
         /// <param name="buffer">缓存数据</param>
         /// <returns>bool对象</returns>
         bool TransBool( byte[] buffer);
+
         /// <summary>
         /// 从缓存中提取byte结果
         /// </summary>
@@ -46,6 +47,17 @@ namespace HslCommunication.Core
         /// <param name="index">索引位置</param>
         /// <returns>byte对象</returns>
         byte TransByte( byte[] buffer, int index );
+
+        /// <summary>
+        /// 从缓存中提取byte数组结果
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="index"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        byte[] TransByte( byte[] buffer, int index, int length );
+
+
         /// <summary>
         /// 从缓存中提取short结果
         /// </summary>
@@ -53,6 +65,15 @@ namespace HslCommunication.Core
         /// <param name="index">索引位置</param>
         /// <returns>short对象</returns>
         short TransInt16( byte[] buffer, int index );
+
+        /// <summary>
+        /// 从缓存中提取short数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">读取的数组长度</param>
+        /// <returns>short数组对象</returns>
+        short[] TransInt16( byte[] buffer, int index, int length );
         /// <summary>
         /// 从缓存中提取ushort结果
         /// </summary>
@@ -60,6 +81,18 @@ namespace HslCommunication.Core
         /// <param name="index">索引位置</param>
         /// <returns>ushort对象</returns>
         ushort TransUInt16( byte[] buffer, int index );
+
+        /// <summary>
+        /// 从缓存中提取ushort数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">读取的数组长度</param>
+        /// <returns>ushort数组对象</returns>
+        ushort[] TransUInt16( byte[] buffer, int index, int length );
+
+
+
         /// <summary>
         /// 从缓存中提取int结果
         /// </summary>
@@ -68,12 +101,33 @@ namespace HslCommunication.Core
         /// <returns>int对象</returns>
         int TransInt32( byte[] buffer, int index );
         /// <summary>
+        /// 从缓存中提取int数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">读取的数组的长度</param>
+        /// <returns>int数组对象</returns>
+        int[] TransInt32( byte[] buffer, int index, int length );
+
+
+
+        /// <summary>
         /// 从缓存中提取uint结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
         /// <param name="index">索引位置</param>
         /// <returns>uint对象</returns>
         uint TransUInt32( byte[] buffer, int index );
+
+        /// <summary>
+        /// 从缓存中提取uint数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">读取的数组的长度</param>
+        /// <returns>uint数组对象</returns>
+        uint[] TransUInt32( byte[] buffer, int index, int length );
+
         /// <summary>
         /// 从缓存中提取long结果
         /// </summary>
@@ -81,6 +135,17 @@ namespace HslCommunication.Core
         /// <param name="index">索引位置</param>
         /// <returns>long对象</returns>
         long TransInt64( byte[] buffer, int index );
+
+        /// <summary>
+        /// 从缓存中提取long数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">读取的数组的长度</param>
+        /// <returns>long数组对象</returns>
+        long[] TransInt64( byte[] buffer, int index, int length );
+
+
         /// <summary>
         /// 从缓存中提取ulong结果
         /// </summary>
@@ -88,6 +153,16 @@ namespace HslCommunication.Core
         /// <param name="index">索引位置</param>
         /// <returns>ulong对象</returns>
         ulong TransUInt64( byte[] buffer, int index );
+
+        /// <summary>
+        /// 从缓存中提取ulong数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">读取的数组的长度</param>
+        /// <returns>ulong数组对象</returns>
+        ulong[] TransUInt64( byte[] buffer, int index ,int length);
+
         /// <summary>
         /// 从缓存中提取float结果
         /// </summary>
@@ -95,6 +170,17 @@ namespace HslCommunication.Core
         /// <param name="index">索引位置</param>
         /// <returns>float对象</returns>
         float TransSingle( byte[] buffer, int index );
+
+        /// <summary>
+        /// 从缓存中提取float数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">读取的数据长度</param>
+        /// <returns></returns>
+        float[] TransSingle( byte[] buffer, int index, int length );
+
+
         /// <summary>
         /// 从缓存中提取double结果
         /// </summary>
@@ -102,6 +188,16 @@ namespace HslCommunication.Core
         /// <param name="index">索引位置</param>
         /// <returns>double对象</returns>
         double TransDouble( byte[] buffer, int index );
+
+        /// <summary>
+        /// 从缓存中提取double数组结果
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="index"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        double[] TransDouble( byte[] buffer, int index, int length );
+
         /// <summary>
         /// 从缓存中提取string结果，编码ASCII
         /// </summary>
