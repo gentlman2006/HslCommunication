@@ -15,12 +15,12 @@ namespace ModbusTcpServer
 {
     public partial class FormModbus : Form
     {
-        public FormModbus()
+        public FormModbus( )
         {
             InitializeComponent( );
         }
 
-        
+
 
         private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
         {
@@ -28,7 +28,7 @@ namespace ModbusTcpServer
             {
                 System.Diagnostics.Process.Start( linkLabel1.Text );
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show( ex.Message );
             }
@@ -41,7 +41,7 @@ namespace ModbusTcpServer
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )
         {
-            
+
         }
 
         /// <summary>
@@ -74,12 +74,12 @@ namespace ModbusTcpServer
 
         private void button1_Click( object sender, EventArgs e )
         {
-            if(!int.TryParse(textBox2.Text,out int port))
+            if (!int.TryParse( textBox2.Text, out int port ))
             {
                 MessageBox.Show( "端口输入不正确！" );
                 return;
             }
-            
+
 
             try
             {
@@ -109,7 +109,7 @@ namespace ModbusTcpServer
                 BeginInvoke( new Action<byte[]>( BusTcpServer_OnDataReceived ), modbus );
                 return;
             }
-            textBox1.AppendText( "接收数据：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString(modbus) + Environment.NewLine );
+            textBox1.AppendText( "接收数据：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( modbus ) + Environment.NewLine );
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace ModbusTcpServer
         /// <param name="e"></param>
         private void LogNet_BeforeSaveToFile( object sender, HslCommunication.LogNet.HslEventArgs e )
         {
-            if(InvokeRequired)
+            if (InvokeRequired)
             {
                 Invoke( new Action<object, HslCommunication.LogNet.HslEventArgs>( LogNet_BeforeSaveToFile ), sender, e );
                 return;
@@ -127,8 +127,8 @@ namespace ModbusTcpServer
 
             textBox1.AppendText( e.HslMessage.ToString( ) + Environment.NewLine );
         }
-        
-        
+
+
 
         #endregion
 
@@ -248,7 +248,7 @@ namespace ModbusTcpServer
             try
             {
                 busTcpServer.Write( ushort.Parse( textBox8.Text ), int.Parse( textBox7.Text ) );
-                writeResultRender(  textBox8.Text );
+                writeResultRender( textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -276,7 +276,7 @@ namespace ModbusTcpServer
             try
             {
                 busTcpServer.Write( ushort.Parse( textBox8.Text ), long.Parse( textBox7.Text ) );
-                writeResultRender(  textBox8.Text );
+                writeResultRender( textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -290,7 +290,7 @@ namespace ModbusTcpServer
             try
             {
                 busTcpServer.Write( ushort.Parse( textBox8.Text ), ulong.Parse( textBox7.Text ) );
-                writeResultRender(  textBox8.Text );
+                writeResultRender( textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -304,7 +304,7 @@ namespace ModbusTcpServer
             try
             {
                 busTcpServer.Write( ushort.Parse( textBox8.Text ), float.Parse( textBox7.Text ) );
-                writeResultRender(  textBox8.Text );
+                writeResultRender( textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -318,7 +318,7 @@ namespace ModbusTcpServer
             try
             {
                 busTcpServer.Write( ushort.Parse( textBox8.Text ), double.Parse( textBox7.Text ) );
-                writeResultRender(  textBox8.Text );
+                writeResultRender( textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -333,7 +333,7 @@ namespace ModbusTcpServer
             try
             {
                 busTcpServer.Write( ushort.Parse( textBox8.Text ), textBox7.Text );
-                writeResultRender(  textBox8.Text );
+                writeResultRender( textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -364,7 +364,7 @@ namespace ModbusTcpServer
         private void MonitorAddress_OnChange( ModBusMonitorAddress monitor, short befor, short after )
         {
             // 当该地址的值更改的时候触发
-            if(InvokeRequired)
+            if (InvokeRequired)
             {
                 BeginInvoke( new Action<ModBusMonitorAddress, short, short>( MonitorAddress_OnChange ), monitor, befor, after );
                 return;
@@ -391,7 +391,7 @@ namespace ModbusTcpServer
         }
 
 
-        private void Test1()
+        private void Test1( )
         {
             bool Coil100 = busTcpServer.ReadCoil( 100 );                  // 读线圈100的值
             bool[] Coil100_109 = busTcpServer.ReadCoil( 100, 10 );        // 读线圈数组
@@ -420,10 +420,10 @@ namespace ModbusTcpServer
             // 连接异形客户端
             using (FormInputAlien form = new FormInputAlien( ))
             {
-                if(form.ShowDialog() == DialogResult.OK)
+                if (form.ShowDialog( ) == DialogResult.OK)
                 {
                     OperateResult connect = busTcpServer.ConnectHslAlientClient( form.IpAddress, form.Port, form.DTU );
-                    if(connect.IsSuccess)
+                    if (connect.IsSuccess)
                     {
                         MessageBox.Show( "连接成功！" );
                     }
@@ -432,6 +432,27 @@ namespace ModbusTcpServer
                         MessageBox.Show( "连接失败！原因：" + connect.Message );
                     }
                 }
+            }
+        }
+
+        private void button5_Click( object sender, EventArgs e )
+        {
+            // 启动串口
+            if (busTcpServer != null)
+            {
+                try
+                {
+                    busTcpServer.StartSerialPort( textBox10.Text );
+                    button5.Enabled = false;
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show( "串口服务器启动失败：" + ex.Message );
+                }
+            }
+            else
+            {
+                MessageBox.Show( "请先启动Tcp服务器：" );
             }
         }
     }

@@ -32,10 +32,12 @@ namespace HslCommunicationDemo
         public FormModbusAlien( )
         {
             InitializeComponent( );
+            logNet = new HslCommunication.LogNet.LogNetSingle( "modbus.txt" );
         }
 
 
         private ModbusTcpNet busTcpClient = null;
+        private HslCommunication.LogNet.ILogNet logNet = null;
 
         private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
         {
@@ -112,6 +114,7 @@ namespace HslCommunicationDemo
         {
             networkAlien = new NetworkAlienClient( );
             networkAlien.OnClientConnected += NetworkAlien_OnClientConnected;
+            networkAlien.LogNet = logNet;
             networkAlien.ServerStart( port );
         }
 
@@ -155,6 +158,7 @@ namespace HslCommunicationDemo
             }
 
             busTcpClient = new ModbusTcpNet( textBox1.Text, port, station );
+            busTcpClient.LogNet = logNet;
             busTcpClient.AddressStartWithZero = checkBox1.Checked;
 
             try

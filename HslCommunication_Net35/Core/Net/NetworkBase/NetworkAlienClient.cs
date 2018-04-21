@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using HslCommunication.Core.IMessage;
 
 namespace HslCommunication.Core.Net
@@ -26,6 +27,7 @@ namespace HslCommunication.Core.Net
             alreadyOnline = new List<AlienSession>( );
             trustOnline = new List<string>( );
             trustLock = new SimpleHybirdLock( );
+            ThreadCheckStart( );
         }
 
         #endregion
@@ -121,20 +123,7 @@ namespace HslCommunication.Core.Net
                 OnClientConnected?.Invoke( session );
             }
         }
-        
 
-        /// <summary>
-        /// 退出异形客户端
-        /// </summary>
-        /// <param name="session">异形客户端的会话</param>
-        public void AlienSessionLoginOut( AlienSession session )
-        {
-            alreadyLock.Enter( );
-
-            alreadyOnline.Remove( session );
-
-            alreadyLock.Leave( );
-        }
 
         #endregion
 
@@ -197,7 +186,7 @@ namespace HslCommunication.Core.Net
 
             for (int i = 0; i < alreadyOnline.Count; i++)
             {
-                if(alreadyOnline[i].DTU == session.DTU)
+                if (alreadyOnline[i].DTU == session.DTU)
                 {
                     result = true;
                     break;
@@ -209,7 +198,7 @@ namespace HslCommunication.Core.Net
             {
                 alreadyOnline.Add( session );
             }
-            
+
             alreadyLock.Leave( );
 
             return result;
@@ -277,6 +266,55 @@ namespace HslCommunication.Core.Net
             trustLock.Leave( );
         }
 
+
+        /// <summary>
+        /// 退出异形客户端
+        /// </summary>
+        /// <param name="session">异形客户端的会话</param>
+        public void AlienSessionLoginOut( AlienSession session )
+        {
+            alreadyLock.Enter( );
+
+            alreadyOnline.Remove( session );
+
+            alreadyLock.Leave( );
+        }
+
+
+        #endregion
+
+        #region Thread Check Client
+
+        private void ThreadCheckStart()
+        {
+            threadCheck = new Thread(new ThreadStart( ThreadCheckAlienClient ));
+            threadCheck.IsBackground = true;
+            threadCheck.Priority = ThreadPriority.AboveNormal;
+            threadCheck.Start( );
+        }
+
+        private void ThreadCheckAlienClient( )
+        {
+            Thread.Sleep( 1000 );
+            while (true)
+            {
+                Thread.Sleep( 1000 );
+
+                alreadyLock.Enter( );
+
+                for (int i = alreadyOnline.Count - 1; i >= 0; i--)
+                {
+                    if (!alreadyOnline[i].IsStatusOk)
+                    {
+                        alreadyOnline.RemoveAt( i );
+                    }
+                }
+
+
+                alreadyLock.Leave( );
+            }
+        }
+
         #endregion
 
         #region Private Member
@@ -286,6 +324,7 @@ namespace HslCommunication.Core.Net
         private SimpleHybirdLock alreadyLock;       // 列表的同步锁
         private List<string> trustOnline;           // 禁止登录的客户端信息
         private SimpleHybirdLock trustLock;         // 禁止登录的锁
+        private Thread threadCheck;                 // 后台检测在线情况的
 
         #endregion
 

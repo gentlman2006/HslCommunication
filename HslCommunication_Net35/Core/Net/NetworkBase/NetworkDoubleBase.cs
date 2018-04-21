@@ -181,6 +181,8 @@ namespace HslCommunication.Core.Net
 
             if (session != null)
             {
+                AlienSession?.Socket?.Close( );
+
                 if (string.IsNullOrEmpty( ConnectionId ))
                 {
                     ConnectionId = session.DTU;
@@ -380,6 +382,7 @@ namespace HslCommunication.Core.Net
             if (!resultSocket.IsSuccess)
             {
                 IsSocketError = true;
+                if (AlienSession != null) AlienSession.IsStatusOk = false;
                 InteractiveLock.Leave( );
                 result.CopyErrorFromOther( resultSocket );
                 return result;
@@ -397,6 +400,7 @@ namespace HslCommunication.Core.Net
             else
             {
                 IsSocketError = true;
+                if (AlienSession != null) AlienSession.IsStatusOk = false;
                 result.CopyErrorFromOther( read );
             }
 

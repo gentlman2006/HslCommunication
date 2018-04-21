@@ -29,6 +29,7 @@
         private void InitializeComponent( )
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -83,7 +84,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -96,6 +99,9 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.button5);
+            this.panel1.Controls.Add(this.textBox10);
+            this.panel1.Controls.Add(this.label14);
             this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.button1);
@@ -107,9 +113,20 @@
             this.panel1.Size = new System.Drawing.Size(978, 54);
             this.panel1.TabIndex = 0;
             // 
+            // button4
+            // 
+            this.button4.Enabled = false;
+            this.button4.Location = new System.Drawing.Point(832, 11);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(136, 28);
+            this.button4.TabIndex = 6;
+            this.button4.Text = "连接异形客户端";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(379, 11);
+            this.button3.Location = new System.Drawing.Point(294, 11);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(91, 28);
             this.button3.TabIndex = 5;
@@ -119,7 +136,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(261, 11);
+            this.button1.Location = new System.Drawing.Point(197, 11);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(91, 28);
             this.button1.TabIndex = 4;
@@ -131,7 +148,7 @@
             // 
             this.textBox2.Location = new System.Drawing.Point(74, 14);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(141, 23);
+            this.textBox2.Size = new System.Drawing.Size(117, 23);
             this.textBox2.TabIndex = 3;
             this.textBox2.Text = "502";
             // 
@@ -669,16 +686,32 @@
             this.linkLabel2.Text = "创作不易，感谢打赏";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
-            // button4
+            // button5
             // 
-            this.button4.Enabled = false;
-            this.button4.Location = new System.Drawing.Point(832, 11);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(136, 28);
-            this.button4.TabIndex = 6;
-            this.button4.Text = "连接异形客户端";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button5.Location = new System.Drawing.Point(610, 11);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(91, 28);
+            this.button5.TabIndex = 9;
+            this.button5.Text = "启动串口";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // textBox10
+            // 
+            this.textBox10.Location = new System.Drawing.Point(494, 14);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.Size = new System.Drawing.Size(105, 23);
+            this.textBox10.TabIndex = 8;
+            this.textBox10.Text = "COM4";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(440, 17);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(44, 17);
+            this.label14.TabIndex = 7;
+            this.label14.Text = "串口：";
             // 
             // FormModbus
             // 
@@ -697,7 +730,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "FormModbus";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Modbus Tcp虚拟服务器【仅支持线圈读写和寄存器读写】";
+            this.Text = "Modbus虚拟服务器【同时支持Tcp和Rtu模式的服务器，数据仅支持线圈读写和寄存器读写】";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSiemens_FormClosing);
             this.Load += new System.EventHandler(this.FormSiemens_Load);
             this.panel1.ResumeLayout(false);
@@ -773,5 +806,8 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.Label label14;
     }
 }
