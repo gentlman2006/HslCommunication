@@ -12,7 +12,7 @@ using System.IO.Ports;
 namespace HslCommunication.ModBus
 {
     /// <summary>
-    /// Modbus-tcp的虚拟服务器，支持线圈和寄存器的读写操作
+    /// Modbus的虚拟服务器，同时支持Tcp和Rtu的机制，支持线圈和寄存器的读写操作
     /// </summary>
     public class ModbusTcpServer : NetworkServerBase
     {
@@ -1293,7 +1293,9 @@ namespace HslCommunication.ModBus
                         return true;
                     }
                 }
-                else if (buffer[1] == ModbusInfo.WriteCoil || buffer[1] == ModbusInfo.WriteRegister)
+                else if (
+                    buffer[1] == ModbusInfo.WriteCoil || 
+                    buffer[1] == ModbusInfo.WriteRegister)
                 {
                     if (buffer.Length < 7)
                     {
@@ -1430,38 +1432,66 @@ namespace HslCommunication.ModBus
         private SerialPort serialPort;            // 核心的串口对象
 
         /// <summary>
-        /// 使用默认的
+        /// 使用默认的参数进行初始化串口，9600波特率，8位数据位，无奇偶校验，1位停止位
         /// </summary>
         /// <param name="com">串口信息</param>
         public void StartSerialPort( string com )
         {
-            StartSerialPort( sp =>
-             {
-                 sp.PortName = com;
-                 sp.BaudRate = 9600;
-                 sp.DataBits = 8;
-                 sp.Parity = Parity.None;
-                 sp.StopBits = StopBits.One;
-             } );
-
-
-            serialPort.ReadBufferSize = 1024;
-            serialPort.ReceivedBytesThreshold = 1;
-            serialPort.Open( );
-            serialPort.DataReceived += SerialPort_DataReceived;
+            StartSerialPort( com, 9600 );
         }
+
+
+        /// <summary>
+        /// 使用默认的参数进行初始化串口，8位数据位，无奇偶校验，1位停止位
+        /// </summary>
+        /// <param name="com">串口信息</param>
+        /// <param name="baudRate">波特率</param>
+        public void StartSerialPort( string com, int baudRate )
+        {
+            StartSerialPort( sp =>
+            {
+                sp.PortName = com;
+                sp.BaudRate = baudRate;
+                sp.DataBits = 8;
+                sp.Parity = Parity.None;
+                sp.StopBits = StopBits.One;
+            } );
+        }
+
+        /// <summary>
+        /// 使用自定义的初始化方法初始化串口的参数
+        /// </summary>
+        /// <param name="inni"></param>
+        public void StartSerialPort( Action<SerialPort> inni )
+        {
+            if (!serialPort.IsOpen)
+            {
+                inni?.Invoke( serialPort );
+
+                serialPort.ReadBufferSize = 1024;
+                serialPort.ReceivedBytesThreshold = 1;
+                serialPort.Open( );
+                serialPort.DataReceived += SerialPort_DataReceived;
+            }
+        }
+
+
 
         /// <summary>
         /// 关闭串口
         /// </summary>
         public void CloseSerialPort( )
         {
-            serialPort.Close( );
+            if (serialPort.IsOpen)
+            {
+                serialPort.Close( );
+            }
         }
 
         private void SerialPort_DataReceived( object sender, SerialDataReceivedEventArgs e )
         {
-            System.Threading.Thread.Sleep( 20 );
+            System.Threading.Thread.Sleep( 20 );            // 此处做个微小的延时，等待数据接收完成
+
             byte[] buffer = new byte[1024];
             int count = serialPort.Read( buffer, 0, serialPort.BytesToRead );
 
@@ -1499,14 +1529,7 @@ namespace HslCommunication.ModBus
         }
         
 
-        /// <summary>
-        /// 使用自定义的初始化方法初始化串口的参数
-        /// </summary>
-        /// <param name="inni"></param>
-        public void StartSerialPort( Action<SerialPort> inni )
-        {
-            inni?.Invoke( serialPort );
-        }
+
 
 
         #endregion
