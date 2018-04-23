@@ -81,6 +81,7 @@ namespace HslCommunication.Core.Net
             {
                 while (!timeout.IsSuccessful)
                 {
+                    Thread.Sleep( 100 );
                     if ((DateTime.Now - timeout.StartTime).TotalMilliseconds > timeout.DelayTime)
                     {
                         // 连接超时或是验证超时
@@ -89,7 +90,6 @@ namespace HslCommunication.Core.Net
                             LogNet?.WriteWarn( ToString( ), "Wait Time Out : " + timeout.DelayTime );
                             timeout.Operator?.Invoke( );
                             timeout.WorkSocket?.Close( );
-                            timeout = null;
                         }
                         break;
                     }

@@ -117,6 +117,12 @@
     <Compile Include="TestForm\FormModBusTcp.Designer.cs">
       <DependentUpon>FormModBusTcp.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestForm\FormMultiConnect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm\FormMultiConnect.Designer.cs">
+      <DependentUpon>FormMultiConnect.cs</DependentUpon>
+    </Compile>
     <Compile Include="TestForm\FormPlcTest.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -191,6 +197,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormModBusTcp.resx">
       <DependentUpon>FormModBusTcp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestForm\FormMultiConnect.resx">
+      <DependentUpon>FormMultiConnect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TestForm\FormPlcTest.resx">
       <DependentUpon>FormPlcTest.cs</DependentUpon>

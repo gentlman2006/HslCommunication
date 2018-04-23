@@ -79,7 +79,8 @@ namespace HslCommunication.Core.Net
                         break;
                     }
                 }
-                string dtu = Encoding.ASCII.GetString( check.Content.ContentBytes, 0, 11 );
+
+                string dtu = Encoding.ASCII.GetString( check.Content.ContentBytes, 0, 11 ).Trim( );
 
                 // 密码失败的情况
                 if (!isPasswrodRight)

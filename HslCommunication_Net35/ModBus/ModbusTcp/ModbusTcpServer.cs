@@ -1272,8 +1272,8 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 检测当前的Modbus接收的指定是否是合法的
         /// </summary>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
+        /// <param name="buffer">缓存数据</param>
+        /// <returns>是否合格</returns>
         private bool CheckModbusMessageLegal( byte[] buffer )
         {
             try
@@ -1326,6 +1326,11 @@ namespace HslCommunication.ModBus
         }
 
 
+        /// <summary>
+        /// Modbus核心数据交互方法
+        /// </summary>
+        /// <param name="modbusCore">核心的Modbus报文</param>
+        /// <returns>进行数据交互之后的结果</returns>
         private byte[] ReadFromModbusCore(byte[] modbusCore)
         {
             byte[] buffer = null;
@@ -1461,7 +1466,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 使用自定义的初始化方法初始化串口的参数
         /// </summary>
-        /// <param name="inni"></param>
+        /// <param name="inni">初始化信息的委托</param>
         public void StartSerialPort( Action<SerialPort> inni )
         {
             if (!serialPort.IsOpen)
@@ -1488,6 +1493,12 @@ namespace HslCommunication.ModBus
             }
         }
 
+
+        /// <summary>
+        /// 接收到串口数据的时候触发
+        /// </summary>
+        /// <param name="sender">串口对象</param>
+        /// <param name="e">消息</param>
         private void SerialPort_DataReceived( object sender, SerialDataReceivedEventArgs e )
         {
             System.Threading.Thread.Sleep( 20 );            // 此处做个微小的延时，等待数据接收完成
@@ -1512,7 +1523,7 @@ namespace HslCommunication.ModBus
                 if (!CheckModbusMessageLegal( modbusCore ))
                 {
                     // 指令长度验证错误，关闭网络连接
-                    LogNet?.WriteError( ToString( ), $"接收到无效的数据信息：" + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
+                    LogNet?.WriteError( ToString( ), $"Receive Nosense Modbus-tcp : " + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
                     return;
                 }
 
@@ -1524,7 +1535,7 @@ namespace HslCommunication.ModBus
             }
             else
             {
-                LogNet?.WriteWarn( "CRC 校验失败 " + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
+                LogNet?.WriteWarn( "CRC Check Failed : " + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
             }
         }
         

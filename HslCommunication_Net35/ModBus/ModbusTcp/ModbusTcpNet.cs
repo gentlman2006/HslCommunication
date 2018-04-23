@@ -295,8 +295,8 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 通过错误码来获取到对应的文本消息
         /// </summary>
-        /// <param name="code"></param>
-        /// <returns></returns>
+        /// <param name="code">错误码</param>
+        /// <returns>错误的文本描述</returns>
         private string GetDescriptionByErrorCode( byte code )
         {
             switch (code)
@@ -309,6 +309,11 @@ namespace HslCommunication.ModBus
             }
         }
 
+        /// <summary>
+        /// 检查当前的Modbus-Tcp响应是否是正确的
+        /// </summary>
+        /// <param name="send">发送的数据信息</param>
+        /// <returns>带是否成功的结果数据</returns>
         private OperateResult<byte[]> CheckModbusTcpResponse( byte[] send )
         {
             OperateResult<byte[]> result = ReadFromCoreServer( send );

@@ -268,6 +268,14 @@ namespace TestTool
             if (send) MessageBox.Show( "发送成功！" );
             else MessageBox.Show( "发送失败！" );
         }
+
+        private void userButton21_Click( object sender, EventArgs e )
+        {
+            using (TestForm.FormMultiConnect form = new TestForm.FormMultiConnect( ))
+            {
+                form.ShowDialog( );
+            }
+        }
     }
 
     public class AA
