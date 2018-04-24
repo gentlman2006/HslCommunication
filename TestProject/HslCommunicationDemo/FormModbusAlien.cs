@@ -118,7 +118,7 @@ namespace HslCommunicationDemo
             networkAlien.ServerStart( port );
         }
 
-        private void NetworkAlien_OnClientConnected( AlienSession session )
+        private void NetworkAlien_OnClientConnected( NetworkAlienClient network , AlienSession session )
         {
             if(session.DTU == busTcpClient.ConnectionId)
             {

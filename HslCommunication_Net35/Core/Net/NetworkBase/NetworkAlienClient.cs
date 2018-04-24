@@ -121,7 +121,7 @@ namespace HslCommunication.Core.Net
                 }
 
                 // 触发上线消息
-                OnClientConnected?.Invoke( session );
+                OnClientConnected?.Invoke( this, session );
             }
         }
 
@@ -133,7 +133,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 当有服务器连接上来的时候触发
         /// </summary>
-        public event Action<AlienSession> OnClientConnected = null;
+        public event Action<NetworkAlienClient, AlienSession> OnClientConnected = null;
 
         #endregion
 
