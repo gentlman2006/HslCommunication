@@ -243,6 +243,14 @@ namespace HslCommunication.Core.Net
         #region Public Method
 
         /// <summary>
+        /// 使用配置的端口初始化数据信息
+        /// </summary>
+        public void ServerStart( )
+        {
+            base.ServerStart( Port );
+        }
+
+        /// <summary>
         /// 设置密码，长度为6
         /// </summary>
         /// <param name="password"></param>
@@ -315,6 +323,15 @@ namespace HslCommunication.Core.Net
                 alreadyLock.Leave( );
             }
         }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// 端口号
+        /// </summary>
+        public int Port { get; set; }
 
         #endregion
 
