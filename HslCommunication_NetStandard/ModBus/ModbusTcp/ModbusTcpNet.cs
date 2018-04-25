@@ -295,8 +295,8 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 通过错误码来获取到对应的文本消息
         /// </summary>
-        /// <param name="code"></param>
-        /// <returns></returns>
+        /// <param name="code">错误码</param>
+        /// <returns>错误的文本描述</returns>
         private string GetDescriptionByErrorCode( byte code )
         {
             switch (code)
@@ -309,6 +309,11 @@ namespace HslCommunication.ModBus
             }
         }
 
+        /// <summary>
+        /// 检查当前的Modbus-Tcp响应是否是正确的
+        /// </summary>
+        /// <param name="send">发送的数据信息</param>
+        /// <returns>带是否成功的结果数据</returns>
         private OperateResult<byte[]> CheckModbusTcpResponse( byte[] send )
         {
             OperateResult<byte[]> result = ReadFromCoreServer( send );
@@ -411,6 +416,11 @@ namespace HslCommunication.ModBus
             return GetBoolResultFromBytes( read );
         }
 
+        
+
+
+
+
         /// <summary>
         /// 批量的读取线圈，需要指定起始地址，读取长度
         /// </summary>
@@ -425,8 +435,29 @@ namespace HslCommunication.ModBus
             return OperateResult.CreateSuccessResult( SoftBasic.ByteToBoolArray( read.Content, length ) );
         }
 
+
+
+
         /// <summary>
-        /// 批量的离散变量，需要指定起始地址，读取长度
+        /// 读取输入线圈，需要指定起始地址
+        /// </summary>
+        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <returns>带有成功标志的bool对象</returns>
+        public OperateResult<bool> ReadDiscrete( string address )
+        {
+            var read = ReadModBusBase( ModbusInfo.ReadDiscrete, address, 1 );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool>( read );
+
+            return GetBoolResultFromBytes( read );
+        }
+
+
+
+
+
+
+        /// <summary>
+        /// 批量的读取输入点，需要指定起始地址，读取长度
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
         /// <param name="length">读取长度</param>
@@ -438,6 +469,9 @@ namespace HslCommunication.ModBus
 
             return OperateResult.CreateSuccessResult( SoftBasic.ByteToBoolArray( read.Content, length ) );
         }
+        
+
+        
 
         /// <summary>
         /// 从Modbus服务器批量读取寄存器的信息，需要指定起始地址，读取长度

@@ -5,6 +5,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using HslCommunication.Core;
 
 namespace HslCommunication
 {
@@ -32,6 +33,7 @@ namespace HslCommunication
         {
             StartTime = DateTime.Now;
             IsSuccessful = false;
+            HybirdLock = new SimpleHybirdLock( );
         }
         /// <summary>
         /// 操作的开始时间
@@ -53,5 +55,10 @@ namespace HslCommunication
         /// 用于超时执行的方法
         /// </summary>
         public Action Operator { get; set; }
+
+        /// <summary>
+        /// 当前对象判断的同步锁
+        /// </summary>
+        public SimpleHybirdLock HybirdLock { get; set; }
     }
 }

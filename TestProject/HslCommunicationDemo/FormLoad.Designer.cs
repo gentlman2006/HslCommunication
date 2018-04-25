@@ -35,6 +35,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button19 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.button13 = new System.Windows.Forms.Button();
@@ -58,7 +59,7 @@
             this.button18 = new System.Windows.Forms.Button();
             this.button17 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
-            this.button19 = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -150,6 +151,17 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Modbus";
+            // 
+            // button19
+            // 
+            this.button19.Location = new System.Drawing.Point(19, 64);
+            this.button19.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button19.Name = "button19";
+            this.button19.Size = new System.Drawing.Size(150, 32);
+            this.button19.TabIndex = 1;
+            this.button19.Text = "异形 Modbus Tcp";
+            this.button19.UseVisualStyleBackColor = true;
+            this.button19.Click += new System.EventHandler(this.button19_Click);
             // 
             // button6
             // 
@@ -412,16 +424,16 @@
             this.button16.UseVisualStyleBackColor = true;
             this.button16.Click += new System.EventHandler(this.button16_Click);
             // 
-            // button19
+            // label3
             // 
-            this.button19.Location = new System.Drawing.Point(19, 64);
-            this.button19.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button19.Name = "button19";
-            this.button19.Size = new System.Drawing.Size(150, 32);
-            this.button19.TabIndex = 1;
-            this.button19.Text = "异形 Modbus Tcp";
-            this.button19.UseVisualStyleBackColor = true;
-            this.button19.Click += new System.EventHandler(this.button19_Click);
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("微软雅黑", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label3.ForeColor = System.Drawing.Color.Gray;
+            this.label3.Location = new System.Drawing.Point(662, 40);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(92, 27);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "库版本：";
             // 
             // FormLoad
             // 
@@ -429,6 +441,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(839, 546);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.linkLabel3);
@@ -446,6 +459,7 @@
             this.Name = "FormLoad";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "HslCommunication通讯测试工具";
+            this.Load += new System.EventHandler(this.FormLoad_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
@@ -490,6 +504,7 @@
         private System.Windows.Forms.Button button18;
         private System.Windows.Forms.Button button17;
         private System.Windows.Forms.Button button19;
+        private System.Windows.Forms.Label label3;
     }
 }
 

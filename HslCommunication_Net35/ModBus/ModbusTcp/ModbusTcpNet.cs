@@ -511,7 +511,7 @@ namespace HslCommunication.ModBus
         {
             return GetInt16ResultFromBytes( Read( address, 1 ) );
         }
-
+        
 
         /// <summary>
         /// 读取指定地址的ushort数据

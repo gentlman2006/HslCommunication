@@ -237,5 +237,10 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void FormLoad_Load( object sender, EventArgs e )
+        {
+            label3.Text = "库版本：" + HslCommunication.BasicFramework.SoftBasic.FrameworkVersion.ToString( );
+        }
     }
 }

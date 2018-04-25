@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using HslCommunication.Core.IMessage;
 
 namespace HslCommunication.Core.Net
@@ -26,6 +27,7 @@ namespace HslCommunication.Core.Net
             alreadyOnline = new List<AlienSession>( );
             trustOnline = new List<string>( );
             trustLock = new SimpleHybirdLock( );
+            ThreadCheckStart( );
         }
 
         #endregion
@@ -77,7 +79,8 @@ namespace HslCommunication.Core.Net
                         break;
                     }
                 }
-                string dtu = Encoding.ASCII.GetString( check.Content.ContentBytes, 0, 11 );
+
+                string dtu = Encoding.ASCII.GetString( check.Content.ContentBytes, 0, 11 ).Trim( );
 
                 // 密码失败的情况
                 if (!isPasswrodRight)
@@ -118,23 +121,10 @@ namespace HslCommunication.Core.Net
                 }
 
                 // 触发上线消息
-                OnClientConnected?.Invoke( session );
+                OnClientConnected?.Invoke( this, session );
             }
         }
-        
 
-        /// <summary>
-        /// 退出异形客户端
-        /// </summary>
-        /// <param name="session">异形客户端的会话</param>
-        public void AlienSessionLoginOut( AlienSession session )
-        {
-            alreadyLock.Enter( );
-
-            alreadyOnline.Remove( session );
-
-            alreadyLock.Leave( );
-        }
 
         #endregion
 
@@ -143,7 +133,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 当有服务器连接上来的时候触发
         /// </summary>
-        public event Action<AlienSession> OnClientConnected = null;
+        public event Action<NetworkAlienClient, AlienSession> OnClientConnected = null;
 
         #endregion
 
@@ -197,7 +187,7 @@ namespace HslCommunication.Core.Net
 
             for (int i = 0; i < alreadyOnline.Count; i++)
             {
-                if(alreadyOnline[i].DTU == session.DTU)
+                if (alreadyOnline[i].DTU == session.DTU)
                 {
                     result = true;
                     break;
@@ -209,7 +199,7 @@ namespace HslCommunication.Core.Net
             {
                 alreadyOnline.Add( session );
             }
-            
+
             alreadyLock.Leave( );
 
             return result;
@@ -253,6 +243,14 @@ namespace HslCommunication.Core.Net
         #region Public Method
 
         /// <summary>
+        /// 使用配置的端口初始化数据信息
+        /// </summary>
+        public void ServerStart( )
+        {
+            base.ServerStart( Port );
+        }
+
+        /// <summary>
         /// 设置密码，长度为6
         /// </summary>
         /// <param name="password"></param>
@@ -277,6 +275,64 @@ namespace HslCommunication.Core.Net
             trustLock.Leave( );
         }
 
+
+        /// <summary>
+        /// 退出异形客户端
+        /// </summary>
+        /// <param name="session">异形客户端的会话</param>
+        public void AlienSessionLoginOut( AlienSession session )
+        {
+            alreadyLock.Enter( );
+
+            alreadyOnline.Remove( session );
+
+            alreadyLock.Leave( );
+        }
+
+
+        #endregion
+
+        #region Thread Check Client
+
+        private void ThreadCheckStart()
+        {
+            threadCheck = new Thread(new ThreadStart( ThreadCheckAlienClient ));
+            threadCheck.IsBackground = true;
+            threadCheck.Priority = ThreadPriority.AboveNormal;
+            threadCheck.Start( );
+        }
+
+        private void ThreadCheckAlienClient( )
+        {
+            Thread.Sleep( 1000 );
+            while (true)
+            {
+                Thread.Sleep( 1000 );
+
+                alreadyLock.Enter( );
+
+                for (int i = alreadyOnline.Count - 1; i >= 0; i--)
+                {
+                    if (!alreadyOnline[i].IsStatusOk)
+                    {
+                        alreadyOnline.RemoveAt( i );
+                    }
+                }
+
+
+                alreadyLock.Leave( );
+            }
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// 端口号
+        /// </summary>
+        public int Port { get; set; }
+
         #endregion
 
         #region Private Member
@@ -286,6 +342,7 @@ namespace HslCommunication.Core.Net
         private SimpleHybirdLock alreadyLock;       // 列表的同步锁
         private List<string> trustOnline;           // 禁止登录的客户端信息
         private SimpleHybirdLock trustLock;         // 禁止登录的锁
+        private Thread threadCheck;                 // 后台检测在线情况的
 
         #endregion
 

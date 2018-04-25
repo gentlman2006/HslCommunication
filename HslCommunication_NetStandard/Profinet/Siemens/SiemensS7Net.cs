@@ -215,7 +215,7 @@ namespace HslCommunication.Profinet.Siemens
             if (address == null) throw new NullReferenceException( "address" );
             if (length == null) throw new NullReferenceException( "count" );
             if (address.Length != length.Length) throw new Exception( "两个参数的个数不统一" );
-            if (length.Length > 255) throw new Exception( "读取的数组数量不允许大于255" );
+            if (length.Length > 19) throw new Exception( "读取的数组数量不允许大于19" );
 
             var result = new OperateResult<byte[]>( );
             int readCount = length.Length;

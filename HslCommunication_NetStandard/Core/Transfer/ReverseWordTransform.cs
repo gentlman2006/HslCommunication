@@ -70,6 +70,21 @@ namespace HslCommunication.Core
             return buffer[index];
         }
 
+
+        /// <summary>
+        /// 从缓存中提取byte数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">提取的数组长度</param>
+        /// <returns>byte对象</returns>
+        public byte[] TransByte( byte[] buffer, int index, int length )
+        {
+            byte[] tmp = new byte[length];
+            Array.Copy( buffer, index, tmp, 0, length );
+            return tmp;
+        }
+
         /// <summary>
         /// 从缓存中提取short结果
         /// </summary>
@@ -81,6 +96,25 @@ namespace HslCommunication.Core
             return BitConverter.ToInt16( ReverseBytesByWord( buffer, index, 2 ), 0 );
         }
 
+
+        /// <summary>
+        /// 从缓存中提取short数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">提取的数组长度</param>
+        /// <returns>short数组对象</returns>
+        public short[] TransInt16( byte[] buffer, int index, int length )
+        {
+            short[] tmp = new short[length];
+            for (int i = 0; i < length; i++)
+            {
+                tmp[i] = TransInt16( buffer, index + 2 * i );
+            }
+            return tmp;
+        }
+
+
         /// <summary>
         /// 从缓存中提取ushort结果
         /// </summary>
@@ -91,6 +125,26 @@ namespace HslCommunication.Core
         {
             return BitConverter.ToUInt16( ReverseBytesByWord( buffer, index, 2 ), 0 );
         }
+
+        /// <summary>
+        /// 从缓存中提取ushort数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">提取的数组的长度</param>
+        /// <returns>ushort对象</returns>
+        public ushort[] TransUInt16( byte[] buffer, int index, int length )
+        {
+            ushort[] tmp = new ushort[length];
+            for (int i = 0; i < length; i++)
+            {
+                tmp[i] = TransUInt16( buffer, index + 2 * i );
+            }
+            return tmp;
+        }
+
+
+
         /// <summary>
         /// 从缓存中提取int结果
         /// </summary>
@@ -101,6 +155,26 @@ namespace HslCommunication.Core
         {
             return BitConverter.ToInt32( ReverseBytesByWord( buffer, index, 4 ), 0 );
         }
+
+
+        /// <summary>
+        /// 从缓存中提取int数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">提取的数组的长度</param>
+        /// <returns>int数组对象</returns>
+        public int[] TransInt32( byte[] buffer, int index, int length )
+        {
+            int[] tmp = new int[length];
+            for (int i = 0; i < length; i++)
+            {
+                tmp[i] = TransInt32( buffer, index + 4 * i );
+            }
+            return tmp;
+        }
+
+
         /// <summary>
         /// 从缓存中提取uint结果
         /// </summary>
@@ -111,6 +185,25 @@ namespace HslCommunication.Core
         {
             return BitConverter.ToUInt32( ReverseBytesByWord( buffer, index, 4 ), 0 );
         }
+
+        /// <summary>
+        /// 从缓存中提取uint数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">提取的数组的长度</param>
+        /// <returns>uint数组对象</returns>
+        public uint[] TransUInt32( byte[] buffer, int index, int length )
+        {
+            uint[] tmp = new uint[length];
+            for (int i = 0; i < length; i++)
+            {
+                tmp[i] = TransUInt32( buffer, index + 4 * i );
+            }
+            return tmp;
+        }
+
+
         /// <summary>
         /// 从缓存中提取long结果
         /// </summary>
@@ -121,6 +214,26 @@ namespace HslCommunication.Core
         {
             return BitConverter.ToInt64( ReverseBytesByWord( buffer, index, 8 ), 0 );
         }
+
+
+        /// <summary>
+        /// 从缓存中提取long数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">提取的数组的长度</param>
+        /// <returns>long数组对象</returns>
+        public long[] TransInt64( byte[] buffer, int index, int length )
+        {
+            long[] tmp = new long[length];
+            for (int i = 0; i < length; i++)
+            {
+                tmp[i] = TransInt64( buffer, index + 8 * i );
+            }
+            return tmp;
+        }
+
+
         /// <summary>
         /// 从缓存中提取ulong结果
         /// </summary>
@@ -131,6 +244,28 @@ namespace HslCommunication.Core
         {
             return BitConverter.ToUInt64( ReverseBytesByWord( buffer, index, 8 ), 0 );
         }
+
+
+
+
+        /// <summary>
+        /// 从缓存中提取ulong数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">提取的数组的长度</param>
+        /// <returns>ulong数组对象</returns>
+        public ulong[] TransUInt64( byte[] buffer, int index, int length )
+        {
+            ulong[] tmp = new ulong[length];
+            for (int i = 0; i < length; i++)
+            {
+                tmp[i] = TransUInt64( buffer, index + 8 * i );
+            }
+            return tmp;
+        }
+
+
         /// <summary>
         /// 从缓存中提取float结果
         /// </summary>
@@ -141,6 +276,26 @@ namespace HslCommunication.Core
         {
             return BitConverter.ToSingle( ReverseBytesByWord( buffer, index, 4 ), 0 );
         }
+
+
+        /// <summary>
+        /// 从缓存中提取float数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">提取的数组的长度</param>
+        /// <returns>float数组对象</returns>
+        public float[] TransSingle( byte[] buffer, int index, int length )
+        {
+            float[] tmp = new float[length];
+            for (int i = 0; i < length; i++)
+            {
+                tmp[i] = TransSingle( buffer, index + 4 * i );
+            }
+            return tmp;
+        }
+
+
         /// <summary>
         /// 从缓存中提取double结果
         /// </summary>
@@ -151,6 +306,24 @@ namespace HslCommunication.Core
         {
             return BitConverter.ToDouble( ReverseBytesByWord( buffer, index, 8 ), 0 );
         }
+
+        /// <summary>
+        /// 从缓存中提取double数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">提取的数组的长度</param>
+        /// <returns>double数组对象</returns>
+        public double[] TransDouble( byte[] buffer, int index, int length )
+        {
+            double[] tmp = new double[length];
+            for (int i = 0; i < length; i++)
+            {
+                tmp[i] = TransDouble( buffer, index + 4 * i );
+            }
+            return tmp;
+        }
+
         /// <summary>
         /// 从缓存中提取string结果，编码ASCII
         /// </summary>

@@ -12,6 +12,15 @@ namespace HslCommunication.Core.Net
     public class AlienSession
     {
         /// <summary>
+        /// 实例化一个默认的参数
+        /// </summary>
+        public AlienSession()
+        {
+            IsStatusOk = true;
+        }
+
+
+        /// <summary>
         /// 网络套接字
         /// </summary>
         public Socket Socket { get; set; }
@@ -21,6 +30,9 @@ namespace HslCommunication.Core.Net
         /// </summary>
         public string DTU { get; set; }
 
-
+        /// <summary>
+        /// 指示当前的网络状态
+        /// </summary>
+        public bool IsStatusOk { get; set; }
     }
 }
