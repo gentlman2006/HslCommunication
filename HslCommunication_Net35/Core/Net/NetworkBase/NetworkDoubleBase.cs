@@ -472,34 +472,7 @@ namespace HslCommunication.Core.Net
         #endregion
 
         #region Result Transform
-
-        /// <summary>
-        /// 结果转换操作的基础方法，需要支持类型，及转换的委托
-        /// </summary>
-        /// <typeparam name="TResult">结果类型</typeparam>
-        /// <param name="result"></param>
-        /// <param name="translator"></param>
-        /// <returns></returns>
-        private OperateResult<TResult> GetResultFromBytes<TResult>( OperateResult<byte[]> result, Func<byte[], TResult> translator )
-        {
-            var tmp = new OperateResult<TResult>( );
-            try
-            {
-                if (result.IsSuccess)
-                {
-                    tmp.Content = translator( result.Content );
-                    tmp.IsSuccess = result.IsSuccess;
-                }
-                tmp.CopyErrorFromOther( result );
-            }
-            catch(Exception ex)
-            {
-                tmp.Message = "数据转化失败，源数据：" + BasicFramework.SoftBasic.ByteToHexString( result.Content ) + " 消息：" + ex.Message;
-            }
-
-            return tmp;
-        }
-
+        
 
         /// <summary>
         /// 将指定的OperateResult类型转化
@@ -508,7 +481,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<bool> GetBoolResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, byteTransform.TransBool );
+            return ByteTransformHelper.GetBoolResultFromBytes( result, byteTransform);
         }
 
         /// <summary>
@@ -518,7 +491,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<byte> GetByteResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransByte( m, 0 ) );
+            return ByteTransformHelper.GetByteResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -528,7 +501,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<short> GetInt16ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransInt16( m, 0 ) );
+            return ByteTransformHelper.GetInt16ResultFromBytes( result, byteTransform );
         }
 
 
@@ -539,7 +512,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<ushort> GetUInt16ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransUInt16( m, 0 ) );
+            return ByteTransformHelper.GetUInt16ResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -549,7 +522,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<int> GetInt32ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransInt32( m, 0 ) );
+            return ByteTransformHelper.GetInt32ResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -559,7 +532,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<uint> GetUInt32ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransUInt32( m, 0 ) );
+            return ByteTransformHelper.GetUInt32ResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -569,7 +542,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<long> GetInt64ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransInt64( m, 0 ) );
+            return ByteTransformHelper.GetInt64ResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -579,7 +552,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<ulong> GetUInt64ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransUInt64( m, 0 ) );
+            return ByteTransformHelper.GetUInt64ResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -589,7 +562,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<float> GetSingleResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransSingle( m, 0 ) );
+            return ByteTransformHelper.GetSingleResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -599,7 +572,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<double> GetDoubleResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransDouble( m, 0 ) );
+            return ByteTransformHelper.GetDoubleResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -609,7 +582,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<string> GetStringResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, byteTransform.TransString );
+            return ByteTransformHelper.GetStringResultFromBytes( result, byteTransform );
         }
         
 

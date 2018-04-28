@@ -85,5 +85,23 @@ namespace HslCommunication.ModBus
         /// </summary>
         public const byte FunctionCodeReadWriteException = 0x04;
 
+
+
+
+
+
+
+
+        #region Static Method
+
+
+
+
+
+        #endregion
+
+
+
+
     }
 }

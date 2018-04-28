@@ -56,11 +56,12 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.button20 = new System.Windows.Forms.Button();
             this.button18 = new System.Windows.Forms.Button();
             this.button17 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.button20 = new System.Windows.Forms.Button();
+            this.button21 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -142,6 +143,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button21);
             this.groupBox2.Controls.Add(this.button19);
             this.groupBox2.Controls.Add(this.button6);
             this.groupBox2.Location = new System.Drawing.Point(425, 74);
@@ -393,6 +395,17 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Controls";
             // 
+            // button20
+            // 
+            this.button20.Location = new System.Drawing.Point(19, 143);
+            this.button20.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button20.Name = "button20";
+            this.button20.Size = new System.Drawing.Size(150, 32);
+            this.button20.TabIndex = 3;
+            this.button20.Text = "Pie Chart (饼图)";
+            this.button20.UseVisualStyleBackColor = true;
+            this.button20.Click += new System.EventHandler(this.button20_Click);
+            // 
             // button18
             // 
             this.button18.Location = new System.Drawing.Point(19, 103);
@@ -437,16 +450,16 @@
             this.label3.TabIndex = 13;
             this.label3.Text = "库版本：";
             // 
-            // button20
+            // button21
             // 
-            this.button20.Location = new System.Drawing.Point(19, 143);
-            this.button20.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button20.Name = "button20";
-            this.button20.Size = new System.Drawing.Size(150, 32);
-            this.button20.TabIndex = 3;
-            this.button20.Text = "Pie Chart (饼图)";
-            this.button20.UseVisualStyleBackColor = true;
-            this.button20.Click += new System.EventHandler(this.button20_Click);
+            this.button21.Location = new System.Drawing.Point(19, 104);
+            this.button21.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button21.Name = "button21";
+            this.button21.Size = new System.Drawing.Size(150, 32);
+            this.button21.TabIndex = 2;
+            this.button21.Text = "Modbus Rtu";
+            this.button21.UseVisualStyleBackColor = true;
+            this.button21.Click += new System.EventHandler(this.button21_Click);
             // 
             // FormLoad
             // 
@@ -519,6 +532,7 @@
         private System.Windows.Forms.Button button19;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button20;
+        private System.Windows.Forms.Button button21;
     }
 }
 

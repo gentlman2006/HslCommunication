@@ -252,5 +252,15 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button21_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormModbusRtu form = new FormModbusRtu( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

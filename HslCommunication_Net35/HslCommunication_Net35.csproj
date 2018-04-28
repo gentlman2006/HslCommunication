@@ -163,6 +163,7 @@
     <Compile Include="Core\Net\NetworkBase\NetworkXBase.cs" />
     <Compile Include="Core\Net\StateOne\StateOneBase.cs" />
     <Compile Include="Core\Thread\ThreadLock.cs" />
+    <Compile Include="Core\Transfer\ByteTransformHelper.cs" />
     <Compile Include="Core\Transfer\IByteTransform.cs" />
     <Compile Include="Core\Transfer\RegularByteTransform.cs" />
     <Compile Include="Core\Transfer\ReverseBytesTransform.cs" />
@@ -209,6 +210,7 @@
     <Compile Include="Core\Types\OperateResult.cs" />
     <Compile Include="ModBus\ModbusInfo.cs" />
     <Compile Include="ModBus\ModBusMonitorAddress.cs" />
+    <Compile Include="ModBus\ModbusRtu\ModbusRtu.cs" />
     <Compile Include="ModBus\ModBusState.cs" />
     <Compile Include="ModBus\ModbusTcp\ModbusTcpNet.cs" />
     <Compile Include="Core\Types\IDataTransfer.cs" />
@@ -405,8 +407,6 @@
   <ItemGroup>
     <None Include="imgaes\abstr11.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ModBus\ModbusRtu\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
