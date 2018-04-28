@@ -100,6 +100,12 @@
     <Compile Include="FormOmron.Designer.cs">
       <DependentUpon>FormOmron.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormPieChart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPieChart.Designer.cs">
+      <DependentUpon>FormPieChart.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSiemensFW.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,6 +182,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormOmron.resx">
       <DependentUpon>FormOmron.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPieChart.resx">
+      <DependentUpon>FormPieChart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSiemensFW.resx">
       <DependentUpon>FormSiemensFW.cs</DependentUpon>

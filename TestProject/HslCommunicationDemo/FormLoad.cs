@@ -242,5 +242,15 @@ namespace HslCommunicationDemo
         {
             label3.Text = "库版本：" + HslCommunication.BasicFramework.SoftBasic.FrameworkVersion.ToString( );
         }
+
+        private void button20_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormPieChart form = new FormPieChart( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

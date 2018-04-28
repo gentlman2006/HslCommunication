@@ -454,7 +454,7 @@ namespace HslCommunication.Core.Net
                 LogNet?.WriteException( ToString( ), ex );               // 记录错误日志
                 socket.Close( );                                         // 关闭网络信息
                 connectDone.Close( );                                    // 释放等待资源
-                result.Message = ex.Message;                             // 传递错误消息
+                result.Message = "Connect Failed : " + ex.Message;       // 传递错误消息
                 return result;
             }
 

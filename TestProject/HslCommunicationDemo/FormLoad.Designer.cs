@@ -60,6 +60,7 @@
             this.button17 = new System.Windows.Forms.Button();
             this.button16 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.button20 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -379,6 +380,7 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.button20);
             this.groupBox6.Controls.Add(this.button18);
             this.groupBox6.Controls.Add(this.button17);
             this.groupBox6.Controls.Add(this.button16);
@@ -434,6 +436,17 @@
             this.label3.Size = new System.Drawing.Size(92, 27);
             this.label3.TabIndex = 13;
             this.label3.Text = "库版本：";
+            // 
+            // button20
+            // 
+            this.button20.Location = new System.Drawing.Point(19, 143);
+            this.button20.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button20.Name = "button20";
+            this.button20.Size = new System.Drawing.Size(150, 32);
+            this.button20.TabIndex = 3;
+            this.button20.Text = "Pie Chart (饼图)";
+            this.button20.UseVisualStyleBackColor = true;
+            this.button20.Click += new System.EventHandler(this.button20_Click);
             // 
             // FormLoad
             // 
@@ -505,6 +518,7 @@
         private System.Windows.Forms.Button button17;
         private System.Windows.Forms.Button button19;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button20;
     }
 }
 
