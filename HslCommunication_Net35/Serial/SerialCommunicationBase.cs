@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.IO.Ports;
 using System.Threading;
+using HslCommunication.Core;
+using HslCommunication.LogNet;
 
 namespace HslCommunication.Serial
 {
@@ -23,9 +25,12 @@ namespace HslCommunication.Serial
             SP_ReadData = new SerialPort( );
             resetEvent = new AutoResetEvent( false );
             buffer = new byte[2048];
+            hybirdLock = new SimpleHybirdLock( );
         }
 
         #endregion
+
+        #region Public Method
 
         /// <summary>
         /// 初始化串口信息，9600波特率，8位数据位，1位停止位，无奇偶校验
@@ -76,16 +81,9 @@ namespace HslCommunication.Serial
             SP_ReadData.DataReceived += SP_ReadData_DataReceived;
         }
 
-        private void SP_ReadData_DataReceived( object sender, SerialDataReceivedEventArgs e )
-        {
-            Thread.Sleep( 20 );
-            receiveCount = SP_ReadData.Read( buffer, 0, SP_ReadData.BytesToRead );
-            resetEvent.Set( );
-        }
 
 
 
-        #region Public Method
 
         /// <summary>
         /// 打开一个新的串行端口连接
@@ -114,26 +112,87 @@ namespace HslCommunication.Serial
         /// </summary>
         /// <param name="send"></param>
         /// <returns></returns>
-        public byte[] ReadBase(byte[] send)
+        public OperateResult<byte[]> ReadBase(byte[] send)
         {
-            SP_ReadData.Write( send, 0, send.Length );
-            resetEvent.WaitOne( );
-            byte[] result = new byte[receiveCount];
+            OperateResult<byte[]> result = null;
 
-            Array.Copy( buffer, 0, result, 0, result.Length );
+            hybirdLock.Enter( );
+
+            try
+            {
+                if (send == null) send = new byte[0];
+
+                SP_ReadData.Write( send, 0, send.Length );
+                resetEvent.WaitOne( );
+                byte[] tmp = new byte[receiveCount];
+                Array.Copy( buffer, 0, tmp, 0, tmp.Length );
+
+                result = OperateResult.CreateSuccessResult( tmp );
+            }
+            catch(Exception ex)
+            {
+                logNet?.WriteException( ToString( ), ex );
+                result = new OperateResult<byte[]>( )
+                {
+                    Message = ex.Message
+                };
+            }
+            finally
+            {
+                hybirdLock.Leave( );
+            }
 
             return result;
         }
 
         #endregion
 
+        #region Private Method
+
+
+        private void SP_ReadData_DataReceived( object sender, SerialDataReceivedEventArgs e )
+        {
+            Thread.Sleep( 20 );
+            receiveCount = SP_ReadData.Read( buffer, 0, SP_ReadData.BytesToRead );
+            resetEvent.Set( );
+        }
+
+        #endregion
+
+        #region Object Override
+
+        /// <summary>
+        /// 返回表示当前对象的字符串
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "SerialBase";
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// 当前的日志情况
+        /// </summary>
+        public ILogNet LogNet
+        {
+            get { return logNet; }
+            set { logNet = value; }
+        }
+
+        #endregion
 
         #region Private Member
-        
+
         private SerialPort SP_ReadData = null;                    // 串口交互的核心
         private AutoResetEvent resetEvent = null;                 // 消息同步机制
         private byte[] buffer = null;                             // 接收缓冲区
         private int receiveCount = 0;                             // 接收的数据长度
+        private SimpleHybirdLock hybirdLock;                      // 数据交互的锁
+        private ILogNet logNet;                                   //         
 
         #endregion
     }

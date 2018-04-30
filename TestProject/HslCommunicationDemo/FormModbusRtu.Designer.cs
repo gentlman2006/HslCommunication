@@ -29,6 +29,12 @@
         private void InitializeComponent( )
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.textBox17 = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.textBox16 = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox15 = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
@@ -100,12 +106,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.textBox16 = new System.Windows.Forms.TextBox();
-            this.label22 = new System.Windows.Forms.Label();
-            this.textBox17 = new System.Windows.Forms.TextBox();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -140,6 +140,62 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(978, 54);
             this.panel1.TabIndex = 0;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "无",
+            "奇",
+            "偶"});
+            this.comboBox1.Location = new System.Drawing.Point(470, 14);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(59, 25);
+            this.comboBox1.TabIndex = 15;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(434, 17);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(44, 17);
+            this.label24.TabIndex = 14;
+            this.label24.Text = "奇偶：";
+            // 
+            // textBox17
+            // 
+            this.textBox17.Location = new System.Drawing.Point(404, 14);
+            this.textBox17.Name = "textBox17";
+            this.textBox17.Size = new System.Drawing.Size(23, 23);
+            this.textBox17.TabIndex = 13;
+            this.textBox17.Text = "1";
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(350, 17);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(56, 17);
+            this.label23.TabIndex = 12;
+            this.label23.Text = "停止位：";
+            // 
+            // textBox16
+            // 
+            this.textBox16.Location = new System.Drawing.Point(313, 14);
+            this.textBox16.Name = "textBox16";
+            this.textBox16.Size = new System.Drawing.Size(24, 23);
+            this.textBox16.TabIndex = 11;
+            this.textBox16.Text = "8";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(259, 17);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(56, 17);
+            this.label22.TabIndex = 10;
+            this.label22.Text = "数据位：";
             // 
             // checkBox1
             // 
@@ -336,7 +392,7 @@
             this.groupBox4.Size = new System.Drawing.Size(518, 118);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "报文读取测试，此处需要填入完整的16进制报文字符串";
+            this.groupBox4.Text = "报文读取测试，此处需要填入16进制报文字符串，不用写CRC校验";
             // 
             // textBox11
             // 
@@ -372,7 +428,7 @@
             this.textBox13.Name = "textBox13";
             this.textBox13.Size = new System.Drawing.Size(357, 23);
             this.textBox13.TabIndex = 5;
-            this.textBox13.Text = "00 00 00 00 00 06 FF 03 00 00 00 05";
+            this.textBox13.Text = "01 03 00 64 00 02";
             // 
             // label16
             // 
@@ -865,62 +921,6 @@
             this.label20.Size = new System.Drawing.Size(108, 17);
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
-            // 
-            // textBox16
-            // 
-            this.textBox16.Location = new System.Drawing.Point(313, 14);
-            this.textBox16.Name = "textBox16";
-            this.textBox16.Size = new System.Drawing.Size(24, 23);
-            this.textBox16.TabIndex = 11;
-            this.textBox16.Text = "8";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(259, 17);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(56, 17);
-            this.label22.TabIndex = 10;
-            this.label22.Text = "数据位：";
-            // 
-            // textBox17
-            // 
-            this.textBox17.Location = new System.Drawing.Point(404, 14);
-            this.textBox17.Name = "textBox17";
-            this.textBox17.Size = new System.Drawing.Size(23, 23);
-            this.textBox17.TabIndex = 13;
-            this.textBox17.Text = "1";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(350, 17);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(56, 17);
-            this.label23.TabIndex = 12;
-            this.label23.Text = "停止位：";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(434, 17);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(44, 17);
-            this.label24.TabIndex = 14;
-            this.label24.Text = "奇偶：";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "无",
-            "奇",
-            "偶"});
-            this.comboBox1.Location = new System.Drawing.Point(470, 14);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(59, 25);
-            this.comboBox1.TabIndex = 15;
             // 
             // FormModbusRtu
             // 

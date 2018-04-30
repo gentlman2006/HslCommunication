@@ -273,9 +273,10 @@ namespace HslCommunication.ModBus
         /// <returns>带是否成功的结果数据</returns>
         private OperateResult<byte[]> CheckModbusTcpResponse( byte[] send )
         {
-            byte[] result = ReadBase( send );
+            OperateResult<byte[]> result = ReadBase( send );
+            if (!result.IsSuccess) return result;
 
-            if(result.Length < 5)
+            if(result.Content.Length < 5)
             {
                 return new OperateResult<byte[]>( )
                 {
@@ -284,7 +285,7 @@ namespace HslCommunication.ModBus
                 };
             }
 
-            if(!SoftCRC16.CheckCRC16(result))
+            if(!SoftCRC16.CheckCRC16(result.Content))
             {
                 return new OperateResult<byte[]>( )
                 {
@@ -293,21 +294,21 @@ namespace HslCommunication.ModBus
                 };
             }
 
-            if ((send[1] + 0x80) == result[1])
+            if ((send[1] + 0x80) == result.Content[1])
             {
                 // 发生了错误
                 return new OperateResult<byte[]>( )
                 {
                     IsSuccess = false,
-                    Message = GetDescriptionByErrorCode( result[2] ),
-                    ErrorCode = result[2],
+                    Message = GetDescriptionByErrorCode( result.Content[2] ),
+                    ErrorCode = result.Content[2],
                 };
             }
             else
             {
                 // 移除CRC校验
-                byte[] buffer = new byte[result.Length - 2];
-                Array.Copy( result, 0, buffer, 0, buffer.Length );
+                byte[] buffer = new byte[result.Content.Length - 2];
+                Array.Copy( result.Content, 0, buffer, 0, buffer.Length );
                 return OperateResult.CreateSuccessResult( buffer );
             }
         }

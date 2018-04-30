@@ -395,9 +395,15 @@ namespace HslCommunicationDemo
         {
             try
             {
-                byte[] read = busRtuClient.ReadBase( HslCommunication.BasicFramework.SoftBasic.HexStringToBytes( textBox13.Text ) );
-
-                textBox11.Text = "结果：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( read );
+                OperateResult<byte[]> read = busRtuClient.ReadBase( HslCommunication.Serial.SoftCRC16.CRC16(HslCommunication.BasicFramework.SoftBasic.HexStringToBytes( textBox13.Text )) );
+                if (read.IsSuccess)
+                {
+                    textBox11.Text = "结果：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( read.Content );
+                }
+                else
+                {
+                    MessageBox.Show( "读取失败：" + read.ToMessageShowString( ) );
+                }
             }
             catch (Exception ex)
             {

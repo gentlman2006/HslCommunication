@@ -75,7 +75,7 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 * [How to communicate with siemens plc](https://github.com/dathlin/HslCommunication/blob/master/docs/Siemens.md)
 * [How to communicate with omron plc](https://github.com/dathlin/HslCommunication/blob/master/docs/Omron.md)
 * [How to communicate with modbus-tcp device](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusTcp.md)
-* [How to build you own modbus-tcp server](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusServer.md)
+* [How to build you own modbus server, include tcp and rtu mode](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusServer.md)
 
 ## Second Extensions Project (内含几个Demo)
 * 基于本组件开发的一个CS架构的项目模版，该模版采用本组件进行开发，完成了账户管理，角色管理，个人文件管理，头像机制，自动升级，完善的日志等等功能。项目地址为：[https://github.com/dathlin/ClientServerProject](https://github.com/dathlin/ClientServerProject)
