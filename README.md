@@ -91,6 +91,8 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 
 * **HslCommunicationDemo项目** 基于本组件开发的一个西门子，三菱，欧姆龙，Modbus-Tcp，SimplifyNet，ComplexNet，FileNet等的通讯测试工具，方便的进行读写测试，不需要额外的编写代码。
 
+* **HslSharp项目** 基于本组件深度定制实现的OPC UA网关服务器，实现基于三菱，西门子，欧姆龙，modbus等HslCommunication支持的协议创建可配置的OPC UA服务器。下载地址：[HSLSharp.zip](https://github.com/dathlin/HslCommunication/raw/master/Download/HSLSharp.zip)
+
 ## Contribution
 热烈欢迎对本项目的代码提出改进意见，可以发起Pull Request，对于代码量贡献较多的小伙伴，会有额外的组件使用权，并在特别感谢里写明。
 
