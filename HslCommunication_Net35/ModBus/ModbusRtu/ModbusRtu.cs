@@ -695,7 +695,6 @@ namespace HslCommunication.ModBus
 
         #region Write String
 
-
         /// <summary>
         /// 向寄存器中写入字符串，编码格式为ASCII
         /// </summary>
@@ -704,7 +703,8 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, string value )
         {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
+            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
+            temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
         }
 
@@ -717,8 +717,8 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, string value, int length )
         {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
-            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length );
+            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
+            temp = SoftBasic.ArrayExpandToLength( temp, length );
             return Write( address, temp );
         }
 
@@ -730,7 +730,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult WriteUnicodeString( string address, string value )
         {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
+            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
             return Write( address, temp );
         }
 
@@ -743,11 +743,11 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult WriteUnicodeString( string address, string value, int length )
         {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
+            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
             temp = SoftBasic.ArrayExpandToLength( temp, length * 2 );
             return Write( address, temp );
         }
-
+        
         #endregion
 
         #region Write bool[]

@@ -985,7 +985,7 @@ namespace HslCommunication.Profinet.Siemens
         /// <returns>返回读取结果</returns>
         public OperateResult Write(string address, string value)
         {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
+            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
             return Write( address, temp );
         }
 
@@ -999,7 +999,7 @@ namespace HslCommunication.Profinet.Siemens
         /// <returns>返回读取结果</returns>
         public OperateResult Write(string address, string value, int length)
         {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
+            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
             temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length );
             return Write( address, temp );
         }

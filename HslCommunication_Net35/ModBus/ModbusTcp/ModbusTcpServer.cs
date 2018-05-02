@@ -426,7 +426,9 @@ namespace HslCommunication.ModBus
         {
             string str = string.Empty;
             hybirdLockRegister.Enter( );
-            str = Encoding.ASCII.GetString( Register, address * 2, length * 2 );
+
+            str = byteTransform.TransString( Register, address * 2, length * 2, Encoding.ASCII );
+
             hybirdLockRegister.Leave( );
             return str;
         }
@@ -653,7 +655,9 @@ namespace HslCommunication.ModBus
         /// <param name="value">ASCII编码的字符串的信息</param>
         public void Write(ushort address, string value)
         {
-            Write( address, byteTransform.TransByte( value ) );
+            byte[] buffer = byteTransform.TransByte( value, Encoding.ASCII );
+            buffer = BasicFramework.SoftBasic.ArrayExpandToLengthEven( buffer );
+            Write( address, buffer );
         }
 
         #endregion

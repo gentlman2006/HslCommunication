@@ -95,20 +95,28 @@ namespace HslCommunication.LogNet
                 {
                     builder.Append(" : ");
                 }
-                builder.Append("错误消息：");
-                builder.Append(ex.Message);
-                builder.Append(Environment.NewLine);
-                builder.Append("源：");
-                builder.Append(ex.Source);
-                builder.Append(Environment.NewLine);
-                builder.Append("堆栈：");
-                builder.Append(ex.StackTrace);
-                builder.Append(Environment.NewLine);
-                builder.Append("错误类型：");
-                builder.Append(ex.GetType().ToString());
-                builder.Append(Environment.NewLine);
-                builder.Append("调用方法：");
-                builder.Append(ex.TargetSite?.ToString());
+
+                try
+                {
+                    builder.Append( "错误消息：" );
+                    builder.Append( ex.Message );
+                    builder.Append( Environment.NewLine );
+                    builder.Append( "源：" );
+                    builder.Append( ex.Source );
+                    builder.Append( Environment.NewLine );
+                    builder.Append( "堆栈：" );
+                    builder.Append( ex.StackTrace );
+                    builder.Append( Environment.NewLine );
+                    builder.Append( "错误类型：" );
+                    builder.Append( ex.GetType( ).ToString( ) );
+                    builder.Append( Environment.NewLine );
+                    builder.Append( "调用方法：" );
+                    builder.Append( ex.TargetSite?.ToString( ) );
+                }
+                catch
+                {
+
+                }
                 builder.Append(Environment.NewLine);
                 builder.Append("\u0002/=================================================[    Exception    ]================================================/");
             }

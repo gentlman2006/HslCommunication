@@ -48,7 +48,7 @@ namespace HslCommunication.Core
         /// <returns>转化后的类型</returns>
         public static OperateResult<bool> GetBoolResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
         {
-            return GetResultFromBytes( result, byteTransform.TransBool );
+            return GetResultFromBytes( result, m => byteTransform.TransBool( m, 0 ) );
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace HslCommunication.Core
         /// <returns>转化后的类型</returns>
         public static OperateResult<string> GetStringResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
         {
-            return GetResultFromBytes( result, byteTransform.TransString );
+            return GetResultFromBytes( result, m => byteTransform.TransString( m, 0, m.Length, Encoding.ASCII ) );
         }
 
 
