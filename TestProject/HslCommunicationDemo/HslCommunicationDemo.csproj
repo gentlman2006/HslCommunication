@@ -112,6 +112,12 @@
     <Compile Include="FormPieChart.Designer.cs">
       <DependentUpon>FormPieChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormPushNet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPushNet.Designer.cs">
+      <DependentUpon>FormPushNet.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSiemensFW.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -194,6 +200,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormPieChart.resx">
       <DependentUpon>FormPieChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPushNet.resx">
+      <DependentUpon>FormPushNet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSiemensFW.resx">
       <DependentUpon>FormSiemensFW.cs</DependentUpon>

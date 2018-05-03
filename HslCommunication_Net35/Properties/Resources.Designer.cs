@@ -293,6 +293,16 @@ namespace HslCommunication.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap mm_facetoface_collect_qrcode_1525331158525 {
+            get {
+                object obj = ResourceManager.GetObject("mm_facetoface_collect_qrcode_1525331158525", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap Module_648 {
             get {
                 object obj = ResourceManager.GetObject("Module_648", resourceCulture);

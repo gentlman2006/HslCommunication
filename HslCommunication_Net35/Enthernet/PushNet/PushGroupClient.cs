@@ -47,18 +47,22 @@ namespace HslCommunication.Enthernet
         /// 移除一个订阅的会话
         /// </summary>
         /// <param name="clientID">客户端唯一的ID信息</param>
-        public void RemovePushClient( string clientID )
+        public bool RemovePushClient( string clientID )
         {
+            bool result = false;
             simpleHybird.Enter( );
             for (int i = 0; i < appSessions.Count; i++)
             {
                 if(appSessions[i].ClientUniqueID == clientID)
                 {
                     appSessions.RemoveAt( i );
+                    result = true;
                     break;
                 }
             }
             simpleHybird.Leave( );
+
+            return result;
         }
 
         /// <summary>

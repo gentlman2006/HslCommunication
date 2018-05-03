@@ -262,5 +262,15 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button22_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormPushNet form = new FormPushNet( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

@@ -56,12 +56,15 @@ namespace HslCommunication.Enthernet
                 if (!receive.IsSuccess) return;
 
                 // 判断当前的关键字在服务器是否有消息发布
-                if(IsPushGroupOnline(receive.Content2))
+                if(!IsPushGroupOnline(receive.Content2))
                 {
+                    SendStringAndCheckReceive( socket, 1, "当前订阅的关键字不存在" );
                     LogNet?.WriteWarn( ToString( ), "当前订阅的关键字不存在" );
                     socket?.Close( );
                     return;
                 }
+
+                SendStringAndCheckReceive( socket, 0, "" );
 
                 // 允许发布订阅信息
                 AppSession session = new AppSession( );
@@ -88,9 +91,12 @@ namespace HslCommunication.Enthernet
                 }
 
                 LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 上线" );
-
-                GetPushGroupClient( receive.Content2 )?.AddPushClient( session );
-                
+                PushGroupClient push = GetPushGroupClient( receive.Content2 );
+                if (push != null)
+                {
+                    System.Threading.Interlocked.Increment( ref onlineCount );
+                    push.AddPushClient( session );
+                }
             }
         }
 
@@ -108,6 +114,18 @@ namespace HslCommunication.Enthernet
         {
             AddPushKey( key );
             GetPushGroupClient( key )?.PushString( content, sendAction );
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// 在线客户端的数量
+        /// </summary>
+        public int OnlineCount
+        {
+            get => onlineCount;
         }
 
         #endregion
@@ -187,13 +205,22 @@ namespace HslCommunication.Enthernet
         /// <param name="clientID"></param>
         private void RemoveGroupOnlien( string key, string clientID )
         {
-            GetPushGroupClient( key )?.RemovePushClient( clientID );
+            PushGroupClient push = GetPushGroupClient( key );
+            if (push != null)
+            {
+                if (push.RemovePushClient( clientID ))
+                {
+                    // 移除成功
+                    System.Threading.Interlocked.Decrement( ref onlineCount );
+                }
+            }
         }
 
 
         private void SendString(AppSession appSession,string content)
         {
-            OperateResult result = SendStringAndCheckReceive( appSession.WorkSocket, 0, content );
+            OperateResult result = Send( appSession.WorkSocket, HslProtocol.CommandBytes( 0, Token, content ) );
+            // OperateResult result = SendStringAndCheckReceive( appSession.WorkSocket, 0, content );
             if(!result.IsSuccess)
             {
                 RemoveGroupOnlien( appSession.KeyGroup, appSession.ClientUniqueID );
@@ -207,6 +234,7 @@ namespace HslCommunication.Enthernet
         private Dictionary<string, PushGroupClient> dictPushClients;         // 系统的数据词典
         private SimpleHybirdLock dicHybirdLock;                              // 词典锁
         private Action<AppSession, string> sendAction;                       // 发送数据的委托
+        private int onlineCount = 0;                                         // 在线客户端的数量，用于监视显示
 
         #endregion
 
