@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>HslCommunication</AssemblyName>
     <RootNamespace>HslCommunication</RootNamespace>
-    <Version>5.0.5</Version>
+    <Version>5.0.6</Version>
     <Authors>Richard.Hu</Authors>
     <Company />
     <Product>HslCommunication</Product>

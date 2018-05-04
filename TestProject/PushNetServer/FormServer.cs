@@ -41,9 +41,9 @@ namespace PushNetServer
             {
                 // 启动服务
                 pushServer = new NetPushServer( );
+                pushServer.Token = new Guid( textBox3.Text );                                    // 支持令牌
+                pushServer.LogNet = new HslCommunication.LogNet.LogNetSingle( "log.txt" );       // 支持日志
                 pushServer.ServerStart( int.Parse( textBox2.Text ) );
-                pushServer.Token = new Guid( textBox3.Text );
-                pushServer.LogNet = new HslCommunication.LogNet.LogNetSingle( "log.txt" );
                 button1.Enabled = false;
                 panel2.Enabled = true;
                 timerOneSecond.Start( );
@@ -213,6 +213,18 @@ namespace PushNetServer
             catch(Exception ex)
             {
                 HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
+            }
+        }
+
+        private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            try
+            {
+                System.Diagnostics.Process.Start( linkLabel1.Text );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show( ex.Message );
             }
         }
     }

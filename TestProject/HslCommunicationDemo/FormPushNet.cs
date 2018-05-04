@@ -80,5 +80,17 @@ namespace HslCommunicationDemo
             button1.Enabled = true;
             button2.Enabled = false;
         }
+
+        private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            try
+            {
+                System.Diagnostics.Process.Start( linkLabel1.Text );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show( ex.Message );
+            }
+        }
     }
 }
