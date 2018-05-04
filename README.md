@@ -62,9 +62,11 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 * [邮件功能使用](http://www.cnblogs.com/dathlin/p/8463613.html)
 * [流水号生成器](http://www.cnblogs.com/dathlin/p/7811489.html)
 * [软件注册码功能](http://www.cnblogs.com/dathlin/p/7832315.html)
+* [数据订阅推送](http://www.cnblogs.com/dathlin/p/8992315.html)
 * [ModBus 服务器开发，包含Tcp服务器和Rtu服务器](http://www.cnblogs.com/dathlin/p/7782315.html)
 * [ModBus Tcp客户端开发](http://www.cnblogs.com/dathlin/p/7885368.html)
 * [ModBus Rtu客户端开发](http://www.cnblogs.com/dathlin/p/8974215.html)
+* [异形Modbus Tcp客户端开发，侦听模式客户端](http://www.cnblogs.com/dathlin/p/8934266.html)
 * 多线程任务功能
 * [CRC16校验](http://www.cnblogs.com/dathlin/p/7821808.html)
 * [常用控件库](http://www.cnblogs.com/dathlin/p/8150516.html)
