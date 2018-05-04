@@ -49,19 +49,8 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
-        #region 启动停止块
-
-        /// <summary>
-        /// 关闭网络的操作
-        /// </summary>
-        protected override void CloseAction()
-        {
-            ReceivedBytesEvent = null;
-            ReceiveStringEvent = null;
-            base.CloseAction( );
-        }
-
-
+        #region Public Method
+        
         /// <summary>
         /// 向指定的通信对象发送字符串数据
         /// </summary>
@@ -82,6 +71,22 @@ namespace HslCommunication.Enthernet
         {
             SendBytesAsync( session, HslProtocol.CommandBytes( customer, Token, bytes ) );
         }
+
+
+        #endregion
+
+        #region 启动停止块
+
+        /// <summary>
+        /// 关闭网络的操作
+        /// </summary>
+        protected override void CloseAction()
+        {
+            ReceivedBytesEvent = null;
+            ReceiveStringEvent = null;
+            base.CloseAction( );
+        }
+
 
         /// <summary>
         /// 处理请求接收连接后的方法
@@ -104,6 +109,7 @@ namespace HslCommunication.Enthernet
                 }
 
                 LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 上线" );
+                System.Threading.Interlocked.Increment( ref clientCount );
                 ReBeginReceiveHead( session, false );
             }
         }
@@ -116,6 +122,7 @@ namespace HslCommunication.Enthernet
         internal override void SocketReceiveException( AppSession session, Exception ex )
         {
             session.WorkSocket?.Close( );
+            System.Threading.Interlocked.Decrement( ref clientCount );
             LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 异常下线" );
         }
 
@@ -126,6 +133,7 @@ namespace HslCommunication.Enthernet
         internal override void AppSessionRemoteClose( AppSession session )
         {
             session.WorkSocket?.Close( );
+            System.Threading.Interlocked.Decrement( ref clientCount );
             LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 下线" );
         }
 
@@ -164,10 +172,26 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
-        #region Object Override
+        #region Public Properties
 
         /// <summary>
-        /// 获取本对象的字符串表示形式
+        /// 当前在线的客户端数量
+        /// </summary>
+        public int ClientCount => clientCount;
+
+        #endregion
+
+        #region Private Member
+
+        private int clientCount = 0;                                    // 在线客户端的数量
+
+        #endregion
+
+        #region Object Override
+
+
+        /// <summary>
+        /// 返回表示当前对象的字符串
         /// </summary>
         /// <returns></returns>
         public override string ToString( )

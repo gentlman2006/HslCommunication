@@ -37,11 +37,22 @@ namespace SimplifyNetTest
                 simplifyServer.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + @"\Logs\log.txt" );
                 simplifyServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
                 simplifyServer.ServerStart( int.Parse( textBox1.Text ) );
+                userButton1.Enabled = false;
+
+                timerSecond = new Timer( );
+                timerSecond.Interval = 1000;
+                timerSecond.Tick += TimerSecond_Tick;
+                timerSecond.Start( );
             }
             catch(Exception ex )
             {
                 MessageBox.Show( "创建失败：" + ex.Message );
             }
+        }
+
+        private void TimerSecond_Tick( object sender, EventArgs e )
+        {
+            label6.Text = simplifyServer.ClientCount.ToString( );
         }
 
         private void LogNet_BeforeSaveToFile( object sender, HslCommunication.LogNet.HslEventArgs e )
@@ -81,6 +92,8 @@ namespace SimplifyNetTest
 
 
         #endregion
+
+        private Timer timerSecond;
 
         private void userButton1_Click( object sender, EventArgs e )
         {
