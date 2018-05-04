@@ -77,6 +77,14 @@
             this.label9 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.textBox15 = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.button7 = new System.Windows.Forms.Button();
+            this.label25 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel6.SuspendLayout();
@@ -176,6 +184,14 @@
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.label25);
+            this.panel2.Controls.Add(this.button7);
+            this.panel2.Controls.Add(this.textBox15);
+            this.panel2.Controls.Add(this.label24);
+            this.panel2.Controls.Add(this.textBox10);
+            this.panel2.Controls.Add(this.label19);
+            this.panel2.Controls.Add(this.textBox9);
+            this.panel2.Controls.Add(this.label16);
             this.panel2.Controls.Add(this.panel6);
             this.panel2.Controls.Add(this.panel5);
             this.panel2.Controls.Add(this.panel4);
@@ -537,7 +553,7 @@
             this.textBox4.Location = new System.Drawing.Point(62, 36);
             this.textBox4.Multiline = true;
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(892, 89);
+            this.textBox4.Size = new System.Drawing.Size(407, 89);
             this.textBox4.TabIndex = 8;
             // 
             // label9
@@ -565,6 +581,75 @@
             this.label7.Size = new System.Drawing.Size(56, 17);
             this.label7.TabIndex = 7;
             this.label7.Text = "关键字：";
+            // 
+            // textBox9
+            // 
+            this.textBox9.Location = new System.Drawing.Point(601, 7);
+            this.textBox9.Name = "textBox9";
+            this.textBox9.Size = new System.Drawing.Size(181, 23);
+            this.textBox9.TabIndex = 20;
+            this.textBox9.Text = "117.48.203.204";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(547, 11);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(56, 17);
+            this.label16.TabIndex = 19;
+            this.label16.Text = "Ip地址：";
+            // 
+            // textBox10
+            // 
+            this.textBox10.Location = new System.Drawing.Point(601, 37);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.Size = new System.Drawing.Size(181, 23);
+            this.textBox10.TabIndex = 22;
+            this.textBox10.Text = "12345";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(547, 41);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(56, 17);
+            this.label19.TabIndex = 21;
+            this.label19.Text = "端口号：";
+            // 
+            // textBox15
+            // 
+            this.textBox15.Location = new System.Drawing.Point(601, 67);
+            this.textBox15.Name = "textBox15";
+            this.textBox15.Size = new System.Drawing.Size(181, 23);
+            this.textBox15.TabIndex = 24;
+            this.textBox15.Text = "D";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(547, 71);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(56, 17);
+            this.label24.TabIndex = 23;
+            this.label24.Text = "关键字：";
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(550, 108);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(92, 29);
+            this.button7.TabIndex = 25;
+            this.button7.Text = "远程推送";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // label25
+            // 
+            this.label25.Location = new System.Drawing.Point(673, 108);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(270, 90);
+            this.label25.TabIndex = 26;
+            this.label25.Text = "远程推送的意思是数据更新源不再本机，而是在另一台电脑上，现在要推送给其他客户端";
             // 
             // FormServer
             // 
@@ -650,6 +735,14 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.TextBox textBox15;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.Label label16;
     }
 }
 

@@ -181,7 +181,6 @@
     <Compile Include="Enthernet\FileNet\UltimateFileServer.cs" />
     <Compile Include="Enthernet\PushNet\NetPushClient.cs" />
     <Compile Include="Enthernet\PushNet\NetPushServer.cs" />
-    <Compile Include="Enthernet\PushNet\NetPushStation.cs" />
     <Compile Include="Enthernet\PushNet\PushGroupClient.cs" />
     <Compile Include="Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" />
     <Compile Include="Enthernet\ComplexNet\NetComplexClient.cs" />

@@ -466,7 +466,7 @@ namespace HslCommunication.Core.Net
             if (state.IsError)
             {
                 // 连接失败
-                result.Message = state.ErrerMsg;
+                result.Message = "Connect Failed : " + state.ErrerMsg;
                 socket?.Close( );
                 return result;
             }

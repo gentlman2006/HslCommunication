@@ -36,6 +36,9 @@ namespace HslCommunication.Enthernet
             dictPushClients = new Dictionary<string, PushGroupClient>( );
             dicHybirdLock = new SimpleHybirdLock( );
             sendAction = new Action<AppSession, string>( SendString );
+
+            hybirdLock = new SimpleHybirdLock( );
+            pushClients = new List<NetPushClient>( );
         }
 
 
@@ -100,6 +103,13 @@ namespace HslCommunication.Enthernet
             }
         }
 
+        /// <summary>
+        /// 关闭服务器的引擎
+        /// </summary>
+        public override void ServerClose( )
+        {
+            base.ServerClose( );
+        }
 
         #endregion
 
@@ -115,6 +125,57 @@ namespace HslCommunication.Enthernet
             AddPushKey( key );
             GetPushGroupClient( key )?.PushString( content, sendAction );
         }
+
+        /// <summary>
+        /// 移除关键字信息，通常应用于一些特殊临时用途的关键字
+        /// </summary>
+        /// <param name="key">关键字</param>
+        public void RemoveKey( string key )
+        {
+            dicHybirdLock.Enter( );
+
+            if (dictPushClients.ContainsKey( key ))
+            {
+                int count = dictPushClients[key].RemoveAllClient( );
+                for (int i = 0; i < count; i++)
+                {
+                    System.Threading.Interlocked.Decrement( ref onlineCount );
+                }
+            }
+
+            dicHybirdLock.Leave( );
+        }
+
+
+        /// <summary>
+        /// 创建一个远程服务器的数据推送操作，以便推送给子客户端
+        /// </summary>
+        /// <param name="ipAddress">远程的IP地址</param>
+        /// <param name="port">远程的端口号</param>
+        /// <param name="key">订阅的关键字</param>
+        public OperateResult CreatePushRemote( string ipAddress, int port, string key )
+        {
+            OperateResult result;
+
+            hybirdLock.Enter( );
+
+
+            if (pushClients.Find( m => m.KeyWord == key ) == null)
+            {
+                NetPushClient pushClient = new NetPushClient( ipAddress, port, key );
+                result = pushClient.CreatePush( GetPushFromServer );
+                pushClients.Add( pushClient );
+            }
+            else
+            {
+                result = new OperateResult( ) { Message = "当前的关键字已经存在。" };
+            }
+
+            hybirdLock.Leave( );
+
+            return result;
+        }
+
 
         #endregion
 
@@ -227,6 +288,15 @@ namespace HslCommunication.Enthernet
             }
         }
 
+
+
+        private void GetPushFromServer( NetPushClient pushClient, string data )
+        {
+            // 推送给其他的客户端，当然也有可能是工作站
+            PushString( pushClient.KeyWord, data );
+        }
+
+
         #endregion
 
         #region Private Member
@@ -235,15 +305,17 @@ namespace HslCommunication.Enthernet
         private SimpleHybirdLock dicHybirdLock;                              // 词典锁
         private Action<AppSession, string> sendAction;                       // 发送数据的委托
         private int onlineCount = 0;                                         // 在线客户端的数量，用于监视显示
+        private List<NetPushClient> pushClients;                             // 客户端列表
+        private SimpleHybirdLock hybirdLock;                                 // 客户端列表的锁
 
         #endregion
 
         #region Object Override
 
         /// <summary>
-        /// 获取本对象的字符串表示形式
+        /// 返回表示当前对象的字符串
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串</returns>
         public override string ToString()
         {
             return "NetPushServer";

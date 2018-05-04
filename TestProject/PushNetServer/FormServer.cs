@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using HslCommunication.Enthernet;
 using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
+using HslCommunication;
 
 namespace PushNetServer
 {
@@ -42,6 +43,7 @@ namespace PushNetServer
                 pushServer = new NetPushServer( );
                 pushServer.ServerStart( int.Parse( textBox2.Text ) );
                 pushServer.Token = new Guid( textBox3.Text );
+                pushServer.LogNet = new HslCommunication.LogNet.LogNetSingle( "log.txt" );
                 button1.Enabled = false;
                 panel2.Enabled = true;
                 timerOneSecond.Start( );
@@ -191,6 +193,27 @@ namespace PushNetServer
             element.SetElementValue( "value4", DateTime.Now.ToString( "O" ) );
 
             pushServer.PushString( textBox18.Text, element.ToString( ) );
+        }
+
+        private void button7_Click( object sender, EventArgs e )
+        {
+            try
+            {
+                OperateResult create = pushServer.CreatePushRemote( textBox9.Text, int.Parse( textBox10.Text ), textBox15.Text );
+
+                if(create.IsSuccess)
+                {
+                    MessageBox.Show( "创建成功！" );
+                }
+                else
+                {
+                    MessageBox.Show( "创建失败！" + create.Message );
+                }
+            }
+            catch(Exception ex)
+            {
+                HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
+            }
         }
     }
 }

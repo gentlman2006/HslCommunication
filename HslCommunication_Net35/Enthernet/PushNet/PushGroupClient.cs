@@ -55,6 +55,7 @@ namespace HslCommunication.Enthernet
             {
                 if(appSessions[i].ClientUniqueID == clientID)
                 {
+                    appSessions[i].WorkSocket?.Close( );
                     appSessions.RemoveAt( i );
                     result = true;
                     break;
@@ -78,6 +79,27 @@ namespace HslCommunication.Enthernet
                 send( appSessions[i], content );
             }
             simpleHybird.Leave( );
+        }
+
+        /// <summary>
+        /// 移除并关闭所有的客户端
+        /// </summary>
+        public int RemoveAllClient( )
+        {
+            int result = 0;
+            simpleHybird.Enter( );
+
+            for (int i = 0; i < appSessions.Count; i++)
+            {
+                appSessions[i].WorkSocket?.Close( );
+            }
+
+            result = appSessions.Count;
+
+            appSessions.Clear( );
+            simpleHybird.Leave( );
+
+            return result;
         }
 
         #endregion

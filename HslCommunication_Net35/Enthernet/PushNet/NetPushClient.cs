@@ -88,7 +88,7 @@ namespace HslCommunication.Enthernet
             CoreSocket = connect.Content;
             appSession.WorkSocket = connect.Content;
             ReBeginReceiveHead( appSession, false );
-
+            
             return OperateResult.CreateSuccessResult( );
         }
 
@@ -113,8 +113,18 @@ namespace HslCommunication.Enthernet
         public void ClosePush()
         {
             action = null;
+            if (CoreSocket != null && CoreSocket.Connected) CoreSocket?.Send( BitConverter.GetBytes( 100 ) );
             CoreSocket?.Close( );
         }
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// 本客户端的关键字
+        /// </summary>
+        public string KeyWord => keyWord;
 
         #endregion
 

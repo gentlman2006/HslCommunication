@@ -60,13 +60,17 @@ namespace HslCommunicationDemo
             }
         }
 
+        private int receiveCount = 0;
 
         private void PushFromServer( NetPushClient pushClient, string data )
         {
-            Invoke( new Action<string>( m =>
-             {
-                 textBox4.Text = m;
-             } ) ,data);
+            if (IsHandleCreated) Invoke( new Action<string>( m =>
+              {
+                  label8.Text = DateTime.Now.ToString( "yyyy-MM-dd HH:mm:ss.fff" );
+                  receiveCount++;
+                  label9.Text = receiveCount.ToString( );
+                  textBox4.Text = m;
+              } ), data );
         }
 
         private void button2_Click( object sender, EventArgs e )
