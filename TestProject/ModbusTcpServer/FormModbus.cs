@@ -37,7 +37,11 @@ namespace ModbusTcpServer
         private void FormSiemens_Load( object sender, EventArgs e )
         {
             panel2.Enabled = false;
+            
         }
+
+
+        private System.Windows.Forms.Timer timerSecond;
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )
         {
@@ -93,11 +97,21 @@ namespace ModbusTcpServer
                 button1.Enabled = false;
                 panel2.Enabled = true;
                 button4.Enabled = true;
+
+                timerSecond = new System.Windows.Forms.Timer( );
+                timerSecond.Interval = 1000;
+                timerSecond.Tick += TimerSecond_Tick;
+                timerSecond.Start( );
             }
             catch (Exception ex)
             {
                 MessageBox.Show( ex.Message );
             }
+        }
+
+        private void TimerSecond_Tick( object sender, EventArgs e )
+        {
+            label15.Text = busTcpServer.OnlineCount.ToString( ) ;
         }
 
         private void BusTcpServer_OnDataReceived( byte[] modbus )

@@ -204,12 +204,12 @@ namespace HslCommunication.Enthernet
                     int bytesRead = client.EndReceive( ar );
 
                     // 正常下线退出
-                    LogNet?.WriteInfo( ToString( ), $"客户端 {session.IpEndPoint} 下线" );
+                    LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 下线" );
                     RemoveGroupOnlien( session.KeyGroup, session.ClientUniqueID );
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), $"客户端 {session.IpEndPoint} 下线", ex );
+                    LogNet?.WriteException( ToString( ), $"客户端 [ {session.IpEndPoint} ] 下线", ex );
                     RemoveGroupOnlien( session.KeyGroup, session.ClientUniqueID );
                 }
             }
