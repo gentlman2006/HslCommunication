@@ -118,7 +118,7 @@ namespace HslCommunication.Enthernet
                         LogNet?.WriteWarn( ToString( ), $"接收到异常数据，长度不符合要求，实际接收：{received}" );
                     }
                 }
-                catch (ObjectDisposedException ex)
+                catch (ObjectDisposedException)
                 {
                     //主程序退出的时候触发
                 }

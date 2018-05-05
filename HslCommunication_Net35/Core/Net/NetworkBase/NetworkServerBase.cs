@@ -39,7 +39,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 服务器的端口号
         /// </summary>
-        public int Port { get; private set; }
+        public int Port { get; set; }
 
         #endregion
 

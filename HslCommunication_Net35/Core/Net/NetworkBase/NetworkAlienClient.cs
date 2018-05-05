@@ -325,16 +325,7 @@ namespace HslCommunication.Core.Net
         }
 
         #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// 端口号
-        /// </summary>
-        public int Port { get; set; }
-
-        #endregion
-
+        
         #region Private Member
 
         private byte[] password;                    // 密码设置

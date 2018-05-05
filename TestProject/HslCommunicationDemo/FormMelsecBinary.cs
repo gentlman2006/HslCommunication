@@ -552,7 +552,7 @@ namespace HslCommunicationDemo
 
         }
 
-        private MelsecMcAsciiNet melsec_ascii_net = null;
+        // private MelsecMcAsciiNet melsec_ascii_net = null;
 
         #endregion
 

@@ -64,7 +64,7 @@ namespace HslCommunication.Core.Net
                     new AsyncCallback( SendCallBack ),
                     state );
             }
-            catch (ObjectDisposedException ex)
+            catch (ObjectDisposedException)
             {
                 // 不操作
                 session.HybirdLockSend.Leave( );
@@ -107,7 +107,7 @@ namespace HslCommunication.Core.Net
                         stateone = null;
                     }
                 }
-                catch (ObjectDisposedException ex)
+                catch (ObjectDisposedException)
                 {
                     stateone.HybirdLockSend.Leave( );
                     // 不处理
@@ -188,7 +188,7 @@ namespace HslCommunication.Core.Net
                         session.AlreadyReceivedHead += receiveCount;
                     }
                 }
-                catch (ObjectDisposedException ex)
+                catch (ObjectDisposedException)
                 {
                     // 不需要处理，来自服务器主动关闭
                     return;
@@ -276,7 +276,7 @@ namespace HslCommunication.Core.Net
                 {
                     receive.AlreadyReceivedContent += receive.WorkSocket.EndReceive( ar );
                 }
-                catch (ObjectDisposedException ex)
+                catch (ObjectDisposedException)
                 {
                     //不需要处理
                     return;

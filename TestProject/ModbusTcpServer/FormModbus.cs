@@ -114,13 +114,13 @@ namespace ModbusTcpServer
             label15.Text = busTcpServer.OnlineCount.ToString( ) ;
         }
 
-        private void BusTcpServer_OnDataReceived( byte[] modbus )
+        private void BusTcpServer_OnDataReceived( HslCommunication.ModBus.ModbusTcpServer tcpServer, byte[] modbus )
         {
             if (!checkBox1.Checked) return;
 
             if (InvokeRequired)
             {
-                BeginInvoke( new Action<byte[]>( BusTcpServer_OnDataReceived ), modbus );
+                BeginInvoke( new Action<HslCommunication.ModBus.ModbusTcpServer,byte[]>( BusTcpServer_OnDataReceived ), tcpServer, modbus );
                 return;
             }
             textBox1.AppendText( "接收数据：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( modbus ) + Environment.NewLine );

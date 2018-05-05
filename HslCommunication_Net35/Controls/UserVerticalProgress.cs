@@ -110,7 +110,7 @@ namespace HslCommunication.Controls
 
                 g.DrawRectangle(m_borderPen, rectangle);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // BasicFramework.SoftBasic.ShowExceptionMessage(ex);
             }
@@ -382,7 +382,7 @@ namespace HslCommunication.Controls
                     }
                 }
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 // BasicFramework.SoftBasic.ShowExceptionMessage(ex);
             }
