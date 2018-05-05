@@ -67,13 +67,13 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 接收到数据的时候就行触发
         /// </summary>
-        public event Action<byte[]> OnDataReceived;
+        public event Action<ModbusTcpServer, byte[]> OnDataReceived;
 
         /// <summary>
         /// 当前在线的客户端的数量
         /// </summary>
         public int OnlineCount => onlineCount;
-
+        
 
         #endregion
 
@@ -727,8 +727,6 @@ namespace HslCommunication.ModBus
 
         #region Private Method
         
-
-
         private void ModbusHeadReveiveCallback( IAsyncResult ar )
         {
             if (ar.AsyncState is ModBusState state)
@@ -892,7 +890,7 @@ namespace HslCommunication.ModBus
                 }
 
                 // 通知处理消息
-                if (IsStarted) OnDataReceived?.Invoke( data );
+                if (IsStarted) OnDataReceived?.Invoke( this, data );
             }
         }
 
