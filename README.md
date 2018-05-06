@@ -33,8 +33,9 @@ Version 5.X 的计划：
 
 ## Install From NuGet
 说明：NuGet为稳定版本，支持在线升级，组件的使用最好从NuGet下载，此处发布的项目有可能为还没有通过编译的测试版，NuGet安装如下：
-
+```
 Install-Package HslCommunication
+```
 
 ## Environment
 * .Net Framework环境下：支持.Net 3.5及以上环境，功能最完善。
