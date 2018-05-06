@@ -152,15 +152,13 @@ namespace HslCommunication.Core.Net
 
             if (!rSocket.IsSuccess)
             {
-                IsSocketError = true;
-                // 创建失败
-                rSocket.Content = null;
+                IsSocketError = true;                         // 创建失败
+                rSocket.Content = null;                 
+                result.Message = rSocket.Message;
             }
             else
             {
-                // 创建成功
-                CoreSocket = rSocket.Content;
-                // 初始化成功
+                CoreSocket = rSocket.Content;                 // 创建成功
                 result.IsSuccess = true;
                 LogNet?.WriteDebug( ToString( ), StringResources.NetEngineStart );
             }
