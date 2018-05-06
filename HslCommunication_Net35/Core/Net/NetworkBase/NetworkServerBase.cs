@@ -143,7 +143,16 @@ namespace HslCommunication.Core.Net
                 LogNet?.WriteInfo( ToString(), StringResources.NetEngineStart );
             }
         }
-        
+
+
+        /// <summary>
+        /// 使用已经配置好的端口启动服务器的引擎
+        /// </summary>
+        public void ServerStart( )
+        {
+            ServerStart( Port );
+        }
+
         /// <summary>
         /// 服务器关闭的时候需要做的事情
         /// </summary>
