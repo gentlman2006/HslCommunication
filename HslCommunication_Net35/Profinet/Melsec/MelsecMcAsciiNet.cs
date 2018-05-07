@@ -338,8 +338,8 @@ namespace HslCommunication.Profinet.Melsec
             result.Content2 = _PLCCommand;
             result.IsSuccess = true;
 
-            Console.WriteLine( value.Length );
-            Console.WriteLine( Encoding.ASCII.GetString(_PLCCommand ));
+            // Console.WriteLine( value.Length );
+            // Console.WriteLine( Encoding.ASCII.GetString(_PLCCommand ));
             return result;
         }
 
@@ -627,7 +627,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>结果</returns>
         public OperateResult Write( string address, byte[] value )
         {
-            Console.WriteLine( BasicFramework.SoftBasic.ByteToHexString( value ) );
+            // Console.WriteLine( BasicFramework.SoftBasic.ByteToHexString( value ) );
 
             OperateResult<byte[]> result = new OperateResult<byte[]>( );
 
