@@ -337,6 +337,9 @@ namespace HslCommunication.Profinet.Melsec
             result.Content1 = analysis.Content1;
             result.Content2 = _PLCCommand;
             result.IsSuccess = true;
+
+            Console.WriteLine( value.Length );
+            Console.WriteLine( Encoding.ASCII.GetString(_PLCCommand ));
             return result;
         }
 
@@ -624,6 +627,8 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>结果</returns>
         public OperateResult Write( string address, byte[] value )
         {
+            Console.WriteLine( BasicFramework.SoftBasic.ByteToHexString( value ) );
+
             OperateResult<byte[]> result = new OperateResult<byte[]>( );
 
             //获取指令
@@ -659,13 +664,12 @@ namespace HslCommunication.Profinet.Melsec
             {
                 // 字写入
                 byte[] buffer = new byte[value.Length * 2];
-                for (int i = 0; i < value.Length; i++)
+                for (int i = 0; i < value.Length / 2; i++)
                 {
-                    buffer[i * 2 + 0] = BuildBytesFromData( value[i] )[0];
-                    buffer[i * 2 + 1] = BuildBytesFromData( value[i] )[1];
+                    BuildBytesFromData( BitConverter.ToUInt16( value, i * 2 ) ).CopyTo( buffer, 4 * i );
                 }
 
-                command = BuildWriteCommand( address, value );
+                command = BuildWriteCommand( address, buffer );
             }
 
             if (!command.IsSuccess)
