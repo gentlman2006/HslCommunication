@@ -47,6 +47,8 @@ namespace HslCommunication.Core.IMessage
         /// <returns></returns>
         public bool CheckHeadBytesLegal( byte[] token )
         {
+            if (HeadBytes == null) return false;
+
             if (HeadBytes[0] == (byte)'D' && HeadBytes[1] == (byte)'0' && HeadBytes[2] == (byte)'0' && HeadBytes[3] == (byte)'0')
             {
                 return true;

@@ -439,7 +439,8 @@ namespace HslCommunication.Core.Net
                 if (!resultReceive.IsSuccess)
                 {
                     socket?.Close( );
-                    result.CopyErrorFromOther( resultReceive );
+                    // result.CopyErrorFromOther( resultReceive );
+                    result.Message = "Receive data timeout: " + receiveTimeOut;
                     return result;
                 }
 

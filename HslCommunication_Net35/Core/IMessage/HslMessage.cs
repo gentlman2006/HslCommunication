@@ -38,7 +38,9 @@ namespace HslCommunication.Core.IMessage
         /// <returns>是否合法</returns>
         public bool CheckHeadBytesLegal(byte[] token)
         {
-            if(HeadBytes?.Length>=32)
+            if (HeadBytes == null) return false;
+
+            if (HeadBytes?.Length>=32)
             {
                 return BasicFramework.SoftBasic.IsTwoBytesEquel(HeadBytes, 12, token, 0, 16);
             }

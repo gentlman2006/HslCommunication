@@ -167,7 +167,7 @@ namespace HslCommunication.Core.Net
             // 远程关闭了连接
             if (state.IsClose)
             {
-                result.IsSuccess = true;
+                // result.IsSuccess = true;
                 result.Message = "远程关闭了连接";
                 socket?.Close( );
                 return result;
