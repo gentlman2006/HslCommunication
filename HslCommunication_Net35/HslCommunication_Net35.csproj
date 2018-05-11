@@ -126,6 +126,7 @@
       <DependentUpon>UserVerticalProgress.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\IMessage\AlienMessage.cs" />
+    <Compile Include="Core\IMessage\EFORTMessage.cs" />
     <Compile Include="Core\IMessage\FetchWriteMessage.cs" />
     <Compile Include="Core\IMessage\FinsMessage.cs" />
     <Compile Include="Core\IMessage\HslMessage.cs" />
@@ -239,6 +240,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Core\Security\Security.cs" />
+    <Compile Include="Robot\EFORT\EfortData.cs" />
+    <Compile Include="Robot\EFORT\ER7BC10.cs" />
     <Compile Include="Serial\CRCSupport.cs" />
     <Compile Include="Serial\SerialCommunicationBase.cs" />
     <Compile Include="StringResources.cs" />

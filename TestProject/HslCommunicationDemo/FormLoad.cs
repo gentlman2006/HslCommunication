@@ -94,7 +94,7 @@ namespace HslCommunicationDemo
         {
             try
             {
-                System.Diagnostics.Process.Start( linkLabel2.Text );
+                System.Diagnostics.Process.Start( linkLabel3.Text );
             }
             catch (Exception ex)
             {
@@ -267,6 +267,16 @@ namespace HslCommunicationDemo
         {
             Hide( );
             using (FormPushNet form = new FormPushNet( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
+
+        private void button23_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (Robot.FormEfort form = new Robot.FormEfort( ))
             {
                 form.ShowDialog( );
             }

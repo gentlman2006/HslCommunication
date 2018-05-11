@@ -46,10 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FormBasicControl.cs">
+    <Compile Include="Control\FormBasicControl.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormBasicControl.Designer.cs">
+    <Compile Include="Control\FormBasicControl.Designer.cs">
       <DependentUpon>FormBasicControl.cs</DependentUpon>
     </Compile>
     <Compile Include="FormComplexNet.cs">
@@ -58,10 +58,10 @@
     <Compile Include="FormComplexNet.Designer.cs">
       <DependentUpon>FormComplexNet.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormCurve.cs">
+    <Compile Include="Control\FormCurve.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormCurve.Designer.cs">
+    <Compile Include="Control\FormCurve.Designer.cs">
       <DependentUpon>FormCurve.cs</DependentUpon>
     </Compile>
     <Compile Include="FormFileClient.cs">
@@ -70,10 +70,10 @@
     <Compile Include="FormFileClient.Designer.cs">
       <DependentUpon>FormFileClient.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormGauge.cs">
+    <Compile Include="Control\FormGauge.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormGauge.Designer.cs">
+    <Compile Include="Control\FormGauge.Designer.cs">
       <DependentUpon>FormGauge.cs</DependentUpon>
     </Compile>
     <Compile Include="FormLogNet.cs">
@@ -82,34 +82,34 @@
     <Compile Include="FormLogNet.Designer.cs">
       <DependentUpon>FormLogNet.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMelsec1EBinary.cs">
+    <Compile Include="PLC\FormMelsec1EBinary.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMelsec1EBinary.Designer.cs">
+    <Compile Include="PLC\FormMelsec1EBinary.Designer.cs">
       <DependentUpon>FormMelsec1EBinary.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormModbusRtu.cs">
+    <Compile Include="Modbus\FormModbusRtu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormModbusRtu.Designer.cs">
+    <Compile Include="Modbus\FormModbusRtu.Designer.cs">
       <DependentUpon>FormModbusRtu.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormModbusAlien.cs">
+    <Compile Include="Modbus\FormModbusAlien.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormModbusAlien.Designer.cs">
+    <Compile Include="Modbus\FormModbusAlien.Designer.cs">
       <DependentUpon>FormModbusAlien.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormOmron.cs">
+    <Compile Include="PLC\FormOmron.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormOmron.Designer.cs">
+    <Compile Include="PLC\FormOmron.Designer.cs">
       <DependentUpon>FormOmron.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormPieChart.cs">
+    <Compile Include="Control\FormPieChart.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormPieChart.Designer.cs">
+    <Compile Include="Control\FormPieChart.Designer.cs">
       <DependentUpon>FormPieChart.cs</DependentUpon>
     </Compile>
     <Compile Include="FormPushNet.cs">
@@ -118,10 +118,10 @@
     <Compile Include="FormPushNet.Designer.cs">
       <DependentUpon>FormPushNet.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSiemensFW.cs">
+    <Compile Include="PLC\FormSiemensFW.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSiemensFW.Designer.cs">
+    <Compile Include="PLC\FormSiemensFW.Designer.cs">
       <DependentUpon>FormSiemensFW.cs</DependentUpon>
     </Compile>
     <Compile Include="FormUdpNet.cs">
@@ -142,69 +142,75 @@
     <Compile Include="FormLoad.Designer.cs">
       <DependentUpon>FormLoad.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMelsecAscii.cs">
+    <Compile Include="PLC\FormMelsecAscii.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMelsecAscii.Designer.cs">
+    <Compile Include="PLC\FormMelsecAscii.Designer.cs">
       <DependentUpon>FormMelsecAscii.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormModbus.cs">
+    <Compile Include="Modbus\FormModbus.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormModbus.Designer.cs">
+    <Compile Include="Modbus\FormModbus.Designer.cs">
       <DependentUpon>FormModbus.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMelsecBinary.cs">
+    <Compile Include="PLC\FormMelsecBinary.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMelsecBinary.Designer.cs">
+    <Compile Include="PLC\FormMelsecBinary.Designer.cs">
       <DependentUpon>FormMelsecBinary.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSiemens.cs">
+    <Compile Include="PLC\FormSiemens.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSiemens.Designer.cs">
+    <Compile Include="PLC\FormSiemens.Designer.cs">
       <DependentUpon>FormSiemens.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FormBasicControl.resx">
+    <Compile Include="Robot\FormEfort.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Robot\FormEfort.Designer.cs">
+      <DependentUpon>FormEfort.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Control\FormBasicControl.resx">
       <DependentUpon>FormBasicControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormComplexNet.resx">
       <DependentUpon>FormComplexNet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormCurve.resx">
+    <EmbeddedResource Include="Control\FormCurve.resx">
       <DependentUpon>FormCurve.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormFileClient.resx">
       <DependentUpon>FormFileClient.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormGauge.resx">
+    <EmbeddedResource Include="Control\FormGauge.resx">
       <DependentUpon>FormGauge.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLogNet.resx">
       <DependentUpon>FormLogNet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMelsec1EBinary.resx">
+    <EmbeddedResource Include="PLC\FormMelsec1EBinary.resx">
       <DependentUpon>FormMelsec1EBinary.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormModbusRtu.resx">
+    <EmbeddedResource Include="Modbus\FormModbusRtu.resx">
       <DependentUpon>FormModbusRtu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormModbusAlien.resx">
+    <EmbeddedResource Include="Modbus\FormModbusAlien.resx">
       <DependentUpon>FormModbusAlien.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormOmron.resx">
+    <EmbeddedResource Include="PLC\FormOmron.resx">
       <DependentUpon>FormOmron.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormPieChart.resx">
+    <EmbeddedResource Include="Control\FormPieChart.resx">
       <DependentUpon>FormPieChart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormPushNet.resx">
       <DependentUpon>FormPushNet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSiemensFW.resx">
+    <EmbeddedResource Include="PLC\FormSiemensFW.resx">
       <DependentUpon>FormSiemensFW.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormUdpNet.resx">
@@ -216,16 +222,16 @@
     <EmbeddedResource Include="FormLoad.resx">
       <DependentUpon>FormLoad.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMelsecAscii.resx">
+    <EmbeddedResource Include="PLC\FormMelsecAscii.resx">
       <DependentUpon>FormMelsecAscii.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormModbus.resx">
+    <EmbeddedResource Include="Modbus\FormModbus.resx">
       <DependentUpon>FormModbus.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMelsecBinary.resx">
+    <EmbeddedResource Include="PLC\FormMelsecBinary.resx">
       <DependentUpon>FormMelsecBinary.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSiemens.resx">
+    <EmbeddedResource Include="PLC\FormSiemens.resx">
       <DependentUpon>FormSiemens.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -237,6 +243,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Robot\FormEfort.resx">
+      <DependentUpon>FormEfort.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
