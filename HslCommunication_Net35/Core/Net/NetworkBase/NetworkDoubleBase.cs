@@ -39,7 +39,7 @@ namespace HslCommunication.Core.Net
         private int port = 10000;                        // 端口号
         private int connectTimeOut = 10000;              // 连接超时时间设置
         private int receiveTimeOut = 10000;              // 数据接收的超时时间
-        private bool IsPersistentConn = false;           // 是否处于长连接的状态
+        private bool isPersistentConn = false;           // 是否处于长连接的状态
         private SimpleHybirdLock InteractiveLock;        // 一次正常的交互的互斥锁
         private bool IsSocketError = false;              // 指示长连接的套接字是否处于错误的状态
         private bool isUseSpecifiedSocket = false;       // 指示是否使用指定的网络套接字访问数据
@@ -134,6 +134,18 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
+        #region Public Method
+
+        /// <summary>
+        /// 在读取数据之前可以调用本方法将客户端设置为长连接模式，相当于跳过了ConnectServer的结果验证，对异形客户端无效
+        /// </summary>
+        public void SetPersistentConnection( )
+        {
+            isPersistentConn = true;
+        }
+
+        #endregion
+
         #region Connect Close
 
         /// <summary>
@@ -142,7 +154,7 @@ namespace HslCommunication.Core.Net
         /// <returns>返回连接结果，如果失败的话（也即IsSuccess为False），包含失败信息</returns>
         public OperateResult ConnectServer( )
         {
-            IsPersistentConn = true;
+            isPersistentConn = true;
             OperateResult result = new OperateResult( );
 
             // 重新连接之前，先将旧的数据进行清空
@@ -173,7 +185,7 @@ namespace HslCommunication.Core.Net
         /// <returns>通常都为成功</returns>
         public OperateResult ConnectServer( AlienSession session )
         {
-            IsPersistentConn = true;
+            isPersistentConn = true;
             isUseSpecifiedSocket = true;
 
 
@@ -214,7 +226,7 @@ namespace HslCommunication.Core.Net
         public OperateResult ConnectClose( )
         {
             OperateResult result = new OperateResult( );
-            IsPersistentConn = false;
+            isPersistentConn = false;
 
             // 额外操作
             result = ExtraOnDisconnect( CoreSocket );
@@ -270,7 +282,7 @@ namespace HslCommunication.Core.Net
         /// <returns>是否成功，如果成功，使用这个套接字</returns>
         private OperateResult<Socket> GetAvailableSocket( )
         {
-            if (IsPersistentConn)
+            if (isPersistentConn)
             {
                 // 如果是异形模式
                 if (isUseSpecifiedSocket)
@@ -403,7 +415,7 @@ namespace HslCommunication.Core.Net
             }
 
             InteractiveLock.Leave( );
-            if (!IsPersistentConn) resultSocket.Content?.Close( );
+            if (!isPersistentConn) resultSocket.Content?.Close( );
             return result;
         }
 
