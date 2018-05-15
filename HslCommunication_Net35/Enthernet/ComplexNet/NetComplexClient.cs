@@ -21,60 +21,52 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 实例化一个对象
         /// </summary>
-        public NetComplexClient()
+        public NetComplexClient( )
         {
-
+            session = new AppSession( );
+            ServerTime = DateTime.Now;
+            EndPointServer = new IPEndPoint( IPAddress.Any, 0 );
+            resetQuit = new AutoResetEvent( false );
         }
 
         #endregion
 
         #region Private Member
 
-        /// <summary>
-        /// 客户端的核心连接块
-        /// </summary>
-        private AppSession stateone = new AppSession( );
-
-        /// <summary>
-        /// 指示客户端是否处于正在连接服务器中
-        /// </summary>
-        private bool IsClientConnecting = false;
-
-
-        /// <summary>
-        /// 登录服务器的判断锁
-        /// </summary>
-        private object lock_connecting = new object( );
-
+        private AppSession session;                 // 客户端的核心连接对象
+        private int isConnecting = 0;               // 指示客户端是否处于连接服务器中，0代表未连接，1代表连接中
+        private bool IsQuie = false;                // 指示系统是否准备退出
+        private Thread thread_heart_check  = null;  // 心跳线程
+        private AutoResetEvent resetQuit;           // 退出时候的同步锁
 
         #endregion
 
-        #region Basic Properties
+        #region Public Properties
 
         /// <summary>
         /// 客户端系统是否启动
         /// </summary>
-        public bool IsClientStart { get; set; } = false;
+        public bool IsClientStart { get; set; }
 
         /// <summary>
         /// 重连接失败的次数
         /// </summary>
-        public int ConnectFailedCount { get; set; } = 0;
+        public int ConnectFailedCount { get; private set; }
 
         /// <summary>
         /// 客户端登录的标识名称，可以为ID号，也可以为登录名
         /// </summary>
-        public string ClientAlias { get; set; } = "";
+        public string ClientAlias { get; set; } = string.Empty;
 
         /// <summary>
         /// 远程服务器的IP地址和端口
         /// </summary>
-        public IPEndPoint EndPointServer { get; set; } = new IPEndPoint( IPAddress.Any, 0 );
+        public IPEndPoint EndPointServer { get; set; }
 
         /// <summary>
         /// 服务器的时间，自动实现和服务器同步
         /// </summary>
-        public DateTime ServerTime { get; private set; } = DateTime.Now;
+        public DateTime ServerTime { get; private set; }
 
         /// <summary>
         /// 系统与服务器的延时时间，单位毫秒
@@ -123,7 +115,6 @@ namespace HslCommunication.Enthernet
 
         #region Start Close Support
 
-        private bool IsQuie { get; set; } = false;
 
         /// <summary>
         /// 关闭该客户端引擎
@@ -132,17 +123,18 @@ namespace HslCommunication.Enthernet
         {
             IsQuie = true;
             if (IsClientStart)
-                SendBytes( stateone, HslProtocol.CommandBytes( HslProtocol.ProtocolClientQuit, 0, Token, null ) );
+                SendBytes( session, HslProtocol.CommandBytes( HslProtocol.ProtocolClientQuit, 0, Token, null ) );
 
-            thread_heart_check?.Abort( );
-            IsClientStart = false;
-            Thread.Sleep( 20 );
-            LoginSuccess = null;
+            resetQuit.WaitOne( );           // 等待退出线程
+            IsClientStart = false;          // 关闭客户端
+            thread_heart_check = null;
+
+            LoginSuccess = null;            // 清空所有的事件
             LoginFailed = null;
             MessageAlerts = null;
             AcceptByte = null;
             AcceptString = null;
-            stateone.WorkSocket?.Close( );
+            session.WorkSocket?.Close( );
             LogNet?.WriteDebug( ToString( ), "Client Close." );
         }
 
@@ -152,30 +144,25 @@ namespace HslCommunication.Enthernet
         /// </summary>
         public void ClientStart()
         {
-            if (IsClientStart) return;
-            Thread thread_login = new Thread( new ThreadStart( ThreadLogin ) );
-            thread_login.IsBackground = true;
-            thread_login.Start( );
-            LogNet?.WriteDebug( ToString( ), "Client Start." );
+            // 如果处于连接中就退出
+            if (Interlocked.CompareExchange( ref isConnecting, 1, 0 ) != 0) return;
 
+            // 启动后台线程连接
+            new Thread( new ThreadStart( ThreadLogin ) ) { IsBackground = true }.Start( );
+
+            // 启动心跳线程，在第一次Start的时候
             if (thread_heart_check == null)
             {
                 thread_heart_check = new Thread( new ThreadStart( ThreadHeartCheck ) );
+                thread_heart_check.Priority = ThreadPriority.AboveNormal;
                 thread_heart_check.IsBackground = true;
                 thread_heart_check.Start( );
             }
         }
 
 
-        private void ThreadLogin()
+        private void AwaitToConnect( )
         {
-            lock (lock_connecting)
-            {
-                if (IsClientConnecting) return;
-                IsClientConnecting = true;
-            }
-
-
             if (ConnectFailedCount == 0)
             {
                 // English Version : Connecting Server...
@@ -193,16 +180,21 @@ namespace HslCommunication.Enthernet
                 }
                 MessageAlerts?.Invoke( "正在尝试第" + ConnectFailedCount + "次连接服务器..." );
             }
+        }
 
-
-            stateone.HeartTime = DateTime.Now;
+        private void ThreadLogin()
+        {
+            // 连接的消息等待
+            AwaitToConnect( );
+            
+            session.HeartTime = DateTime.Now;
             LogNet?.WriteDebug( ToString( ), "Begin Connect Server, Times: " + ConnectFailedCount );
 
             OperateResult<Socket> connectResult = CreateSocketAndConnect( EndPointServer, 10000 );
             if (!connectResult.IsSuccess)
             {
                 ConnectFailedCount++;
-                IsClientConnecting = false;
+                isConnecting = 0;
                 LoginFailed?.Invoke( ConnectFailedCount );
                 LogNet?.WriteDebug( ToString( ), "Connected Failed, Times: " + ConnectFailedCount );
                 // 连接失败，重新连接服务器
@@ -217,7 +209,7 @@ namespace HslCommunication.Enthernet
             if (!sendResult.IsSuccess)
             {
                 ConnectFailedCount++;
-                IsClientConnecting = false;
+                isConnecting = 0;
                 LogNet?.WriteDebug( ToString( ), "Login Server Failed, Times: " + ConnectFailedCount );
                 LoginFailed?.Invoke( ConnectFailedCount );
                 // 连接失败，重新连接服务器
@@ -227,37 +219,32 @@ namespace HslCommunication.Enthernet
 
             // 登录成功
             ConnectFailedCount = 0;
-            stateone.IpEndPoint = (IPEndPoint)connectResult.Content.RemoteEndPoint;
-            stateone.LoginAlias = ClientAlias;
-            stateone.WorkSocket = connectResult.Content;
-            stateone.WorkSocket.BeginReceive( stateone.BytesHead, stateone.AlreadyReceivedHead,
-                stateone.BytesHead.Length - stateone.AlreadyReceivedHead, SocketFlags.None,
-                new AsyncCallback( HeadBytesReceiveCallback ), stateone );
+            session.IpEndPoint = (IPEndPoint)connectResult.Content.RemoteEndPoint;
+            session.LoginAlias = ClientAlias;
+            session.WorkSocket = connectResult.Content;
+            session.WorkSocket.BeginReceive( session.BytesHead, session.AlreadyReceivedHead,
+                session.BytesHead.Length - session.AlreadyReceivedHead, SocketFlags.None,
+                new AsyncCallback( HeadBytesReceiveCallback ), session );
 
 
             byte[] bytesTemp = new byte[16];
             BitConverter.GetBytes( DateTime.Now.Ticks ).CopyTo( bytesTemp, 0 );
-            SendBytes( stateone, HslProtocol.CommandBytes( HslProtocol.ProtocolCheckSecends, 0, Token, bytesTemp ) );
+            SendBytes( session, HslProtocol.CommandBytes( HslProtocol.ProtocolCheckSecends, 0, Token, bytesTemp ) );
 
 
-            stateone.HeartTime = DateTime.Now;
+            session.HeartTime = DateTime.Now;
             IsClientStart = true;
             LoginSuccess?.Invoke( );
             LogNet?.WriteDebug( ToString( ), "Login Server Success, Times: " + ConnectFailedCount );
-            IsClientConnecting = false;
+            isConnecting = 0;
             Thread.Sleep( 1000 );
         }
 
-
-
-        // private bool Is_reconnect_server = false;
-        // private object lock_reconnect_server = new object();
-
-
+        
         private void ReconnectServer()
         {
             // 是否连接服务器中，已经在连接的话，则不再连接
-            if (IsClientConnecting) return;
+            if (isConnecting == 0) return;
 
             // 是否退出了系统，退出则不再重连
             if (IsQuie) return;
@@ -266,7 +253,7 @@ namespace HslCommunication.Enthernet
 
             // 触发连接失败，重连系统前错误
             BeforReConnected?.Invoke( );
-            stateone.WorkSocket?.Close( );
+            session.WorkSocket?.Close( );
 
             Thread thread_login = new Thread( new ThreadStart( ThreadLogin ) )
             {
@@ -309,7 +296,7 @@ namespace HslCommunication.Enthernet
         {
             if (IsClientStart)
             {
-                SendBytes( stateone, HslProtocol.CommandBytes( customer, Token, str ) );
+                SendBytes( session, HslProtocol.CommandBytes( customer, Token, str ) );
             }
         }
 
@@ -322,7 +309,7 @@ namespace HslCommunication.Enthernet
         {
             if (IsClientStart)
             {
-                SendBytes( stateone, HslProtocol.CommandBytes( customer, Token, bytes ) );
+                SendBytes( session, HslProtocol.CommandBytes( customer, Token, bytes ) );
             }
         }
 
@@ -349,7 +336,7 @@ namespace HslCommunication.Enthernet
                 DateTime dt = new DateTime( BitConverter.ToInt64( content, 0 ) );
                 ServerTime = new DateTime( BitConverter.ToInt64( content, 8 ) );
                 DelayTime = (int)(DateTime.Now - dt).TotalMilliseconds;
-                stateone.HeartTime = DateTime.Now;
+                this.session.HeartTime = DateTime.Now;
                 // MessageAlerts?.Invoke("心跳时间：" + DateTime.Now.ToString());
             }
             else if (protocol == HslProtocol.ProtocolClientQuit)
@@ -359,13 +346,13 @@ namespace HslCommunication.Enthernet
             else if (protocol == HslProtocol.ProtocolUserBytes)
             {
                 // 接收到字节数据
-                AcceptByte?.Invoke( stateone, customer, content );
+                AcceptByte?.Invoke( this.session, customer, content );
             }
             else if (protocol == HslProtocol.ProtocolUserString)
             {
                 // 接收到文本数据
                 string str = Encoding.Unicode.GetString( content );
-                AcceptString?.Invoke( stateone, customer, str );
+                AcceptString?.Invoke( this.session, customer, str );
             }
         }
 
@@ -373,7 +360,6 @@ namespace HslCommunication.Enthernet
 
         #region Heart Check
 
-        private Thread thread_heart_check { get; set; } = null;
 
         /// <summary>
         /// 心跳线程的方法
@@ -388,20 +374,26 @@ namespace HslCommunication.Enthernet
                 {
                     byte[] send = new byte[16];
                     BitConverter.GetBytes( DateTime.Now.Ticks ).CopyTo( send, 0 );
-                    SendBytes( stateone, HslProtocol.CommandBytes( HslProtocol.ProtocolCheckSecends, 0, Token, send ) );
-                    double timeSpan = (DateTime.Now - stateone.HeartTime).TotalSeconds;
+                    SendBytes( session, HslProtocol.CommandBytes( HslProtocol.ProtocolCheckSecends, 0, Token, send ) );
+                    double timeSpan = (DateTime.Now - session.HeartTime).TotalSeconds;
                     if (timeSpan > 1 * 8)//8次没有收到失去联系
                     {
-                        LogNet?.WriteDebug( ToString( ), $"Heart Check Failed int {timeSpan} Seconds." );
-                        ReconnectServer( );
+                        if (isConnecting == 0)
+                        {
+                            LogNet?.WriteDebug( ToString( ), $"Heart Check Failed int {timeSpan} Seconds." );
+                            ReconnectServer( );
+                        }
                         Thread.Sleep( 1000 );
                     }
                 }
                 else
                 {
+                    resetQuit.Set( );
                     break;
                 }
             }
+
+
         }
 
 
