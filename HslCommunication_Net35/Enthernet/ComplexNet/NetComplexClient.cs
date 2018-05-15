@@ -26,7 +26,6 @@ namespace HslCommunication.Enthernet
             session = new AppSession( );
             ServerTime = DateTime.Now;
             EndPointServer = new IPEndPoint( IPAddress.Any, 0 );
-            resetQuit = new AutoResetEvent( false );
         }
 
         #endregion
@@ -37,7 +36,6 @@ namespace HslCommunication.Enthernet
         private int isConnecting = 0;               // 指示客户端是否处于连接服务器中，0代表未连接，1代表连接中
         private bool IsQuie = false;                // 指示系统是否准备退出
         private Thread thread_heart_check  = null;  // 心跳线程
-        private AutoResetEvent resetQuit;           // 退出时候的同步锁
 
         #endregion
 
@@ -119,13 +117,12 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 关闭该客户端引擎
         /// </summary>
-        public void ClientClose()
+        public void ClientClose( )
         {
             IsQuie = true;
             if (IsClientStart)
                 SendBytes( session, HslProtocol.CommandBytes( HslProtocol.ProtocolClientQuit, 0, Token, null ) );
 
-            resetQuit.WaitOne( );           // 等待退出线程
             IsClientStart = false;          // 关闭客户端
             thread_heart_check = null;
 
@@ -134,7 +131,15 @@ namespace HslCommunication.Enthernet
             MessageAlerts = null;
             AcceptByte = null;
             AcceptString = null;
-            session.WorkSocket?.Close( );
+            try
+            {
+                session.WorkSocket?.Shutdown( SocketShutdown.Both );
+                session.WorkSocket?.Close( );
+            }
+            catch
+            {
+
+            }
             LogNet?.WriteDebug( ToString( ), "Client Close." );
         }
 
@@ -176,8 +181,9 @@ namespace HslCommunication.Enthernet
                 while (count > 0)
                 {
                     if (IsQuie) return;
-                    // English Version : Disconnected, wait [count--] second to restart
-                    MessageAlerts?.Invoke( "连接断开，等待" + count-- + "秒后重新连接" );
+                    count--;
+                    // English Version : Disconnected, wait [count] second to restart
+                    MessageAlerts?.Invoke( "连接断开，等待" + count + "秒后重新连接" );
                     Thread.Sleep( 1000 );
                 }
                 MessageAlerts?.Invoke( "正在尝试第" + ConnectFailedCount + "次连接服务器..." );
@@ -207,6 +213,7 @@ namespace HslCommunication.Enthernet
                 return OperateResult.CreateFailedResult<Socket>( sendResult );
             }
 
+            MessageAlerts?.Invoke( "连接服务器成功！" );
             return connectResult;
         }
 
@@ -248,9 +255,8 @@ namespace HslCommunication.Enthernet
 
             // 登录成功
             LoginSuccess?.Invoke( );
-            LogNet?.WriteDebug( ToString( ), "Login Server Success, Times: " + ConnectFailedCount );
             Interlocked.Exchange( ref isConnecting, 0 );
-            Thread.Sleep( 1000 );
+            Thread.Sleep( 200 );
         }
 
         
@@ -388,12 +394,11 @@ namespace HslCommunication.Enthernet
                             LogNet?.WriteDebug( ToString( ), $"Heart Check Failed int {timeSpan} Seconds." );
                             ReconnectServer( );
                         }
-                        Thread.Sleep( 1000 );
+                        if (!IsQuie) Thread.Sleep( 1000 );
                     }
                 }
                 else
                 {
-                    resetQuit.Set( );
                     break;
                 }
             }

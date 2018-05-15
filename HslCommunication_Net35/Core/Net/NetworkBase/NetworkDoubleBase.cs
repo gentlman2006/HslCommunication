@@ -228,12 +228,14 @@ namespace HslCommunication.Core.Net
             OperateResult result = new OperateResult( );
             isPersistentConn = false;
 
+            InteractiveLock.Enter( );
             // 额外操作
             result = ExtraOnDisconnect( CoreSocket );
             // 关闭信息
             CoreSocket?.Close( );
             CoreSocket = null;
-
+            InteractiveLock.Leave( );
+            
             LogNet?.WriteDebug( ToString( ), StringResources.NetEngineClose );
             return result;
         }

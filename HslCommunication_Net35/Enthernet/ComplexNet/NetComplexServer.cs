@@ -153,8 +153,10 @@ namespace HslCommunication.Enthernet
         private void TcpStateDownLine( AppSession state, bool is_regular, bool logSave = true )
         {
             lockSessions.Enter( );
-            appSessions.Remove( state );
+            bool success = appSessions.Remove( state );
             lockSessions.Leave( );
+
+            if (!success) return;
             // 关闭连接
             TcpStateClose( state );
             // 判断是否正常下线

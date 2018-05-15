@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using HslCommunication;
 using HslCommunication.Enthernet;
+using HslCommunication.LogNet;
 
 namespace ComplexNetServer
 {
@@ -16,24 +17,27 @@ namespace ComplexNetServer
         public FormServer( )
         {
             InitializeComponent( );
+
         }
 
         private void FormServer_Load( object sender, EventArgs e )
         {
             textBox3.Text = Guid.Empty.ToString( );
+
+            logNet = new HslCommunication.LogNet.LogNetDateTime( Application.StartupPath + "\\Logs", HslCommunication.LogNet.GenerateMode.ByEveryDay );
+            logNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
         }
 
 
         #region Complex Server
 
-
+        private ILogNet logNet = null;
         private NetComplexServer complexServer = null;
 
         private void ComplexServerStart(int port)
         {
             complexServer = new NetComplexServer( );
-            complexServer.LogNet = new HslCommunication.LogNet.LogNetDateTime( Application.StartupPath + "\\Logs", HslCommunication.LogNet.GenerateMode.ByEveryDay );
-            complexServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
+            complexServer.LogNet = logNet;
             complexServer.Token = new Guid( textBox3.Text );
             complexServer.AcceptString += ComplexServer_AcceptString;
             complexServer.AcceptByte += ComplexServer_AcceptByte;
@@ -72,7 +76,7 @@ namespace ComplexNetServer
         private void ComplexServer_AcceptString( HslCommunication.Core.Net.AppSession session, NetHandle handle, string data )
         {
             // 接收字符串
-            ShowTextInfo( $"[{session.IpEndPoint}] [{handle}] {data}" );
+            logNet.WriteInfo( $"[{session.IpEndPoint}] [{handle}] {data}" );
 
             // 举个例子，当handle==1时，回发一串信息
             // for example , when handle == 1. return text

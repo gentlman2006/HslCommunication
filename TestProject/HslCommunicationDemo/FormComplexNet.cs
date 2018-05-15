@@ -54,6 +54,7 @@ namespace HslCommunicationDemo
                 complexClient.Token = new Guid( textBox3.Text );
                 complexClient.AcceptString += ComplexClient_AcceptString;
                 complexClient.AcceptByte += ComplexClient_AcceptByte;
+                complexClient.MessageAlerts += ComplexClient_MessageAlerts;
                 complexClient.ClientStart( );
 
                 button1.Enabled = false;
@@ -64,6 +65,17 @@ namespace HslCommunicationDemo
             {
                 HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
             }
+        }
+
+        private void ComplexClient_MessageAlerts( string text )
+        {
+            if (InvokeRequired)
+            {
+                Invoke( new Action<string>( ComplexClient_MessageAlerts ), text );
+                return;
+            }
+
+            label11.Text =  text;
         }
 
         private void ComplexClient_AcceptByte( HslCommunication.Core.Net.AppSession session, NetHandle handle, byte[] data )
