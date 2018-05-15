@@ -45,6 +45,9 @@ namespace HslCommunication.Core.Net
             if (content == null) return;
             try
             {
+                // 进入发送数据的锁，然后开启异步的数据发送
+                session.HybirdLockSend.Enter( );
+
                 // 启用另外一个网络封装对象进行发送数据
                 AsyncStateSend state = new AsyncStateSend( )
                 {
@@ -54,8 +57,6 @@ namespace HslCommunication.Core.Net
                     HybirdLockSend = session.HybirdLockSend,
                 };
 
-                // 进入发送数据的锁，然后开启异步的数据发送
-                state.HybirdLockSend.Enter( );
                 state.WorkSocket.BeginSend(
                     state.Content,
                     state.AlreadySendLength,

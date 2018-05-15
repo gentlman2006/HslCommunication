@@ -160,7 +160,9 @@ namespace HslCommunication.Enthernet
             }
         }
 
-
+        /// <summary>
+        /// 连接服务器之前的消息提示，如果是重连的话，就提示10秒等待信息
+        /// </summary>
         private void AwaitToConnect( )
         {
             if (ConnectFailedCount == 0)
@@ -182,84 +184,87 @@ namespace HslCommunication.Enthernet
             }
         }
 
+        private void ConnectFailed( )
+        {
+            ConnectFailedCount++;
+            Interlocked.Exchange( ref isConnecting, 0 );
+            LoginFailed?.Invoke( ConnectFailedCount );
+            LogNet?.WriteDebug( ToString( ), "Connected Failed, Times: " + ConnectFailedCount );
+        }
+
+        private OperateResult<Socket> ConnectServer( )
+        {
+            OperateResult<Socket> connectResult = CreateSocketAndConnect( EndPointServer, 10000 );
+            if (!connectResult.IsSuccess)
+            {
+                return connectResult;
+            }
+            
+            // 连接成功，发送数据信息
+            OperateResult sendResult = SendStringAndCheckReceive( connectResult.Content, 1, ClientAlias );
+            if (!sendResult.IsSuccess)
+            {
+                return OperateResult.CreateFailedResult<Socket>( sendResult );
+            }
+
+            return connectResult;
+        }
+
+        private void LoginSuccessMethod( Socket socket )
+        {
+            ConnectFailedCount = 0;
+            try
+            {
+                session.IpEndPoint = (IPEndPoint)socket.RemoteEndPoint;
+                session.LoginAlias = ClientAlias;
+                session.WorkSocket = socket;
+                session.HeartTime = DateTime.Now;
+                IsClientStart = true;
+                ReBeginReceiveHead( session, false );
+            }
+            catch(Exception ex)
+            {
+                LogNet?.WriteException( ToString( ), ex );
+            }
+        }
+
+
         private void ThreadLogin()
         {
             // 连接的消息等待
             AwaitToConnect( );
             
-            session.HeartTime = DateTime.Now;
-            LogNet?.WriteDebug( ToString( ), "Begin Connect Server, Times: " + ConnectFailedCount );
-
-            OperateResult<Socket> connectResult = CreateSocketAndConnect( EndPointServer, 10000 );
+            OperateResult<Socket> connectResult = ConnectServer( );
             if (!connectResult.IsSuccess)
             {
-                ConnectFailedCount++;
-                isConnecting = 0;
-                LoginFailed?.Invoke( ConnectFailedCount );
-                LogNet?.WriteDebug( ToString( ), "Connected Failed, Times: " + ConnectFailedCount );
+                ConnectFailed( );
                 // 连接失败，重新连接服务器
-                ReconnectServer( );
-                return;
-            }
-
-
-
-            // 连接成功，发送数据信息
-            OperateResult sendResult = SendStringAndCheckReceive( connectResult.Content, 1, ClientAlias );
-            if (!sendResult.IsSuccess)
-            {
-                ConnectFailedCount++;
-                isConnecting = 0;
-                LogNet?.WriteDebug( ToString( ), "Login Server Failed, Times: " + ConnectFailedCount );
-                LoginFailed?.Invoke( ConnectFailedCount );
-                // 连接失败，重新连接服务器
-                ReconnectServer( );
+                ThreadPool.QueueUserWorkItem( new WaitCallback( ReconnectServer ), null );
                 return;
             }
 
             // 登录成功
-            ConnectFailedCount = 0;
-            session.IpEndPoint = (IPEndPoint)connectResult.Content.RemoteEndPoint;
-            session.LoginAlias = ClientAlias;
-            session.WorkSocket = connectResult.Content;
-            session.WorkSocket.BeginReceive( session.BytesHead, session.AlreadyReceivedHead,
-                session.BytesHead.Length - session.AlreadyReceivedHead, SocketFlags.None,
-                new AsyncCallback( HeadBytesReceiveCallback ), session );
+            LoginSuccessMethod( connectResult.Content );
 
-
-            byte[] bytesTemp = new byte[16];
-            BitConverter.GetBytes( DateTime.Now.Ticks ).CopyTo( bytesTemp, 0 );
-            SendBytes( session, HslProtocol.CommandBytes( HslProtocol.ProtocolCheckSecends, 0, Token, bytesTemp ) );
-
-
-            session.HeartTime = DateTime.Now;
-            IsClientStart = true;
+            // 登录成功
             LoginSuccess?.Invoke( );
             LogNet?.WriteDebug( ToString( ), "Login Server Success, Times: " + ConnectFailedCount );
-            isConnecting = 0;
+            Interlocked.Exchange( ref isConnecting, 0 );
             Thread.Sleep( 1000 );
         }
 
         
-        private void ReconnectServer()
+        private void ReconnectServer(object obj = null)
         {
             // 是否连接服务器中，已经在连接的话，则不再连接
-            if (isConnecting == 0) return;
-
+            if (isConnecting == 1) return;
             // 是否退出了系统，退出则不再重连
             if (IsQuie) return;
-
-            LogNet?.WriteDebug( ToString( ), "Prepare ReConnect Server." );
-
             // 触发连接失败，重连系统前错误
             BeforReConnected?.Invoke( );
-            session.WorkSocket?.Close( );
-
-            Thread thread_login = new Thread( new ThreadStart( ThreadLogin ) )
-            {
-                IsBackground = true
-            };
-            thread_login.Start( );
+            session?.WorkSocket?.Close( );
+            // 重新启动客户端
+            ClientStart( );
         }
 
         #endregion
