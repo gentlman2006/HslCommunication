@@ -918,8 +918,8 @@ namespace HslCommunication.Profinet.Siemens
         /// <summary>
         /// 基础的写入数据的操作支持
         /// </summary>
-        /// <param name="entireValue"></param>
-        /// <returns></returns>
+        /// <param name="entireValue">完整的字节数据</param>
+        /// <returns>写入结果</returns>
         private OperateResult WriteBase( byte[] entireValue )
         {
             OperateResult<byte[]> write = ReadFromCoreServer( entireValue );
@@ -946,7 +946,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <param name="value">写入的数据，长度根据data的长度来指示</param>
-        /// <returns></returns>
+        /// <returns>写入结果</returns>
         public OperateResult Write( string address, byte[] value )
         {
             OperateResult<byte[]> command = BuildWriteByteCommand( address, value );
@@ -959,9 +959,9 @@ namespace HslCommunication.Profinet.Siemens
         /// <summary>
         /// 写入PLC的一个位，例如"M100.6"，"I100.7"，"Q100.0"，"DB20.100.0"，如果只写了"M100"默认为"M100.0
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <param name="value">写入的数据，True或是False</param>
+        /// <returns>写入结果</returns>
         public OperateResult Write( string address, bool value )
         {
             // 生成指令
@@ -982,21 +982,21 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>写入结果</returns>
         public OperateResult Write(string address, string value)
         {
             byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
             return Write( address, temp );
         }
 
-        
+
         /// <summary>
         /// 向PLC中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>写入结果</returns>
         public OperateResult Write(string address, string value, int length)
         {
             byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
@@ -1009,7 +1009,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>写入结果</returns>
         public OperateResult WriteUnicodeString(string address, string value)
         {
             byte[] temp = Encoding.Unicode.GetBytes( value );
@@ -1022,7 +1022,7 @@ namespace HslCommunication.Profinet.Siemens
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>写入结果</returns>
         public OperateResult WriteUnicodeString(string address, string value, int length)
         {
             byte[] temp = Encoding.Unicode.GetBytes( value );
@@ -1039,7 +1039,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据，长度为8的倍数</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>写入结果</returns>
         public OperateResult Write(string address, bool[] values)
         {
             return Write( address, BasicFramework.SoftBasic.BoolArrayToByte( values ) );
@@ -1055,7 +1055,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
-        /// <returns></returns>
+        /// <returns>写入结果</returns>
         public OperateResult Write(string address, byte value)
         {
             return Write( address, new byte[] { value } );
