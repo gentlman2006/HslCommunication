@@ -23,7 +23,11 @@ namespace HslCommunication.Robot.EFORT
             DbAxisPos = new float[7];
             DbCartPos = new float[6];
             DbAxisSpeed = new float[7];
+            DbAxisAcc = new float[7];
+            DbAxisAccAcc = new float[7];
             DbAxisTorque = new float[7];
+            DbAxisDirCnt = new int[7];
+            DbAxisTime = new int[7];
         }
 
 
@@ -141,7 +145,7 @@ namespace HslCommunication.Robot.EFORT
         public float[] DbAxisPos { get; set; }
 
         /// <summary>
-        /// X,Y,Z,A,B,C方向
+        /// X,Y,Z,A,B,C方向，也叫笛卡尔坐标系
         /// </summary>
         public float[] DbCartPos { get; set; }
 
@@ -151,10 +155,34 @@ namespace HslCommunication.Robot.EFORT
         public float[] DbAxisSpeed { get; set; }
 
         /// <summary>
+        /// 一到七轴的加速度
+        /// </summary>
+        public float[] DbAxisAcc { get; set; }
+
+        /// <summary>
+        /// 一到七轴的加加速度
+        /// </summary>
+        public float[] DbAxisAccAcc { get; set; }
+        
+        /// <summary>
         /// 一到七轴的力矩
         /// </summary>
         public float[] DbAxisTorque { get; set; }
 
+        /// <summary>
+        /// 轴反向计数
+        /// </summary>
+        public int[] DbAxisDirCnt { get; set; }
+
+        /// <summary>
+        /// 轴工作总时长
+        /// </summary>
+        public int[] DbAxisTime { get; set; }
+
+        /// <summary>
+        /// 设备开机总时长
+        /// </summary>
+        public int DbDeviceTime { get; set; }
 
         /// <summary>
         /// 报文结束标记

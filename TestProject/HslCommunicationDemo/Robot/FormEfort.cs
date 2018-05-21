@@ -156,6 +156,7 @@ namespace HslCommunicationDemo.Robot
             label40.Text = efortData.SpeedStatus.ToString( ) + " %";
             label46.Text = efortData.ProjectName;
             label48.Text = efortData.ProgramName;
+            label72.Text = efortData.DbDeviceTime.ToString( );
 
 
             textBox8.Text = GetStringFromArray( efortData.IoDOut );
@@ -187,14 +188,45 @@ namespace HslCommunicationDemo.Robot
             textBox35.Text = efortData.DbAxisSpeed[5].ToString( );
             textBox39.Text = efortData.DbAxisSpeed[6].ToString( );
 
+            textBox46.Text = efortData.DbAxisAcc[0].ToString( );
+            textBox45.Text = efortData.DbAxisAcc[1].ToString( );
+            textBox44.Text = efortData.DbAxisAcc[2].ToString( );
+            textBox43.Text = efortData.DbAxisAcc[3].ToString( );
+            textBox42.Text = efortData.DbAxisAcc[4].ToString( );
+            textBox41.Text = efortData.DbAxisAcc[5].ToString( );
+            textBox40.Text = efortData.DbAxisAcc[6].ToString( );
 
+            textBox53.Text = efortData.DbAxisAccAcc[0].ToString( );
+            textBox52.Text = efortData.DbAxisAccAcc[1].ToString( );
+            textBox51.Text = efortData.DbAxisAccAcc[2].ToString( );
+            textBox50.Text = efortData.DbAxisAccAcc[3].ToString( );
+            textBox49.Text = efortData.DbAxisAccAcc[4].ToString( );
+            textBox48.Text = efortData.DbAxisAccAcc[5].ToString( );
+            textBox47.Text = efortData.DbAxisAccAcc[6].ToString( );
+            
             textBox15.Text = efortData.DbAxisTorque[0].ToString( );
-            textBox18.Text = efortData.DbAxisTorque[0].ToString( );
-            textBox22.Text = efortData.DbAxisTorque[0].ToString( );
-            textBox26.Text = efortData.DbAxisTorque[0].ToString( );
-            textBox30.Text = efortData.DbAxisTorque[0].ToString( );
-            textBox34.Text = efortData.DbAxisTorque[0].ToString( );
-            textBox38.Text = efortData.DbAxisTorque[0].ToString( );
+            textBox18.Text = efortData.DbAxisTorque[1].ToString( );
+            textBox22.Text = efortData.DbAxisTorque[2].ToString( );
+            textBox26.Text = efortData.DbAxisTorque[3].ToString( );
+            textBox30.Text = efortData.DbAxisTorque[4].ToString( );
+            textBox34.Text = efortData.DbAxisTorque[5].ToString( );
+            textBox38.Text = efortData.DbAxisTorque[6].ToString( );
+
+            textBox60.Text = efortData.DbAxisDirCnt[0].ToString( );
+            textBox59.Text = efortData.DbAxisDirCnt[1].ToString( );
+            textBox58.Text = efortData.DbAxisDirCnt[2].ToString( );
+            textBox57.Text = efortData.DbAxisDirCnt[3].ToString( );
+            textBox56.Text = efortData.DbAxisDirCnt[4].ToString( );
+            textBox55.Text = efortData.DbAxisDirCnt[5].ToString( );
+            textBox54.Text = efortData.DbAxisDirCnt[6].ToString( );
+
+            textBox67.Text = efortData.DbAxisTime[0].ToString( );
+            textBox66.Text = efortData.DbAxisTime[1].ToString( );
+            textBox65.Text = efortData.DbAxisTime[2].ToString( );
+            textBox64.Text = efortData.DbAxisTime[3].ToString( );
+            textBox63.Text = efortData.DbAxisTime[4].ToString( );
+            textBox62.Text = efortData.DbAxisTime[5].ToString( );
+            textBox61.Text = efortData.DbAxisTime[6].ToString( );
         }
 
         private string GetStringFromArray(Array array)

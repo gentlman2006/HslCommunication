@@ -82,7 +82,7 @@ namespace HslCommunication.Robot.EFORT
             OperateResult<byte[]> read = ReadFromCoreServer( GetReadCommand( ) );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<EfortData>( read );
 
-            if (read.Content.Length < 668) return new OperateResult<EfortData>( )
+            if (read.Content.Length < 784) return new OperateResult<EfortData>( )
             {
                 Message = "数据长度不足"
             };
@@ -141,10 +141,32 @@ namespace HslCommunication.Robot.EFORT
 
             for (int i = 0; i < 7; i++)
             {
-                efortData.DbAxisTorque[i] = BitConverter.ToSingle( read.Content, 625 + 4 * i );
+                efortData.DbAxisAcc[i] = BitConverter.ToSingle( read.Content, 625 + 4 * i );
             }
 
-            efortData.PacketEnd = Encoding.ASCII.GetString( read.Content, 653, 15 ).Trim( );
+            for (int i = 0; i < 7; i++)
+            {
+                efortData.DbAxisAccAcc[i] = BitConverter.ToSingle( read.Content, 653 + 4 * i );
+            }
+            
+            for (int i = 0; i < 7; i++)
+            {
+                efortData.DbAxisTorque[i] = BitConverter.ToSingle( read.Content, 681 + 4 * i );
+            }
+
+            for (int i = 0; i < 7; i++)
+            {
+                efortData.DbAxisDirCnt[i] = BitConverter.ToInt32( read.Content, 709 + 4 * i );
+            }
+
+            for (int i = 0; i < 7; i++)
+            {
+                efortData.DbAxisTime[i] = BitConverter.ToInt32( read.Content, 737 + 4 * i );
+            }
+
+
+            efortData.DbDeviceTime = BitConverter.ToInt32( read.Content, 765 );
+            efortData.PacketEnd = Encoding.ASCII.GetString( read.Content, 769, 15 ).Trim( );
 
 
             return OperateResult.CreateSuccessResult( efortData );
