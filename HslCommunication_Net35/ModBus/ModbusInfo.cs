@@ -36,6 +36,11 @@ namespace HslCommunication.ModBus
         public const byte ReadRegister = 0x03;
 
         /// <summary>
+        /// 读取输入寄存器
+        /// </summary>
+        public const byte ReadInputRegister = 0x04;
+
+        /// <summary>
         /// 写单个线圈
         /// </summary>
         public const byte WriteOneCoil = 0x05;
