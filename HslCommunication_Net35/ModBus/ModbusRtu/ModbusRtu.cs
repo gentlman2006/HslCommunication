@@ -59,6 +59,7 @@ namespace HslCommunication.ModBus
 
         #region Address Analysis
 
+
         /// <summary>
         /// 解析数据地址，解析出地址类型，起始地址
         /// </summary>
@@ -69,22 +70,7 @@ namespace HslCommunication.ModBus
             try
             {
                 int add = Convert.ToInt32( address );
-                if (isAddressStartWithZero)
-                {
-                    if (add < 0)
-                    {
-                        throw new Exception( "地址值必须大于等于0" );
-                    }
-                }
-                else
-                {
-                    if (add < 1)
-                    {
-                        throw new Exception( "地址值必须大于等于1" );
-                    }
-
-                    add--;
-                }
+                add = CheckAddressStartWithZero( add );
                 return OperateResult.CreateSuccessResult( add );
             }
             catch (Exception ex)
@@ -96,6 +82,62 @@ namespace HslCommunication.ModBus
             }
         }
 
+        /// <summary>
+        /// 解析数据地址，解析出地址类型，起始地址
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
+        private OperateResult<byte, int> AnalysisReadAddress( string address )
+        {
+            try
+            {
+                if (address.IndexOf( 'X' ) < 0)
+                {
+                    // 正常地址，功能码03
+                    int add = Convert.ToInt32( address );
+                    add = CheckAddressStartWithZero( add );
+                    return OperateResult.CreateSuccessResult( ModbusInfo.ReadRegister, add );
+                }
+                else
+                {
+                    // 带功能码的地址
+                    string[] list = address.Split( 'X' );
+                    byte function = byte.Parse( list[0] );
+                    int add = Convert.ToInt32( list[1] );
+                    add = CheckAddressStartWithZero( add );
+                    return OperateResult.CreateSuccessResult( function, add );
+                }
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte, int>( )
+                {
+                    Message = ex.Message
+                };
+            }
+        }
+
+        private int CheckAddressStartWithZero( int add )
+        {
+            if (isAddressStartWithZero)
+            {
+                if (add < 0)
+                {
+                    throw new Exception( "地址值必须大于等于0" );
+                }
+            }
+            else
+            {
+                if (add < 1)
+                {
+                    throw new Exception( "地址值必须大于等于1" );
+                }
+
+                add--;
+            }
+            return add;
+        }
+        
 
         #endregion
 
@@ -464,7 +506,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的字节信息</returns>
         public OperateResult<byte[]> Read( string address, ushort length )
         {
-            OperateResult<int> analysis = AnalysisAddress( address );
+            OperateResult<byte, int> analysis = AnalysisReadAddress( address );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             List<byte> lists = new List<byte>( );
@@ -472,7 +514,7 @@ namespace HslCommunication.ModBus
             while (alreadyFinished < length)
             {
                 ushort lengthTmp = (ushort)Math.Min( (length - alreadyFinished), 120 );
-                OperateResult<byte[]> read = ReadModBusBase( ModbusInfo.ReadRegister, (analysis.Content + alreadyFinished).ToString( ), lengthTmp );
+                OperateResult<byte[]> read = ReadModBusBase( analysis.Content1, (analysis.Content2 + alreadyFinished).ToString( ), lengthTmp );
                 if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );
 
                 lists.AddRange( read.Content );

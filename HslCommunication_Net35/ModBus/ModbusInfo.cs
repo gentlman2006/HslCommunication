@@ -98,8 +98,7 @@ namespace HslCommunication.ModBus
 
 
         #region Static Method
-
-
+        
 
 
 
