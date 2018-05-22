@@ -282,5 +282,15 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button24_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormSerialDebug form = new FormSerialDebug( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

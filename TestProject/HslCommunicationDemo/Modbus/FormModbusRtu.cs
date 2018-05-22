@@ -104,7 +104,7 @@ namespace HslCommunicationDemo
 
             if (!int.TryParse( textBox17.Text, out int stopBits ))
             {
-                MessageBox.Show( "波特率输入错误！" );
+                MessageBox.Show( "停止位输入错误！" );
                 return;
             }
 
