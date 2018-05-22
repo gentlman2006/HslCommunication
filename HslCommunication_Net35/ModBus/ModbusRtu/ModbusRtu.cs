@@ -55,6 +55,15 @@ namespace HslCommunication.ModBus
             set { isAddressStartWithZero = value; }
         }
 
+        /// <summary>
+        /// 获取或者重新修改服务器的站号信息
+        /// </summary>
+        public byte Station
+        {
+            get { return station; }
+            set { station = value; }
+        }
+
         #endregion
 
         #region Address Analysis
@@ -95,7 +104,6 @@ namespace HslCommunication.ModBus
                 {
                     // 正常地址，功能码03
                     int add = Convert.ToInt32( address );
-                    add = CheckAddressStartWithZero( add );
                     return OperateResult.CreateSuccessResult( ModbusInfo.ReadRegister, add );
                 }
                 else
@@ -104,7 +112,6 @@ namespace HslCommunication.ModBus
                     string[] list = address.Split( 'X' );
                     byte function = byte.Parse( list[0] );
                     int add = Convert.ToInt32( list[1] );
-                    add = CheckAddressStartWithZero( add );
                     return OperateResult.CreateSuccessResult( function, add );
                 }
             }

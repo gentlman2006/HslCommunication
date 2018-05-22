@@ -46,9 +46,9 @@ namespace HslCommunication.ModBus
 
         #region Private Member
 
-        private byte station = ModbusInfo.ReadCoil;                 // 本客户端的站号
+        private byte station = 0x01;                                // 本客户端的站号
         private SoftIncrementCount softIncrementCount;              // 自增消息的对象
-        private bool isAddressStartWithZero = true;               // 线圈值的地址值是否从零开始
+        private bool isAddressStartWithZero = true;                 // 线圈值的地址值是否从零开始
 
         #endregion
 
@@ -61,6 +61,15 @@ namespace HslCommunication.ModBus
         {
             get { return isAddressStartWithZero; }
             set { isAddressStartWithZero = value; }
+        }
+
+        /// <summary>
+        /// 获取或者重新修改服务器的站号信息
+        /// </summary>
+        public byte Station
+        {
+            get { return station; }
+            set { station = value; }
         }
 
         #endregion
@@ -102,7 +111,6 @@ namespace HslCommunication.ModBus
                 {
                     // 正常地址，功能码03
                     int add = Convert.ToInt32( address );
-                    add = CheckAddressStartWithZero( add );
                     return OperateResult.CreateSuccessResult( ModbusInfo.ReadRegister, add );
                 }
                 else
@@ -111,7 +119,6 @@ namespace HslCommunication.ModBus
                     string[] list = address.Split( 'X' );
                     byte function = byte.Parse( list[0] );
                     int add = Convert.ToInt32( list[1] );
-                    add = CheckAddressStartWithZero( add );
                     return OperateResult.CreateSuccessResult( function, add );
                 }
             }
