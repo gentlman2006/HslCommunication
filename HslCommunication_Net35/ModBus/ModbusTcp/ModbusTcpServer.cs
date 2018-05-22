@@ -1550,6 +1550,8 @@ namespace HslCommunication.ModBus
                 byte[] copy = ModbusCoreTransModbusRtu( ReadFromModbusCore( modbusCore ) );
 
                 serialPort.Write( copy, 0, copy.Length );
+
+                if (IsStarted) OnDataReceived?.Invoke( this, receive );
             }
             else
             {
