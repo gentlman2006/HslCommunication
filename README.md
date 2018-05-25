@@ -38,6 +38,7 @@ Install-Package HslCommunication
 ```
 
 ## Environment
+* IDE: **Visual Studio 2017** 必须这个版本及以上，不然会语法报错
 * .Net Framework环境下：支持.Net 3.5及以上环境，功能最完善。
 * .Net Standard环境下：.Net 2.0以上，目前仅仅实现PLC读写，modbus tcp读写，日志记录。
 
@@ -104,6 +105,7 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 * 感谢 **CKernal** 推送的Qna兼容1E帧协议的三菱代码
 * 感谢 **ligihtdev** 打赏支持
 * 感谢 **Wzhigang** 打赏支持
+* 感谢 **Running...** 打赏支持
 
 ## Controls
 This library include some controls render upside picture. u can easily use them
