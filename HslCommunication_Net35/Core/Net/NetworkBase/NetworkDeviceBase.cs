@@ -8,44 +8,66 @@ using System.Text;
 namespace HslCommunication.Core.Net
 {
     /// <summary>
-    /// 设备类的基类，模式为双模式客户端
+    /// 设备类的基类，提供了基础的字节读写方法
     /// </summary>
     public class NetworkDeviceBase<TNetMessage, TTransform> : NetworkDoubleBase<TNetMessage, TTransform> , IReadWriteNet where TNetMessage : INetMessage, new() where TTransform : IByteTransform, new()
     {
+        #region Virtual Method
 
 
 
+        /**************************************************************************************************
+         * 
+         *    说明：子类中需要重写基础的读取和写入方法，来支持不同的数据访问规则
+         *    
+         *    此处没有将读写位纳入进来，因为各种设备的支持不尽相同，比较麻烦
+         * 
+         **************************************************************************************************/
+
+
+        /// <summary>
+        /// 从设备读取原始数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">地址长度</param>
+        /// <returns>带有成功标识的结果对象</returns>
         public virtual OperateResult<byte[]> Read( string address, ushort length )
         {
             return new OperateResult<byte[]>( );
         }
 
 
-
-        public virtual OperateResult<bool[]> ReadBool( string address, ushort length )
+        /// <summary>
+        /// 将原始数据写入设备
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="value">原始数据</param>
+        /// <returns>带有成功标识的结果对象</returns>
+        public virtual OperateResult Write( string address, byte[] value )
         {
-            return new OperateResult<bool[]>( );
+            return new OperateResult( );
         }
 
 
+        #endregion
 
-        public OperateResult<bool> ReadBool( string address )
-        {
-            OperateResult<bool[]> read = ReadBool( address, 1 );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool>( read );
+        #region Protect Member
 
-            return OperateResult.CreateSuccessResult<bool>( read.Content[0] );
-        }
+        /// <summary>
+        /// 单个数据字节的长度，西门子为2，三菱，欧姆龙，modbusTcp就为1
+        /// </summary>
+        protected ushort WordLength { get; set; } = 1;
 
+        #endregion
 
         #region Customer Support
 
         /// <summary>
-        /// 读取自定义的数据类型，只要规定了写入和解析规则
+        /// 读取自定义类型的数据，需要规定解析规则
         /// </summary>
         /// <typeparam name="T">类型名称</typeparam>
         /// <param name="address">起始地址</param>
-        /// <returns></returns>
+        /// <returns>带有成功标识的结果对象</returns>
         public OperateResult<T> ReadCustomer<T>( string address ) where T : IDataTransfer, new()
         {
             OperateResult<T> result = new OperateResult<T>( );
@@ -66,12 +88,12 @@ namespace HslCommunication.Core.Net
         }
 
         /// <summary>
-        /// 写入自定义的数据类型到PLC去，只要规定了生成字节的方法即可
+        /// 写入自定义类型的数据到设备去，需要规定生成字节的方法
         /// </summary>
         /// <typeparam name="T">自定义类型</typeparam>
         /// <param name="address">起始地址</param>
         /// <param name="data">实例对象</param>
-        /// <returns></returns>
+        /// <returns>带有成功标识的结果对象</returns>
         public OperateResult WriteCustomer<T>( string address, T data ) where T : IDataTransfer, new()
         {
             return Write( address, data.ToSource( ) );
@@ -81,13 +103,31 @@ namespace HslCommunication.Core.Net
         #endregion
 
         #region Read Support
-        
 
+
+        /// <summary>
+        /// 读取设备的short类型的数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<short> ReadInt16( string address )
         {
-            return GetInt16ResultFromBytes( Read( address, 1 ) );
+            return GetInt16ResultFromBytes( Read( address, WordLength ) );
         }
 
+
+        /// <summary>
+        /// 读取设备的short类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<short[]> ReadInt16( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<short[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransInt16( read.Content, 0, length ) );
+        }
 
         /// <summary>
         /// 读取三菱PLC中字软元件指定地址的ushort数据
@@ -96,74 +136,177 @@ namespace HslCommunication.Core.Net
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ushort> ReadUInt16( string address )
         {
-            return GetUInt16ResultFromBytes( Read( address, 1 ) );
+            return GetUInt16ResultFromBytes( Read( address, WordLength ) );
         }
 
+
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的int数据
+        /// 读取设备的ushort类型的数组
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<ushort[]> ReadUInt16( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<ushort[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt16( read.Content, 0, length ) );
+        }
+
+
+        /// <summary>
+        /// 读取设备的int类型的数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<int> ReadInt32( string address )
         {
-            return GetInt32ResultFromBytes( Read( address, 2 ) );
+            return GetInt32ResultFromBytes( Read( address, (ushort)(2 * WordLength) ) );
         }
 
+
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的uint数据
+        /// 读取设备的int类型的数组
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<int[]> ReadInt32( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 2) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<int[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransInt32( read.Content, 0, length ) );
+        }
+
+
+
+        /// <summary>
+        /// 读取设备的uint类型的数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<uint> ReadUInt32( string address )
         {
-            return GetUInt32ResultFromBytes( Read( address, 2 ) );
+            return GetUInt32ResultFromBytes( Read( address, (ushort)(2 * WordLength) ) );
+        }
+
+
+        /// <summary>
+        /// 读取设备的uint类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<uint[]> ReadUInt32( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 2) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<uint[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt32( read.Content, 0, length ) );
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的float数据
+        /// 读取设备的float类型的数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">起始地址</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<float> ReadFloat( string address )
         {
-            return GetSingleResultFromBytes( Read( address, 2 ) );
+            return GetSingleResultFromBytes( Read( address, (ushort)(2 * WordLength) ) );
+        }
+
+
+        /// <summary>
+        /// 读取设备的float类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<float[]> ReadFloat( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 2) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<float[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransSingle( read.Content, 0, length ) );
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的long数据
+        /// 读取设备的long类型的数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">起始地址</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<long> ReadInt64( string address )
         {
-            return GetInt64ResultFromBytes( Read( address, 4 ) );
+            return GetInt64ResultFromBytes( Read( address, (ushort)(4 * WordLength) ) );
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的ulong数据
+        /// 读取设备的long类型的数组
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<long[]> ReadInt64( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 4) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<long[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransInt64( read.Content, 0, length ) );
+        }
+
+        /// <summary>
+        /// 读取设备的ulong类型的数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ulong> ReadUInt64( string address )
         {
-            return GetUInt64ResultFromBytes( Read( address, 4 ) );
+            return GetUInt64ResultFromBytes( Read( address, (ushort)(4 * WordLength) ) );
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的double数据
+        /// 读取设备的ulong类型的数组
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<ulong[]> ReadUInt64( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 4) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<ulong[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt64( read.Content, 0, length ) );
+        }
+
+
+        /// <summary>
+        /// 读取设备的double类型的数据
+        /// </summary>
+        /// <param name="address">起始地址</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<double> ReadDouble( string address )
         {
-            return GetDoubleResultFromBytes( Read( address, 4 ) );
+            return GetDoubleResultFromBytes( Read( address, (ushort)(4 * WordLength) ) );
         }
 
+
         /// <summary>
-        /// 读取三菱PLC中字软元件地址地址的String数据，编码为ASCII
+        /// 读取设备的double类型的数组
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
-        /// <param name="length">字符串长度</param>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        public OperateResult<double[]> ReadDouble( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 4) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<double[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransDouble( read.Content, 0, length ) );
+        }
+
+
+
+
+        /// <summary>
+        /// 读取设备的字符串数据，编码为ASCII
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">地址长度</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<string> ReadString( string address, ushort length )
         {
@@ -173,54 +316,14 @@ namespace HslCommunication.Core.Net
 
 
         #endregion
-
-        #region Write Base
         
-        public virtual OperateResult Write( string address, byte[] value )
-        {
-            return new OperateResult( );
-        }
-
-
-
-
-        #endregion
-
-        #region Write bool[]
-
-
-        /// <summary>
-        /// 向PLC中位软元件写入bool数组，返回值说明，比如你写入M100,values[0]对应M100
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据，长度为8的倍数</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, bool value )
-        {
-            return Write( address, new bool[] { value } );
-        }
-
-        /// <summary>
-        /// 向PLC中位软元件写入bool数组，返回值说明，比如你写入M100,values[0]对应M100
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据，可以指定任意的长度</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, bool[] values )
-        {
-            return Write( address, values.Select( m => m ? (byte)0x01 : (byte)0x00 ).ToArray( ) );
-        }
-
-
-        #endregion
-
         #region Write Int16
 
         /// <summary>
-        /// 向PLC中字软元件写入short数组，返回值说明
+        /// 向设备中写入short数组，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, short[] values )
         {
@@ -228,10 +331,10 @@ namespace HslCommunication.Core.Net
         }
 
         /// <summary>
-        /// 向PLC中字软元件写入short数据，返回值说明
+        /// 向设备中写入short数据，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, short value )
         {
@@ -244,7 +347,7 @@ namespace HslCommunication.Core.Net
 
 
         /// <summary>
-        /// 向PLC中字软元件写入ushort数组，返回值说明
+        /// 向设备中写入ushort数组，返回是否写入成功
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
@@ -256,10 +359,10 @@ namespace HslCommunication.Core.Net
 
 
         /// <summary>
-        /// 向PLC中字软元件写入ushort数据，返回值说明
+        /// 向设备中写入ushort数据，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, ushort value )
         {
@@ -272,10 +375,10 @@ namespace HslCommunication.Core.Net
         #region Write Int32
 
         /// <summary>
-        /// 向PLC中字软元件写入int数组，返回值说明
+        /// 向设备中写入int数组，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, int[] values )
         {
@@ -283,10 +386,10 @@ namespace HslCommunication.Core.Net
         }
 
         /// <summary>
-        /// 向PLC中字软元件写入int数据，返回值说明
+        /// 向设备中写入int数据，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, int value )
         {
@@ -298,10 +401,10 @@ namespace HslCommunication.Core.Net
         #region Write UInt32
 
         /// <summary>
-        /// 向PLC中字软元件写入uint数组，返回值说明
+        /// 向设备中写入uint数组，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, uint[] values )
         {
@@ -309,10 +412,10 @@ namespace HslCommunication.Core.Net
         }
 
         /// <summary>
-        /// 向PLC中字软元件写入uint数据，返回值说明
+        /// 向设备中写入uint数据，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, uint value )
         {
@@ -324,10 +427,10 @@ namespace HslCommunication.Core.Net
         #region Write Float
 
         /// <summary>
-        /// 向PLC中字软元件写入float数组，返回值说明
+        /// 向设备中写入float数组，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, float[] values )
         {
@@ -335,10 +438,10 @@ namespace HslCommunication.Core.Net
         }
 
         /// <summary>
-        /// 向PLC中字软元件写入float数据，返回值说明
+        /// 向设备中写入float数据，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, float value )
         {
@@ -351,10 +454,10 @@ namespace HslCommunication.Core.Net
         #region Write Int64
 
         /// <summary>
-        /// 向PLC中字软元件写入long数组，返回值说明
+        /// 向设备中写入long数组，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, long[] values )
         {
@@ -362,10 +465,10 @@ namespace HslCommunication.Core.Net
         }
 
         /// <summary>
-        /// 向PLC中字软元件写入long数据，返回值说明
+        /// 向设备中写入long数据，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, long value )
         {
@@ -377,10 +480,10 @@ namespace HslCommunication.Core.Net
         #region Write UInt64
 
         /// <summary>
-        /// 向PLC中字软元件写入ulong数组，返回值说明
+        /// 向P设备中写入ulong数组，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, ulong[] values )
         {
@@ -388,10 +491,10 @@ namespace HslCommunication.Core.Net
         }
 
         /// <summary>
-        /// 向PLC中字软元件写入ulong数据，返回值说明
+        /// 向设备中写入ulong数据，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, ulong value )
         {
@@ -403,10 +506,10 @@ namespace HslCommunication.Core.Net
         #region Write Double
 
         /// <summary>
-        /// 向PLC中字软元件写入double数组，返回值说明
+        /// 向设备中写入double数组，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, double[] values )
         {
@@ -414,10 +517,10 @@ namespace HslCommunication.Core.Net
         }
 
         /// <summary>
-        /// 向PLC中字软元件写入double数据，返回值说明
+        /// 向设备中写入double数据，返回是否写入成功
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, double value )
         {
@@ -429,58 +532,18 @@ namespace HslCommunication.Core.Net
         #region Write String
 
         /// <summary>
-        /// 向PLC中字软元件写入字符串，编码格式为ASCII
+        /// 向P设备中写入字符串，编码格式为ASCII
         /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">实际数据</param>
         /// <returns>返回读取结果</returns>
         public OperateResult Write( string address, string value )
         {
             byte[] temp = Encoding.ASCII.GetBytes( value );
-            temp = SoftBasic.ArrayExpandToLengthEven( temp );
+            if(WordLength == 1) temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
         }
-
-        /// <summary>
-        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult Write( string address, string value, int length )
-        {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
-            temp = SoftBasic.ArrayExpandToLength( temp, length );
-            temp = SoftBasic.ArrayExpandToLengthEven( temp );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入字符串，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value )
-        {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value, int length )
-        {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
-            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length * 2 );
-            return Write( address, temp );
-        }
+        
 
 
         #endregion

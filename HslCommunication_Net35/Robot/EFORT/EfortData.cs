@@ -55,7 +55,6 @@ namespace HslCommunication.Robot.EFORT
         /// <summary>
         /// 报警状态，1:有报警，0：无报警
         /// </summary>
-        []
         public byte ErrorStatus { get; set; }
 
         /// <summary>
