@@ -20,6 +20,7 @@ namespace HslCommunication.Robot.EFORT
             IoDOut = new byte[32];
             IoDIn = new byte[32];
             IoIOut = new int[32];
+            IoIIn = new int[32];
             DbAxisPos = new float[7];
             DbCartPos = new float[6];
             DbAxisSpeed = new float[7];
@@ -54,6 +55,7 @@ namespace HslCommunication.Robot.EFORT
         /// <summary>
         /// 报警状态，1:有报警，0：无报警
         /// </summary>
+        []
         public byte ErrorStatus { get; set; }
 
         /// <summary>
