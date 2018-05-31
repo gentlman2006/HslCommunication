@@ -423,6 +423,12 @@ namespace HslCommunication.BasicFramework
             return ByteToHexString(Encoding.Unicode.GetBytes(InString));
         }
 
+
+        private static List<char> hexCharList = new List<char>( )
+            {
+                '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+            };
+
         /// <summary>
         /// 将16进制的字符串转化成Byte数据，将检测每2个字符转化，也就是说，中间可以是任意字符
         /// </summary>
@@ -431,10 +437,6 @@ namespace HslCommunication.BasicFramework
         public static byte[] HexStringToBytes(string hex)
         {
             hex = hex.ToUpper();
-            List<char> data = new List<char>()
-            {
-                '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
-            };
 
             MemoryStream ms = new MemoryStream();
 
@@ -442,10 +444,10 @@ namespace HslCommunication.BasicFramework
             {
                 if ((i + 1) < hex.Length)
                 {
-                    if (data.Contains(hex[i]) && data.Contains(hex[i + 1]))
+                    if (hexCharList.Contains(hex[i]) && hexCharList.Contains(hex[i + 1]))
                     {
                         // 这是一个合格的字节数据
-                        ms.WriteByte((byte)(data.IndexOf(hex[i]) * 16 + data.IndexOf(hex[i + 1])));
+                        ms.WriteByte((byte)(hexCharList.IndexOf(hex[i]) * 16 + hexCharList.IndexOf(hex[i + 1])));
                         i++;
                     }
                 }
