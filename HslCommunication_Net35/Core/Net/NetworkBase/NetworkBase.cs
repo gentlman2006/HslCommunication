@@ -652,9 +652,9 @@ namespace HslCommunication.Core.Net
         #region Object Override
 
         /// <summary>
-        /// 获取字符串表示形式
+        /// 返回表示当前对象的字符串
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串</returns>
         public override string ToString( )
         {
             return "NetworkBase";

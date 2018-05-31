@@ -14,9 +14,8 @@ namespace HslCommunication.ModBus
     /// <summary>
     /// Modbus-Tcp协议的客户端通讯类，方便的和服务器进行数据交互
     /// </summary>
-    public class ModbusTcpNet : NetworkDoubleBase<ModbusTcpMessage, ReverseWordTransform>, IReadWriteNet
+    public class ModbusTcpNet : NetworkDeviceBase<ModbusTcpMessage, ReverseWordTransform>
     {
-
         #region Constructor
 
         /// <summary>
@@ -25,6 +24,7 @@ namespace HslCommunication.ModBus
         public ModbusTcpNet( )
         {
             softIncrementCount = new SoftIncrementCount( ushort.MaxValue );
+            WordLength = 1;
         }
 
 
@@ -39,6 +39,7 @@ namespace HslCommunication.ModBus
             softIncrementCount = new SoftIncrementCount( ushort.MaxValue );
             IpAddress = ipAddress;
             Port = port;
+            WordLength = 1;
             this.station = station;
         }
 
@@ -380,48 +381,6 @@ namespace HslCommunication.ModBus
 
         #endregion
 
-        #region Customer Support
-
-        /// <summary>
-        /// 读取自定义的数据类型，只针对寄存器而言，需要规定了写入和解析规则
-        /// </summary>
-        /// <typeparam name="T">类型名称</typeparam>
-        /// <param name="address">起始地址</param>
-        /// <returns>带是否成功的特定类型的对象</returns>
-        public OperateResult<T> ReadCustomer<T>( string address ) where T : IDataTransfer, new()
-        {
-            OperateResult<T> result = new OperateResult<T>( );
-            T Content = new T( );
-            OperateResult<byte[]> read = Read( address, Content.ReadCount );
-            if (read.IsSuccess)
-            {
-                Content.ParseSource( read.Content );
-                result.Content = Content;
-                result.IsSuccess = true;
-            }
-            else
-            {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 写入自定义的数据类型到寄存器去，只要规定了生成字节的方法即可
-        /// </summary>
-        /// <typeparam name="T">自定义类型</typeparam>
-        /// <param name="address">起始地址</param>
-        /// <param name="data">实例对象</param>
-        /// <returns>是否成功</returns>
-        public OperateResult WriteCustomer<T>( string address, T data ) where T : IDataTransfer, new()
-        {
-            return Write( address, data.ToSource( ) );
-        }
-
-
-        #endregion
-
         #region Read Support
 
         /// <summary>
@@ -527,7 +486,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址，格式为"1234"，或者是带功能码格式03X1234</param>
         /// <param name="length">读取的数量</param>
         /// <returns>带有成功标志的字节信息</returns>
-        public OperateResult<byte[]> Read( string address, ushort length )
+        public override OperateResult<byte[]> Read( string address, ushort length )
         {
             OperateResult<byte,int> analysis = AnalysisReadAddress( address );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
@@ -547,109 +506,8 @@ namespace HslCommunication.ModBus
             return OperateResult.CreateSuccessResult( lists.ToArray( ) );
         }
 
-        
-
-        /// <summary>
-        /// 读取指定地址的short数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
-        /// <returns>带有成功标志的short数据</returns>
-        public OperateResult<short> ReadInt16( string address )
-        {
-            return GetInt16ResultFromBytes( Read( address, 1 ) );
-        }
-        
-
-        /// <summary>
-        /// 读取指定地址的ushort数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
-        /// <returns>带有成功标志的ushort数据</returns>
-        public OperateResult<ushort> ReadUInt16( string address )
-        {
-            return GetUInt16ResultFromBytes( Read( address, 1 ) );
-        }
-        
-
-        /// <summary>
-        /// 读取指定地址的int数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
-        /// <returns>带有成功标志的int数据</returns>
-        public OperateResult<int> ReadInt32( string address )
-        {
-            return GetInt32ResultFromBytes( Read( address, 2 ) );
-        }
-        
-        /// <summary>
-        /// 读取指定地址的uint数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
-        /// <returns>带有成功标志的uint数据</returns>
-        public OperateResult<uint> ReadUInt32( string address )
-        {
-            return GetUInt32ResultFromBytes( Read( address, 2 ) );
-        }
-        
-
-        /// <summary>
-        /// 读取指定地址的float数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
-        /// <returns>带有成功标志的float数据</returns>
-        public OperateResult<float> ReadFloat( string address )
-        {
-            return GetSingleResultFromBytes( Read( address, 2 ) );
-        }
-
-        
-
-
-        /// <summary>
-        /// 读取指定地址的long数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
-        /// <returns>带有成功标志的long数据</returns>
-        public OperateResult<long> ReadInt64( string address )
-        {
-            return GetInt64ResultFromBytes( Read( address, 4 ) );
-        }
-
-        /// <summary>
-        /// 读取指定地址的ulong数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
-        /// <returns>带有成功标志的ulong数据</returns>
-        public OperateResult<ulong> ReadUInt64( string address )
-        {
-            return GetUInt64ResultFromBytes( Read( address, 4 ) );
-        }
-
-        /// <summary>
-        /// 读取指定地址的double数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
-        /// <returns>带有成功标志的double数据</returns>
-        public OperateResult<double> ReadDouble( string address )
-        {
-            return GetDoubleResultFromBytes( Read( address, 4 ) );
-        }
-
-        /// <summary>
-        /// 读取地址地址的String数据，字符串编码为ASCII
-        /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
-        /// <param name="length">字符串长度</param>
-        /// <returns>带有成功标志的string数据</returns>
-        public OperateResult<string> ReadString( string address, ushort length )
-        {
-            return GetStringResultFromBytes( Read( address, length ) );
-        }
-
-
-
         #endregion
-
+        
         #region Write One Register
 
 
@@ -709,7 +567,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址，格式为"1234"</param>
         /// <param name="value">写入的数据，长度根据data的长度来指示</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, byte[] value )
+        public override OperateResult Write( string address, byte[] value )
         {
             OperateResult<byte[]> command = BuildWriteRegisterCommand( address, value );
             if (!command.IsSuccess)
@@ -764,20 +622,7 @@ namespace HslCommunication.ModBus
 
         #region Write String
 
-
-        /// <summary>
-        /// 向寄存器中写入字符串，编码格式为ASCII
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, string value )
-        {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
-            temp = SoftBasic.ArrayExpandToLengthEven( temp );
-            return Write( address, temp );
-        }
-
+        
         /// <summary>
         /// 向寄存器中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
         /// </summary>
@@ -836,222 +681,10 @@ namespace HslCommunication.ModBus
 
         #endregion
 
-        #region Write Short
-
-        /// <summary>
-        /// 向寄存器中写入short数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, short[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入short数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, short value )
-        {
-            return Write( address, new short[] { value } );
-        }
-
-        #endregion
-
-        #region Write UShort
-
-
-        /// <summary>
-        /// 向寄存器中写入ushort数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ushort[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-
-        /// <summary>
-        /// 向寄存器中写入ushort数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ushort value )
-        {
-            return Write( address, new ushort[] { value } );
-        }
-
-
-        #endregion
-
-        #region Write Int
-
-        /// <summary>
-        /// 向寄存器中写入int数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, int[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入int数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, int value )
-        {
-            return Write( address, new int[] { value } );
-        }
-
-        #endregion
-
-        #region Write UInt
-
-        /// <summary>
-        /// 向寄存器中写入uint数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, uint[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入uint数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, uint value )
-        {
-            return Write( address, new uint[] { value } );
-        }
-
-        #endregion
-
-        #region Write Float
-
-        /// <summary>
-        /// 向寄存器中写入float数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, float[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入float数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, float value )
-        {
-            return Write( address, new float[] { value } );
-        }
-
-
-        #endregion
-
-        #region Write Long
-
-        /// <summary>
-        /// 向寄存器中写入long数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, long[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入long数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, long value )
-        {
-            return Write( address, new long[] { value } );
-        }
-
-        #endregion
-
-        #region Write ULong
-
-        /// <summary>
-        /// 向寄存器中写入ulong数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ulong[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入ulong数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ulong value )
-        {
-            return Write( address, new ulong[] { value } );
-        }
-
-        #endregion
-
-        #region Write Double
-
-        /// <summary>
-        /// 向寄存器中写入double数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, double[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入double数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, double value )
-        {
-            return Write( address, new double[] { value } );
-        }
-
-        #endregion
-
         #region Object Override
 
         /// <summary>
-        /// 获取当前对象的字符串标识形式
+        /// 返回表示当前对象的字符串
         /// </summary>
         /// <returns>字符串信息</returns>
         public override string ToString( )
@@ -1060,7 +693,6 @@ namespace HslCommunication.ModBus
         }
 
         #endregion
-
-
+        
     }
 }

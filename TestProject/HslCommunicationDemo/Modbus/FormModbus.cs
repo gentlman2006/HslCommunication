@@ -166,6 +166,9 @@ namespace HslCommunicationDemo
         {
             // 读取short变量
             readResultRender( busTcpClient.ReadInt16( textBox3.Text ), textBox3.Text, textBox4 );
+
+            // 这一行是测试读取short数组的代码，忽略就行
+            short[] values = busTcpClient.ReadInt16( "100", 2 ).Content;
         }
 
         private void button_read_ushort_Click( object sender, EventArgs e )

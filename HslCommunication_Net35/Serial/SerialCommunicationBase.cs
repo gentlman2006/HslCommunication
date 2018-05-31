@@ -120,8 +120,8 @@ namespace HslCommunication.Serial
 
             try
             {
-                isReceiveTimeout = false;
-                isReceiveComplete = false;
+                isReceiveTimeout = false;                         // 是否接收超时的标志位
+                isReceiveComplete = false;                        // 是否接收完成的标志位
                 if (send == null) send = new byte[0];
 
                 SP_ReadData.Write( send, 0, send.Length );

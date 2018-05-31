@@ -22,6 +22,10 @@ namespace HslCommunicationDemo.Robot
         {
             panel2.Enabled = false;
             button2.Enabled = false;
+
+            threadRead = new System.Threading.Thread( ThreadReadRobot );
+            threadRead.IsBackground = true;
+            threadRead.Start( );
         }
 
         private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
@@ -41,6 +45,21 @@ namespace HslCommunicationDemo.Robot
 
         private void RenderRobotData(EfortData efortData)
         {
+            if(InvokeRequired)
+            {
+                try
+                {
+                    Invoke( new Action<EfortData>( RenderRobotData ), efortData );
+                }
+                catch
+                {
+
+                }
+
+                return;
+            }
+
+
             textBox4.Text = efortData.PacketStart;
             textBox6.Text = efortData.PacketOrders.ToString( );
             textBox7.Text = efortData.PacketHeartbeat.ToString( );
@@ -243,11 +262,38 @@ namespace HslCommunicationDemo.Robot
 
 
 
+        private void RenderErrorMessage(string msg )
+        {
+            if(InvokeRequired)
+            {
+                try
+                {
+                    Invoke( new Action<string>( RenderErrorMessage ), msg );
+                }
+                catch
+                {
+
+                }
+                return;
+            }
+
+
+            label74.Text = "异常消息：[" + DateTime.Now.ToString( "yyyy-MM-dd HH:mm:ss.fff" ) + "] " + msg;
+            label74.BackColor = Color.Blue;
+            System.Threading.ThreadPool.QueueUserWorkItem( new System.Threading.WaitCallback( Reset ), null );
+
+        }
 
 
 
-
-
+        private void Reset( object obj )
+        {
+            System.Threading.Thread.Sleep( 2000 );
+            label74.Invoke( new Action( ( ) =>
+            {
+                label74.BackColor = Color.Transparent;
+            } ) );
+        }
 
 
 
@@ -282,11 +328,12 @@ namespace HslCommunicationDemo.Robot
 
         private void button2_Click( object sender, EventArgs e )
         {
+            isReadPlc = false;
             efortRobot?.ConnectClose( );
             button2.Enabled = false;
             panel2.Enabled = false;
             button1.Enabled = true;
-            timer?.Stop( );
+            threadRead?.Abort( );
             button3.Enabled = true;
         }
 
@@ -304,17 +351,39 @@ namespace HslCommunicationDemo.Robot
             }
         }
 
-        private Timer timer;
+
+        private void ThreadReadRobot( )
+        {
+            while(true)
+            {
+                System.Threading.Thread.Sleep( timeSpeep );
+                if (isReadPlc)
+                {
+                    OperateResult<EfortData> read = efortRobot.Read( );
+                    if (read.IsSuccess)
+                    {
+                        RenderRobotData( read.Content );
+                    }
+                    else
+                    {
+                        RenderErrorMessage( read.Message );
+                    }
+                }
+            }
+        }
+
+
+        private System.Threading.Thread threadRead;
+        private int timeSpeep = 1000;
+        private bool isReadPlc = false;
 
         private void button3_Click( object sender, EventArgs e )
         {
             try
             {
                 // 定时读取
-                timer = new Timer( );
-                timer.Interval = int.Parse( textBox3.Text );
-                timer.Tick += Timer_Tick;
-                timer.Start( );
+                timeSpeep = int.Parse( textBox3.Text );
+                isReadPlc = true;
                 button3.Enabled = false;
             }
             catch(Exception ex)

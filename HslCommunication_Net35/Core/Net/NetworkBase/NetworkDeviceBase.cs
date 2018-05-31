@@ -543,8 +543,21 @@ namespace HslCommunication.Core.Net
             if(WordLength == 1) temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
         }
-        
 
+
+
+        #endregion
+
+        #region Object Override
+
+        /// <summary>
+        /// 返回表示当前对象的字符串
+        /// </summary>
+        /// <returns>字符串数据</returns>
+        public override string ToString( )
+        {
+            return "NetworkDeviceBase<TNetMessage, TTransform>";
+        }
 
         #endregion
 

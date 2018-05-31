@@ -473,7 +473,7 @@ namespace HslCommunication.Core.Net
         #region Object Override
 
         /// <summary>
-        /// 获取本对象的字符串标识形式
+        /// 返回表示当前对象的字符串
         /// </summary>
         /// <returns></returns>
         public override string ToString( )

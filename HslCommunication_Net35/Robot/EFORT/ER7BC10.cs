@@ -11,7 +11,7 @@ namespace HslCommunication.Robot.EFORT
 {
 
     /// <summary>
-    /// 埃夫特机器人对应型号为ER7B-C10
+    /// 埃夫特机器人对应型号为ER7B-C10，此协议为定制版，使用前请测试
     /// </summary>
     public class ER7BC10 : NetworkDoubleBase<EFORTMessage, RegularByteTransform>
     {
@@ -120,9 +120,9 @@ namespace HslCommunication.Robot.EFORT
                 efortData.IoIIn[i] = BitConverter.ToInt32( read.Content, 225 + 4 * i );
             }
 
-            efortData.ProjectName = Encoding.ASCII.GetString( read.Content, 353, 32 ).Trim( );
-            efortData.ProgramName = Encoding.ASCII.GetString( read.Content, 385, 32 ).Trim( );
-            efortData.ErrorText = Encoding.ASCII.GetString( read.Content, 417, 128 ).Trim( );
+            efortData.ProjectName = Encoding.ASCII.GetString( read.Content, 353, 32 ).Trim( '\u0000' );
+            efortData.ProgramName = Encoding.ASCII.GetString( read.Content, 385, 32 ).Trim( '\u0000' );
+            efortData.ErrorText = Encoding.ASCII.GetString( read.Content, 417, 128 ).Trim( '\u0000' );
 
             for (int i = 0; i < 7; i++)
             {
@@ -181,6 +181,19 @@ namespace HslCommunication.Robot.EFORT
 
         private int heartbeat = 0;
         private SimpleHybirdLock hybirdLock;             // 心跳值的锁
+
+        #endregion
+
+        #region Object Override
+
+        /// <summary>
+        /// 返回表示当前对象的字符串
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString( )
+        {
+            return base.ToString( );
+        }
 
         #endregion
     }
