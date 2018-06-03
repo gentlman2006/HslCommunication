@@ -91,5 +91,13 @@ namespace HslCommunication.Profinet.Melsec
         /// 变址寄存器
         /// </summary>
         public readonly static MelsecMcDataType Z = new MelsecMcDataType( 0xCC, 0x00, "Z*", 10 );
+        /// <summary>
+        /// 定时器的值
+        /// </summary>
+        public readonly static MelsecMcDataType T = new MelsecMcDataType( 0xC2, 0x00, "TN", 10 );
+        /// <summary>
+        /// 计数器的值
+        /// </summary>
+        public readonly static MelsecMcDataType C = new MelsecMcDataType( 0xC5, 0x00, "CN", 10 );
     }
 }

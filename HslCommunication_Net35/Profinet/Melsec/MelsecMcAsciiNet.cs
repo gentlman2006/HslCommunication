@@ -150,6 +150,21 @@ namespace HslCommunication.Profinet.Melsec
                             result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.Z.FromBase );
                             break;
                         }
+
+                    case 'T':
+                    case 't':
+                        {
+                            result.Content1 = MelsecMcDataType.T;
+                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.T.FromBase );
+                            break;
+                        }
+                    case 'C':
+                    case 'c':
+                        {
+                            result.Content1 = MelsecMcDataType.C;
+                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.C.FromBase );
+                            break;
+                        }
                     default: throw new Exception( "输入的类型不支持，请重新输入" );
                 }
             }
