@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\Fourier\FFTHelper.cs" />
     <Compile Include="BasicFramework\FormPortraitSelect.cs">
       <SubType>Form</SubType>
     </Compile>
