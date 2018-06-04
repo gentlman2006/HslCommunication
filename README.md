@@ -106,6 +106,8 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 * 感谢 **ligihtdev** 打赏支持
 * 感谢 **Wzhigang** 打赏支持
 * 感谢 **Running...** 打赏支持
+* 感谢 **生意王(2940280678)** 打赏支持
+
 
 ## Controls
 This library include some controls render upside picture. u can easily use them

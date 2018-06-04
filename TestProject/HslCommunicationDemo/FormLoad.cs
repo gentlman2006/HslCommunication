@@ -292,5 +292,15 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button25_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (Algorithms.FourierTransform form = new Algorithms.FourierTransform( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

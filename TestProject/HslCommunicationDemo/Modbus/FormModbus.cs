@@ -162,6 +162,12 @@ namespace HslCommunicationDemo
             readResultRender( busTcpClient.ReadCoil( textBox3.Text ), textBox3.Text, textBox4 );
         }
 
+        private void button4_Click_1( object sender, EventArgs e )
+        {
+            // 读取离散输入bool变量
+            readResultRender( busTcpClient.ReadDiscrete( textBox3.Text ), textBox3.Text, textBox4 );
+        }
+
         private void button_read_short_Click( object sender, EventArgs e )
         {
             // 读取short变量
@@ -562,8 +568,9 @@ namespace HslCommunicationDemo
             HslCommunication.Core.IByteTransform ByteTransform = new HslCommunication.Core.ReverseWordTransform( );
         }
 
+
         #endregion
 
-
+      
     }
 }
