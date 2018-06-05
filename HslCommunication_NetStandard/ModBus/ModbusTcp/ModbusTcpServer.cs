@@ -648,7 +648,7 @@ namespace HslCommunication.ModBus
         /// <param name="value">ASCII编码的字符串的信息</param>
         public void Write(ushort address, string value)
         {
-            Write( address, byteTransform.TransByte( value ) );
+            Write( address, byteTransform.TransByte( value, Encoding.ASCII ) );
         }
 
         #endregion

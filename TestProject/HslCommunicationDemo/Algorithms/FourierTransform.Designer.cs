@@ -33,15 +33,18 @@
             this.label4 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
-            this.userCurve1 = new HslCommunication.Controls.UserCurve();
-            this.userCurve2 = new HslCommunication.Controls.UserCurve();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.userCurve3 = new HslCommunication.Controls.UserCurve();
-            this.userCurve4 = new HslCommunication.Controls.UserCurve();
             this.label6 = new System.Windows.Forms.Label();
+            this.userButton1 = new HslCommunication.Controls.UserButton();
             this.userCurve5 = new HslCommunication.Controls.UserCurve();
             this.userCurve6 = new HslCommunication.Controls.UserCurve();
+            this.userCurve3 = new HslCommunication.Controls.UserCurve();
+            this.userCurve4 = new HslCommunication.Controls.UserCurve();
+            this.userCurve2 = new HslCommunication.Controls.UserCurve();
+            this.userCurve1 = new HslCommunication.Controls.UserCurve();
+            this.userButton2 = new HslCommunication.Controls.UserButton();
+            this.userButton3 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // label20
@@ -92,30 +95,6 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "博客地址：";
             // 
-            // userCurve1
-            // 
-            this.userCurve1.BackColor = System.Drawing.Color.Transparent;
-            this.userCurve1.IsAbscissaStrech = true;
-            this.userCurve1.Location = new System.Drawing.Point(24, 43);
-            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userCurve1.Name = "userCurve1";
-            this.userCurve1.Size = new System.Drawing.Size(463, 190);
-            this.userCurve1.StrechDataCountMax = 256;
-            this.userCurve1.TabIndex = 12;
-            this.userCurve1.ValueMaxLeft = 10F;
-            this.userCurve1.ValueMaxRight = 10F;
-            // 
-            // userCurve2
-            // 
-            this.userCurve2.BackColor = System.Drawing.Color.Transparent;
-            this.userCurve2.IsAbscissaStrech = true;
-            this.userCurve2.Location = new System.Drawing.Point(510, 43);
-            this.userCurve2.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.userCurve2.Name = "userCurve2";
-            this.userCurve2.Size = new System.Drawing.Size(463, 190);
-            this.userCurve2.StrechDataCountMax = 256;
-            this.userCurve2.TabIndex = 13;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -134,30 +113,6 @@
             this.label3.TabIndex = 17;
             this.label3.Text = "正弦波及变换后的波形";
             // 
-            // userCurve3
-            // 
-            this.userCurve3.BackColor = System.Drawing.Color.Transparent;
-            this.userCurve3.IsAbscissaStrech = true;
-            this.userCurve3.Location = new System.Drawing.Point(510, 255);
-            this.userCurve3.Margin = new System.Windows.Forms.Padding(3, 8, 3, 8);
-            this.userCurve3.Name = "userCurve3";
-            this.userCurve3.Size = new System.Drawing.Size(463, 190);
-            this.userCurve3.StrechDataCountMax = 256;
-            this.userCurve3.TabIndex = 16;
-            // 
-            // userCurve4
-            // 
-            this.userCurve4.BackColor = System.Drawing.Color.Transparent;
-            this.userCurve4.IsAbscissaStrech = true;
-            this.userCurve4.Location = new System.Drawing.Point(24, 255);
-            this.userCurve4.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.userCurve4.Name = "userCurve4";
-            this.userCurve4.Size = new System.Drawing.Size(463, 190);
-            this.userCurve4.StrechDataCountMax = 256;
-            this.userCurve4.TabIndex = 15;
-            this.userCurve4.ValueMaxLeft = 10F;
-            this.userCurve4.ValueMaxRight = 10F;
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -166,6 +121,20 @@
             this.label6.Size = new System.Drawing.Size(116, 17);
             this.label6.TabIndex = 20;
             this.label6.Text = "杂波及变换后的波形";
+            // 
+            // userButton1
+            // 
+            this.userButton1.BackColor = System.Drawing.Color.Transparent;
+            this.userButton1.CustomerInformation = "";
+            this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton1.Location = new System.Drawing.Point(918, 25);
+            this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton1.Name = "userButton1";
+            this.userButton1.Size = new System.Drawing.Size(78, 25);
+            this.userButton1.TabIndex = 21;
+            this.userButton1.UIText = "专用图形";
+            this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
             // userCurve5
             // 
@@ -191,11 +160,90 @@
             this.userCurve6.ValueMaxLeft = 10F;
             this.userCurve6.ValueMaxRight = 10F;
             // 
+            // userCurve3
+            // 
+            this.userCurve3.BackColor = System.Drawing.Color.Transparent;
+            this.userCurve3.IsAbscissaStrech = true;
+            this.userCurve3.Location = new System.Drawing.Point(510, 255);
+            this.userCurve3.Margin = new System.Windows.Forms.Padding(3, 8, 3, 8);
+            this.userCurve3.Name = "userCurve3";
+            this.userCurve3.Size = new System.Drawing.Size(463, 190);
+            this.userCurve3.StrechDataCountMax = 256;
+            this.userCurve3.TabIndex = 16;
+            // 
+            // userCurve4
+            // 
+            this.userCurve4.BackColor = System.Drawing.Color.Transparent;
+            this.userCurve4.IsAbscissaStrech = true;
+            this.userCurve4.Location = new System.Drawing.Point(24, 255);
+            this.userCurve4.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.userCurve4.Name = "userCurve4";
+            this.userCurve4.Size = new System.Drawing.Size(463, 190);
+            this.userCurve4.StrechDataCountMax = 256;
+            this.userCurve4.TabIndex = 15;
+            this.userCurve4.ValueMaxLeft = 10F;
+            this.userCurve4.ValueMaxRight = 10F;
+            // 
+            // userCurve2
+            // 
+            this.userCurve2.BackColor = System.Drawing.Color.Transparent;
+            this.userCurve2.IsAbscissaStrech = true;
+            this.userCurve2.Location = new System.Drawing.Point(510, 43);
+            this.userCurve2.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.userCurve2.Name = "userCurve2";
+            this.userCurve2.Size = new System.Drawing.Size(463, 190);
+            this.userCurve2.StrechDataCountMax = 256;
+            this.userCurve2.TabIndex = 13;
+            // 
+            // userCurve1
+            // 
+            this.userCurve1.BackColor = System.Drawing.Color.Transparent;
+            this.userCurve1.IsAbscissaStrech = true;
+            this.userCurve1.Location = new System.Drawing.Point(24, 43);
+            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userCurve1.Name = "userCurve1";
+            this.userCurve1.Size = new System.Drawing.Size(463, 190);
+            this.userCurve1.StrechDataCountMax = 256;
+            this.userCurve1.TabIndex = 12;
+            this.userCurve1.ValueMaxLeft = 10F;
+            this.userCurve1.ValueMaxRight = 10F;
+            // 
+            // userButton2
+            // 
+            this.userButton2.BackColor = System.Drawing.Color.Transparent;
+            this.userButton2.CustomerInformation = "";
+            this.userButton2.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton2.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton2.Location = new System.Drawing.Point(918, 236);
+            this.userButton2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton2.Name = "userButton2";
+            this.userButton2.Size = new System.Drawing.Size(78, 25);
+            this.userButton2.TabIndex = 22;
+            this.userButton2.UIText = "专用图形";
+            this.userButton2.Click += new System.EventHandler(this.userButton2_Click);
+            // 
+            // userButton3
+            // 
+            this.userButton3.BackColor = System.Drawing.Color.Transparent;
+            this.userButton3.CustomerInformation = "";
+            this.userButton3.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton3.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton3.Location = new System.Drawing.Point(918, 437);
+            this.userButton3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton3.Name = "userButton3";
+            this.userButton3.Size = new System.Drawing.Size(78, 25);
+            this.userButton3.TabIndex = 23;
+            this.userButton3.UIText = "专用图形";
+            this.userButton3.Click += new System.EventHandler(this.userButton3_Click);
+            // 
             // FourierTransform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 645);
+            this.Controls.Add(this.userButton3);
+            this.Controls.Add(this.userButton2);
+            this.Controls.Add(this.userButton1);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.userCurve5);
             this.Controls.Add(this.userCurve6);
@@ -237,5 +285,8 @@
         private System.Windows.Forms.Label label6;
         private HslCommunication.Controls.UserCurve userCurve5;
         private HslCommunication.Controls.UserCurve userCurve6;
+        private HslCommunication.Controls.UserButton userButton1;
+        private HslCommunication.Controls.UserButton userButton2;
+        private HslCommunication.Controls.UserButton userButton3;
     }
 }

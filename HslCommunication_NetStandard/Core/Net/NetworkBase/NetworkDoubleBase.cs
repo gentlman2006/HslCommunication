@@ -39,7 +39,7 @@ namespace HslCommunication.Core.Net
         private int port = 10000;                        // 端口号
         private int connectTimeOut = 10000;              // 连接超时时间设置
         private int receiveTimeOut = 10000;              // 数据接收的超时时间
-        private bool IsPersistentConn = false;           // 是否处于长连接的状态
+        private bool isPersistentConn = false;           // 是否处于长连接的状态
         private SimpleHybirdLock InteractiveLock;        // 一次正常的交互的互斥锁
         private bool IsSocketError = false;              // 指示长连接的套接字是否处于错误的状态
         private bool isUseSpecifiedSocket = false;       // 指示是否使用指定的网络套接字访问数据
@@ -134,6 +134,18 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
+        #region Public Method
+
+        /// <summary>
+        /// 在读取数据之前可以调用本方法将客户端设置为长连接模式，相当于跳过了ConnectServer的结果验证，对异形客户端无效
+        /// </summary>
+        public void SetPersistentConnection( )
+        {
+            isPersistentConn = true;
+        }
+
+        #endregion
+
         #region Connect Close
 
         /// <summary>
@@ -142,7 +154,7 @@ namespace HslCommunication.Core.Net
         /// <returns>返回连接结果，如果失败的话（也即IsSuccess为False），包含失败信息</returns>
         public OperateResult ConnectServer( )
         {
-            IsPersistentConn = true;
+            isPersistentConn = true;
             OperateResult result = new OperateResult( );
 
             // 重新连接之前，先将旧的数据进行清空
@@ -152,15 +164,13 @@ namespace HslCommunication.Core.Net
 
             if (!rSocket.IsSuccess)
             {
-                IsSocketError = true;
-                // 创建失败
-                rSocket.Content = null;
+                IsSocketError = true;                         // 创建失败
+                rSocket.Content = null;                 
+                result.Message = rSocket.Message;
             }
             else
             {
-                // 创建成功
-                CoreSocket = rSocket.Content;
-                // 初始化成功
+                CoreSocket = rSocket.Content;                 // 创建成功
                 result.IsSuccess = true;
                 LogNet?.WriteDebug( ToString( ), StringResources.NetEngineStart );
             }
@@ -175,7 +185,7 @@ namespace HslCommunication.Core.Net
         /// <returns>通常都为成功</returns>
         public OperateResult ConnectServer( AlienSession session )
         {
-            IsPersistentConn = true;
+            isPersistentConn = true;
             isUseSpecifiedSocket = true;
 
 
@@ -216,14 +226,16 @@ namespace HslCommunication.Core.Net
         public OperateResult ConnectClose( )
         {
             OperateResult result = new OperateResult( );
-            IsPersistentConn = false;
+            isPersistentConn = false;
 
+            InteractiveLock.Enter( );
             // 额外操作
             result = ExtraOnDisconnect( CoreSocket );
             // 关闭信息
             CoreSocket?.Close( );
             CoreSocket = null;
-
+            InteractiveLock.Leave( );
+            
             LogNet?.WriteDebug( ToString( ), StringResources.NetEngineClose );
             return result;
         }
@@ -272,7 +284,7 @@ namespace HslCommunication.Core.Net
         /// <returns>是否成功，如果成功，使用这个套接字</returns>
         private OperateResult<Socket> GetAvailableSocket( )
         {
-            if (IsPersistentConn)
+            if (isPersistentConn)
             {
                 // 如果是异形模式
                 if (isUseSpecifiedSocket)
@@ -405,7 +417,7 @@ namespace HslCommunication.Core.Net
             }
 
             InteractiveLock.Leave( );
-            if (!IsPersistentConn) resultSocket.Content?.Close( );
+            if (!isPersistentConn) resultSocket.Content?.Close( );
             return result;
         }
 
@@ -441,7 +453,8 @@ namespace HslCommunication.Core.Net
                 if (!resultReceive.IsSuccess)
                 {
                     socket?.Close( );
-                    result.CopyErrorFromOther( resultReceive );
+                    // result.CopyErrorFromOther( resultReceive );
+                    result.Message = "Receive data timeout: " + receiveTimeOut;
                     return result;
                 }
 
@@ -460,7 +473,7 @@ namespace HslCommunication.Core.Net
         #region Object Override
 
         /// <summary>
-        /// 获取本对象的字符串标识形式
+        /// 返回表示当前对象的字符串
         /// </summary>
         /// <returns></returns>
         public override string ToString( )
@@ -472,34 +485,7 @@ namespace HslCommunication.Core.Net
         #endregion
 
         #region Result Transform
-
-        /// <summary>
-        /// 结果转换操作的基础方法，需要支持类型，及转换的委托
-        /// </summary>
-        /// <typeparam name="TResult">结果类型</typeparam>
-        /// <param name="result"></param>
-        /// <param name="translator"></param>
-        /// <returns></returns>
-        private OperateResult<TResult> GetResultFromBytes<TResult>( OperateResult<byte[]> result, Func<byte[], TResult> translator )
-        {
-            var tmp = new OperateResult<TResult>( );
-            try
-            {
-                if (result.IsSuccess)
-                {
-                    tmp.Content = translator( result.Content );
-                    tmp.IsSuccess = result.IsSuccess;
-                }
-                tmp.CopyErrorFromOther( result );
-            }
-            catch(Exception ex)
-            {
-                tmp.Message = "数据转化失败，源数据：" + BasicFramework.SoftBasic.ByteToHexString( result.Content ) + " 消息：" + ex.Message;
-            }
-
-            return tmp;
-        }
-
+        
 
         /// <summary>
         /// 将指定的OperateResult类型转化
@@ -508,7 +494,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<bool> GetBoolResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, byteTransform.TransBool );
+            return ByteTransformHelper.GetBoolResultFromBytes( result, byteTransform);
         }
 
         /// <summary>
@@ -518,7 +504,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<byte> GetByteResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransByte( m, 0 ) );
+            return ByteTransformHelper.GetByteResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -528,7 +514,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<short> GetInt16ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransInt16( m, 0 ) );
+            return ByteTransformHelper.GetInt16ResultFromBytes( result, byteTransform );
         }
 
 
@@ -539,7 +525,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<ushort> GetUInt16ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransUInt16( m, 0 ) );
+            return ByteTransformHelper.GetUInt16ResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -549,7 +535,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<int> GetInt32ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransInt32( m, 0 ) );
+            return ByteTransformHelper.GetInt32ResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -559,7 +545,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<uint> GetUInt32ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransUInt32( m, 0 ) );
+            return ByteTransformHelper.GetUInt32ResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -569,7 +555,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<long> GetInt64ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransInt64( m, 0 ) );
+            return ByteTransformHelper.GetInt64ResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -579,7 +565,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<ulong> GetUInt64ResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransUInt64( m, 0 ) );
+            return ByteTransformHelper.GetUInt64ResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -589,7 +575,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<float> GetSingleResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransSingle( m, 0 ) );
+            return ByteTransformHelper.GetSingleResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -599,7 +585,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<double> GetDoubleResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransDouble( m, 0 ) );
+            return ByteTransformHelper.GetDoubleResultFromBytes( result, byteTransform );
         }
 
         /// <summary>
@@ -609,7 +595,7 @@ namespace HslCommunication.Core.Net
         /// <returns>转化后的类型</returns>
         protected OperateResult<string> GetStringResultFromBytes( OperateResult<byte[]> result )
         {
-            return GetResultFromBytes( result, byteTransform.TransString );
+            return ByteTransformHelper.GetStringResultFromBytes( result, byteTransform );
         }
         
 

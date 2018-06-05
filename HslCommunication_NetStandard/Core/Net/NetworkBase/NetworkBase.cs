@@ -167,7 +167,7 @@ namespace HslCommunication.Core.Net
             // 远程关闭了连接
             if (state.IsClose)
             {
-                result.IsSuccess = true;
+                // result.IsSuccess = true;
                 result.Message = "远程关闭了连接";
                 socket?.Close( );
                 return result;
@@ -454,7 +454,7 @@ namespace HslCommunication.Core.Net
                 LogNet?.WriteException( ToString( ), ex );               // 记录错误日志
                 socket.Close( );                                         // 关闭网络信息
                 connectDone.Close( );                                    // 释放等待资源
-                result.Message = ex.Message;                             // 传递错误消息
+                result.Message = "Connect Failed : " + ex.Message;       // 传递错误消息
                 return result;
             }
 
@@ -466,7 +466,7 @@ namespace HslCommunication.Core.Net
             if (state.IsError)
             {
                 // 连接失败
-                result.Message = state.ErrerMsg;
+                result.Message = "Connect Failed : " + state.ErrerMsg;
                 socket?.Close( );
                 return result;
             }
@@ -652,9 +652,9 @@ namespace HslCommunication.Core.Net
         #region Object Override
 
         /// <summary>
-        /// 获取字符串表示形式
+        /// 返回表示当前对象的字符串
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串</returns>
         public override string ToString( )
         {
             return "NetworkBase";

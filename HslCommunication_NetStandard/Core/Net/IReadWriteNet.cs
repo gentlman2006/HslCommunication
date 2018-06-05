@@ -11,6 +11,13 @@ namespace HslCommunication.Core
     public interface IReadWriteNet
     {
         /// <summary>
+        /// 批量读取底层的数据信息，需要指定地址和长度，具体的结果取决于实现
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <param name="length">数据长度</param>
+        /// <returns>带有成功标识的byte[]数组</returns>
+        OperateResult<byte[]> Read( string address, ushort length );
+        /// <summary>
         /// 读取16位的有符号整型
         /// </summary>
         /// <param name="address">起始地址</param>

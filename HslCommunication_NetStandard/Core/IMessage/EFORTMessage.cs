@@ -6,18 +6,17 @@ using System.Text;
 namespace HslCommunication.Core.IMessage
 {
 
-
     /// <summary>
-    /// Modbus-Tcp协议支持的消息解析类
+    /// 埃夫特机器人的消息对象
     /// </summary>
-    public class ModbusTcpMessage : INetMessage
+    public class EFORTMessage : INetMessage
     {
         /// <summary>
         /// 消息头的指令长度
         /// </summary>
         public int ProtocolHeadBytesLength
         {
-            get { return 8; }
+            get { return 17; }
         }
 
 
@@ -27,34 +26,7 @@ namespace HslCommunication.Core.IMessage
         /// <returns>返回接下来的数据内容长度</returns>
         public int GetContentLengthByHeadBytes( )
         {
-            /************************************************************************
-             * 
-             *    说明：为了应对有些特殊的设备，在整个指令的开端会增加一个额外的数据的时候
-             * 
-             ************************************************************************/
-             
-            if (HeadBytes?.Length >= ProtocolHeadBytesLength)
-            {
-                int length = HeadBytes[4] * 256 + HeadBytes[5];
-                if (length == 0)
-                {
-                    byte[] buffer = new byte[ProtocolHeadBytesLength - 1];
-                    for (int i = 0; i < buffer.Length; i++)
-                    {
-                        buffer[i] = HeadBytes[i + 1];
-                    }
-                    HeadBytes = buffer;
-                    return HeadBytes[5] * 256 + HeadBytes[6] - 1;
-                }
-                else
-                {
-                    return length - 2;
-                }
-            }
-            else
-            {
-                return 0;
-            }
+            return BitConverter.ToInt16( HeadBytes, 15 ) - 17;
         }
 
 
@@ -66,8 +38,7 @@ namespace HslCommunication.Core.IMessage
         public bool CheckHeadBytesLegal( byte[] token )
         {
             if (HeadBytes == null) return false;
-            if (SendBytes[0] != HeadBytes[0] || SendBytes[1] != HeadBytes[1]) return false;
-            return HeadBytes[2] == 0x00 && HeadBytes[3] == 0x00;
+            return true;
         }
 
 
@@ -77,7 +48,7 @@ namespace HslCommunication.Core.IMessage
         /// <returns></returns>
         public int GetHeadBytesIdentity( )
         {
-            return HeadBytes[0] * 256 + HeadBytes[1];
+            return 0;
         }
 
 
@@ -97,7 +68,5 @@ namespace HslCommunication.Core.IMessage
         /// 发送的字节信息
         /// </summary>
         public byte[] SendBytes { get; set; }
-
-
     }
 }

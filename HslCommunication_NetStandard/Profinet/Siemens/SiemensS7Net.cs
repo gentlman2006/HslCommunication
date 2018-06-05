@@ -26,7 +26,7 @@ namespace HslCommunication.Profinet.Siemens
     /// <summary>
     /// 一个西门子的客户端类，使用S7协议来进行数据交互
     /// </summary>
-    public class SiemensS7Net : NetworkDoubleBase<S7Message, ReverseBytesTransform>, IReadWriteNet
+    public class SiemensS7Net : NetworkDeviceBase<S7Message, ReverseBytesTransform>
     {
         #region Constructor
 
@@ -56,6 +56,7 @@ namespace HslCommunication.Profinet.Siemens
         /// <param name="ipAddress"></param>
         private void Initialization( SiemensPLCS siemens, string ipAddress )
         {
+            WordLength = 2;
             IpAddress = ipAddress;
             Port = 102;
             CurrentPlc = siemens;
@@ -557,59 +558,16 @@ namespace HslCommunication.Profinet.Siemens
 
         #endregion
 
-        #region Customer Support
-
-        /// <summary>
-        /// 读取自定义的数据类型，只要规定了写入和解析规则
-        /// </summary>
-        /// <typeparam name="T">类型名称</typeparam>
-        /// <param name="address">起始地址</param>
-        /// <returns></returns>
-        public OperateResult<T> ReadCustomer<T>( string address ) where T : IDataTransfer, new()
-        {
-            OperateResult<T> result = new OperateResult<T>( );
-            T Content = new T( );
-            OperateResult<byte[]> read = Read( address, Content.ReadCount );
-            if (read.IsSuccess)
-            {
-                Content.ParseSource( read.Content );
-                result.Content = Content;
-                result.IsSuccess = true;
-            }
-            else
-            {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 写入自定义的数据类型到PLC去，只要规定了生成字节的方法即可
-        /// </summary>
-        /// <typeparam name="T">自定义类型</typeparam>
-        /// <param name="address">起始地址</param>
-        /// <param name="data">实例对象</param>
-        /// <returns></returns>
-        public OperateResult WriteCustomer<T>( string address, T data ) where T : IDataTransfer, new()
-        {
-            return Write( address, data.ToSource( ) );
-        }
-
-
-        #endregion
-
         #region Read Support
 
-
-
+        
         /// <summary>
         /// 从PLC读取数据，地址格式为I100，Q100，DB20.100，M100，T100，C100以字节为单位
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <param name="length">读取的数量，以字节为单位</param>
         /// <returns></returns>
-        public OperateResult<byte[]> Read( string address, ushort length )
+        public override OperateResult<byte[]> Read( string address, ushort length )
         {
             OperateResult<byte, int, ushort> addressResult = AnalysisAddress( address );
             if (!addressResult.IsSuccess)
@@ -815,100 +773,7 @@ namespace HslCommunication.Profinet.Siemens
         {
             return GetByteResultFromBytes( Read( address, 1 ) );
         }
-
-
-        /// <summary>
-        /// 读取指定地址的short数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
-        /// <returns></returns>
-        public OperateResult<short> ReadInt16( string address )
-        {
-            return GetInt16ResultFromBytes( Read( address, 2 ) );
-        }
-
-
-        /// <summary>
-        /// 读取指定地址的ushort数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
-        /// <returns></returns>
-        public OperateResult<ushort> ReadUInt16( string address )
-        {
-            return GetUInt16ResultFromBytes( Read( address, 2 ) );
-        }
-
-        /// <summary>
-        /// 读取指定地址的int数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
-        /// <returns></returns>
-        public OperateResult<int> ReadInt32( string address )
-        {
-            return GetInt32ResultFromBytes( Read( address, 4 ) );
-        }
-
-        /// <summary>
-        /// 读取指定地址的uint数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
-        /// <returns></returns>
-        public OperateResult<uint> ReadUInt32( string address )
-        {
-            return GetUInt32ResultFromBytes( Read( address, 4 ) );
-        }
-
-        /// <summary>
-        /// 读取指定地址的float数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
-        /// <returns></returns>
-        public OperateResult<float> ReadFloat( string address )
-        {
-            return GetSingleResultFromBytes( Read( address, 4 ) );
-        }
-
-        /// <summary>
-        /// 读取指定地址的long数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
-        /// <returns></returns>
-        public OperateResult<long> ReadInt64( string address )
-        {
-            return GetInt64ResultFromBytes( Read( address, 8 ) );
-        }
-
-        /// <summary>
-        /// 读取指定地址的ulong数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
-        /// <returns></returns>
-        public OperateResult<ulong> ReadUInt64( string address )
-        {
-            return GetUInt64ResultFromBytes( Read( address, 8 ) );
-        }
-
-        /// <summary>
-        /// 读取指定地址的double数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
-        /// <returns></returns>
-        public OperateResult<double> ReadDouble( string address )
-        {
-            return GetDoubleResultFromBytes( Read( address, 8 ) );
-        }
-
-        /// <summary>
-        /// 读取地址地址的String数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
-        /// <param name="length">字符串长度</param>
-        /// <returns></returns>
-        public OperateResult<string> ReadString( string address, ushort length )
-        {
-            return GetStringResultFromBytes( Read( address, length ) );
-        }
-
+        
 
         #endregion
 
@@ -918,8 +783,8 @@ namespace HslCommunication.Profinet.Siemens
         /// <summary>
         /// 基础的写入数据的操作支持
         /// </summary>
-        /// <param name="entireValue"></param>
-        /// <returns></returns>
+        /// <param name="entireValue">完整的字节数据</param>
+        /// <returns>写入结果</returns>
         private OperateResult WriteBase( byte[] entireValue )
         {
             OperateResult<byte[]> write = ReadFromCoreServer( entireValue );
@@ -946,8 +811,8 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
         /// <param name="value">写入的数据，长度根据data的长度来指示</param>
-        /// <returns></returns>
-        public OperateResult Write( string address, byte[] value )
+        /// <returns>写入结果</returns>
+        public override OperateResult Write( string address, byte[] value )
         {
             OperateResult<byte[]> command = BuildWriteByteCommand( address, value );
             if (!command.IsSuccess) return command;
@@ -959,9 +824,9 @@ namespace HslCommunication.Profinet.Siemens
         /// <summary>
         /// 写入PLC的一个位，例如"M100.6"，"I100.7"，"Q100.0"，"DB20.100.0"，如果只写了"M100"默认为"M100.0
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="address">起始地址，格式为I100，M100，Q100，DB20.100</param>
+        /// <param name="value">写入的数据，True或是False</param>
+        /// <returns>写入结果</returns>
         public OperateResult Write( string address, bool value )
         {
             // 生成指令
@@ -976,30 +841,18 @@ namespace HslCommunication.Profinet.Siemens
 
         #region Write String
 
-
-        /// <summary>
-        /// 向PLC中写入字符串，编码格式为ASCII
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult Write(string address, string value)
-        {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
-            return Write( address, temp );
-        }
-
         
+
         /// <summary>
         /// 向PLC中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>写入结果</returns>
         public OperateResult Write(string address, string value, int length)
         {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
+            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
             temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length );
             return Write( address, temp );
         }
@@ -1009,7 +862,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>写入结果</returns>
         public OperateResult WriteUnicodeString(string address, string value)
         {
             byte[] temp = Encoding.Unicode.GetBytes( value );
@@ -1022,7 +875,7 @@ namespace HslCommunication.Profinet.Siemens
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>写入结果</returns>
         public OperateResult WriteUnicodeString(string address, string value, int length)
         {
             byte[] temp = Encoding.Unicode.GetBytes( value );
@@ -1039,7 +892,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据，长度为8的倍数</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>写入结果</returns>
         public OperateResult Write(string address, bool[] values)
         {
             return Write( address, BasicFramework.SoftBasic.BoolArrayToByte( values ) );
@@ -1055,222 +908,10 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
-        /// <returns></returns>
+        /// <returns>写入结果</returns>
         public OperateResult Write(string address, byte value)
         {
             return Write( address, new byte[] { value } );
-        }
-
-        #endregion
-
-        #region Write Short
-
-        /// <summary>
-        /// 向PLC中写入short数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, short[] values)
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中写入short数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, short value)
-        {
-            return Write( address, new short[] { value } );
-        }
-
-        #endregion
-
-        #region Write UShort
-
-
-        /// <summary>
-        /// 向PLC中写入ushort数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, ushort[] values)
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-
-        /// <summary>
-        /// 向PLC中写入ushort数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, ushort value)
-        {
-            return Write( address, new ushort[] { value } );
-        }
-
-
-        #endregion
-
-        #region Write Int
-
-        /// <summary>
-        /// 向PLC中写入int数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, int[] values)
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中写入int数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, int value)
-        {
-            return Write( address, new int[] { value } );
-        }
-
-        #endregion
-
-        #region Write UInt
-
-        /// <summary>
-        /// 向PLC中写入uint数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, uint[] values)
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中写入uint数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, uint data)
-        {
-            return Write( address, new uint[] { data } );
-        }
-
-        #endregion
-
-        #region Write Float
-
-        /// <summary>
-        /// 向PLC中写入float数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, float[] values)
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中写入float数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, float value)
-        {
-            return Write( address, new float[] { value } );
-        }
-
-
-        #endregion
-
-        #region Write Long
-
-        /// <summary>
-        /// 向PLC中写入long数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, long[] values)
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中写入long数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="data">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, long data)
-        {
-            return Write( address, new long[] { data } );
-        }
-
-        #endregion
-
-        #region Write ULong
-
-        /// <summary>
-        /// 向PLC中写入ulong数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, ulong[] values)
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中写入ulong数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, ulong value)
-        {
-            return Write( address, new ulong[] { value } );
-        }
-
-        #endregion
-
-        #region Write Double
-
-        /// <summary>
-        /// 向PLC中写入double数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, double[] values)
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中写入double数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write(string address, double value)
-        {
-            return Write( address, new double[] { value } );
         }
 
         #endregion
@@ -1426,7 +1067,7 @@ namespace HslCommunication.Profinet.Siemens
         #region Object Override
 
         /// <summary>
-        /// 获取当前对象的字符串标识形式
+        /// 返回表示当前对象的字符串
         /// </summary>
         /// <returns>字符串信息</returns>
         public override string ToString()

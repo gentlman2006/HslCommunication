@@ -16,11 +16,35 @@ namespace HslCommunication.Core.Net
     {
 
 
-        //服务器端的类，提供一个启动的方法，提供两个接收数据的事件
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的对象
+        /// </summary>
+        public NetworkServerBase()
+        {
+            IsStarted = false;
+            Port = 0;
+        }
+
+        #endregion
+
+        #region Public Properties
+        
         /// <summary>
         /// 服务器引擎是否启动
         /// </summary>
-        public bool IsStarted { get; protected set; } = false;
+        public bool IsStarted { get; protected set; }
+
+        /// <summary>
+        /// 服务器的端口号
+        /// </summary>
+        public int Port { get; set; }
+
+        #endregion
+
+        #region Protect Method
+
 
         /// <summary>
         /// 异步传入的连接申请请求
@@ -38,7 +62,7 @@ namespace HslCommunication.Core.Net
                     client = server_socket.EndAccept( iar );
                     ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolLogin ), client );
                 }
-                catch (ObjectDisposedException ex)
+                catch (ObjectDisposedException)
                 {
                     // 服务器关闭时候触发的异常，不进行记录
                     return;
@@ -86,6 +110,9 @@ namespace HslCommunication.Core.Net
             socket?.Close( );
         }
 
+        #endregion
+
+        #region Start And Close
 
         /// <summary>
         /// 服务器启动时额外的初始化信息
@@ -94,8 +121,7 @@ namespace HslCommunication.Core.Net
         {
 
         }
-
-
+        
         /// <summary>
         /// 启动服务器的引擎
         /// </summary>
@@ -111,12 +137,21 @@ namespace HslCommunication.Core.Net
                 CoreSocket.Listen( 500 );//单次允许最后请求500个，足够小型系统应用了
                 CoreSocket.BeginAccept( new AsyncCallback( AsyncAcceptCallback ), CoreSocket );
                 IsStarted = true;
+                Port = port;
 
                 LogNet?.WriteNewLine( );
                 LogNet?.WriteInfo( ToString(), StringResources.NetEngineStart );
             }
         }
 
+
+        /// <summary>
+        /// 使用已经配置好的端口启动服务器的引擎
+        /// </summary>
+        public void ServerStart( )
+        {
+            ServerStart( Port );
+        }
 
         /// <summary>
         /// 服务器关闭的时候需要做的事情
@@ -139,7 +174,8 @@ namespace HslCommunication.Core.Net
                 LogNet?.WriteInfo( ToString(), StringResources.NetEngineClose );
             }
         }
-
+        
+        #endregion
 
         #region Create Alien Connection
 
@@ -170,12 +206,15 @@ namespace HslCommunication.Core.Net
 
             Encoding.ASCII.GetBytes( dtuId ).CopyTo( sendBytes, 5 );
 
+            // 创建连接
             OperateResult<Socket> connect = CreateSocketAndConnect( ipAddress, port, 10000 );
             if (!connect.IsSuccess) return connect;
 
+            // 发送数据
             OperateResult send = Send( connect.Content, sendBytes );
             if (!send.IsSuccess) return send;
 
+            // 接收数据
             OperateResult<AlienMessage> receive = ReceiveMessage( connect.Content, 10000, new AlienMessage( ) );
             if (!receive.IsSuccess) return receive;
 

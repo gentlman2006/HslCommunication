@@ -11,7 +11,7 @@ namespace HslCommunication.Profinet.Melsec
     /// <summary>
     /// 三菱PLC通讯类，采用Qna兼容3E帧协议实现，需要在PLC侧先的以太网模块先进行配置，必须为ASCII通讯格式
     /// </summary>
-    public class MelsecMcAsciiNet : NetworkDoubleBase<MelsecQnA3EAsciiMessage, RegularByteTransform>, IReadWriteNet
+    public class MelsecMcAsciiNet : NetworkDeviceBase<MelsecQnA3EAsciiMessage, RegularByteTransform>
     {
         #region Constructor
 
@@ -20,7 +20,7 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         public MelsecMcAsciiNet( )
         {
-
+            WordLength = 1;
         }
 
         /// <summary>
@@ -30,6 +30,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="port">PLC的端口</param>
         public MelsecMcAsciiNet( string ipAddress, int port )
         {
+            WordLength = 1;
             IpAddress = ipAddress;
             Port = port;
         }
@@ -147,6 +148,21 @@ namespace HslCommunication.Profinet.Melsec
                         {
                             result.Content1 = MelsecMcDataType.Z;
                             result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.Z.FromBase );
+                            break;
+                        }
+
+                    case 'T':
+                    case 't':
+                        {
+                            result.Content1 = MelsecMcDataType.T;
+                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.T.FromBase );
+                            break;
+                        }
+                    case 'C':
+                    case 'c':
+                        {
+                            result.Content1 = MelsecMcDataType.C;
+                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.C.FromBase );
                             break;
                         }
                     default: throw new Exception( "输入的类型不支持，请重新输入" );
@@ -337,49 +353,10 @@ namespace HslCommunication.Profinet.Melsec
             result.Content1 = analysis.Content1;
             result.Content2 = _PLCCommand;
             result.IsSuccess = true;
+
+            // Console.WriteLine( value.Length );
+            // Console.WriteLine( Encoding.ASCII.GetString(_PLCCommand ));
             return result;
-        }
-
-
-        #endregion
-
-        #region Customer Support
-
-        /// <summary>
-        /// 读取自定义的数据类型，只要规定了写入和解析规则
-        /// </summary>
-        /// <typeparam name="T">类型名称</typeparam>
-        /// <param name="address">起始地址</param>
-        /// <returns></returns>
-        public OperateResult<T> ReadCustomer<T>( string address ) where T : IDataTransfer, new()
-        {
-            OperateResult<T> result = new OperateResult<T>( );
-            T Content = new T( );
-            OperateResult<byte[]> read = Read( address, Content.ReadCount );
-            if (read.IsSuccess)
-            {
-                Content.ParseSource( read.Content );
-                result.Content = Content;
-                result.IsSuccess = true;
-            }
-            else
-            {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 写入自定义的数据类型到PLC去，只要规定了生成字节的方法即可
-        /// </summary>
-        /// <typeparam name="T">自定义类型</typeparam>
-        /// <param name="address">起始地址</param>
-        /// <param name="data">实例对象</param>
-        /// <returns></returns>
-        public OperateResult WriteCustomer<T>( string address, T data ) where T : IDataTransfer, new()
-        {
-            return Write( address, data.ToSource( ) );
         }
 
 
@@ -393,7 +370,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">读取地址，格式为"M100","D100","W1A0"</param>
         /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
         /// <returns>带成功标志的结果数据对象</returns>
-        public OperateResult<byte[]> Read( string address, ushort length )
+        public override OperateResult<byte[]> Read( string address, ushort length )
         {
             var result = new OperateResult<byte[]>( );
             //获取指令
@@ -516,101 +493,7 @@ namespace HslCommunication.Profinet.Melsec
             return OperateResult.CreateSuccessResult<bool>( read.Content[0] );
         }
 
-
-        /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的short数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
-        /// <returns>带成功标志的结果数据对象</returns>
-        public OperateResult<short> ReadInt16( string address )
-        {
-            return GetInt16ResultFromBytes( Read( address, 1 ) );
-        }
-
-
-        /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的ushort数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
-        /// <returns>带成功标志的结果数据对象</returns>
-        public OperateResult<ushort> ReadUInt16( string address )
-        {
-            return GetUInt16ResultFromBytes( Read( address, 1 ) );
-        }
-
-        /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的int数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
-        /// <returns>带成功标志的结果数据对象</returns>
-        public OperateResult<int> ReadInt32( string address )
-        {
-            return GetInt32ResultFromBytes( Read( address, 2 ) );
-        }
-
-        /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的uint数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
-        /// <returns>带成功标志的结果数据对象</returns>
-        public OperateResult<uint> ReadUInt32( string address )
-        {
-            return GetUInt32ResultFromBytes( Read( address, 2 ) );
-        }
-
-        /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的float数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
-        /// <returns>带成功标志的结果数据对象</returns>
-        public OperateResult<float> ReadFloat( string address )
-        {
-            return GetSingleResultFromBytes( Read( address, 2 ) );
-        }
-
-        /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的long数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
-        /// <returns>带成功标志的结果数据对象</returns>
-        public OperateResult<long> ReadInt64( string address )
-        {
-            return GetInt64ResultFromBytes( Read( address, 4 ) );
-        }
-
-        /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的ulong数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
-        /// <returns>带成功标志的结果数据对象</returns>
-        public OperateResult<ulong> ReadUInt64( string address )
-        {
-            return GetUInt64ResultFromBytes( Read( address, 4 ) );
-        }
-
-        /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的double数据
-        /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
-        /// <returns>带成功标志的结果数据对象</returns>
-        public OperateResult<double> ReadDouble( string address )
-        {
-            return GetDoubleResultFromBytes( Read( address, 4 ) );
-        }
-
-        /// <summary>
-        /// 读取三菱PLC中字软元件地址地址的String数据，编码为ASCII
-        /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
-        /// <param name="length">字符串长度</param>
-        /// <returns>带成功标志的结果数据对象</returns>
-        public OperateResult<string> ReadString( string address, ushort length )
-        {
-            return GetStringResultFromBytes( Read( address, length ) );
-        }
-
-
-
+        
         #endregion
 
         #region Write Base
@@ -622,8 +505,10 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">初始地址</param>
         /// <param name="value">原始的字节数据</param>
         /// <returns>结果</returns>
-        public OperateResult Write( string address, byte[] value )
+        public override OperateResult Write( string address, byte[] value )
         {
+            // Console.WriteLine( BasicFramework.SoftBasic.ByteToHexString( value ) );
+
             OperateResult<byte[]> result = new OperateResult<byte[]>( );
 
             //获取指令
@@ -659,13 +544,12 @@ namespace HslCommunication.Profinet.Melsec
             {
                 // 字写入
                 byte[] buffer = new byte[value.Length * 2];
-                for (int i = 0; i < value.Length; i++)
+                for (int i = 0; i < value.Length / 2; i++)
                 {
-                    buffer[i * 2 + 0] = BuildBytesFromData( value[i] )[0];
-                    buffer[i * 2 + 1] = BuildBytesFromData( value[i] )[1];
+                    BuildBytesFromData( BitConverter.ToUInt16( value, i * 2 ) ).CopyTo( buffer, 4 * i );
                 }
 
-                command = BuildWriteCommand( address, value );
+                command = BuildWriteCommand( address, buffer );
             }
 
             if (!command.IsSuccess)
@@ -704,19 +588,7 @@ namespace HslCommunication.Profinet.Melsec
 
         #region Write String
 
-
-        /// <summary>
-        /// 向PLC中字软元件写入字符串，编码格式为ASCII
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult Write( string address, string value )
-        {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
-            return Write( address, temp );
-        }
-
+        
         /// <summary>
         /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
         /// </summary>
@@ -784,219 +656,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         #endregion
-
-        #region Write Short
-
-        /// <summary>
-        /// 向PLC中字软元件写入short数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, short[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入short数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, short value )
-        {
-            return Write( address, new short[] { value } );
-        }
-
-        #endregion
-
-        #region Write UShort
-
-
-        /// <summary>
-        /// 向PLC中字软元件写入ushort数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ushort[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-
-        /// <summary>
-        /// 向PLC中字软元件写入ushort数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ushort value )
-        {
-            return Write( address, new ushort[] { value } );
-        }
-
-
-        #endregion
-
-        #region Write Int
-
-        /// <summary>
-        /// 向PLC中字软元件写入int数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, int[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入int数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, int value )
-        {
-            return Write( address, new int[] { value } );
-        }
-
-        #endregion
-
-        #region Write UInt
-
-        /// <summary>
-        /// 向PLC中字软元件写入uint数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, uint[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入uint数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, uint value )
-        {
-            return Write( address, new uint[] { value } );
-        }
-
-        #endregion
-
-        #region Write Float
-
-        /// <summary>
-        /// 向PLC中字软元件写入float数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, float[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入float数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, float value )
-        {
-            return Write( address, new float[] { value } );
-        }
-
-
-        #endregion
-
-        #region Write Long
-
-        /// <summary>
-        /// 向PLC中字软元件写入long数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, long[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入long数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, long value )
-        {
-            return Write( address, new long[] { value } );
-        }
-
-        #endregion
-
-        #region Write ULong
-
-        /// <summary>
-        /// 向PLC中字软元件写入ulong数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ulong[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入ulong数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ulong value )
-        {
-            return Write( address, new ulong[] { value } );
-        }
-
-        #endregion
-
-        #region Write Double
-
-        /// <summary>
-        /// 向PLC中字软元件写入double数组，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, double[] values )
-        {
-            return Write( address, ByteTransform.TransByte( values ) );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入double数据，返回值说明
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, double value )
-        {
-            return Write( address, new double[] { value } );
-        }
-
-        #endregion
-
+        
         #region Object Override
 
         /// <summary>
@@ -1009,8 +669,6 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         #endregion
-
-
-
+        
     }
 }

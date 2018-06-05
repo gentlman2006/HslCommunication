@@ -82,6 +82,10 @@ namespace HslCommunication.Core.Net
         /// 已经接收的数据内容长度
         /// </summary>
         internal int AlreadyReceivedContent { get; set; }
+        /// <summary>
+        /// 用于关键字分类使用
+        /// </summary>
+        internal string KeyGroup { get; set; }
 
         /// <summary>
         /// 清除本次的接收内容
