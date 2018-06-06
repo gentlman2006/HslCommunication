@@ -43,6 +43,7 @@ namespace HslCommunicationDemo.Algorithms
             double[] trans = HslCommunication.Algorithms.Fourier.FFTHelper.FFT( data );
             
             userCurve2.ValueMaxLeft = (float)trans.Max( );
+            userCurve2.ValueMaxRight = (float)trans.Max( );
             userCurve2.SetCurve( key: "A", isLeft: true, data: trans.Select( m => (float)m ).ToArray( ), lineColor: Color.Blue, thickness: 1f );
         }
 
@@ -61,6 +62,7 @@ namespace HslCommunicationDemo.Algorithms
             double[] trans = HslCommunication.Algorithms.Fourier.FFTHelper.FFT( data );
 
             userCurve3.ValueMaxLeft = (float)trans.Max( );
+            userCurve3.ValueMaxRight = (float)trans.Max( );
             userCurve3.SetCurve( key: "A", isLeft: true, data: trans.Select( m => (float)m ).ToArray( ), lineColor: Color.Blue, thickness: 1f );
 
         }
@@ -81,6 +83,7 @@ namespace HslCommunicationDemo.Algorithms
             double[] trans = HslCommunication.Algorithms.Fourier.FFTHelper.FFT( data );
 
             userCurve5.ValueMaxLeft = (float)trans.Max( );
+            userCurve5.ValueMaxRight = (float)trans.Max( );
             userCurve5.SetCurve( key: "A", isLeft: true, data: trans.Select( m => (float)m ).ToArray( ), lineColor: Color.Blue, thickness: 1f );
         }
 

@@ -3,126 +3,130 @@ package HslCommunication.Core.Net;
 import HslCommunication.BasicFramework.*;
 import HslCommunication.Core.Security.HslSecurity;
 import java.util.UUID;
+import HslCommunication.Utilities;
 
 public class HslProtocol
 {
 
-    /// <summary>
-    /// 规定所有的网络传输指令头都为32字节
-    /// </summary>
+    /**
+     * 规定所有的网络传输的指令头长度
+     */
     public static final int HeadByteLength = 32;
 
-    /// <summary>
-    /// 所有网络通信中的缓冲池数据信息
-    /// </summary>
+    /**
+     * 所有网络通信中的缓冲池的数据信息
+     */
     public static final int ProtocolBufferSize = 1024;
 
-
-    /// <summary>
-    /// 用于心跳程序的暗号信息
-    /// </summary>
+    /**
+     * 用于心跳程序的暗号信息
+     */
     public static final int ProtocolCheckSecends = 1;
 
-    /// <summary>
-    /// 客户端退出消息
-    /// </summary>
+    /**
+     * 客户端退出的消息
+     */
     public static final int ProtocolClientQuit = 2;
 
-    /// <summary>
-    /// 因为客户端达到上限而拒绝登录
-    /// </summary>
+    /**
+     * 因为客户端达到上限而拒绝登录
+     */
     public static final int ProtocolClientRefuseLogin = 3;
 
-    /// <summary>
-    /// 允许客户端登录到服务器
-    /// </summary>
+    /**
+     * 允许客户端登录到服务器
+     */
     public static final int ProtocolClientAllowLogin = 4;
 
-
-
-
-    /// <summary>
-    /// 说明发送的只是文本信息
-    /// </summary>
+    /**
+     * 说明发送的信息是文本数据
+     */
     public static final int ProtocolUserString = 1001;
 
-    /// <summary>
-    /// 发送的数据就是普通的字节数组
-    /// </summary>
+    /**
+     * 说明发送的信息是字节数组数据
+     */
     public static final int ProtocolUserBytes = 1002;
 
-    /// <summary>
-    /// 发送的数据就是普通的图片数据
-    /// </summary>
+    /**
+     * 发送的数据是普通的图片数据
+     */
     public static final int ProtocolUserBitmap = 1003;
 
-    /// <summary>
-    /// 发送的数据是一条异常的数据，字符串为异常消息
-    /// </summary>
+    /**
+     * 发送的数据是一条异常的数据，字符串为异常消息
+     */
     public static final int ProtocolUserException = 1004;
 
-
-    /// <summary>
-    /// 请求文件下载的暗号
-    /// </summary>
+    /**
+     * 请求文件下载的暗号
+     */
     public static final int ProtocolFileDownload = 2001;
 
-    /// <summary>
-    /// 请求文件上传的暗号
-    /// </summary>
+    /**
+     * 请求文件上传的暗号
+     */
     public static final int ProtocolFileUpload = 2002;
-    /// <summary>
-    /// 请求删除文件的暗号
-    /// </summary>
+
+    /**
+     * 请求删除文件的暗号
+     */
     public static final int ProtocolFileDelete = 2003;
 
-    /// <summary>
-    /// 文件校验成功
-    /// </summary>
+    /**
+     * 文件校验成功
+     */
     public static final int ProtocolFileCheckRight = 2004;
-    /// <summary>
-    /// 文件校验失败
-    /// </summary>
+
+    /**
+     * 文件校验失败
+     */
     public static final int ProtocolFileCheckError = 2005;
-    /// <summary>
-    /// 文件保存失败
-    /// </summary>
+
+    /**
+     * 文件保存失败
+     */
     public static final int ProtocolFileSaveError = 2006;
-    /// <summary>
-    /// 请求文件列表的暗号
-    /// </summary>
+
+    /**
+     * 请求文件的列表的暗号
+     */
     public static final int ProtocolFileDirectoryFiles = 2007;
-    /// <summary>
-    /// 请求子文件的列表暗号
-    /// </summary>
+
+    /**
+     * 请求子文件的列表暗号
+     */
     public static final int ProtocolFileDirectories = 2008;
-    /// <summary>
-    /// 进度返回暗号
-    /// </summary>
+
+    /**
+     * 进度返回暗号
+     */
     public static final int ProtocolProgressReport = 2009;
 
 
 
 
-    /// <summary>
-    /// 不压缩数据字节
-    /// </summary>
+
+    /**
+     * 不压缩字节数据
+     */
     public static final int ProtocolNoZipped = 3001;
-    /// <summary>
-    /// 压缩数据字节
-    /// </summary>
+
+    /**
+     * 压缩字节数据
+     */
     public static final int ProtocolZipped  = 3002;
 
 
 
-    /// <summary>
-    /// 生成终极传送指令的方法，所有的数据均通过该方法出来
-    /// </summary>
-    /// <param name="command">命令头</param>
-    /// <param name="customer">自用自定义</param>
-    /// <param name="token">令牌</param>
-    /// <param name="data">字节数据</param>
-    /// <returns></returns>
+    /**
+     * 生成终极传送指令的方法，所有的数据均通过该方法出来
+     * @param command 命令头
+     * @param customer 自用自定义
+     * @param token 令牌
+     * @param data 字节数据
+     * @return 发送的消息数据
+     */
     public static byte[] CommandBytes(int command, int customer, UUID token, byte[] data )
     {
         byte[] _temp = null;
@@ -135,26 +139,27 @@ public class HslProtocol
         else
         {
             // 加密
-            data = HslSecurity.ByteEncrypt( data );
-            if (data.length > 102400)
+            data = HslSecurity.ByteEncrypt(data);
+            if (data.length > 10240)
             {
-                // 100K以上的数据，进行数据压缩
-                data = SoftZipped.CompressBytes( data );
+                // 10K以上的数据，进行数据压缩
+                data = HslZipped.CompressBytes(data);
                 _zipped = ProtocolZipped;
             }
             _temp = new byte[HeadByteLength + data.length];
-            _sendLength = data.Length;
+            _sendLength = data.length;
         }
 
-        BitConverter.GetBytes( command ).CopyTo( _temp, 0 );
-        BitConverter.GetBytes( customer ).CopyTo( _temp, 4 );
-        BitConverter.GetBytes( _zipped ).CopyTo( _temp, 8 );
-        token.ToByteArray( ).CopyTo( _temp, 12 );
-        BitConverter.GetBytes( _sendLength ).CopyTo( _temp, 28 );
+        Utilities.int2Bytes(command);
 
+        System.arraycopy(Utilities.int2Bytes(command),0,_temp,0,4);
+        System.arraycopy(Utilities.int2Bytes(customer),0,_temp,4,4);
+        System.arraycopy(Utilities.int2Bytes(_zipped),0,_temp,8,4);
+        System.arraycopy(Utilities.UUID2Byte(token),0,_temp,12,16);
+        System.arraycopy(Utilities.int2Bytes(_sendLength),0,_temp,28,4);
         if (_sendLength > 0)
         {
-            Array.Copy( data, 0, _temp, 32, _sendLength );
+            System.arraycopy(data,0,_temp,32,_sendLength);
         }
         return _temp;
     }

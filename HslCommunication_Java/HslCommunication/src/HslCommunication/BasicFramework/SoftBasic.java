@@ -7,6 +7,11 @@ import java.util.UUID;
 public class SoftBasic {
 
 
+    /**
+     * 根据大小获取文本描述信息
+     * @param size
+     * @return
+     */
     public static String GetSizeDescription(long size) {
         if (size < 1000) {
             return size + " B";
@@ -23,6 +28,15 @@ public class SoftBasic {
     }
 
 
+    /**
+     * 判断两个字节数组是否是一致的，可以指定中间的某个区域
+     * @param b1
+     * @param start1
+     * @param b2
+     * @param start2
+     * @param length
+     * @return
+     */
     public static boolean IsTwoBytesEquel(byte[] b1, int start1, byte[] b2, int start2, int length)
     {
         if (b1 == null || b2 == null) return false;
