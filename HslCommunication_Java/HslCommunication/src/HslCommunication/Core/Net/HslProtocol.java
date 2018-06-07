@@ -104,9 +104,6 @@ public class HslProtocol
     public static final int ProtocolProgressReport = 2009;
 
 
-
-
-
     /**
      * 不压缩字节数据
      */
@@ -143,7 +140,7 @@ public class HslProtocol
             if (data.length > 10240)
             {
                 // 10K以上的数据，进行数据压缩
-                data = HslZipped.CompressBytes(data);
+                data = SoftZipped.CompressBytes(data);
                 _zipped = ProtocolZipped;
             }
             _temp = new byte[HeadByteLength + data.length];
@@ -165,16 +162,26 @@ public class HslProtocol
     }
 
 
-    /// <summary>
-    /// 解析接收到数据，先解压缩后进行解密
-    /// </summary>
-    /// <param name="head"></param>
-    /// <param name="content"></param>
+    /**
+     * 解析接收到数据，先解压缩后进行解密
+     * @param head
+     * @param content
+     * @return
+     */
     public static byte[] CommandAnalysis( byte[] head, byte[] content )
     {
         if (content != null)
         {
-            int _zipped = BitConverter.ToInt32( head, 8 );
+            byte[] buffer = new byte[4];
+            buffer[0] = head[8];
+            buffer[1] = head[9];
+            buffer[2] = head[10];
+            buffer[3] = head[11];
+
+            // 获取是否压缩的情况
+            int _zipped = Utilities.bytes2Int(buffer);
+
+
             // 先进行解压
             if (_zipped == ProtocolZipped)
             {
@@ -190,30 +197,31 @@ public class HslProtocol
     }
 
 
-    /// <summary>
-    /// 获取发送字节数据的实际数据，带指令头
-    /// </summary>
-    /// <param name="customer"></param>
-    /// <param name="token"></param>
-    /// <param name="data"></param>
-    /// <returns></returns>
+
+    /**
+     * 获取发送字节数据的实际数据，带指令头
+     * @param customer
+     * @param token
+     * @param data
+     * @return
+     */
     public static byte[] CommandBytes( int customer, UUID token, byte[] data )
     {
         return CommandBytes( ProtocolUserBytes, customer, token, data );
     }
 
 
-    /// <summary>
-    /// 获取发送字节数据的实际数据，带指令头
-    /// </summary>
-    /// <param name="customer"></param>
-    /// <param name="token"></param>
-    /// <param name="data"></param>
-    /// <returns></returns>
+    /**
+     * 获取发送字节数据的实际数据，带指令头
+     * @param customer
+     * @param token
+     * @param data
+     * @return
+     */
     public static byte[] CommandBytes( int customer, UUID token, String data )
     {
         if (data == null) return CommandBytes( ProtocolUserString, customer, token, null );
-        else return CommandBytes( ProtocolUserString, customer, token, Encoding.Unicode.GetBytes( data ) );
+        else return CommandBytes( ProtocolUserString, customer, token,  Utilities.string2Byte(data) );
     }
 
 
