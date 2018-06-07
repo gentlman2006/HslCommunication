@@ -1,0 +1,106 @@
+package HslCommunication.Core.IMessage;
+
+
+import HslCommunication.BasicFramework.SoftBasic;
+import HslCommunication.Utilities;
+
+/**
+ * 本组件系统使用的默认的消息规则，说明解析和反解析规则的
+ */
+public class HslMessage implements INetMessage
+{
+
+    /**
+     * 消息头的指令长度
+     */
+    public int ProtocolHeadBytesLength(){
+        return 32;
+    }
+
+
+    /**
+     * 从当前的头子节文件中提取出接下来需要接收的数据长度
+     * @return 返回接下来的数据内容长度
+     */
+    public int GetContentLengthByHeadBytes(){
+        if(HeadBytes == null) return 0;
+        if(HeadBytes.length != 32) return 0;
+
+        byte[] buffer = new byte[4];
+        buffer[0] = HeadBytes[28];
+        buffer[1] = HeadBytes[29];
+        buffer[2] = HeadBytes[30];
+        buffer[3] = HeadBytes[31];
+
+        return Utilities.bytes2Int(buffer);
+    }
+
+
+    /**
+     * 检查头子节的合法性
+     * @param token 特殊的令牌，有些特殊消息的验证
+     * @return 是否合法的验证
+     */
+    public boolean CheckHeadBytesLegal(byte[] token){
+        return SoftBasic.IsTwoBytesEquel(HeadBytes,12,token,0,16);
+    }
+
+
+    /**
+     * 获取头子节里的消息标识
+     * @return
+     */
+    public int GetHeadBytesIdentity(){
+        byte[] buffer = new byte[4];
+        buffer[0] = HeadBytes[0];
+        buffer[1] = HeadBytes[1];
+        buffer[2] = HeadBytes[2];
+        buffer[3] = HeadBytes[3];
+
+        return Utilities.bytes2Int(buffer);
+    }
+
+
+    /**
+     * 消息头字节
+     */
+    public byte[] HeadBytes = null;
+
+
+    /**
+     * 设置消息头子节
+     * @param headBytes 字节数据
+     */
+    public void setHeadBytes(byte[] headBytes){
+        HeadBytes = headBytes;
+    }
+
+
+
+    /**
+     * 消息内容字节
+     */
+    public byte[] ContentBytes = null;
+
+    /**
+     * 设置消息内容字节
+     * @param contentBytes 内容字节
+     */
+    public void setContentBytes(byte[] contentBytes){
+        ContentBytes = contentBytes;
+    }
+
+
+    /**
+     * 发送的字节信息
+     */
+    public byte[] SendBytes = null;
+
+    /**
+     * 设置发送的字节信息
+     * @param sendBytes 发送的字节信息
+     */
+    public void setSendBytes(byte[] sendBytes){
+        SendBytes = sendBytes;
+    }
+}
