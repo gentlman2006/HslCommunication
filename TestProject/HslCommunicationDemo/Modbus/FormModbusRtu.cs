@@ -118,6 +118,9 @@ namespace HslCommunicationDemo
             busRtuClient?.Close( );
             busRtuClient = new ModbusRtu( station );
             busRtuClient.AddressStartWithZero = checkBox1.Checked;
+            busRtuClient.IsMultiWordReverse = checkBox2.Checked;
+            busRtuClient.IsStringReverse = checkBox3.Checked;
+
 
             try
             {

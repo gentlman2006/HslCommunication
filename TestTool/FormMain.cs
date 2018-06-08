@@ -226,6 +226,9 @@ namespace TestTool
 
         private void userButton17_Click( object sender, EventArgs e )
         {
+            MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( BitConverter.GetBytes( 12.34f ) ) );
+            return;
+
             MessageBox.Show( "第一：" + (-1).ToString( "X4" ) + Environment.NewLine +
                 "第二：" + (14).ToString( "X4" ) );
 

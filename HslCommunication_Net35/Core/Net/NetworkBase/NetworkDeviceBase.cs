@@ -539,7 +539,7 @@ namespace HslCommunication.Core.Net
         /// <returns>返回读取结果</returns>
         public OperateResult Write( string address, string value )
         {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
+            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
             if(WordLength == 1) temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
         }

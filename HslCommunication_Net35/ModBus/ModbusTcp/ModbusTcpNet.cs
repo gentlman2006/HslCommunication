@@ -73,6 +73,24 @@ namespace HslCommunication.ModBus
             set { station = value; }
         }
 
+        /// <summary>
+        /// 多字节的数据是否高低位反转，常用于Int32,UInt32,float,double,Int64,UInt64类型读写
+        /// </summary>
+        public bool IsMultiWordReverse
+        {
+            get { return ByteTransform.IsMultiWordReverse; }
+            set { ByteTransform.IsMultiWordReverse = value; }
+        }
+
+        /// <summary>
+        /// 字符串数据是否按照字来反转
+        /// </summary>
+        public bool IsStringReverse
+        {
+            get { return ByteTransform.IsStringReverse; }
+            set { ByteTransform.IsStringReverse = value; }
+        }
+
         #endregion
 
         #region Address Analysis

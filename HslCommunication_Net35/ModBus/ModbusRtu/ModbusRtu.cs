@@ -20,7 +20,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         public ModbusRtu( )
         {
-            ByteTransform = new HslCommunication.Core.ReverseWordTransform( );
+            ByteTransform = new ReverseWordTransform( );
         }
 
 
@@ -30,7 +30,7 @@ namespace HslCommunication.ModBus
         /// <param name="station">客户端自身的站号</param>
         public ModbusRtu( byte station = 0x01 )
         {
-            ByteTransform = new HslCommunication.Core.ReverseWordTransform( );
+            ByteTransform = new ReverseWordTransform( );
             this.station = station;
         }
 
@@ -40,7 +40,7 @@ namespace HslCommunication.ModBus
 
         private byte station = ModbusInfo.ReadCoil;                  // 本客户端的站号
         private bool isAddressStartWithZero = true;                  // 线圈值的地址值是否从零开始
-        private HslCommunication.Core.IByteTransform ByteTransform;  // 数组转换规则
+        private ReverseWordTransform ByteTransform;  // 数组转换规则
 
         #endregion
 
@@ -62,6 +62,25 @@ namespace HslCommunication.ModBus
         {
             get { return station; }
             set { station = value; }
+        }
+
+
+        /// <summary>
+        /// 多字节的数据是否高低位反转，常用于Int32,UInt32,float,double,Int64,UInt64类型读写
+        /// </summary>
+        public bool IsMultiWordReverse
+        {
+            get { return ByteTransform.IsMultiWordReverse; }
+            set { ByteTransform.IsMultiWordReverse = value; }
+        }
+
+        /// <summary>
+        /// 字符串数据是否按照字来反转
+        /// </summary>
+        public bool IsStringReverse
+        {
+            get { return ByteTransform.IsStringReverse; }
+            set { ByteTransform.IsStringReverse = value; }
         }
 
         #endregion

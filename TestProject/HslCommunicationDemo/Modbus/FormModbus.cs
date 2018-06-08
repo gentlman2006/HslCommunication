@@ -114,6 +114,8 @@ namespace HslCommunicationDemo
             busTcpClient?.ConnectClose( );
             busTcpClient = new ModbusTcpNet( textBox1.Text, port, station );
             busTcpClient.AddressStartWithZero = checkBox1.Checked;
+            busTcpClient.IsMultiWordReverse = checkBox2.Checked;
+            busTcpClient.IsStringReverse = checkBox3.Checked;
 
             try
             {
@@ -569,8 +571,12 @@ namespace HslCommunicationDemo
         }
 
 
+
         #endregion
 
-      
+        private void checkBox2_CheckedChanged( object sender, EventArgs e )
+        {
+            // 高地位颠倒
+        }
     }
 }
