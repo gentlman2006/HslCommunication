@@ -26,13 +26,7 @@ public class HslMessage implements INetMessage
         if(HeadBytes == null) return 0;
         if(HeadBytes.length != 32) return 0;
 
-        byte[] buffer = new byte[4];
-        buffer[0] = HeadBytes[28];
-        buffer[1] = HeadBytes[29];
-        buffer[2] = HeadBytes[30];
-        buffer[3] = HeadBytes[31];
-
-        return Utilities.bytes2Int(buffer);
+        return Utilities.getInt(HeadBytes,28);
     }
 
 
@@ -51,13 +45,8 @@ public class HslMessage implements INetMessage
      * @return
      */
     public int GetHeadBytesIdentity(){
-        byte[] buffer = new byte[4];
-        buffer[0] = HeadBytes[0];
-        buffer[1] = HeadBytes[1];
-        buffer[2] = HeadBytes[2];
-        buffer[3] = HeadBytes[3];
 
-        return Utilities.bytes2Int(buffer);
+        return Utilities.getInt(HeadBytes,0);
     }
 
 

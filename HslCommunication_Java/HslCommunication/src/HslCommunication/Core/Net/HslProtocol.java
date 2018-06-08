@@ -147,13 +147,13 @@ public class HslProtocol
             _sendLength = data.length;
         }
 
-        Utilities.int2Bytes(command);
+        Utilities.getBytes(command);
 
-        System.arraycopy(Utilities.int2Bytes(command),0,_temp,0,4);
-        System.arraycopy(Utilities.int2Bytes(customer),0,_temp,4,4);
-        System.arraycopy(Utilities.int2Bytes(_zipped),0,_temp,8,4);
+        System.arraycopy(Utilities.getBytes(command),0,_temp,0,4);
+        System.arraycopy(Utilities.getBytes(customer),0,_temp,4,4);
+        System.arraycopy(Utilities.getBytes(_zipped),0,_temp,8,4);
         System.arraycopy(Utilities.UUID2Byte(token),0,_temp,12,16);
-        System.arraycopy(Utilities.int2Bytes(_sendLength),0,_temp,28,4);
+        System.arraycopy(Utilities.getBytes(_sendLength),0,_temp,28,4);
         if (_sendLength > 0)
         {
             System.arraycopy(data,0,_temp,32,_sendLength);
@@ -179,7 +179,7 @@ public class HslProtocol
             buffer[3] = head[11];
 
             // 获取是否压缩的情况
-            int _zipped = Utilities.bytes2Int(buffer);
+            int _zipped = Utilities.getInt(buffer,0);
 
 
             // 先进行解压

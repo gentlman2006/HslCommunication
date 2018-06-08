@@ -1,10 +1,11 @@
 package HslCommunication;
-;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.UUID;
+import java.nio.charset.Charset;
 
 
 /**
@@ -12,34 +13,80 @@ import java.util.UUID;
  */
 public class Utilities {
 
+    /**
+     * 将short数据类型转化成Byte数组
+     * @param data short值
+     * @return byte[]数组
+     */
+    public static byte[] getBytes(short data) {
+        byte[] bytes = new byte[2];
+        bytes[0] = (byte) (data & 0xff);
+        bytes[1] = (byte) ((data & 0xff00) >> 8);
+        return bytes;
+    }
 
     /**
-     * 将int类型的数据转化成byte[]数组
-     * @param num 实际的int值
-     * @return 最后的数组
+     * 将int数据类型转化成Byte数组
+     * @param data int值
+     * @return byte[]数组
      */
-    public static byte[] int2Bytes(int num) {
-        byte[] byteNum = new byte[4];
-        for (int ix = 0; ix < 4; ++ix) {
-            int offset = 32 - (ix + 1) * 8;
-            byteNum[3-ix] = (byte) ((num >> offset) & 0xff);
-        }
-        return byteNum;
+    public static byte[] getBytes(int data) {
+        byte[] bytes = new byte[4];
+        bytes[0] = (byte) (data & 0xff);
+        bytes[1] = (byte) ((data >> 8) & 0xff);
+        bytes[2] = (byte) ((data >> 16) & 0xff);
+        bytes[3] = (byte) ((data >> 24) & 0xff);
+        return bytes;
+    }
+
+    /**
+     * 将long数据类型转化成Byte数组
+     * @param data long值
+     * @return byte[]数组
+     */
+    public static byte[] getBytes(long data) {
+        byte[] bytes = new byte[8];
+        bytes[0] = (byte) (data & 0xff);
+        bytes[1] = (byte) ((data >> 8) & 0xff);
+        bytes[2] = (byte) ((data >> 16) & 0xff);
+        bytes[3] = (byte) ((data >> 24) & 0xff);
+        bytes[4] = (byte) ((data >> 32) & 0xff);
+        bytes[5] = (byte) ((data >> 40) & 0xff);
+        bytes[6] = (byte) ((data >> 48) & 0xff);
+        bytes[7] = (byte) ((data >> 56) & 0xff);
+        return bytes;
+    }
+
+    /**
+     * 将float数据类型转化成Byte数组
+     * @param data float值
+     * @return byte[]数组
+     */
+    public static byte[] getBytes(float data) {
+        int intBits = Float.floatToIntBits(data);
+        return getBytes(intBits);
+    }
+
+    /**
+     * 将double数据类型转化成Byte数组
+     * @param data double值
+     * @return byte[]数组
+     */
+    public static byte[] getBytes(double data) {
+        long intBits = Double.doubleToLongBits(data);
+        return getBytes(intBits);
     }
 
 
     /**
-     * 将byte数组转换成int类型的数据
-     * @param byteNum byte数组
-     * @return int对象
+     * 将字符串转换成byte[]数组
+     * @param data 字符串值
+     * @param charsetName 编码方式
+     * @return 字节数组
      */
-    public static int bytes2Int(byte[] byteNum) {
-        int num = 0;
-        for (int ix = 0; ix < 4; ++ix) {
-            num <<= 8;
-            num |= (byteNum[3-ix] & 0xff);
-        }
-        return num;
+    public static byte[] getBytes(String data, String charsetName) {
+        Charset charset = Charset.forName(charsetName);
+        return data.getBytes(charset);
     }
 
 
@@ -65,32 +112,79 @@ public class Utilities {
 
 
     /**
-     * 将一个long对象转换成byte[]数组
-     * @param num long对象
-     * @return byte[]数组
+     * 将字节数组转换成short数据
+     * @param bytes 字节数组
+     * @param index 起始位置
+     * @return short值
      */
-    public static byte[] long2Bytes(long num) {
-        byte[] byteNum = new byte[8];
-        for (int ix = 0; ix < 8; ++ix) {
-            int offset = 64 - (ix + 1) * 8;
-            byteNum[7-ix] = (byte) ((num >> offset) & 0xff);
-        }
-        return byteNum;
+    public static short getShort(byte[] bytes,int index) {
+        return (short) ((0xff & bytes[0 + index]) | (0xff00 & (bytes[1 + index] << 8)));
     }
 
 
     /**
-     * 将一个byte数组转换成long对象
-     * @param byteNum byte[]数组
-     * @return long对象
+     * 将字节数组转换成int数据
+     * @param bytes 字节数组
+     * @param index 起始位置
+     * @return int值
      */
-    public static long bytes2Long(byte[] byteNum) {
-        long num = 0;
-        for (int ix = 0; ix < 8; ++ix) {
-            num <<= 8;
-            num |= (byteNum[7-ix] & 0xff);
-        }
-        return num;
+    public static int getInt(byte[] bytes,int index) {
+        return (0xff & bytes[0 + index]) |
+                (0xff00 & (bytes[1 + index] << 8)) |
+                (0xff0000 & (bytes[2 + index] << 16)) |
+                (0xff000000 & (bytes[3 + index] << 24));
+    }
+
+
+    /**
+     * 将字节数组转换成long数据
+     * @param bytes 字节数组
+     * @param index 起始位置
+     * @return long值
+     */
+    public static long getLong(byte[] bytes,int index) {
+        return (0xffL & (long) bytes[0 + index]) |
+                (0xff00L & ((long) bytes[1 + index] << 8)) |
+                (0xff0000L & ((long) bytes[2 + index] << 16)) |
+                (0xff000000L & ((long) bytes[3 + index] << 24)) |
+                (0xff00000000L & ((long) bytes[4 + index] << 32)) |
+                (0xff0000000000L & ((long) bytes[5 + index] << 40)) |
+                (0xff000000000000L & ((long) bytes[6 + index] << 48)) |
+                (0xff00000000000000L & ((long) bytes[7 + index] << 56));
+    }
+
+
+    /**
+     * 将字节数组转换成float数据
+     * @param bytes 字节数组
+     * @param index 起始位置
+     * @return float值
+     */
+    public static float getFloat(byte[] bytes,int index) {
+        return Float.intBitsToFloat(getInt(bytes,index));
+    }
+
+
+    /**
+     * 将字节数组转换成double数据
+     * @param bytes 字节数组
+     * @param index 起始位置
+     * @return double值
+     */
+    public static double getDouble(byte[] bytes,int index) {
+        long l = getLong(bytes, index);
+        System.out.println(l);
+        return Double.longBitsToDouble(l);
+    }
+
+    /**
+     * 将字节数组转换成string数据
+     * @param bytes 字节数组
+     * @param charsetName 起始位置
+     * @return string值
+     */
+    public static String getString(byte[] bytes, String charsetName) {
+        return new String(bytes, Charset.forName(charsetName));
     }
 
 
@@ -153,34 +247,9 @@ public class Utilities {
     }
 
 
-    /**
-     * 将指定位置的数据转换成short对象
-     * @param b
-     * @param index
-     * @return
-     */
-    public static short byte2Short(byte[] b, int index) {
-        return (short) (((b[index + 0] << 8) | b[index + 1] & 0xff));
-    }
-
 
     /**
-     * 将short对象转换成字节数组
-     * @param s
-     * @return
-     */
-    public static byte[] short2Byte(short s) {
-        byte[] targets = new byte[2];
-        for (int i = 0; i < 2; i++) {
-            int offset = (targets.length - 1 - i) * 8;
-            targets[1-i] = (byte) ((s >>> offset) & 0xff);
-        }
-        return targets;
-    }
-
-
-    /**
-     * 将字符串数据转换成字节数组
+     * 将字符串数据转换成字节数组，主要转换由C#的字符串的数据
      * @param str
      * @return
      */
@@ -207,7 +276,7 @@ public class Utilities {
 
 
     /**
-     * 将字节数组转换成字符串对象
+     * 将字节数组转换成字符串对象，主要转换由C#的字符串的数据
      * @param byteArray
      * @return
      */
