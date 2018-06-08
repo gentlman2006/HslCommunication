@@ -1,6 +1,7 @@
 package HslCommunication.BasicFramework;
 
 
+import java.util.Random;
 import java.util.UUID;
 
 
@@ -51,6 +52,17 @@ public class SoftBasic {
         return true;
     }
 
+
+
+    /**
+     * 获取一串唯一的随机字符串，长度为20，由Guid码和4位数的随机数组成，保证字符串的唯一性
+     * @return 随机字符串数据
+     */
+    public static String GetUniqueStringByGuidAndRandom()
+    {
+        Random random = new Random();
+        return UUID.randomUUID().toString() + (random.nextInt(9000)+1000);
+    }
 
 }
 
