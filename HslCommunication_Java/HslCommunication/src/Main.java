@@ -12,6 +12,8 @@ public class Main {
 
         System.out.println(Utilities.bytes2HexString(Utilities.getBytes(256)));
 
+        System.out.println(Utilities.bytes2HexString(Utilities.getBytes(12.34f)));
+
         System.out.println("Hello World!");
     }
 }
