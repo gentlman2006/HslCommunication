@@ -2,8 +2,12 @@ package HslCommunication.Core.Net.NetworkBase;
 
 import HslCommunication.BasicFramework.SoftBasic;
 import HslCommunication.Core.IMessage.INetMessage;
+import HslCommunication.Core.Net.StateOne.AlienSession;
 import HslCommunication.Core.Transfer.IByteTransform;
+import HslCommunication.Core.Types.OperateResult;
+import HslCommunication.Core.Types.OperateResultExOne;
 import HslCommunication.StringResources;
+import HslCommunication.Core.Net.StateOne.AlienSession;
 import com.sun.org.apache.xpath.internal.operations.And;
 
 import java.lang.reflect.ParameterizedType;
@@ -39,7 +43,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
 
 
 
-    private TTransform getInstanceOfTTransform()
+    private TTransform getInstanceOfTTransform( )
     {
         ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
         Class<TTransform> type = (Class<TTransform>) superClass.getActualTypeArguments()[0];
@@ -54,7 +58,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
     }
 
 
-    private TNetMessage getInstanceOfTNetMessage()
+    private TNetMessage getInstanceOfTNetMessage( )
     {
         ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
         Class<TNetMessage> type = (Class<TNetMessage>) superClass.getActualTypeArguments()[0];
@@ -74,7 +78,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
      * 获取数据变换机制
      * @return
      */
-    public TTransform getByteTransform(){
+    public TTransform getByteTransform( ){
         return  byteTransform;
     }
 
@@ -87,109 +91,123 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
         byteTransform = transform;
     }
 
-    /// <summary>
-    /// 获取或设置连接的超时时间
-    /// </summary>
-    public int ConnectTimeOut
-    {
-        get{return connectTimeOut;}
-        set { connectTimeOut = value;}
+    /**
+     * 获取连接的超时时间
+     */
+    public int getConnectTimeOut( ){
+        return connectTimeOut;
     }
 
-    /// <summary>
-    /// 获取或设置接收服务器反馈的时间，如果为负数，则不接收反馈
-    /// </summary>
-    public int ReceiveTimeOut
-    {
-        get{return receiveTimeOut;}
-        set{ receiveTimeOut = value;}
+    /**
+     * 设置连接的超时时间
+     * @param connectTimeOut 超时时间，单位是秒
+     */
+    public void setConnectTimeOut(int connectTimeOut) {
+        this.connectTimeOut = connectTimeOut;
     }
 
-    /// <summary>
-    /// 服务器的IP地址
-    /// </summary>
-    public string IpAddress
-    {
-        get
-        {
-            return ipAddress;
-        }
-        set
-        {
-            if (!string.IsNullOrEmpty( value ))
-            {
-                if (!IPAddress.TryParse( value, out IPAddress address ))
-                {
-                    throw new Exception( "Ip地址设置异常，格式不正确" );
-                }
-                ipAddress = value;
-            }
-        }
+
+    /**
+     * 获取接收服务器反馈的时间，如果为负数，则不接收反馈
+     * @return
+     */
+    public int getReceiveTimeOut( ){
+        return receiveTimeOut;
     }
 
-    /// <summary>
-    /// 服务器的端口号
-    /// </summary>
-    public int Port
-    {
-        get
-        {
-            return port;
-        }
-        set
-        {
-            port = value;
+    /**
+     * 设置接收服务器反馈的时间，如果为负数，则不接收反馈
+     * @param receiveTimeOut
+     */
+    public void setReceiveTimeOut(int receiveTimeOut){
+        this.receiveTimeOut = receiveTimeOut;
+    }
+
+
+    /**
+     * 获取服务器的IP地址
+     * @return Ip地址信息
+     */
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+
+    /**
+     * 设置服务器的IP地址
+     * @param ipAddress IP地址
+     */
+    public void setIpAddress(String ipAddress) {
+        if(!ipAddress.isEmpty()){
+            this.ipAddress = ipAddress;
         }
     }
 
-    /// <summary>
-    /// 当前连接的唯一ID号，默认为长度20的guid码加随机数组成，也可以自己指定
-    /// </summary>
-    /// <remarks>
-    /// Current Connection ID, conclude guid and random data, also, you can spcified
-    /// </remarks>
-    public string ConnectionId
-    {
-        get { return connectionId; }
-        set { connectionId = value; }
+
+    /**
+     * 获取服务器的端口
+     * @return 端口
+     */
+    public int getPort() {
+        return port;
     }
 
 
-    /// <summary>
-    /// 当前的异形连接对象，如果设置了异形连接的话
-    /// </summary>
-    public AlienSession AlienSession { get; set; }
+    /**
+     * 设置服务器的端口号
+     * @param port 端口号
+     */
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    /**
+     * 当前连接的唯一ID号，默认为长度20的guid码加随机数组成，也可以自己指定
+     * @return
+     */
+    public String getConnectionId() {
+        return connectionId;
+    }
+
+    /**
+     * 设置当前的连接ID
+     * @param connectionId
+     */
+    public void setConnectionId(String connectionId) {
+        this.connectionId = connectionId;
+    }
 
 
-        #endregion
 
-        #region Public Method
+    /**
+     * 当前的异形连接对象，如果设置了异性连接的话
+     */
+    public AlienSession AlienSession = null;
 
-    /// <summary>
-    /// 在读取数据之前可以调用本方法将客户端设置为长连接模式，相当于跳过了ConnectServer的结果验证，对异形客户端无效
-    /// </summary>
+
+
+    /**
+     * 在读取数据之前可以调用本方法将客户端设置为长连接模式，相当于跳过了ConnectServer的结果验证，对异形客户端无效
+     */
     public void SetPersistentConnection( )
     {
         isPersistentConn = true;
     }
 
-        #endregion
 
-        #region Connect Close
-
-    /// <summary>
-    /// 切换短连接模式到长连接模式，后面的每次请求都共享一个通道
-    /// </summary>
-    /// <returns>返回连接结果，如果失败的话（也即IsSuccess为False），包含失败信息</returns>
+    /**
+     * 切换短连接模式到长连接模式，后面的每次请求都共享一个通道
+     * @return 返回连接结果，如果失败的话（也即IsSuccess为False），包含失败信息
+     */
     public OperateResult ConnectServer( )
     {
         isPersistentConn = true;
         OperateResult result = new OperateResult( );
 
         // 重新连接之前，先将旧的数据进行清空
-        CoreSocket?.Close( );
+        CoreSocket.close( );
 
-        OperateResult<Socket> rSocket = CreateSocketAndInitialication( );
+        OperateResultExOne<Socket> rSocket = CreateSocketAndInitialication( );
 
         if (!rSocket.IsSuccess)
         {
@@ -201,17 +219,19 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
         {
             CoreSocket = rSocket.Content;                 // 创建成功
             result.IsSuccess = true;
-            LogNet?.WriteDebug( ToString( ), StringResources.NetEngineStart );
+            if(LogNet != null) LogNet.WriteDebug( toString( ), StringResources.NetEngineStart );
         }
 
         return result;
     }
 
 
-    /// <summary>
-    /// 使用指定的套接字创建异形客户端
-    /// </summary>
-    /// <returns>通常都为成功</returns>
+
+    /**
+     * 使用指定的套接字创建异形客户端
+     * @param session 会话
+     * @return 通常都为成功
+     */
     public OperateResult ConnectServer( AlienSession session )
     {
         isPersistentConn = true;
@@ -220,19 +240,19 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
 
         if (session != null)
         {
-            AlienSession?.Socket?.Close( );
+            if(AlienSession != null ) AlienSession.getSocket().close( );
 
-            if (string.IsNullOrEmpty( ConnectionId ))
+            if (connectionId.isEmpty())
             {
-                ConnectionId = session.DTU;
+                connectionId = session.getDTU();
             }
 
-            if (ConnectionId == session.DTU)
+            if (connectionId == session.getDTU())
             {
-                CoreSocket = session.Socket;
+                CoreSocket = session.getSocket();
                 IsSocketError = false;
                 AlienSession = session;
-                return InitilizationOnConnect( session.Socket );
+                return InitilizationOnConnect( session.getSocket() );
             }
             else
             {
@@ -248,54 +268,50 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
     }
 
 
-    /// <summary>
-    /// 在长连接模式下，断开服务器的连接，并切换到短连接模式
-    /// </summary>
-    /// <returns>关闭连接，不需要查看IsSuccess属性查看</returns>
+
+    /**
+     * 在长连接模式下，断开服务器的连接，并切换到短连接模式
+     * @return 关闭连接，不需要查看IsSuccess属性查看
+     */
     public OperateResult ConnectClose( )
     {
         OperateResult result = new OperateResult( );
         isPersistentConn = false;
 
-        InteractiveLock.Enter( );
+        queueLock.lock();
+
         // 额外操作
         result = ExtraOnDisconnect( CoreSocket );
         // 关闭信息
-        CoreSocket?.Close( );
+        if(CoreSocket != null ) CoreSocket.close( );
         CoreSocket = null;
-        InteractiveLock.Leave( );
 
-        LogNet?.WriteDebug( ToString( ), StringResources.NetEngineClose );
+        queueLock.unlock();
+
+        if(LogNet != null ) LogNet.WriteDebug( toString( ), StringResources.NetEngineClose );
         return result;
     }
 
-        #endregion
 
-        #region Initialization And Extra
+    /**
+     * 在连接的时候进行初始化
+     * @param socket 网络套接字
+     * @return 结果类对象
+     */
+    protected OperateResult InitilizationOnConnect( Socket socket ) {
+        return OperateResult.CreateSuccessResult();
+    }
 
-    /// <summary>
-    /// 连接上服务器后需要进行的初始化操作
-    /// </summary>
-    /// <param name="socket">网络套接字</param>
-    /// <returns></returns>
-    protected virtual OperateResult InitilizationOnConnect( Socket socket )
-{
-    return OperateResult.CreateSuccessResult( );
-}
 
-    /// <summary>
-    /// 在将要和服务器进行断开的情况下额外的操作
-    /// </summary>
-    /// <param name="socket">网络套接字</param>
-    /// <returns></returns>
-    protected virtual OperateResult ExtraOnDisconnect( Socket socket )
-{
-    return OperateResult.CreateSuccessResult( );
-}
+    /**
+     * 在将要和服务器进行断开的情况下额外的操作
+     * @param socket 网络套接字
+     * @return 结果类对象
+     */
+    protected OperateResult ExtraOnDisconnect( Socket socket ) {
+        return OperateResult.CreateSuccessResult();
+    }
 
-        #endregion
-
-        #region Core Communication
 
     /***************************************************************************************
      *
@@ -307,11 +323,12 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
      *
      **************************************************************************************/
 
-    /// <summary>
-    /// 获取本次操作的可用的网络套接字
-    /// </summary>
-    /// <returns>是否成功，如果成功，使用这个套接字</returns>
-    private OperateResult<Socket> GetAvailableSocket( )
+
+    /**
+     * 获取本次操作的可用的网络套接字
+     * @return 是否成功，如果成功，使用这个套接字
+     */
+    private OperateResultExOne<Socket> GetAvailableSocket( )
     {
         if (isPersistentConn)
         {
@@ -320,11 +337,14 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
             {
                 if(IsSocketError)
                 {
-                    return new OperateResult<Socket>( ) { Message = "连接不可用" };
+                    OperateResultExOne<Socket> rSocket = new OperateResultExOne<>();
+                    rSocket.Message = "连接不可用";
+                    return rSocket;
                 }
                 else
                 {
-                    return OperateResult.CreateSuccessResult( CoreSocket );
+
+                    return OperateResultExOne.CreateSuccessResult( CoreSocket );
                 }
             }
             else
@@ -336,17 +356,20 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
                     if (!connect.IsSuccess)
                     {
                         IsSocketError = true;
-                        return OperateResult.CreateFailedResult<Socket>( connect );
+                        OperateResultExOne<Socket> rSocket = new OperateResultExOne<>();
+                        rSocket.Message = connect.Message;
+                        rSocket.ErrorCode = connect.ErrorCode;
+                        return rSocket;
                     }
                     else
                     {
                         IsSocketError = false;
-                        return OperateResult.CreateSuccessResult( CoreSocket );
+                        return OperateResultExOne.CreateSuccessResult( CoreSocket );
                     }
                 }
                 else
                 {
-                    return OperateResult.CreateSuccessResult( CoreSocket );
+                    return OperateResultExOne.CreateSuccessResult( CoreSocket );
                 }
             }
         }
@@ -358,13 +381,14 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
     }
 
 
-    /// <summary>
-    /// 连接并初始化网络套接字
-    /// </summary>
-    /// <returns></returns>
-    private OperateResult<Socket> CreateSocketAndInitialication( )
+
+    /**
+     * 连接并初始化网络套接字
+     * @return 最终的连接对象
+     */
+    private OperateResultExOne<Socket> CreateSocketAndInitialication( )
     {
-        OperateResult<Socket> result = CreateSocketAndConnect( new IPEndPoint( IPAddress.Parse( ipAddress ), port ), connectTimeOut );
+        OperateResultExOne<Socket> result = CreateSocketAndConnect( new IPEndPoint( IPAddress.Parse( ipAddress ), port ), connectTimeOut );
         if (result.IsSuccess)
         {
             // 初始化

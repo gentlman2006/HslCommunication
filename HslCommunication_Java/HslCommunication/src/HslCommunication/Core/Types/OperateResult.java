@@ -50,5 +50,16 @@ public class OperateResult
 
     }
 
+
+    /**
+     * 创建一个成功的结果类对象
+     * @return 结果类对象
+     */
+    public static OperateResult CreateSuccessResult(){
+        OperateResult result = new OperateResult();
+        result.IsSuccess = true;
+        result.Message = "success";
+        return result;
+    }
 }
 
