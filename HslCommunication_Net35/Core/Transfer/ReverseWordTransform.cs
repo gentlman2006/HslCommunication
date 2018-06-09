@@ -217,7 +217,15 @@ namespace HslCommunication.Core
         public override string TransString( byte[] buffer, int index, int length, Encoding encoding )
         {
             byte[] tmp = TransByte( buffer, index, length );
-            return encoding.GetString( ReverseBytesByWord( tmp ,IsStringReverse) );
+
+            if(IsStringReverse)
+            {
+                return encoding.GetString( ReverseBytesByWord( tmp, false ) );
+            }
+            else
+            {
+                return encoding.GetString( tmp );
+            }
         }
 
         #endregion
@@ -400,7 +408,14 @@ namespace HslCommunication.Core
             if (value == null) return null;
             byte[] buffer = encoding.GetBytes( value );
             buffer = BasicFramework.SoftBasic.ArrayExpandToLengthEven( buffer );
-            return ReverseBytesByWord( buffer,IsStringReverse );
+            if (IsStringReverse)
+            {
+                return ReverseBytesByWord( buffer, false );
+            }
+            else
+            {
+                return buffer;
+            }
         }
 
         #endregion
