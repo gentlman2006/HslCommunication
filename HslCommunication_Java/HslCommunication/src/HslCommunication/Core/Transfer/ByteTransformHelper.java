@@ -120,7 +120,7 @@ public class ByteTransformHelper {
         return GetResultFromBytes( result, m -> byteTransform.TransDouble( m, 0 ) );
     }
 
-    
+
     /**
      * 将指定的OperateResult类型转化
      * @param result 原始的类型
