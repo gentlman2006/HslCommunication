@@ -51,10 +51,34 @@ public class HslMessage implements INetMessage
 
 
     /**
-     * 消息头字节
+     * 获取消息头字节
+     *
+     * @return
      */
-    public byte[] HeadBytes = null;
+    @Override
+    public byte[] getHeadBytes() {
+        return HeadBytes;
+    }
 
+    /**
+     * 获取消息内容字节
+     *
+     * @return
+     */
+    @Override
+    public byte[] getContentBytes() {
+        return ContentBytes;
+    }
+
+    /**
+     * 获取发送的消息
+     *
+     * @return
+     */
+    @Override
+    public byte[] getSendBytes() {
+        return SendBytes;
+    }
 
     /**
      * 设置消息头子节
@@ -66,10 +90,6 @@ public class HslMessage implements INetMessage
 
 
 
-    /**
-     * 消息内容字节
-     */
-    public byte[] ContentBytes = null;
 
     /**
      * 设置消息内容字节
@@ -80,10 +100,6 @@ public class HslMessage implements INetMessage
     }
 
 
-    /**
-     * 发送的字节信息
-     */
-    public byte[] SendBytes = null;
 
     /**
      * 设置发送的字节信息
@@ -92,4 +108,11 @@ public class HslMessage implements INetMessage
     public void setSendBytes(byte[] sendBytes){
         SendBytes = sendBytes;
     }
+
+
+    private byte[] HeadBytes = null;
+
+    private byte[] ContentBytes = null;
+
+    private byte[] SendBytes = null;
 }

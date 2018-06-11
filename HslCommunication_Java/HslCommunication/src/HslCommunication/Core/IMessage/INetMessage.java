@@ -34,20 +34,24 @@ public interface INetMessage {
 
 
     /**
-     * 消息头字节
-     */
-    byte[] HeadBytes = null;
-
-    /**
      * 设置消息头子节
      * @param headBytes 字节数据
      */
     void setHeadBytes(byte[] headBytes);
 
     /**
-     * 消息内容字节
+     * 获取消息头字节
+     * @return
      */
-    byte[] ContentBytes = null;
+    byte[] getHeadBytes();
+
+
+
+    /**
+     * 获取消息内容字节
+     * @return
+     */
+    byte[] getContentBytes();
 
     /**
      * 设置消息内容字节
@@ -55,10 +59,12 @@ public interface INetMessage {
      */
     void setContentBytes(byte[] contentBytes);
 
+
     /**
-     * 发送的字节信息
+     * 获取发送的消息
+     * @return
      */
-    byte[] SendBytes = null;
+    byte[] getSendBytes();
 
     /**
      * 设置发送的字节信息

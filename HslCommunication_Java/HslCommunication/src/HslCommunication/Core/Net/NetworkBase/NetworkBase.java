@@ -26,7 +26,7 @@ public abstract class NetworkBase {
      */
     public NetworkBase( )
     {
-        Token = UUID.nameUUIDFromBytes(new byte[16]);
+        Token = UUID.fromString("00000000-0000-0000-0000-000000000000");
     }
 
 
@@ -80,7 +80,7 @@ public abstract class NetworkBase {
         int count_receive = 0;
         byte[] bytes_receive = new byte[length];
         try {
-            DataInputStream input = new DataInputStream(socket.getInputStream());
+            InputStream input = socket.getInputStream();
             while (count_receive<length)
             {
                 count_receive += input.read(bytes_receive, count_receive, length-count_receive);
@@ -88,6 +88,7 @@ public abstract class NetworkBase {
         }
         catch (IOException ex)
         {
+            CloseSocket(socket);
             resultExOne.Message = ex.getMessage();
             return  resultExOne;
         }
@@ -131,11 +132,7 @@ public abstract class NetworkBase {
         {
             // 令牌校验失败
             hslTimeOut.IsSuccessful = true;
-            try {
-                if(socket!=null) socket.close();
-            }catch (Exception ex){
-
-            }
+            CloseSocket(socket);
             if(LogNet != null) LogNet.WriteError( toString( ), StringResources.TokenCheckFailed );
             resultExOne.Message = StringResources.TokenCheckFailed;
             return resultExOne;
@@ -150,18 +147,18 @@ public abstract class NetworkBase {
         else
         {
             OperateResultExOne<byte[]> contentResult = Receive( socket, contentLength );
-            if (!headResult.IsSuccess)
+            if (!contentResult.IsSuccess)
             {
                 hslTimeOut.IsSuccessful = true;
                 resultExOne.CopyErrorFromOther( contentResult );
                 return resultExOne;
             }
 
-            netMsg.setHeadBytes( contentResult.Content);
+            netMsg.setContentBytes( contentResult.Content);
         }
 
         // 防止没有实例化造成后续的操作失败
-        if (netMsg.ContentBytes == null) netMsg.setHeadBytes( new byte[0]);
+        if (netMsg.getContentBytes() == null){ netMsg.setContentBytes( new byte[0]);}
         hslTimeOut.IsSuccessful = true;
         resultExOne.Content = netMsg;
         resultExOne.IsSuccess = true;

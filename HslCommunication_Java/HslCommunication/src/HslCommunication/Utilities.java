@@ -263,14 +263,14 @@ public class Utilities {
         } catch (Exception ex) {
             byteArray = str.getBytes();
         }
-//
-//        for(int i=0;i<byteArray.length;i++)
-//        {
-//            byte temp=byteArray[i];
-//            byteArray[i]=byteArray[i+1];
-//            byteArray[i+1] =temp;
-//            i++;
-//        }
+
+        for(int i=0;i<byteArray.length;i++)
+        {
+            byte temp=byteArray[i];
+            byteArray[i]=byteArray[i+1];
+            byteArray[i+1] =temp;
+            i++;
+        }
         return byteArray;
     }
 

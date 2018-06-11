@@ -21,7 +21,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
     /// <summary>
     /// 默认的无参构造函数
     /// </summary>
-    public NetworkDoubleBase( ) throws Exception
+    public NetworkDoubleBase( )
     {
         queueLock = new ReentrantLock();                               // 实例化数据访问锁
         byteTransform = getInstanceOfTTransform();                           // 实例化数据转换规则
@@ -46,7 +46,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
     private TTransform getInstanceOfTTransform( )
     {
         ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
-        Class<TTransform> type = (Class<TTransform>) superClass.getActualTypeArguments()[0];
+        Class<TTransform> type = (Class<TTransform>) superClass.getActualTypeArguments()[1];
         try
         {
             return type.newInstance();
@@ -508,14 +508,14 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
             if (!resultReceive.IsSuccess)
             {
                 CloseSocket(socket );
-                // result.CopyErrorFromOther( resultReceive );
-                result.Message = "Receive data timeout: " + receiveTimeOut;
+                result.CopyErrorFromOther( resultReceive );
+                // result.Message = "Receive data timeout: " + receiveTimeOut;
                 return result;
             }
 
             // 复制结果
-            result.Content1 = resultReceive.Content.HeadBytes;
-            result.Content2 = resultReceive.Content.ContentBytes;
+            result.Content1 = resultReceive.Content.getHeadBytes();
+            result.Content2 = resultReceive.Content.getContentBytes();
         }
 
         result.IsSuccess = true;
