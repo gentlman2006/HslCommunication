@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -60,7 +61,9 @@ namespace HslCommunication.Algorithms.Fourier
             return FFT( xreal, new double[xreal.Length] );
         }
 
+
         
+
         /// <summary>
         /// 快速傅立叶变换
         /// </summary>

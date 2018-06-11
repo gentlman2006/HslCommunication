@@ -184,9 +184,26 @@ namespace HslCommunication.Profinet.Siemens
             _PLCCommand[10] = (byte)(analysis.Content2 / 256);
             _PLCCommand[11] = (byte)(analysis.Content2 % 256);
 
-            //指定数据长度
-            _PLCCommand[12] = (byte)(count / 256);
-            _PLCCommand[13] = (byte)(count % 256);
+            if (analysis.Content1 == 0x01 || analysis.Content1 == 0x06 || analysis.Content1 == 0x07)
+            {
+                if (count % 2 != 0)
+                {
+                    result.Message = "读取的数据长度必须为偶数";
+                    return result;
+                }
+                else
+                {
+                    //指定数据长度
+                    _PLCCommand[12] = (byte)(count / 2 / 256);
+                    _PLCCommand[13] = (byte)(count / 2 % 256);
+                }
+            }
+            else
+            {
+                //指定数据长度
+                _PLCCommand[12] = (byte)(count / 256);
+                _PLCCommand[13] = (byte)(count % 256);
+            }
 
             _PLCCommand[14] = 0xff;
             _PLCCommand[15] = 0x02;
@@ -216,6 +233,8 @@ namespace HslCommunication.Profinet.Siemens
                 return result;
             }
 
+           
+
             byte[] _PLCCommand = new byte[16 + data.Length];
             _PLCCommand[0] = 0x53;
             _PLCCommand[1] = 0x35;
@@ -234,10 +253,27 @@ namespace HslCommunication.Profinet.Siemens
             _PLCCommand[10] = (byte)(analysis.Content2 / 256);
             _PLCCommand[11] = (byte)(analysis.Content2 % 256);
 
-            //指定数据长度
-            _PLCCommand[12] = (byte)(data.Length / 256);
-            _PLCCommand[13] = (byte)(data.Length % 256);
-
+            if (analysis.Content1 == 0x01 || analysis.Content1 == 0x06 || analysis.Content1 == 0x07)
+            {
+                if (data.Length %2 != 0)
+                {
+                    result.Message = "写入的数据长度必须为偶数";
+                    return result;
+                }
+                else
+                {
+                    //指定数据长度
+                    _PLCCommand[12] = (byte)(data.Length / 2 / 256);
+                    _PLCCommand[13] = (byte)(data.Length / 2 % 256);
+                }
+            }
+            else
+            {
+                //指定数据长度
+                _PLCCommand[12] = (byte)(data.Length / 256);
+                _PLCCommand[13] = (byte)(data.Length % 256);
+            }
+            
             _PLCCommand[14] = 0xff;
             _PLCCommand[15] = 0x02;
 

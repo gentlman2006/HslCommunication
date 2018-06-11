@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNetServer", "TestPro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PushNetServer", "TestProject\PushNetServer\PushNetServer.csproj", "{5DC89157-35FC-4A71-96B1-19FFF54DEDA8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunicationCoreDemo", "TestProject\HslCommunicationCoreDemo\HslCommunicationCoreDemo.csproj", "{BE120537-35F6-43E1-92F6-CCD37CA5B4F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{5DC89157-35FC-4A71-96B1-19FFF54DEDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DC89157-35FC-4A71-96B1-19FFF54DEDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DC89157-35FC-4A71-96B1-19FFF54DEDA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE120537-35F6-43E1-92F6-CCD37CA5B4F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE120537-35F6-43E1-92F6-CCD37CA5B4F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE120537-35F6-43E1-92F6-CCD37CA5B4F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE120537-35F6-43E1-92F6-CCD37CA5B4F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +113,7 @@ Global
 		{15BC8EBD-0920-4696-A1A7-1C3D7C2E6DE1} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 		{8E94BA91-5ACB-4C89-9279-BE6A06DA1859} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 		{5DC89157-35FC-4A71-96B1-19FFF54DEDA8} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
+		{BE120537-35F6-43E1-92F6-CCD37CA5B4F1} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECF517CD-FF89-4611-A2F7-AB7771FCC542}
