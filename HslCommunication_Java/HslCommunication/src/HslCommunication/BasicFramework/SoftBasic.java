@@ -1,8 +1,10 @@
 package HslCommunication.BasicFramework;
 
 
-import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -105,26 +107,24 @@ public class SoftBasic {
 
 
 
-    /// <summary>
-    /// 字符串数据转化成16进制表示的字符串
-    /// </summary>
-    /// <param name="InString">输入的字符串数据</param>
-    /// <returns>返回的字符串</returns>
-    /// <exception cref="NullReferenceException"></exception>
+
+    /**
+     * 字符串数据转化成16进制表示的字符串
+     * @param InString 输入的字符串数据
+     * @return 返回的字符串
+     * @throws UnsupportedEncodingException
+     */
     public static String ByteToHexString(String InString) throws UnsupportedEncodingException
     {
         return ByteToHexString(InString.getBytes("unicode"));
     }
 
 
-    private static char[] hexCharList = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+    /**
+     * 实际的字符串列表
+     */
+    private static List<Character> hexCharList = Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
 
-    private static boolean isCharinList(char[] chars,char c ){
-        for (int i=0;i<hexCharList.length;i++){
-            if(hexCharList[i] == c) return true;
-        }
-        return false;
-    }
 
 
     /// <summary>
@@ -136,23 +136,29 @@ public class SoftBasic {
     {
         hex = hex.toUpperCase();
 
-        OutputStream ms = new OutputStream();
+        ByteArrayOutputStream ms = new ByteArrayOutputStream ();
 
         for (int i = 0; i < hex.length(); i++)
         {
             if ((i + 1) < hex.length())
             {
-                if (isCharinList(hexCharList,hex.charAt(i)) && isCharinList(hexCharList,hex.charAt(i + 1)))
+                if (hexCharList.contains(hex.charAt(i)) && hexCharList.contains(hex.charAt(i+1)))
                 {
                     // 这是一个合格的字节数据
-                    ms.write((byte)(hexCharList.IndexOf(hex[i]) * 16 + hexCharList.IndexOf(hex[i + 1])));
+                    ms.write((byte)(hexCharList.indexOf(hex.charAt(i)) * 16 +hexCharList.indexOf(hex.charAt(i+1))));
                     i++;
                 }
             }
         }
 
-        byte[] result = ms.t();
-        ms.Dispose();
+        byte[] result = ms.toByteArray();
+        try {
+            ms.close();
+        }
+        catch (IOException ex)
+        {
+
+        }
         return result;
     }
 

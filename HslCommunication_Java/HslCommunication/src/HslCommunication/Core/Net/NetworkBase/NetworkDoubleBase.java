@@ -3,12 +3,12 @@ package HslCommunication.Core.Net.NetworkBase;
 import HslCommunication.BasicFramework.SoftBasic;
 import HslCommunication.Core.IMessage.INetMessage;
 import HslCommunication.Core.Net.StateOne.AlienSession;
+import HslCommunication.Core.Transfer.ByteTransformHelper;
 import HslCommunication.Core.Transfer.IByteTransform;
 import HslCommunication.Core.Types.OperateResult;
 import HslCommunication.Core.Types.OperateResultExOne;
+import HslCommunication.Core.Types.OperateResultExTwo;
 import HslCommunication.StringResources;
-import HslCommunication.Core.Net.StateOne.AlienSession;
-import com.sun.org.apache.xpath.internal.operations.And;
 
 import java.lang.reflect.ParameterizedType;
 import java.net.Socket;
@@ -72,6 +72,8 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
             throw new RuntimeException(e);
         }
     }
+
+
 
 
     /**
@@ -205,7 +207,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
         OperateResult result = new OperateResult( );
 
         // 重新连接之前，先将旧的数据进行清空
-        CoreSocket.close( );
+        CloseSocket(CoreSocket);
 
         OperateResultExOne<Socket> rSocket = CreateSocketAndInitialication( );
 
@@ -240,7 +242,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
 
         if (session != null)
         {
-            if(AlienSession != null ) AlienSession.getSocket().close( );
+            if(AlienSession != null ) CloseSocket(AlienSession.getSocket());
 
             if (connectionId.isEmpty())
             {
@@ -283,7 +285,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
         // 额外操作
         result = ExtraOnDisconnect( CoreSocket );
         // 关闭信息
-        if(CoreSocket != null ) CoreSocket.close( );
+        if(CoreSocket != null ) CloseSocket(CoreSocket);
         CoreSocket = null;
 
         queueLock.unlock();
@@ -388,14 +390,14 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
      */
     private OperateResultExOne<Socket> CreateSocketAndInitialication( )
     {
-        OperateResultExOne<Socket> result = CreateSocketAndConnect( new IPEndPoint( IPAddress.Parse( ipAddress ), port ), connectTimeOut );
+        OperateResultExOne<Socket> result = CreateSocketAndConnect(  ipAddress , port , connectTimeOut );
         if (result.IsSuccess)
         {
             // 初始化
             OperateResult initi = InitilizationOnConnect( result.Content );
             if (!initi.IsSuccess)
             {
-                result.Content?.Close( );
+                CloseSocket(result.Content);
                 result.IsSuccess = initi.IsSuccess;
                 result.CopyErrorFromOther( initi );
             }
@@ -404,23 +406,23 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
     }
 
 
-    /// <summary>
-    /// 在其他指定的套接字上，使用报文来通讯，传入需要发送的消息，返回一条完整的数据指令
-    /// </summary>
-    /// <param name="socket">指定的套接字</param>
-    /// <param name="send">发送的完整的报文信息</param>
-    /// <returns>接收的完整的报文信息</returns>
-    public OperateResult<byte[]> ReadFromCoreServer( Socket socket, byte[] send )
+    /**
+     * 在其他指定的套接字上，使用报文来通讯，传入需要发送的消息，返回一条完整的数据指令
+     * @param socket 指定的套接字
+     * @param send 发送的完整的报文信息
+     * @return 接收的完整的报文信息
+     */
+    public OperateResultExOne<byte[]> ReadFromCoreServer( Socket socket, byte[] send )
     {
-        var result = new OperateResult<byte[]>( );
+        OperateResultExOne<byte[]> result = new OperateResultExOne<byte[]>( );
 
-        var read = ReadFromCoreServerBase( socket, send );
+        OperateResultExTwo<byte[], byte[]> read = ReadFromCoreServerBase( socket, send );
         if (read.IsSuccess)
         {
             result.IsSuccess = read.IsSuccess;
-            result.Content = new byte[read.Content1.Length + read.Content2.Length];
-            if (read.Content1.Length > 0) read.Content1.CopyTo( result.Content, 0 );
-            if (read.Content2.Length > 0) read.Content2.CopyTo( result.Content, read.Content1.Length );
+            result.Content = new byte[read.Content1.length + read.Content2.length];
+            if (read.Content1.length > 0) System.arraycopy(read.Content1,0,result.Content,0,read.Content1.length);
+            if (read.Content2.length > 0) System.arraycopy(read.Content2,0,result.Content,read.Content1.length,read.Content2.length);
         }
         else
         {
@@ -430,30 +432,31 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
     }
 
 
-    /// <summary>
-    /// 使用底层的数据报文来通讯，传入需要发送的消息，返回一条完整的数据指令
-    /// </summary>
-    /// <param name="send">发送的完整的报文信息</param>
-    /// <returns>接收的完整的报文信息</returns>
-    public OperateResult<byte[]> ReadFromCoreServer( byte[] send )
+
+    /**
+     * 使用底层的数据报文来通讯，传入需要发送的消息，返回一条完整的数据指令
+     * @param send 发送的完整的报文信息
+     * @return 接收的完整的报文信息
+     */
+    public OperateResultExOne<byte[]> ReadFromCoreServer( byte[] send )
     {
-        var result = new OperateResult<byte[]>( );
+        OperateResultExOne<byte[]> result = new OperateResultExOne<byte[]>( );
         // string tmp1 = BasicFramework.SoftBasic.ByteToHexString( send, '-' );
 
-        InteractiveLock.Enter( );
+        queueLock.lock( );
 
         // 获取有用的网络通道，如果没有，就建立新的连接
-        OperateResult<Socket> resultSocket = GetAvailableSocket( );
+        OperateResultExOne<Socket> resultSocket = GetAvailableSocket( );
         if (!resultSocket.IsSuccess)
         {
             IsSocketError = true;
-            if (AlienSession != null) AlienSession.IsStatusOk = false;
-            InteractiveLock.Leave( );
+            if (AlienSession != null) AlienSession.setIsStatusOk( false);
+            queueLock.unlock();
             result.CopyErrorFromOther( resultSocket );
             return result;
         }
 
-        OperateResult<byte[]> read = ReadFromCoreServer( resultSocket.Content, send );
+        OperateResultExOne<byte[]> read = ReadFromCoreServer( resultSocket.Content, send );
 
         if (read.IsSuccess)
         {
@@ -465,35 +468,34 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
         else
         {
             IsSocketError = true;
-            if (AlienSession != null) AlienSession.IsStatusOk = false;
+            if (AlienSession != null) AlienSession.setIsStatusOk(false);
             result.CopyErrorFromOther( read );
         }
 
-        InteractiveLock.Leave( );
-        if (!isPersistentConn) resultSocket.Content?.Close( );
+        queueLock.unlock();
+        if (!isPersistentConn) CloseSocket(resultSocket.Content );
         return result;
     }
 
-    /// <summary>
-    /// 使用底层的数据报文来通讯，传入需要发送的消息，返回最终的数据结果，被拆分成了头子节和内容字节信息
-    /// </summary>
-    /// <param name="socket">网络套接字</param>
-    /// <param name="send">发送的数据</param>
-    /// <returns>结果对象</returns>
-    protected OperateResult<byte[], byte[]> ReadFromCoreServerBase(Socket socket, byte[] send )
+
+    /**
+     * 使用底层的数据报文来通讯，传入需要发送的消息，返回最终的数据结果，被拆分成了头子节和内容字节信息
+     * @param socket 网络套接字
+     * @param send 发送的数据
+     * @return 结果对象
+     */
+    protected OperateResultExTwo<byte[], byte[]> ReadFromCoreServerBase(Socket socket, byte[] send )
     {
-        var result = new OperateResult<byte[], byte[]>( );
+        OperateResultExTwo<byte[], byte[]> result = new OperateResultExTwo<byte[], byte[]>( );
         // LogNet?.WriteDebug( ToString( ), "Command: " + BasicFramework.SoftBasic.ByteToHexString( send ) );
-        TNetMessage netMsg = new TNetMessage
-        {
-            SendBytes = send
-        };
+        TNetMessage netMsg = getInstanceOfTNetMessage();
+        netMsg.setSendBytes(send);
 
         // 发送数据信息
         OperateResult resultSend = Send( socket, send );
         if (!resultSend.IsSuccess)
         {
-            socket?.Close( );
+            CloseSocket(socket);
             result.CopyErrorFromOther( resultSend );
             return result;
         }
@@ -502,10 +504,10 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
         if (receiveTimeOut >= 0)
         {
             // 接收数据信息
-            OperateResult<TNetMessage> resultReceive = ReceiveMessage(socket, receiveTimeOut, netMsg);
+            OperateResultExOne<TNetMessage> resultReceive = ReceiveMessage(socket, receiveTimeOut, netMsg);
             if (!resultReceive.IsSuccess)
             {
-                socket?.Close( );
+                CloseSocket(socket );
                 // result.CopyErrorFromOther( resultReceive );
                 result.Message = "Receive data timeout: " + receiveTimeOut;
                 return result;
@@ -522,124 +524,104 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
 
 
 
-    /// <summary>
-    /// 返回表示当前对象的字符串
-    /// </summary>
-    /// <returns></returns>
-    public override string ToString( )
-{
-    return "NetworkDoubleBase<TNetMessage>";
-}
+    /**
+     * 返回表示当前对象的字符串
+     * @return
+     */
+    @Override
+    public String toString( ) {
+        return "NetworkDoubleBase<TNetMessage>";
+    }
 
 
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<bool> GetBoolResultFromBytes( OperateResult<byte[]> result )
+    /**
+     * 将指定的OperateResult类型转化
+     * @param result 原始的类型
+     * @return 转化后的类型
+     */
+    protected OperateResultExOne<Boolean> GetBoolResultFromBytes( OperateResultExOne<byte[]> result )
     {
         return ByteTransformHelper.GetBoolResultFromBytes( result, byteTransform);
     }
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<byte> GetByteResultFromBytes( OperateResult<byte[]> result )
+
+    /**
+     * 将指定的OperateResult类型转化
+     * @param result 原始的类型
+     * @return 转化后的类型
+     */
+    protected OperateResultExOne<Byte> GetByteResultFromBytes( OperateResultExOne<byte[]> result )
     {
         return ByteTransformHelper.GetByteResultFromBytes( result, byteTransform );
     }
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<short> GetInt16ResultFromBytes( OperateResult<byte[]> result )
+
+
+    /**
+     * 将指定的OperateResult类型转化
+     * @param result 原始的类型
+     * @return 转化后的类型
+     */
+    protected OperateResultExOne<Short> GetInt16ResultFromBytes( OperateResultExOne<byte[]> result )
     {
         return ByteTransformHelper.GetInt16ResultFromBytes( result, byteTransform );
     }
 
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<ushort> GetUInt16ResultFromBytes( OperateResult<byte[]> result )
-    {
-        return ByteTransformHelper.GetUInt16ResultFromBytes( result, byteTransform );
-    }
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<int> GetInt32ResultFromBytes( OperateResult<byte[]> result )
+    /**
+     * 将指定的OperateResult类型转化
+     * @param result 原始的类型
+     * @return 转化后的类型
+     */
+    protected OperateResultExOne<Integer> GetInt32ResultFromBytes( OperateResultExOne<byte[]> result )
     {
         return ByteTransformHelper.GetInt32ResultFromBytes( result, byteTransform );
     }
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<uint> GetUInt32ResultFromBytes( OperateResult<byte[]> result )
-    {
-        return ByteTransformHelper.GetUInt32ResultFromBytes( result, byteTransform );
-    }
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<long> GetInt64ResultFromBytes( OperateResult<byte[]> result )
+
+    /**
+     * 将指定的OperateResult类型转化
+     * @param result 原始的类型
+     * @return 转化后的类型
+     */
+    protected OperateResultExOne<Long> GetInt64ResultFromBytes( OperateResultExOne<byte[]> result )
     {
         return ByteTransformHelper.GetInt64ResultFromBytes( result, byteTransform );
     }
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<ulong> GetUInt64ResultFromBytes( OperateResult<byte[]> result )
-    {
-        return ByteTransformHelper.GetUInt64ResultFromBytes( result, byteTransform );
-    }
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<float> GetSingleResultFromBytes( OperateResult<byte[]> result )
+
+    /**
+     * 将指定的OperateResult类型转化
+     * @param result 原始的类型
+     * @return 转化后的类型
+     */
+    protected OperateResultExOne<Float> GetSingleResultFromBytes( OperateResultExOne<byte[]> result )
     {
         return ByteTransformHelper.GetSingleResultFromBytes( result, byteTransform );
     }
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<double> GetDoubleResultFromBytes( OperateResult<byte[]> result )
+
+    /**
+     * 将指定的OperateResult类型转化
+     * @param result 原始的类型
+     * @return 转化后的类型
+     */
+    protected OperateResultExOne<Double> GetDoubleResultFromBytes( OperateResultExOne<byte[]> result )
     {
         return ByteTransformHelper.GetDoubleResultFromBytes( result, byteTransform );
     }
 
-    /// <summary>
-    /// 将指定的OperateResult类型转化
-    /// </summary>
-    /// <param name="result">原始的类型</param>
-    /// <returns>转化后的类型</returns>
-    protected OperateResult<string> GetStringResultFromBytes( OperateResult<byte[]> result )
+
+    /**
+     * 将指定的OperateResult类型转化
+     * @param result 原始的类型
+     * @return 转化后的类型
+     */
+    protected OperateResultExOne<String> GetStringResultFromBytes( OperateResultExOne<byte[]> result )
     {
         return ByteTransformHelper.GetStringResultFromBytes( result, byteTransform );
     }

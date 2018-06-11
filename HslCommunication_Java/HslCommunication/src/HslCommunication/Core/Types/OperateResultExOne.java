@@ -14,7 +14,7 @@ public class OperateResultExOne<T> extends  OperateResult
 
 
 
-    public static <T> OperateResultExOne CreateSuccessResult(T content){
+    public static <T> OperateResultExOne<T> CreateSuccessResult(T content){
         OperateResultExOne<T> resultExOne = new OperateResultExOne<>();
         resultExOne.Content = content;
         resultExOne.IsSuccess = true;
@@ -22,7 +22,7 @@ public class OperateResultExOne<T> extends  OperateResult
         return  resultExOne;
     }
 
-    public static <T> OperateResultExOne CreateFailedResult(OperateResult result){
+    public static <T> OperateResultExOne<T> CreateFailedResult(OperateResult result){
         OperateResultExOne<T> resultExOne = new OperateResultExOne<>();
         resultExOne.Message = result.Message;
         resultExOne.ErrorCode = result.ErrorCode;

@@ -1,10 +1,11 @@
 package HslCommunication.Core.Net.NetworkBase;
 
 import HslCommunication.Core.IMessage.INetMessage;
+import HslCommunication.Core.Types.HslTimeOut;
 import HslCommunication.Core.Types.OperateResult;
 import HslCommunication.Core.Types.OperateResultExOne;
 import HslCommunication.LogNet.Core.ILogNet;
-import HslCommunication.Core.Types.HslTimeOut;
+import HslCommunication.StringResources;
 import HslCommunication.Utilities;
 
 import java.io.*;
@@ -13,8 +14,6 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Date;
 import java.util.UUID;
-
-import HslCommunication.StringResources;
 
 
 /**
@@ -281,6 +280,20 @@ public abstract class NetworkBase {
     }
 
 
+    /**
+     * 安全的关闭一个套接字
+     * @param socket 网络套接字
+     */
+    protected void CloseSocket(Socket socket){
+        if(socket != null){
+            try {
+                socket.close();
+            }
+            catch (Exception ex){
+
+            }
+        }
+    }
 
 
     /**
@@ -293,6 +306,8 @@ public abstract class NetworkBase {
      */
     public UUID Token = null;
 
+
+
     /**
      * 返回对象的字符串表示形式
      * @return
@@ -301,4 +316,6 @@ public abstract class NetworkBase {
     public String toString(){
         return "NetworkBase";
     }
+
+
 }
