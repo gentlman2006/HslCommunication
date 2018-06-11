@@ -107,7 +107,14 @@ namespace HslCommunication.Core.Net
         /// <returns>字符串数据</returns>
         public override string ToString()
         {
-            return $"[{IpEndPoint}] [{LoginAlias}]";
+            if (string.IsNullOrEmpty( LoginAlias ))
+            {
+                return $"[{IpEndPoint}]";
+            }
+            else
+            {
+                return $"[{IpEndPoint}] [{LoginAlias}]";
+            }
         }
 
         #endregion

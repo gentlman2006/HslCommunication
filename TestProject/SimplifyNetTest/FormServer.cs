@@ -85,7 +85,7 @@ namespace SimplifyNetTest
 
             // 显示出来，谁发的，发了什么
             textBox2.Invoke( new Action( ( ) => {
-                textBox2.AppendText( $"[{session}] [{handle}] {value}" + Environment.NewLine );
+                textBox2.AppendText( $"{session} [{handle}] {value}" + Environment.NewLine );
             } ) );
 
         }
