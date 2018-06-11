@@ -91,7 +91,7 @@ namespace HslCommunication.Core
         /// <returns>带有成功标识的结果类对象</returns>
         OperateResult Write(string address, short value);
         /// <summary>
-        /// 写入ushort数据
+        /// 写入short数据
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="values">写入值</param>
