@@ -278,7 +278,7 @@ namespace HslCommunication.Core.Net
             else
             {
                 OperateResult<byte[]> contentResult = Receive( socket, contentLength );
-                if (!headResult.IsSuccess)
+                if (!contentResult.IsSuccess)
                 {
                     hslTimeOut.IsSuccessful = true;
                     result.CopyErrorFromOther( contentResult );

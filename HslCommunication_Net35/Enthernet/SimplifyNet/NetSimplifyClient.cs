@@ -108,7 +108,7 @@ namespace HslCommunication.Enthernet
         /// <returns></returns>
         public override string ToString()
         {
-            return base.ToString( );
+            return "NetSimplifyClient";
         }
 
 
