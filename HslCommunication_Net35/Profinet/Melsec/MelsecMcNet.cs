@@ -501,7 +501,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>返回读取结果</returns>
         public OperateResult Write( string address, string value, int length )
         {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
+            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
             temp = SoftBasic.ArrayExpandToLength( temp, length );
             temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
