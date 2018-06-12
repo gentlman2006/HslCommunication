@@ -130,9 +130,9 @@ namespace HslCommunication.Core.Net
         }
 
         /// <summary>
-        /// 读取三菱PLC中字软元件指定地址的ushort数据
+        /// 读取设备的ushort数据类型的数据
         /// </summary>
-        /// <param name="address">起始地址，格式为"D100"，"W1A0"</param>
+        /// <param name="address">起始地址</param>
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ushort> ReadUInt16( string address )
         {

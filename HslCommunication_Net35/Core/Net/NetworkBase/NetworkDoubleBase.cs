@@ -407,7 +407,8 @@ namespace HslCommunication.Core.Net
                 IsSocketError = false;
                 result.IsSuccess = read.IsSuccess;
                 result.Content = read.Content;
-                // string tmp2 = BasicFramework.SoftBasic.ByteToHexString( result.Content ) ;
+                //string tmp2 = BasicFramework.SoftBasic.ByteToHexString( result.Content, '-' );
+                
             }
             else
             {
