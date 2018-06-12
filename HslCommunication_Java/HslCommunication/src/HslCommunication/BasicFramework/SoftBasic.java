@@ -4,6 +4,7 @@ package HslCommunication.BasicFramework;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -55,6 +56,80 @@ public class SoftBasic {
         }
 
         return true;
+    }
+
+
+    /**
+     * 将byte数组的长度扩充到指定长度
+     * @param data 原先的数据长度
+     * @param length 扩充或是缩短后的长度
+     * @return 新的扩充后的数据对象
+     */
+    public static byte[] ArrayExpandToLength(byte[] data,int length){
+        if (data == null) return new byte[0];
+        byte[] buffer =  new byte[length];
+        System.arraycopy( data,0, buffer,0, Math.min( data.length, buffer.length ) );
+        return buffer;
+    }
+
+    /**
+     * 将byte数组的长度扩充到偶数长度
+     * @param data 原先的数据长度
+     * @return 新的扩充后的数据对象
+     */
+    public static byte[] ArrayExpandToLengthEven( byte[] data )
+    {
+        if (data == null) data = new byte[0];
+        if (data.length % 2 == 1)
+        {
+            return ArrayExpandToLength(data, data.length + 1 );
+        }
+        else
+        {
+            return data;
+        }
+    }
+
+
+
+    /**
+     * 将一个数组进行扩充到偶数长度
+     * @param data 原先数据的数据
+     * @param <T> 数组的类型
+     * @return 新数组长度信息
+     */
+    public static <T> T[] ArrayExpandToLengthEven(Class<T> tClass,  T[] data )
+    {
+        if (data == null) data = (T[]) new Object[0];
+
+        if (data.length % 2 == 1)
+        {
+            return ArrayExpandToLength(tClass, data, data.length + 1 );
+        }
+        else
+        {
+            return data;
+        }
+    }
+
+    /**
+     * 将一个数组进行扩充到指定长度，或是缩短到指定长度
+     * @param data 原先数据的数据
+     * @param length 新数组的长度
+     * @param <T> 数组的类型
+     * @return 新数组长度信息
+     */
+    public static <T> T[] ArrayExpandToLength(Class<T> tClass, T[] data, int length )
+    {
+        if (data == null) return (T[]) Array.newInstance(tClass,0);
+
+        if (data.length == length) return data;
+
+        T[] buffer = (T[]) Array.newInstance(tClass,length);
+
+        System.arraycopy( data,0, buffer,0, Math.min( data.length, buffer.length ) );
+
+        return buffer;
     }
 
 
