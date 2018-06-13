@@ -166,18 +166,21 @@ public class SoftBasic {
      */
     public static String ByteToHexString(byte[] InBytes, char segment)
     {
-        StringBuilder sb = new StringBuilder();
-        for (byte InByte : InBytes)
-        {
-            if (segment == 0) sb.append(String.format("{0:X2}", InByte));
-            else sb.append(String.format("{0:X2}{1}", InByte, segment));
-        }
 
-        if (segment != 0 && sb.length() > 1 && sb.charAt(sb.length() - 1) == segment)
-        {
-            sb.delete(sb.length() - 1, 1);
+        StringBuilder stringBuilder = new StringBuilder("");
+        if (InBytes == null || InBytes.length <= 0) {
+            return null;
         }
-        return sb.toString();
+        for (int i = 0; i < InBytes.length; i++) {
+            int v = InBytes[i] & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+            stringBuilder.append(segment);
+        }
+        return stringBuilder.toString();
     }
 
 

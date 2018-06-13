@@ -18,4 +18,8 @@ public class OperateResultExTwo<T1,T2> extends OperateResult
      * 泛型对象二
      */
     public T2 Content2 = null;
+
+
+
+
 }

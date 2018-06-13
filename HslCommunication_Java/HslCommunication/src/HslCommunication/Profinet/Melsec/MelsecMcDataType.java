@@ -1,13 +1,19 @@
 package HslCommunication.Profinet.Melsec;
 
+
+/**
+ * 三菱的数据类型
+ */
 public class MelsecMcDataType {
-    /// <summary>
-    /// 如果您清楚类型代号，可以根据值进行扩展
-    /// </summary>
-    /// <param name="code">数据类型的代号</param>
-    /// <param name="type">0或1，默认为0</param>
-    /// <param name="asciiCode">ASCII格式的类型信息</param>
-    /// <param name="fromBase">指示地址的多少进制的，10或是16</param>
+
+
+    /**
+     * 如果您清楚类型代号，可以根据值进行扩展
+     * @param code 数据类型的代号
+     * @param type 0或1，默认为0
+     * @param asciiCode ASCII格式的类型信息
+     * @param fromBase 指示地址的多少进制的，10或是16
+     */
     public MelsecMcDataType( byte code, byte type, String asciiCode, int fromBase )
     {
         DataCode = code;
@@ -18,10 +24,10 @@ public class MelsecMcDataType {
 
 
 
-    private byte DataCode = 0x00;
-    private byte DataType = 0x00;
-    private String AsciiCode = "";
-    private int FromBase = 0;
+    private byte DataCode = 0x00;                   // 类型代号
+    private byte DataType = 0x00;                   // 数据类型
+    private String AsciiCode = "";                  // ascii格式通信的字符
+    private int FromBase = 0;                       // 类型
 
 
     /**

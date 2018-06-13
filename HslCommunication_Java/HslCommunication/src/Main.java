@@ -1,6 +1,7 @@
 import HslCommunication.Core.Net.NetHandle;
 import HslCommunication.Core.Types.OperateResultExOne;
 import HslCommunication.Enthernet.SimplifyNet.NetSimplifyClient;
+import HslCommunication.Profinet.Melsec.MelsecMcNet;
 
 import java.util.UUID;
 
@@ -8,8 +9,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        NetSimplifyClientTest();
+        //NetSimplifyClientTest();
 
+
+        //MelsecTest();
 
         System.out.println("Hello World!");
     }
@@ -23,6 +26,18 @@ public class Main {
         if (read.IsSuccess) {
             System.out.println(read.Content);
         } else {
+            System.out.println("读取失败：" + read.Message);
+        }
+    }
+
+
+    private static void MelsecTest(){
+        MelsecMcNet melsecMcNet = new MelsecMcNet("192.168.1.192",6001);
+        OperateResultExOne<Boolean> read = melsecMcNet.ReadBool("M100");
+        if(read.IsSuccess){
+            System.out.println(read.Content);
+        }
+        else {
             System.out.println("读取失败：" + read.Message);
         }
     }
