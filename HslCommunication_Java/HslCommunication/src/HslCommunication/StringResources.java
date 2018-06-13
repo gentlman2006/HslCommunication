@@ -84,6 +84,7 @@ public class StringResources {
     public static final String  TokenCheckFailed = "接收验证令牌不一致";
     public static final String  TokenCheckTimeout = "接收验证超时:";
     public static final String  CommandHeadCodeCheckFailed = "命令头校验失败";
+    public static final String  CommandLengthCheckFailed = "命令长度检查失败";
     public static final String  NetClientAliasFailed = "客户端的别名接收失败：";
     public static final String  NetEngineStart = "启动引擎";
     public static final String  NetEngineClose = "关闭引擎";

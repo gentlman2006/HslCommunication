@@ -271,6 +271,15 @@ public class Utilities {
             byteArray[i+1] =temp;
             i++;
         }
+
+        if(byteArray.length >=2){
+            if(byteArray[0] == -1 && byteArray[1] == -2){
+                byte[] newArray = new byte[byteArray.length - 2];
+                System.arraycopy(byteArray,2,newArray,0,newArray.length);
+                byteArray = newArray;
+            }
+        }
+
         return byteArray;
     }
 
