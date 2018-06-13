@@ -918,7 +918,7 @@ namespace HslCommunication.Core.Net
                 {
                     return new OperateResult( )
                     {
-                        Message = read.Message,
+                        Message = write.Message,
                     };
                 }
                 // 报告进度
