@@ -254,7 +254,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
                 CoreSocket = session.getSocket();
                 IsSocketError = false;
                 AlienSession = session;
-                return InitilizationOnConnect( session.getSocket() );
+                return InitializationOnConnect( session.getSocket() );
             }
             else
             {
@@ -300,7 +300,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
      * @param socket 网络套接字
      * @return 结果类对象
      */
-    protected OperateResult InitilizationOnConnect( Socket socket ) {
+    protected OperateResult InitializationOnConnect( Socket socket ) {
         return OperateResult.CreateSuccessResult();
     }
 
@@ -394,7 +394,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
         if (result.IsSuccess)
         {
             // 初始化
-            OperateResult initi = InitilizationOnConnect( result.Content );
+            OperateResult initi = InitializationOnConnect( result.Content );
             if (!initi.IsSuccess)
             {
                 CloseSocket(result.Content);

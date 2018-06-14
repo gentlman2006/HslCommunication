@@ -15,16 +15,11 @@ public class Main {
         //MelsecTest();
         //PushNetTest();
 
-        NetPushClient client = new NetPushClient("127.0.0.1", 12345, "B");
-        client.CreatePush((NetPushClient c, String content) -> {
-            System.out.println(content);
-        });
 
         System.out.println("Hello World!等待10s关闭");
 
         try {
-            Thread.sleep(10000);
-            client.ClosePush();
+            Thread.sleep(10);
 
         } catch (Exception ex) {
 
