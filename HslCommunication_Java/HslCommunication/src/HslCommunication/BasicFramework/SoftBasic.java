@@ -184,6 +184,43 @@ public class SoftBasic {
     }
 
 
+    /**
+     *将bool数组转换到byte数组
+     * @param array bool数组
+     * @return 字节数组
+     */
+    public static byte[] BoolArrayToByte(boolean[] array)
+    {
+        if (array == null) return null;
+
+        int length = array.length % 8 == 0 ? array.length / 8 : array.length / 8 + 1;
+        byte[] buffer = new byte[length];
+
+        for (int i = 0; i < array.length; i++)
+        {
+            int index = i / 8;
+            int offect = i % 8;
+
+            byte temp = 0;
+            switch (offect)
+            {
+                case 0: temp = 0x01; break;
+                case 1: temp = 0x02; break;
+                case 2: temp = 0x04; break;
+                case 3: temp = 0x08; break;
+                case 4: temp = 0x10; break;
+                case 5: temp = 0x20; break;
+                case 6: temp = 0x40; break;
+                case 7: temp = (byte) 0x80; break;
+                default: break;
+            }
+
+            if (array[i]) buffer[index] += temp;
+        }
+
+        return buffer;
+
+    }
 
 
     /**

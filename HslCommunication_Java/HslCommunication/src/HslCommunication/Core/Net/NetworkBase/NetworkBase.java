@@ -211,12 +211,7 @@ public abstract class NetworkBase {
         catch (IOException ex)
         {
             operateResultExOne.Message = ex.getMessage();
-            try {
-                socket.close();
-            }
-            catch (IOException ex2){
-
-            }
+            CloseSocket(socket);
         }
 
         return operateResultExOne;

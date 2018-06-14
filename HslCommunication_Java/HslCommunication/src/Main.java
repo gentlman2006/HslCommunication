@@ -1,11 +1,9 @@
-import HslCommunication.BasicFramework.SoftBasic;
 import HslCommunication.Core.Net.NetHandle;
 import HslCommunication.Core.Types.OperateResult;
 import HslCommunication.Core.Types.OperateResultExOne;
 import HslCommunication.Enthernet.PushNet.NetPushClient;
 import HslCommunication.Enthernet.SimplifyNet.NetSimplifyClient;
 import HslCommunication.Profinet.Melsec.MelsecMcNet;
-import HslCommunication.Utilities;
 
 public class Main {
 
@@ -15,14 +13,19 @@ public class Main {
 
 
         //MelsecTest();
-        PushNetTest();
+        //PushNetTest();
 
-        System.out.print(SoftBasic.ByteToHexString(Utilities.string2Byte("B")));
+        NetPushClient client = new NetPushClient("127.0.0.1", 12345, "B");
+        client.CreatePush((NetPushClient c, String content) -> {
+            System.out.println(content);
+        });
 
-        System.out.println("Hello World!");
+        System.out.println("Hello World!等待10s关闭");
 
         try {
-            Thread.sleep(100000);
+            Thread.sleep(10000);
+            client.ClosePush();
+
         } catch (Exception ex) {
 
         }

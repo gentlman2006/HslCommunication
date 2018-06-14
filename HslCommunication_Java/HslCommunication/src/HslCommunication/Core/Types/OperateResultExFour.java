@@ -1,13 +1,13 @@
 package HslCommunication.Core.Types;
 
-
 /**
  * 带三个参数的泛型类对象
  * @param <T1> 参数一
  * @param <T2> 参数二
  * @param <T3> 参数三
+ * @param <T4> 参数四
  */
-public class OperateResultExThree<T1,T2,T3> extends OperateResult
+public class OperateResultExFour<T1,T2,T3,T4> extends OperateResult
 {
     /**
      * 泛型对象1
@@ -26,6 +26,10 @@ public class OperateResultExThree<T1,T2,T3> extends OperateResult
      */
     public T3 Content3 = null;
 
+    /**
+     * 泛型对象四
+     */
+    public T4 Content4 = null;
 
 
     /**
@@ -33,21 +37,23 @@ public class OperateResultExThree<T1,T2,T3> extends OperateResult
      * @param content1 内容一
      * @param content2 内容二
      * @param content3 内容三
+     * @param content4 内容四
      * @param <T1> 类型一
      * @param <T2> 类型二
      * @param <T3> 类型三
+     * @param <T4> 类型四
      * @return 结果类对象
      */
-    public static <T1,T2,T3> OperateResultExThree<T1,T2,T3> CreateSuccessResult(T1 content1,T2 content2,T3 content3){
-        OperateResultExThree<T1,T2,T3> result = new OperateResultExThree<>();
+    public static <T1,T2,T3,T4> OperateResultExFour<T1,T2,T3,T4> CreateSuccessResult(T1 content1,T2 content2,T3 content3,T4 content4){
+        OperateResultExFour<T1,T2,T3,T4> result = new OperateResultExFour<>();
         result.IsSuccess = true;
         result.Content1 = content1;
         result.Content2 = content2;
         result.Content3 = content3;
+        result.Content4 = content4;
         result.Message = "success";
         return result;
     }
-
 
 
     /**
@@ -56,11 +62,13 @@ public class OperateResultExThree<T1,T2,T3> extends OperateResult
      * @param <T1> 类型一
      * @param <T2> 类型二
      * @param <T3> 类型三
+     * @param <T4> 类型四
      * @return 结果类对象
      */
-    public static <T1,T2,T3> OperateResultExThree<T1,T2,T3> CreateFailedResult(OperateResult result){
-        OperateResultExThree resultExThree = new OperateResultExThree();
-        resultExThree.CopyErrorFromOther(result);
-        return resultExThree;
+    public static <T1,T2,T3,T4> OperateResultExFour<T1,T2,T3,T4> CreateFailedResult(OperateResult result){
+        OperateResultExFour resultExFour = new OperateResultExFour();
+        resultExFour.CopyErrorFromOther(result);
+        return resultExFour;
     }
+
 }

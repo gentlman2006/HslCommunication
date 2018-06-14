@@ -4,8 +4,8 @@ package HslCommunication;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.UUID;
 import java.nio.charset.Charset;
+import java.util.UUID;
 
 
 /**
@@ -307,6 +307,22 @@ public class Utilities {
             str = new String(byteArray);
         }
         return str;
+    }
+
+
+    /**
+     * 将byte[]数组的数据进行翻转
+     * @param reverse 等待反转的字符串
+     */
+    public static void bytesReverse(byte[] reverse) {
+        if (reverse != null) {
+            byte tmp = 0;
+            for (int i = 0; i < reverse.length / 2; i++) {
+                tmp = reverse[i];
+                reverse[i] = reverse[reverse.length - 1 - i];
+                reverse[reverse.length - 1 - i] = tmp;
+            }
+        }
     }
 
 

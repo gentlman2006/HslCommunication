@@ -17,6 +17,9 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.function.BiConsumer;
 
+/**
+ * 客户端服务器的共享基类
+ */
 public class NetworkXBase extends NetworkBase
 {
 
@@ -55,7 +58,7 @@ public class NetworkXBase extends NetworkBase
     }
 
 
-    private Thread thread;
+    private Thread thread;  // 后台线程
 
     /**
      * 开始接受数据
@@ -109,46 +112,44 @@ public class NetworkXBase extends NetworkBase
 
     }
 
-    /// <summary>
-    /// 检查当前的头子节信息的令牌是否是正确的
-    /// </summary>
-    /// <param name="headBytes">头子节数据</param>
-    /// <returns>令牌是验证成功</returns>
+    /**
+     * 检查当前的头子节信息的令牌是否是正确的
+     * @param headBytes 头子节数据
+     * @return 令牌是验证成功
+     */
     protected boolean CheckRemoteToken( byte[] headBytes )
     {
         return SoftBasic.IsTwoBytesEquel( headBytes,12, Utilities.UUID2Byte(Token),0,16 );
     }
 
 
-    /// <summary>
-    /// 接收出错的时候进行处理
-    /// </summary>
-    /// <param name="session">会话内容</param>
-    /// <param name="ex">异常信息</param>
+    /**
+     * 接收出错的时候进行处理
+     * @param session 会话内容
+     */
     protected void SocketReceiveException( AppSession session ) {
 
     }
 
 
-    /// <summary>
-    /// 当远端的客户端关闭连接时触发
-    /// </summary>
-    /// <param name="session"></param>
+    /**
+     * 当远端的客户端关闭连接时触发
+     * @param session 会话内容
+     */
     protected void AppSessionRemoteClose( AppSession session ) {
 
     }
 
 
 
-
-    /// <summary>
-    /// [自校验] 发送字节数据并确认对方接收完成数据，如果结果异常，则结束通讯
-    /// </summary>
-    /// <param name="socket">网络套接字</param>
-    /// <param name="headcode">头指令</param>
-    /// <param name="customer">用户指令</param>
-    /// <param name="send">发送的数据</param>
-    /// <returns>是否发送成功</returns>
+    /**
+     * [自校验] 发送字节数据并确认对方接收完成数据，如果结果异常，则结束通讯
+     * @param socket 网络套接字
+     * @param headcode 头指令
+     * @param customer 用户指令
+     * @param send 发送的数据
+     * @return 是否发送成功
+     */
     protected OperateResult SendBaseAndCheckReceive(Socket socket, int headcode, int customer, byte[] send )
     {
         // 数据处理
@@ -173,35 +174,33 @@ public class NetworkXBase extends NetworkBase
         if (checkResult.Content != send.length)
         {
             CloseSocket(socket);
-            OperateResult result = new OperateResult();
-            result.Message = StringResources.CommandLengthCheckFailed;
-            return result;
+            return OperateResult.CreateFailedResult(StringResources.CommandLengthCheckFailed);
         }
 
         return checkResult;
     }
 
 
-    /// <summary>
-    /// [自校验] 发送字节数据并确认对方接收完成数据，如果结果异常，则结束通讯
-    /// </summary>
-    /// <param name="socket">网络套接字</param>
-    /// <param name="customer">用户指令</param>
-    /// <param name="send">发送的数据</param>
-    /// <returns>是否发送成功</returns>
+    /**
+     * [自校验] 发送字节数据并确认对方接收完成数据，如果结果异常，则结束通讯
+     * @param socket 网络套接字
+     * @param customer 用户指令
+     * @param send 发送的数据
+     * @return 是否发送成功
+     */
     protected OperateResult SendBytesAndCheckReceive( Socket socket, int customer, byte[] send )
     {
         return SendBaseAndCheckReceive( socket, HslProtocol.ProtocolUserBytes, customer, send );
     }
 
 
-    /// <summary>
-    /// [自校验] 直接发送字符串数据并确认对方接收完成数据，如果结果异常，则结束通讯
-    /// </summary>
-    /// <param name="socket">网络套接字</param>
-    /// <param name="customer">用户指令</param>
-    /// <param name="send">发送的数据</param>
-    /// <returns>是否发送成功</returns>
+    /**
+     * [自校验] 直接发送字符串数据并确认对方接收完成数据，如果结果异常，则结束通讯
+     * @param socket 网络套接字
+     * @param customer 用户指令
+     * @param send 发送的数据
+     * @return 是否发送成功
+     */
     protected OperateResult SendStringAndCheckReceive( Socket socket, int customer, String send )
     {
         byte[] data =(send == null || send.isEmpty() ) ? null : Utilities.string2Byte( send );
@@ -344,74 +343,69 @@ public class NetworkXBase extends NetworkBase
 
 
 
-    /// <summary>
-    /// [自校验] 接收一条完整的同步数据，包含头子节和内容字节，基础的数据，如果结果异常，则结束通讯
-    /// </summary>
-    /// <param name="socket">套接字</param>
-    /// <param name="timeout">超时时间设置，如果为负数，则不检查超时</param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentNullException">result</exception>
-    protected OperateResultExTwo<byte[], byte[]> ReceiveAndCheckBytes( Socket socket, int timeout )
-    {
-        // 30秒超时接收验证
-        HslTimeOut hslTimeOut = new HslTimeOut( );
 
-            hslTimeOut.DelayTime = timeout;
-                    hslTimeOut.IsSuccessful = false;
-                    hslTimeOut.StartTime = new Date();
-                    hslTimeOut.WorkSocket = socket;
+    /**
+     * [自校验] 接收一条完整的同步数据，包含头子节和内容字节，基础的数据，如果结果异常，则结束通讯
+     * @param socket 套接字
+     * @param timeout 超时时间设置，如果为负数，则不检查超时
+     * @return 接收的结果数据
+     */
+    protected OperateResultExTwo<byte[], byte[]> ReceiveAndCheckBytes( Socket socket, int timeout ) {
+        // 30秒超时接收验证
+        HslTimeOut hslTimeOut = new HslTimeOut();
+        hslTimeOut.DelayTime = timeout;
+        hslTimeOut.IsSuccessful = false;
+        hslTimeOut.StartTime = new Date();
+        hslTimeOut.WorkSocket = socket;
 
 
         //if (timeout > 0) ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), hslTimeOut );
 
         // 接收头指令
-        OperateResultExOne<byte[]> headResult = Receive( socket, HslProtocol.HeadByteLength );
-        if (!headResult.IsSuccess)
-        {
+        OperateResultExOne<byte[]> headResult = Receive(socket, HslProtocol.HeadByteLength);
+        if (!headResult.IsSuccess) {
             hslTimeOut.IsSuccessful = true;
-            OperateResultExTwo<byte[],byte[]> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.CopyErrorFromOther(headResult);
-            return resultExTwo;
+            return OperateResultExTwo.<byte[],byte[]>CreateFailedResult(headResult);
         }
         hslTimeOut.IsSuccessful = true;
 
         // 检查令牌
-        if (!CheckRemoteToken( headResult.Content ))
-        {
+        if (!CheckRemoteToken(headResult.Content)) {
             CloseSocket(socket);
-            OperateResultExTwo<byte[],byte[]> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.Message =  StringResources.TokenCheckFailed;
+            OperateResultExTwo<byte[], byte[]> resultExTwo = new OperateResultExTwo<>();
+            resultExTwo.Message = StringResources.TokenCheckFailed;
             return resultExTwo;
         }
 
-        int contentLength = Utilities.getInt( headResult.Content, HslProtocol.HeadByteLength - 4 );
+        int contentLength = Utilities.getInt(headResult.Content, HslProtocol.HeadByteLength - 4);
         // 接收内容
-        OperateResultExOne<byte[]> contentResult = Receive( socket, contentLength );
+        OperateResultExOne<byte[]> contentResult = Receive(socket, contentLength);
         if (!contentResult.IsSuccess) {
-            OperateResultExTwo<byte[],byte[]> resultExTwo = new OperateResultExTwo<>();
+            OperateResultExTwo<byte[], byte[]> resultExTwo = new OperateResultExTwo<>();
             resultExTwo.CopyErrorFromOther(contentResult);
             return resultExTwo;
         }
 
         // 返回成功信息
-        OperateResult checkResult = SendLong( socket, HslProtocol.HeadByteLength + contentLength );
-        if(!checkResult.IsSuccess) {
-            OperateResultExTwo<byte[],byte[]> resultExTwo = new OperateResultExTwo<>();
+        OperateResult checkResult = SendLong(socket, HslProtocol.HeadByteLength + contentLength);
+        if (!checkResult.IsSuccess) {
+            OperateResultExTwo<byte[], byte[]> resultExTwo = new OperateResultExTwo<>();
             resultExTwo.CopyErrorFromOther(checkResult);
             return resultExTwo;
         }
 
         byte[] head = headResult.Content;
         byte[] content = contentResult.Content;
-        content = HslProtocol.CommandAnalysis( head, content );
-        return OperateResultExTwo.CreateSuccessResult( head, content );
+        content = HslProtocol.CommandAnalysis(head, content);
+        return OperateResultExTwo.CreateSuccessResult(head, content);
     }
 
-    /// <summary>
-    /// [自校验] 从网络中接收一个字符串数据，如果结果异常，则结束通讯
-    /// </summary>
-    /// <param name="socket">套接字</param>
-    /// <returns></returns>
+
+    /**
+     * [自校验] 从网络中接收一个字符串数据，如果结果异常，则结束通讯
+     * @param socket 套接字
+     * @return 接收的结果数据
+     */
     protected OperateResultExTwo<Integer, String> ReceiveStringContentFromSocket( Socket socket )
     {
         OperateResultExTwo<byte[], byte[]> receive = ReceiveAndCheckBytes( socket, 10000 );
@@ -655,15 +649,16 @@ public class NetworkXBase extends NetworkBase
 
 
 
-    /// <summary>
-    /// 发送一个流的所有数据到网络套接字
-    /// </summary>
-    /// <param name="socket"></param>
-    /// <param name="stream"></param>
-    /// <param name="receive"></param>
-    /// <param name="report"></param>
-    /// <param name="reportByPercent"></param>
-    /// <returns></returns>
+
+    /**
+     * 发送一个流的所有数据到网络套接字
+     * @param socket 网络套接字
+     * @param stream 输入流
+     * @param receive 接收长度
+     * @param report 进度报告
+     * @param reportByPercent 是否按照百分比报告进度
+     * @return 是否成功
+     */
     protected OperateResult SendStream( Socket socket, InputStream stream, long receive, BiConsumer<Long, Long> report, boolean reportByPercent )
     {
         byte[] buffer = new byte[102400]; // 100K的数据缓存池
@@ -715,20 +710,21 @@ public class NetworkXBase extends NetworkBase
         return OperateResult.CreateSuccessResult( );
     }
 
-    /// <summary>
-    /// 从套接字中接收所有的数据然后写入到流当中去
-    /// </summary>
-    /// <param name="socket"></param>
-    /// <param name="stream"></param>
-    /// <param name="totleLength"></param>
-    /// <param name="report"></param>
-    /// <param name="reportByPercent"></param>
-    /// <returns></returns>
-    protected OperateResult WriteStream( Socket socket, OutputStream stream, long totleLength, BiConsumer<Long, Long> report, boolean reportByPercent )
+
+    /**
+     * 从套接字中接收所有的数据然后写入到流当中去
+     * @param socket 网络套接字
+     * @param stream 输出流
+     * @param totalLength 总长度
+     * @param report 进度报告
+     * @param reportByPercent 进度报告是否按照百分比
+     * @return 结果类对象
+     */
+    protected OperateResult WriteStream( Socket socket, OutputStream stream, long totalLength, BiConsumer<Long, Long> report, boolean reportByPercent )
     {
         long count_receive = 0;
         long percent = 0;
-        while (count_receive < totleLength)
+        while (count_receive < totalLength)
         {
             // 先从流中异步接收数据
             OperateResultExTwo<Integer,byte[]> read = ReceiveBytesContentFromSocket( socket );
@@ -752,16 +748,16 @@ public class NetworkXBase extends NetworkBase
             // 报告进度
             if (reportByPercent)
             {
-                long percentCurrent = count_receive * 100 / totleLength;
+                long percentCurrent = count_receive * 100 / totalLength;
                 if (percent != percentCurrent)
                 {
                     percent = percentCurrent;
-                    if(report!=null) report.accept( count_receive, totleLength );
+                    if(report!=null) report.accept( count_receive, totalLength );
                 }
             }
             else
             {
-                if(report!=null) report.accept( count_receive, totleLength );
+                if(report!=null) report.accept( count_receive, totalLength );
             }
 
         }

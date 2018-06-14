@@ -61,5 +61,30 @@ public class OperateResult
         result.Message = "success";
         return result;
     }
+
+
+
+
+
+
+
+
+
+    /**
+     * 创建一个特定错误的结果类对象
+     * @param message 错误消息
+     * @return 结果类对象
+     */
+    public static OperateResult CreateFailedResult(String message){
+        OperateResult result = new OperateResult();
+        result.Message = message;
+        return result;
+    }
+
+
+
+
+
+
 }
 
