@@ -87,7 +87,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="socket"></param>
         /// <returns></returns>
-        protected override OperateResult InitilizationOnConnect( Socket socket )
+        protected override OperateResult InitializationOnConnect( Socket socket )
         {
             // 第一层通信的初始化
             OperateResult<byte[], byte[]> read_first = ReadFromCoreServerBase( socket, plcHead1 );

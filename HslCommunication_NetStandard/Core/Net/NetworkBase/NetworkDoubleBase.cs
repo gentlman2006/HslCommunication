@@ -203,7 +203,7 @@ namespace HslCommunication.Core.Net
                     CoreSocket = session.Socket;
                     IsSocketError = false;
                     AlienSession = session;
-                    return InitilizationOnConnect( session.Socket );
+                    return InitializationOnConnect( session.Socket );
                 }
                 else
                 {
@@ -249,7 +249,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="socket">网络套接字</param>
         /// <returns></returns>
-        protected virtual OperateResult InitilizationOnConnect( Socket socket )
+        protected virtual OperateResult InitializationOnConnect( Socket socket )
         {
             return OperateResult.CreateSuccessResult( );
         }
@@ -339,7 +339,7 @@ namespace HslCommunication.Core.Net
             if (result.IsSuccess)
             {
                 // 初始化
-                OperateResult initi = InitilizationOnConnect( result.Content );
+                OperateResult initi = InitializationOnConnect( result.Content );
                 if (!initi.IsSuccess)
                 {
                     result.Content?.Close( );

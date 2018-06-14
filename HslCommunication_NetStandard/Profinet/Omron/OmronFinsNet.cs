@@ -403,7 +403,7 @@ namespace HslCommunication.Profinet.Omron
         /// </summary>
         /// <param name="socket"></param>
         /// <returns></returns>
-        protected override OperateResult InitilizationOnConnect( Socket socket )
+        protected override OperateResult InitializationOnConnect( Socket socket )
         {
             // handSingle就是握手信号字节
             OperateResult<byte[], byte[]> read = ReadFromCoreServerBase( socket, handSingle );
