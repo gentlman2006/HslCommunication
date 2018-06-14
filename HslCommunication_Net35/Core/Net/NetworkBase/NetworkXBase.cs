@@ -946,15 +946,15 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="socket"></param>
         /// <param name="stream"></param>
-        /// <param name="totleLength"></param>
+        /// <param name="totalLength"></param>
         /// <param name="report"></param>
         /// <param name="reportByPercent"></param>
         /// <returns></returns>
-        protected OperateResult WriteStream( Socket socket, Stream stream, long totleLength, Action<long, long> report, bool reportByPercent )
+        protected OperateResult WriteStream( Socket socket, Stream stream, long totalLength, Action<long, long> report, bool reportByPercent )
         {
             long count_receive = 0;
             long percent = 0;
-            while (count_receive < totleLength)
+            while (count_receive < totalLength)
             {
                 // 先从流中异步接收数据
                 OperateResult<int,byte[]> read = ReceiveBytesContentFromSocket( socket );
@@ -980,16 +980,16 @@ namespace HslCommunication.Core.Net
                 // 报告进度
                 if (reportByPercent)
                 {
-                    long percentCurrent = count_receive * 100 / totleLength;
+                    long percentCurrent = count_receive * 100 / totalLength;
                     if (percent != percentCurrent)
                     {
                         percent = percentCurrent;
-                        report?.Invoke( count_receive, totleLength );
+                        report?.Invoke( count_receive, totalLength );
                     }
                 }
                 else
                 {
-                    report?.Invoke( count_receive, totleLength );
+                    report?.Invoke( count_receive, totalLength );
                 }
                 
             }
