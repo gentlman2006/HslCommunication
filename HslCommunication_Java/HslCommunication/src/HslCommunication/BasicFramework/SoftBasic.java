@@ -224,6 +224,48 @@ public class SoftBasic {
 
 
     /**
+     * 从Byte数组中提取位数组
+     * @param InBytes 原先的字节数组
+     * @param length 想要转换的长度，如果超出自动会缩小到数组最大长度
+     * @return 结果对象
+     */
+    public static boolean[] ByteToBoolArray(byte[] InBytes, int length)
+    {
+        if (InBytes == null) return null;
+
+        if (length > InBytes.length * 8) length = InBytes.length * 8;
+        boolean[] buffer = new boolean[length];
+
+        for (int i = 0; i < length; i++)
+        {
+            int index = i / 8;
+            int offect = i % 8;
+
+            byte temp = 0;
+            switch (offect)
+            {
+                case 0: temp = 0x01; break;
+                case 1: temp = 0x02; break;
+                case 2: temp = 0x04; break;
+                case 3: temp = 0x08; break;
+                case 4: temp = 0x10; break;
+                case 5: temp = 0x20; break;
+                case 6: temp = 0x40; break;
+                case 7: temp = (byte) 0x80; break;
+                default: break;
+            }
+
+            if ((InBytes[index] & temp) == temp)
+            {
+                buffer[i] = true;
+            }
+        }
+
+        return buffer;
+    }
+
+
+    /**
      * 字符串数据转化成16进制表示的字符串
      * @param InString 输入的字符串数据
      * @return 返回的字符串

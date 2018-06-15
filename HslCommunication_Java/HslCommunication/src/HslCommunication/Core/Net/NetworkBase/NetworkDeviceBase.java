@@ -265,12 +265,14 @@ public class NetworkDeviceBase<TNetMessage extends INetMessage,TTransform extend
         return Write(address, super.getByteTransform().TransByte(values));
     }
 
-    /// <summary>
-    /// 向设备中写入short数据，返回是否写入成功
-    /// </summary>
-    /// <param name="address">数据地址</param>
-    /// <param name="value">实际数据</param>
-    /// <returns>返回写入结果</returns>
+
+
+    /**
+     * 向设备中写入short数据，返回是否写入成功
+     * @param address 起始地址
+     * @param value 写入值
+     * @return 返回写入结果
+     */
     public OperateResult Write(String address, short value) {
         return Write(address, new short[]{value});
     }
@@ -373,12 +375,13 @@ public class NetworkDeviceBase<TNetMessage extends INetMessage,TTransform extend
     }
 
 
-    /// <summary>
-    /// 向P设备中写入字符串，编码格式为ASCII
-    /// </summary>
-    /// <param name="address">数据地址</param>
-    /// <param name="value">实际数据</param>
-    /// <returns>返回读取结果</returns>
+
+    /**
+     * 向设备中写入字符串，编码格式为ASCII
+     * @param address 起始地址
+     * @param value 写入值
+     * @return 返回读取结果
+     */
     public OperateResult Write(String address, String value) {
         byte[] temp = getByteTransform().TransByte(value, "US-ASCII");
         if (WordLength == 1) temp = SoftBasic.ArrayExpandToLengthEven(temp);

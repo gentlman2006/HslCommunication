@@ -1,9 +1,13 @@
 import HslCommunication.Core.Net.NetHandle;
 import HslCommunication.Core.Types.OperateResult;
 import HslCommunication.Core.Types.OperateResultExOne;
+import HslCommunication.Enthernet.ComplexNet.NetComplexClient;
 import HslCommunication.Enthernet.PushNet.NetPushClient;
 import HslCommunication.Enthernet.SimplifyNet.NetSimplifyClient;
+import HslCommunication.ModBus.ModbusTcpNet;
 import HslCommunication.Profinet.Melsec.MelsecMcNet;
+import HslCommunication.Profinet.Siemens.SiemensPLCS;
+import HslCommunication.Profinet.Siemens.SiemensS7Net;
 
 public class Main {
 
@@ -15,12 +19,26 @@ public class Main {
         //MelsecTest();
         //PushNetTest();
 
+        //ModbusTcpTets();
+        //SiemesTest();
 
         System.out.println("Hello World!等待10s关闭");
+        NetComplexClient client = new NetComplexClient();
+        client.setIpAddress("127.0.0.1");
+        client.setPort(12346);
+        client.setClientAlias("测试1");
+        client.AcceptString=(NetHandle handle,String value)->{
+            System.out.println("Handle:"+handle.get_CodeValue()+"  Value:"+value);
+        };
+
+        client.ClientStart();
 
         try {
-            Thread.sleep(10);
-
+            Thread.sleep(2000);
+            client.Send(new NetHandle(1),"asdasdi阿斯达阿斯达");
+            System.out.println(client.getDelayTime());
+            Thread.sleep(100000);
+            client.ClientClose();
         } catch (Exception ex) {
 
         }
@@ -126,6 +144,11 @@ public class Main {
         }
     }
 
+    private static void SiemesTest(){
+        SiemensS7Net siemens_net = new SiemensS7Net(SiemensPLCS.S1200,"192.168.1.195");
+        System.out.println(siemens_net.ReadFloat("M100").Content);
+    }
+
     private static void PushNetTest() {
         NetPushClient client = new NetPushClient("127.0.0.1", 12345, "C");
         OperateResult connect = client.CreatePush((NetPushClient c, String content) -> {
@@ -136,5 +159,23 @@ public class Main {
         } else {
             System.out.println("连接失败!"+connect.Message);
         }
+    }
+
+    private static void ModbusTcpTets(){
+        ModbusTcpNet modbusTcpNet = new ModbusTcpNet("127.0.0.1",502,(byte) 0x01);
+        System.out.println(modbusTcpNet.ReadDouble("200").Content);
+    }
+
+    private static void NetComplexClientTest(){
+        NetComplexClient client = new NetComplexClient();
+        client.setIpAddress("127.0.0.1");
+        client.setPort(12346);
+        client.setClientAlias("测试1");
+        client.AcceptString=(NetHandle handle,String value)->{
+          System.out.println("Handle:"+handle.get_CodeValue()+"  Value:"+value);
+        };
+
+        client.ClientStart();
+
     }
 }

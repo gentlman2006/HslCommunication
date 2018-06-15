@@ -54,7 +54,7 @@ public class AppSession {
      * 设置此对象的远程连接客户端
      * @param ipEndPoint 远程客户端
      */
-    void setIpEndPoint(InetAddress ipEndPoint) {
+    public void setIpEndPoint(InetAddress ipEndPoint) {
         IpEndPoint = ipEndPoint;
     }
 
@@ -86,7 +86,7 @@ public class AppSession {
      * 设置当前的心跳时间
      * @param date 心跳时间
      */
-    void setHeartTime(Date date){
+    public void setHeartTime(Date date){
         this.HeartTime = date;
     }
 

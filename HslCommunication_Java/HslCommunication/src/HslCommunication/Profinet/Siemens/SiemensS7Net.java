@@ -14,30 +14,37 @@ import java.io.ByteArrayOutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
+/**
+ * 西门子的数据交互类，采用s7协议实现
+ */
 public class SiemensS7Net extends NetworkDeviceBase<S7Message, ReverseBytesTransform> {
 
-    /// <summary>
-    /// 实例化一个西门子的S7协议的通讯对象
-    /// </summary>
-    /// <param name="siemens">指定西门子的型号</param>
+
+    /**
+     * 实例化一个西门子的S7协议的通讯对象
+     * @param siemens 指定西门子的型号
+     */
     public SiemensS7Net(SiemensPLCS siemens) {
         Initialization(siemens, "");
     }
 
-    /// <summary>
-    /// 实例化一个西门子的S7协议的通讯对象并指定Ip地址
-    /// </summary>
-    /// <param name="siemens">指定西门子的型号</param>
-    /// <param name="ipAddress">Ip地址</param>
+
+
+    /**
+     * 实例化一个西门子的S7协议的通讯对象并指定Ip地址
+     * @param siemens 指定西门子的型号
+     * @param ipAddress Ip地址
+     */
     public SiemensS7Net(SiemensPLCS siemens, String ipAddress) {
         Initialization(siemens, ipAddress);
     }
 
-    /// <summary>
-    /// 初始化方法
-    /// </summary>
-    /// <param name="siemens"></param>
-    /// <param name="ipAddress"></param>
+
+    /**
+     * 初始化方法
+     * @param siemens 西门子类型
+     * @param ipAddress Ip地址
+     */
     private void Initialization(SiemensPLCS siemens, String ipAddress) {
         WordLength = 2;
         setIpAddress(ipAddress);
@@ -66,16 +73,10 @@ public class SiemensS7Net extends NetworkDeviceBase<S7Message, ReverseBytesTrans
     }
 
 
-    /// <summary>
-    /// 在客户端连接上服务器后，所做的一些初始化操作
-    /// </summary>
-    /// <param name="socket"></param>
-    /// <returns></returns>
-
     /**
-     *
+     *在客户端连接上服务器后，所做的一些初始化操作
      * @param socket 网络套接字
-     * @return
+     * @return 返回连接结果
      */
     @Override
     protected OperateResult InitializationOnConnect(Socket socket) {
@@ -651,9 +652,9 @@ public class SiemensS7Net extends NetworkDeviceBase<S7Message, ReverseBytesTrans
                 int ll = 0;
                 for (int ii = 21; ii < read.Content.length; ii++) {
                     if ((ii + 1) < read.Content.length) {
-                        if (read.Content[ii] == 0xFF &&
+                        if (read.Content[ii] == (byte) 0xFF &&
                                 read.Content[ii + 1] == 0x04) {
-                            // 有数据l=
+                            // 有数据
                             System.arraycopy(read.Content, ii + 4, buffer, ll, length[kk]);
                             ii += length[kk] + 3;
                             ll += length[kk];

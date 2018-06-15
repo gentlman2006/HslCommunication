@@ -132,4 +132,12 @@ public class NetPushClient extends NetworkXBase
     private BiConsumer<NetPushClient, String> action;       // 服务器推送后的回调方法
 
 
+    /**
+     * 获取本对象的字符串表示形式
+     * @return 字符串
+     */
+    @Override
+    public String toString() {
+        return "NetPushClient";
+    }
 }

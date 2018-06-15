@@ -18,7 +18,7 @@ public class S7Message implements INetMessage
     public int GetContentLengthByHeadBytes(){
         if(HeadBytes == null) return 0;
 
-        return (HeadBytes[2] & 0xff) * 256 + (HeadBytes[3] & 0xff);
+        return (HeadBytes[2] & 0xff) * 256 + (HeadBytes[3] & 0xff) - 4;
     }
 
 
