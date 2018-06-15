@@ -135,5 +135,18 @@ namespace HslCommunication.Enthernet
         private Action<NetPushClient, string> action;          // 服务器推送后的回调方法
 
         #endregion
+
+        #region Object Override
+
+        /// <summary>
+        /// 返回表示当前对象的字符串
+        /// </summary>
+        /// <returns>字符串</returns>
+        public override string ToString( )
+        {
+            return "NetPushClient";
+        }
+
+        #endregion
     }
 }
