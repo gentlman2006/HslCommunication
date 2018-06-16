@@ -623,7 +623,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 设置或获取系统框架的版本号
         /// </summary>
-        public static SystemVersion FrameworkVersion { get; set; } = new SystemVersion("5.1.0");
+        public static SystemVersion FrameworkVersion { get; set; } = new SystemVersion("5.1.1");
 
 
         #endregion
