@@ -264,16 +264,24 @@ public class Utilities {
             byteArray = str.getBytes();
         }
 
-        for(int i=0;i<byteArray.length;i++)
-        {
-            byte temp=byteArray[i];
-            byteArray[i]=byteArray[i+1];
-            byteArray[i+1] =temp;
-            i++;
-        }
 
         if(byteArray.length >=2){
             if(byteArray[0] == -1 && byteArray[1] == -2){
+                byte[] newArray = new byte[byteArray.length - 2];
+                System.arraycopy(byteArray,2,newArray,0,newArray.length);
+                byteArray = newArray;
+            }
+            else if(byteArray[0] == -2 && byteArray[1] == -1)
+            {
+                for(int i=0;i<byteArray.length;i++)
+                {
+                    byte temp=byteArray[i];
+                    byteArray[i]=byteArray[i+1];
+                    byteArray[i+1] =temp;
+                    i++;
+                }
+
+
                 byte[] newArray = new byte[byteArray.length - 2];
                 System.arraycopy(byteArray,2,newArray,0,newArray.length);
                 byteArray = newArray;

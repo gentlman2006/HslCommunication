@@ -4,8 +4,7 @@ import HslCommunication.Core.Net.HslProtocol;
 import HslCommunication.Core.Net.NetHandle;
 import HslCommunication.Core.Net.NetworkBase.NetworkXBase;
 import HslCommunication.Core.Net.StateOne.AppSession;
-import HslCommunication.Core.Types.OperateResult;
-import HslCommunication.Core.Types.OperateResultExOne;
+import HslCommunication.Core.Types.*;
 import HslCommunication.Utilities;
 
 import java.net.Socket;
@@ -142,32 +141,32 @@ public class NetComplexClient extends NetworkXBase {
     /**
      * 客户端启动成功的事件，重连成功也将触发此事件，参数没有意义
      */
-    public java.util.function.Consumer<Integer> LoginSuccess;
+    public ActionOperate LoginSuccess;
 
     /**
      * 连接失败时触发的事件，参数为连接失败的次数
      */
-    public java.util.function.Consumer<Integer> LoginFailed;
+    public ActionOperateExOne<Integer> LoginFailed;
 
     /**
      * 服务器的异常，启动，等等一般消息产生的时候，出发此事件
      */
-    public java.util.function.Consumer<String> MessageAlerts;
+    public ActionOperateExOne<String> MessageAlerts;
 
     /**
      * 在客户端断开后并在重连服务器之前触发，用于清理系统资源，参数无意义
      */
-    public java.util.function.Consumer<Integer> BeforReConnected;
+    public ActionOperate BeforReConnected;
 
     /**
      * 当接收到文本数据的时候,触发此事件
      */
-    public java.util.function.BiConsumer<NetHandle, String> AcceptString;
+    public ActionOperateExThree<NetComplexClient, NetHandle, String> AcceptString;
 
     /**
      * 当接收到字节数据的时候,触发此事件
      */
-    public java.util.function.BiConsumer<NetHandle, byte[]> AcceptByte;
+    public ActionOperateExThree<NetComplexClient, NetHandle, byte[]> AcceptByte;
 
 
     /**
@@ -195,7 +194,6 @@ public class NetComplexClient extends NetworkXBase {
     }
 
 
-
     /**
      * 启动客户端引擎，连接服务器系统
      */
@@ -205,11 +203,21 @@ public class NetComplexClient extends NetworkXBase {
         isConnecting = 1;
 
         // 启动后台线程连接
-        new Thread(() -> ThreadLogin()).start();
+        new Thread(){
+            @Override
+            public void run() {
+                ThreadLogin();
+            }
+        }.start();
 
         // 启动心跳线程，在第一次Start的时候
         if (thread_heart_check == null) {
-            thread_heart_check = new Thread(() -> ThreadHeartCheck());
+            thread_heart_check = new Thread(){
+                @Override
+                public void run() {
+                    ThreadHeartCheck();
+                }
+            };
             thread_heart_check.start();
         }
     }
@@ -220,28 +228,28 @@ public class NetComplexClient extends NetworkXBase {
     private void AwaitToConnect() {
         if (ConnectFailedCount == 0) {
             // English Version : Connecting Server...
-            if (MessageAlerts != null) MessageAlerts.accept("正在连接服务器...");
+            if (MessageAlerts != null) MessageAlerts.Action("正在连接服务器...");
         } else {
             int count = 10;
             while (count > 0) {
                 if (IsQuie) return;
                 count--;
                 // English Version : Disconnected, wait [count] second to restart
-                if (MessageAlerts != null) MessageAlerts.accept("连接断开，等待" + count + "秒后重新连接");
+                if (MessageAlerts != null) MessageAlerts.Action("连接断开，等待" + count + "秒后重新连接");
                 try {
                     Thread.sleep(1000);
                 } catch (Exception ex) {
 
                 }
             }
-            if (MessageAlerts != null) MessageAlerts.accept("正在尝试第" + ConnectFailedCount + "次连接服务器...");
+            if (MessageAlerts != null) MessageAlerts.Action("正在尝试第" + ConnectFailedCount + "次连接服务器...");
         }
     }
 
     private void ConnectFailed() {
         ConnectFailedCount++;
         isConnecting = 0;
-        if (LoginFailed != null) LoginFailed.accept(ConnectFailedCount);
+        if (LoginFailed != null) LoginFailed.Action(ConnectFailedCount);
         if (LogNet != null) LogNet.WriteDebug(toString(), "Connected Failed, Times: " + ConnectFailedCount);
     }
 
@@ -257,7 +265,7 @@ public class NetComplexClient extends NetworkXBase {
             return OperateResultExOne.<Socket>CreateFailedResult(sendResult);
         }
 
-        if (MessageAlerts != null) MessageAlerts.accept("连接服务器成功！");
+        if (MessageAlerts != null) MessageAlerts.Action("连接服务器成功！");
         return connectResult;
     }
 
@@ -284,7 +292,12 @@ public class NetComplexClient extends NetworkXBase {
         if (!connectResult.IsSuccess) {
             ConnectFailed();
             // 连接失败，重新连接服务器
-            new Thread(() -> ReconnectServer(null)).start();
+            new Thread(){
+                @Override
+                public void run() {
+                    ReconnectServer(null);
+                }
+            }.start();
             return;
         }
 
@@ -292,7 +305,7 @@ public class NetComplexClient extends NetworkXBase {
         LoginSuccessMethod(connectResult.Content);
 
         // 登录成功
-        if (LoginSuccess != null) LoginSuccess.accept(0);
+        if (LoginSuccess != null) LoginSuccess.Action();
         isConnecting = 0;
         try {
             Thread.sleep(200);
@@ -308,7 +321,7 @@ public class NetComplexClient extends NetworkXBase {
         // 是否退出了系统，退出则不再重连
         if (IsQuie) return;
         // 触发连接失败，重连系统前错误
-        if (BeforReConnected != null) BeforReConnected.accept(0);
+        if (BeforReConnected != null) BeforReConnected.Action();
         if (session != null) {
             CloseSocket(session.getWorkSocket());
         }
@@ -319,6 +332,7 @@ public class NetComplexClient extends NetworkXBase {
 
     /**
      * 通信出错后的处理
+     *
      * @param receive 通信方法
      */
     @Override
@@ -330,11 +344,11 @@ public class NetComplexClient extends NetworkXBase {
     }
 
 
-
     /**
      * 服务器端用于数据发送文本的方法
+     *
      * @param customer 用户自定义的命令头
-     * @param str 发送的文本
+     * @param str      发送的文本
      */
     public void Send(NetHandle customer, String str) {
         if (IsClientStart) {
@@ -345,8 +359,9 @@ public class NetComplexClient extends NetworkXBase {
 
     /**
      * 服务器端用于发送字节的方法
+     *
      * @param customer 用户自定义的命令头
-     * @param bytes 实际发送的数据
+     * @param bytes    实际发送的数据
      */
     public void Send(NetHandle customer, byte[] bytes) {
         if (IsClientStart) {
@@ -359,13 +374,13 @@ public class NetComplexClient extends NetworkXBase {
     }
 
 
-
     /**
      * 客户端的数据处理中心
-     * @param session 连接状态
+     *
+     * @param session  连接状态
      * @param protocol 协议头
      * @param customer 用户自定义
-     * @param content 数据内容
+     * @param content  数据内容
      */
     @Override
     protected void DataProcessingCenter(AppSession session, int protocol, int customer, byte[] content) {
@@ -379,11 +394,11 @@ public class NetComplexClient extends NetworkXBase {
             // 申请了退出
         } else if (protocol == HslProtocol.ProtocolUserBytes) {
             // 接收到字节数据
-            if (AcceptByte != null) AcceptByte.accept(new NetHandle(customer), content);
+            if (AcceptByte != null) AcceptByte.Action(this, new NetHandle(customer), content);
         } else if (protocol == HslProtocol.ProtocolUserString) {
             // 接收到文本数据
             String str = Utilities.byte2String(content);
-            if (AcceptString != null) AcceptString.accept(new NetHandle(customer), str);
+            if (AcceptString != null) AcceptString.Action(this, new NetHandle(customer), str);
         }
     }
 
@@ -417,7 +432,12 @@ public class NetComplexClient extends NetworkXBase {
                         if (isConnecting == 0) {
                             if (LogNet != null)
                                 LogNet.WriteDebug(toString(), "Heart Check Failed int " + timeSpan + " Seconds.");
-                            new Thread(() -> ReconnectServer(null)).start();
+                            new Thread(){
+                                @Override
+                                public void run() {
+                                    ReconnectServer(null);
+                                }
+                            }.start();
                         }
                         if (!IsQuie) {
                             try {

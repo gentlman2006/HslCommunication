@@ -1,4 +1,6 @@
 import HslCommunication.Core.Net.NetHandle;
+import HslCommunication.Core.Types.ActionOperateExThree;
+import HslCommunication.Core.Types.ActionOperateExTwo;
 import HslCommunication.Core.Types.OperateResult;
 import HslCommunication.Core.Types.OperateResultExOne;
 import HslCommunication.Enthernet.ComplexNet.NetComplexClient;
@@ -17,28 +19,15 @@ public class Main {
 
 
         //MelsecTest();
-        //PushNetTest();
+        PushNetTest();
 
         //ModbusTcpTets();
         //SiemesTest();
 
-        System.out.println("Hello World!等待10s关闭");
-        NetComplexClient client = new NetComplexClient();
-        client.setIpAddress("127.0.0.1");
-        client.setPort(12346);
-        client.setClientAlias("测试1");
-        client.AcceptString=(NetHandle handle,String value)->{
-            System.out.println("Handle:"+handle.get_CodeValue()+"  Value:"+value);
-        };
 
-        client.ClientStart();
 
         try {
-            Thread.sleep(2000);
-            client.Send(new NetHandle(1),"asdasdi阿斯达阿斯达");
-            System.out.println(client.getDelayTime());
-            Thread.sleep(100000);
-            client.ClientClose();
+            Thread.sleep(20000);
         } catch (Exception ex) {
 
         }
@@ -150,9 +139,12 @@ public class Main {
     }
 
     private static void PushNetTest() {
-        NetPushClient client = new NetPushClient("127.0.0.1", 12345, "C");
-        OperateResult connect = client.CreatePush((NetPushClient c, String content) -> {
-            System.out.println(content);
+        NetPushClient client = new NetPushClient("127.0.0.1", 23467, "A");
+        OperateResult connect = client.CreatePush(new ActionOperateExTwo<NetPushClient,String>(){
+            @Override
+            public void Action(NetPushClient content1, String content2) {
+                System.out.println(content2);
+            }
         });
         if (connect.IsSuccess) {
             System.out.println("连接成功!");
@@ -167,15 +159,26 @@ public class Main {
     }
 
     private static void NetComplexClientTest(){
+        System.out.println("Hello World!等待10s关闭");
         NetComplexClient client = new NetComplexClient();
         client.setIpAddress("127.0.0.1");
         client.setPort(12346);
         client.setClientAlias("测试1");
-        client.AcceptString=(NetHandle handle,String value)->{
-          System.out.println("Handle:"+handle.get_CodeValue()+"  Value:"+value);
+        client.AcceptString= new ActionOperateExThree<NetComplexClient,NetHandle,String>(){
+            @Override
+            public void Action(NetComplexClient content1, NetHandle content2, String content3) {
+                System.out.println("Handle:"+content2.get_CodeValue()+"  Value:"+content3);
+            }
         };
 
+
         client.ClientStart();
+
+//        client.Send(new NetHandle(1),"asdasdi阿斯达阿斯达");
+//        System.out.println(client.getDelayTime());
+//        Thread.sleep(100000);
+//        client.ClientClose();
+
 
     }
 }

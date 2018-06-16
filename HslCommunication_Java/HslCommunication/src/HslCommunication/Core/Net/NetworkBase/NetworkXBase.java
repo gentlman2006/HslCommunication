@@ -3,10 +3,7 @@ package HslCommunication.Core.Net.NetworkBase;
 import HslCommunication.BasicFramework.SoftBasic;
 import HslCommunication.Core.Net.HslProtocol;
 import HslCommunication.Core.Net.StateOne.AppSession;
-import HslCommunication.Core.Types.HslTimeOut;
-import HslCommunication.Core.Types.OperateResult;
-import HslCommunication.Core.Types.OperateResultExOne;
-import HslCommunication.Core.Types.OperateResultExTwo;
+import HslCommunication.Core.Types.*;
 import HslCommunication.StringResources;
 import HslCommunication.Utilities;
 
@@ -15,7 +12,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Date;
-import java.util.function.BiConsumer;
 
 /**
  * 客户端服务器的共享基类
@@ -659,7 +655,7 @@ public class NetworkXBase extends NetworkBase
      * @param reportByPercent 是否按照百分比报告进度
      * @return 是否成功
      */
-    protected OperateResult SendStream( Socket socket, InputStream stream, long receive, BiConsumer<Long, Long> report, boolean reportByPercent )
+    protected OperateResult SendStream(Socket socket, InputStream stream, long receive, ActionOperateExTwo<Long, Long> report, boolean reportByPercent )
     {
         byte[] buffer = new byte[102400]; // 100K的数据缓存池
         long SendTotal = 0;
@@ -697,13 +693,13 @@ public class NetworkXBase extends NetworkBase
                 if (percent != percentCurrent)
                 {
                     percent = percentCurrent;
-                    if(report!=null) report.accept( SendTotal, receive );
+                    if(report!=null) report.Action( SendTotal, receive );
                 }
             }
             else
             {
                 // 报告进度
-                if(report!=null) report.accept( SendTotal, receive );
+                if(report!=null) report.Action( SendTotal, receive );
             }
         }
 
@@ -720,7 +716,7 @@ public class NetworkXBase extends NetworkBase
      * @param reportByPercent 进度报告是否按照百分比
      * @return 结果类对象
      */
-    protected OperateResult WriteStream( Socket socket, OutputStream stream, long totalLength, BiConsumer<Long, Long> report, boolean reportByPercent )
+    protected OperateResult WriteStream(Socket socket, OutputStream stream, long totalLength, ActionOperateExTwo<Long, Long> report, boolean reportByPercent )
     {
         long count_receive = 0;
         long percent = 0;
@@ -752,12 +748,12 @@ public class NetworkXBase extends NetworkBase
                 if (percent != percentCurrent)
                 {
                     percent = percentCurrent;
-                    if(report!=null) report.accept( count_receive, totalLength );
+                    if(report!=null) report.Action( count_receive, totalLength );
                 }
             }
             else
             {
-                if(report!=null) report.accept( count_receive, totalLength );
+                if(report!=null) report.Action( count_receive, totalLength );
             }
 
         }

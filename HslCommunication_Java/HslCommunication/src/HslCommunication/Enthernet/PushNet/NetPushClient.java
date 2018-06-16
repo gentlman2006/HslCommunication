@@ -3,13 +3,13 @@ package HslCommunication.Enthernet.PushNet;
 import HslCommunication.Core.Net.HslProtocol;
 import HslCommunication.Core.Net.NetworkBase.NetworkXBase;
 import HslCommunication.Core.Net.StateOne.AppSession;
+import HslCommunication.Core.Types.ActionOperateExTwo;
 import HslCommunication.Core.Types.OperateResult;
 import HslCommunication.Core.Types.OperateResultExOne;
 import HslCommunication.Core.Types.OperateResultExTwo;
 import HslCommunication.Utilities;
 
 import java.net.Socket;
-import java.util.function.BiConsumer;
 
 public class NetPushClient extends NetworkXBase
 {
@@ -36,7 +36,7 @@ public class NetPushClient extends NetworkXBase
     @Override
     protected void DataProcessingCenter(AppSession session, int protocol, int customer, byte[] content ) {
         if (protocol == HslProtocol.ProtocolUserString) {
-            if (action != null) action.accept(this, Utilities.byte2String(content));
+            if (action != null) action.Action(this, Utilities.byte2String(content));
         }
     }
 
@@ -95,7 +95,7 @@ public class NetPushClient extends NetworkXBase
      * @param pushCallBack 触发数据推送的委托
      * @return 是否成功
      */
-    public OperateResult CreatePush( BiConsumer<NetPushClient, String> pushCallBack )
+    public OperateResult CreatePush( ActionOperateExTwo<NetPushClient,String> pushCallBack )
     {
         action = pushCallBack;
         return CreatePush( );
@@ -126,10 +126,10 @@ public class NetPushClient extends NetworkXBase
     }
 
 
-    private String ipAddress = "";                          // IP地址
-    private int port = 1000;                                // 端口号
-    private String keyWord = "";                            // 缓存的订阅关键字
-    private BiConsumer<NetPushClient, String> action;       // 服务器推送后的回调方法
+    private String ipAddress = "";                                 // IP地址
+    private int port = 1000;                                       // 端口号
+    private String keyWord = "";                                   // 缓存的订阅关键字
+    private ActionOperateExTwo<NetPushClient,String> action;       // 服务器推送后的回调方法
 
 
     /**
