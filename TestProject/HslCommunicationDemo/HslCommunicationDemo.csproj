@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\FormConnectPool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Algorithms\FormConnectPool.Designer.cs">
+      <DependentUpon>FormConnectPool.cs</DependentUpon>
+    </Compile>
     <Compile Include="Algorithms\FourierTransform.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -192,6 +198,9 @@
     <Compile Include="Robot\FormEfort.Designer.cs">
       <DependentUpon>FormEfort.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Algorithms\FormConnectPool.resx">
+      <DependentUpon>FormConnectPool.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Algorithms\FourierTransform.resx">
       <DependentUpon>FourierTransform.cs</DependentUpon>
     </EmbeddedResource>
