@@ -15,8 +15,7 @@
 ![Build status](https://img.shields.io/badge/Build-Success-green.svg) [![NuGet Status](https://img.shields.io/nuget/v/HslCommunication.svg)](https://www.nuget.org/packages/HslCommunication/) ![NuGet Download](https://img.shields.io/nuget/dt/HslCommunication.svg) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8) [![NetFramework](https://img.shields.io/badge/Language-C%23%207.0-orange.svg)](https://blogs.msdn.microsoft.com/dotnet/2016/08/24/whats-new-in-csharp-7-0/) [![Visual Studio](https://img.shields.io/badge/Visual%20Studio-2017-red.svg)](https://www.visualstudio.com/zh-hans/) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
 
 # HslCommunication.jar
-![Build status](https://img.shields.io/badge/Build-Success-green.svg) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![JDK status](https://img.shields.io/badge/JDK-1.8-orange.svg) ![IDE status](https://img.shields.io/badge/Intellij%20Idea-2018.1.4-red.svg)
-目前java是初级状态，支持了同步网络的客户端和三菱的PLC客户端，后期将完善支持其他的网络通信。
+![Build status](https://img.shields.io/badge/Build-Success-green.svg) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![NetFramework](https://img.shields.io/badge/Language-java-orange.svg) ![JDK status](https://img.shields.io/badge/JDK-1.8.0-green.svg) ![IDE status](https://img.shields.io/badge/Intellij%20Idea-2018.1-red.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
 
 ## CopyRight
 本组件版权归Richard.Hu所有 [ (C) 2018 Richard.Hu, All Rights Reserved ]
@@ -55,20 +54,20 @@ Install-Package HslCommunication
 
 A library that contains a lot of classes, such as log funtion, send mail, basic method, communication with plc, include melsec, siemens, omron, communicate with modbus-tcp, and more in the futher, communicate by two computers and so on.
 
-## Summary 
+## HslCommunication.dll Summary 
 完整的项目介绍地址： [http://www.cnblogs.com/dathlin/p/7703805.html](http://www.cnblogs.com/dathlin/p/7703805.html)
 
 * [日志记录功能](http://www.cnblogs.com/dathlin/p/7691693.html)
-* [同步网络通讯功能](http://www.cnblogs.com/dathlin/p/7697782.html)
+* [同步网络通讯功能 NetSimplify](http://www.cnblogs.com/dathlin/p/7697782.html)
 * [文件管理引擎](http://www.cnblogs.com/dathlin/p/7746113.html)
-* [异步网络通讯功能](http://www.cnblogs.com/dathlin/p/8097897.html)
+* [异步网络通讯功能 NetComplex](http://www.cnblogs.com/dathlin/p/8097897.html)
 * [三菱及西门子PLC访问](http://www.cnblogs.com/dathlin/p/7469679.html)
 * [西门子PLC访问](http://www.cnblogs.com/dathlin/p/8685855.html)
 * [欧姆龙PLC访问](http://www.cnblogs.com/dathlin/p/8723961.html)
 * [邮件功能使用](http://www.cnblogs.com/dathlin/p/8463613.html)
 * [流水号生成器](http://www.cnblogs.com/dathlin/p/7811489.html)
 * [软件注册码功能](http://www.cnblogs.com/dathlin/p/7832315.html)
-* [数据订阅推送](http://www.cnblogs.com/dathlin/p/8992315.html)
+* [数据订阅推送 NetPush](http://www.cnblogs.com/dathlin/p/8992315.html)
 * [ModBus 服务器开发，包含Tcp服务器和Rtu服务器](http://www.cnblogs.com/dathlin/p/7782315.html)
 * [ModBus Tcp客户端开发](http://www.cnblogs.com/dathlin/p/7885368.html)
 * [ModBus Rtu客户端开发](http://www.cnblogs.com/dathlin/p/8974215.html)
@@ -86,12 +85,23 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 * [How to communicate with modbus-tcp device](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusTcp.md)
 * [How to build you own modbus server, include tcp and rtu mode](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusServer.md)
 
+## HslCommunication.jar Summary 
+本组件提供java版本，为.net版本的阉割版，除去了所有的服务器功能代码，保留了绝大多数的客户端功能代码，方便的和PLC，设备进行数据交互，和C#程序进行数据交互，本jar组件适用用安卓开发，方便搭建一个.net 服务器 + windows 客户端 + asp.net 客户端 + j2ee 客户端 + java 客户端 + android 客户端，未来可能支持python，目前的java功能代码如下：
+
+* [三菱PLC的数据交互](https://www.cnblogs.com/dathlin/p/9176069.html)
+* 西门子PLC的数据交互
+* Modbus Tcp 客户端开发
+* 同步网络通讯功能 NetSimplify
+* 异步网络通讯功能 NetComplex
+* 数据订阅推送 NetPush
+
+
 ## Second Extensions Project (内含几个Demo)
 * 基于本组件开发的一个CS架构的项目模版，该模版采用本组件进行开发，完成了账户管理，角色管理，个人文件管理，头像机制，自动升级，完善的日志等等功能。项目地址为：[https://github.com/dathlin/ClientServerProject](https://github.com/dathlin/ClientServerProject)
 
 * 基于本组件开发的一个局域网多人聊天的程序，支持在线客户端信息查看，服务器强制关闭客户端。[https://github.com/dathlin/NetChatRoom](https://github.com/dathlin/NetChatRoom)
 
-* 基于本组件开发的一个西门子PLC后台读取显示数据，并推送给在线客户端显示实时曲线的示例项目。[https://github.com/dathlin/RemoteMonitor](https://github.com/dathlin/RemoteMonitor)
+* 基于本组件开发的一个西门子PLC后台读取显示数据，并推送给在线客户端（包括window程序，asp.net网站，Android程序）显示实时曲线的示例项目。并实现远程操作。[https://github.com/dathlin/RemoteMonitor](https://github.com/dathlin/RemoteMonitor)
 
 * **ModbusTcpServer项目** 基于本组件开发的一个Modbus Tcp服务器工具，可以方便的快速搭建一个性能可靠稳定的服务器。
 
