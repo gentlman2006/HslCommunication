@@ -25,6 +25,7 @@ Version 5.X 的计划：
 * 提升组件的稳定性，尤其是在高并发的情况下
 * 扩展其他的PLC和设备通讯支持
 * 文档手册的编写
+* Java版本的支持
 
 
 ## License
@@ -44,30 +45,31 @@ Install-Package HslCommunication
 * IDE: **Visual Studio 2017** 必须这个版本及以上，不然会语法报错
 * .Net Framework环境下：支持.Net 3.5及以上环境，功能最完善。
 * .Net Standard环境下：.Net 2.0以上，目前仅仅实现PLC读写，modbus tcp读写，日志记录。
+* java环境下：**Intellij Idea 2018.1**
 
 ## Contact
 * 技术支持QQ群：[592132877](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8)
 * 邮箱地址(Email)：hsl200909@163.com
 
 ## Project Target
-本项目的目标在于开发一个.Net下大多数软件系统都会包含了基础类库功能，实现一些常用的数据通信，日志记录等等类，以及版本类，网络通讯类，PLC数据访问类。
+本项目的目标在于开发一个.Net及java下大多数软件系统都会包含了基础类库功能，实现一些常用的数据通信，日志记录等等类，以及版本类，网络通讯类，PLC数据访问类。并且实现C#和java无缝通信集成。
 
-A library that contains a lot of classes, such as log funtion, send mail, basic method, communication with plc, include melsec, siemens, omron, communicate with modbus-tcp, and more in the futher, communicate by two computers and so on.
+The goal of this project is to develop a .Net and java. Most software systems will include the basic class library functions, implement some common data communications, log records, etc., as well as version classes, network communications, and PLC data access classes. And to achieve seamless integration of C# and java communications.
 
 ## HslCommunication.dll Summary 
 完整的项目介绍地址： [http://www.cnblogs.com/dathlin/p/7703805.html](http://www.cnblogs.com/dathlin/p/7703805.html)
 
 * [日志记录功能](http://www.cnblogs.com/dathlin/p/7691693.html)
-* [同步网络通讯功能 NetSimplify](http://www.cnblogs.com/dathlin/p/7697782.html)
+* [同步网络通讯功能 **NetSimplify**](http://www.cnblogs.com/dathlin/p/7697782.html)
 * [文件管理引擎](http://www.cnblogs.com/dathlin/p/7746113.html)
-* [异步网络通讯功能 NetComplex](http://www.cnblogs.com/dathlin/p/8097897.html)
+* [异步网络通讯功能 **NetComplex**](http://www.cnblogs.com/dathlin/p/8097897.html)
 * [三菱及西门子PLC访问](http://www.cnblogs.com/dathlin/p/7469679.html)
 * [西门子PLC访问](http://www.cnblogs.com/dathlin/p/8685855.html)
 * [欧姆龙PLC访问](http://www.cnblogs.com/dathlin/p/8723961.html)
 * [邮件功能使用](http://www.cnblogs.com/dathlin/p/8463613.html)
 * [流水号生成器](http://www.cnblogs.com/dathlin/p/7811489.html)
 * [软件注册码功能](http://www.cnblogs.com/dathlin/p/7832315.html)
-* [数据订阅推送 NetPush](http://www.cnblogs.com/dathlin/p/8992315.html)
+* [数据订阅推送 **NetPush**](http://www.cnblogs.com/dathlin/p/8992315.html)
 * [ModBus 服务器开发，包含Tcp服务器和Rtu服务器](http://www.cnblogs.com/dathlin/p/7782315.html)
 * [ModBus Tcp客户端开发](http://www.cnblogs.com/dathlin/p/7885368.html)
 * [ModBus Rtu客户端开发](http://www.cnblogs.com/dathlin/p/8974215.html)
@@ -91,9 +93,9 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 * [三菱PLC的数据交互](https://www.cnblogs.com/dathlin/p/9176069.html)
 * 西门子PLC的数据交互
 * Modbus Tcp 客户端开发
-* 同步网络通讯功能 NetSimplify
-* 异步网络通讯功能 NetComplex
-* 数据订阅推送 NetPush
+* 同步网络通讯功能 **NetSimplify**
+* 异步网络通讯功能 **NetComplex**
+* 数据订阅推送 **NetPush**
 
 
 ## Second Extensions Project (内含几个Demo)
@@ -123,16 +125,18 @@ A library that contains a lot of classes, such as log funtion, send mail, basic 
 * 感谢 **生意王(2940280678)** 打赏支持
 
 
-## Controls
-This library include some controls render upside picture. u can easily use them
-
-![控件图](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/controls.png)
-
 ## 创作不易，感谢打赏
 If this library really helps you, you can support me by AliPay. Please choose the amount according to your actual ability.
 
 ![打赏](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/support.png)
 
+## HslCommunicationDemo
+v5.1.1 function, support
+![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/demo.png)
+
+## Controls
+This library include some controls render upside picture. u can easily use them
+![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/controls.png)
 
 ## 三菱测试界面 [ Mitsubishi PLC Communication ]
 Using MC protocol, Qna 3E, Include binary and ascii
