@@ -428,11 +428,12 @@ public class NetworkXBase extends NetworkBase
 
 
 
-    /// <summary>
-    /// [自校验] 从网络中接收一串字节数据，如果结果异常，则结束通讯
-    /// </summary>
-    /// <param name="socket">套接字</param>
-    /// <returns></returns>
+
+    /**
+     * [自校验] 从网络中接收一串字节数据，如果结果异常，则结束通讯
+     * @param socket 套接字
+     * @return 结果数据对象
+     */
     protected OperateResultExTwo<Integer, byte[]> ReceiveBytesContentFromSocket( Socket socket )
     {
         OperateResultExTwo<byte[], byte[]> receive = ReceiveAndCheckBytes( socket, 10000 );
@@ -563,11 +564,12 @@ public class NetworkXBase extends NetworkBase
 //        }
 //    }
 
-    /// <summary>
-    /// 删除文件的操作
-    /// </summary>
-    /// <param name="filename"></param>
-    /// <returns></returns>
+
+    /**
+     * 删除文件的操作
+     * @param filename 文件的名称
+     * @return 是否删除成功
+     */
     protected boolean DeleteFileByName( String filename )
     {
         try
@@ -585,11 +587,12 @@ public class NetworkXBase extends NetworkBase
         }
     }
 
-    /// <summary>
-    /// 预处理文件夹的名称，除去文件夹名称最后一个'\'，如果有的话
-    /// </summary>
-    /// <param name="folder">文件夹名称</param>
-    /// <returns></returns>
+
+    /**
+     * 预处理文件夹的名称，除去文件夹名称最后一个'\'，如果有的话
+     * @param folder 文件夹名称
+     * @return 结果数据
+     */
     protected String PreprocessFolderName( String folder )
     {
         if (folder.endsWith( "\\" ))

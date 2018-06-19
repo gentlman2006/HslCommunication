@@ -106,7 +106,7 @@ public class SiemensS7Net extends NetworkDeviceBase<S7Message, ReverseBytesTrans
         if (address.indexOf('.') < 0) {
             return Integer.parseInt(address) * 8;
         } else {
-            String[] temp = address.split(".");
+            String[] temp = address.split("\\.");
             return Integer.parseInt(temp[0]) * 8 + Integer.parseInt(temp[1]);
         }
     }
