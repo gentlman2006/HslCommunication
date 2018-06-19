@@ -37,7 +37,7 @@ namespace HslCommunication.Profinet.Siemens
         /// <summary>
         /// 实例化一个西门子的Fetch/Write协议的通讯对象
         /// </summary>
-        /// <param name="ipAddress">PLCd的Ip地址</param>
+        /// <param name="ipAddress">PLC的Ip地址</param>
         /// <param name="port">PLC的端口</param>
         public SiemensFetchWriteNet(string ipAddress,int port)
         {
