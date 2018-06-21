@@ -26,7 +26,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <summary>
         /// 实例化一个三菱的Qna兼容3E帧协议的通讯对象
         /// </summary>
-        /// <param name="ipAddress">PLCd的Ip地址</param>
+        /// <param name="ipAddress">PLC的Ip地址</param>
         /// <param name="port">PLC的端口</param>
         public MelsecMcAsciiNet( string ipAddress, int port )
         {
