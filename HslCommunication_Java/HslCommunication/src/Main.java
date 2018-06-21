@@ -7,11 +7,10 @@ import HslCommunication.Enthernet.ComplexNet.NetComplexClient;
 import HslCommunication.Enthernet.PushNet.NetPushClient;
 import HslCommunication.Enthernet.SimplifyNet.NetSimplifyClient;
 import HslCommunication.ModBus.ModbusTcpNet;
+import HslCommunication.Profinet.Melsec.MelsecMcAsciiNet;
 import HslCommunication.Profinet.Melsec.MelsecMcNet;
 import HslCommunication.Profinet.Siemens.SiemensPLCS;
 import HslCommunication.Profinet.Siemens.SiemensS7Net;
-
-import java.lang.reflect.Constructor;
 
 public class Main {
 
@@ -27,14 +26,17 @@ public class Main {
         //SiemesTest();
 
 
-        OperateResultExOne<?> operateResultExOne =new OperateResultExOne<Integer>();
 
         try {
-            Constructor[] aa = Integer.class.getDeclaredConstructors();
-            int i = (Integer) (aa[1].newInstance("1"));
+            //Constructor[] aa = Integer.class.getDeclaredConstructors();
+            //int i = (Integer) (aa[1].newInstance("1"));
+            //System.out.println(Utilities.bytes2HexString( Utilities.getBytes(String.format("%04x",100),"ASCII")));
+            //System.out.println(i);
 
 
-            System.out.println(i);
+            MelsecMcAsciiNet melsec = new MelsecMcAsciiNet("192.168.1.192",12345);
+
+
         }
         catch (Exception ex){
             System.out.println(ex.getMessage());
