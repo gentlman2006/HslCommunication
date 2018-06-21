@@ -77,6 +77,7 @@ The goal of this project is to develop a .Net and java. Most software systems wi
 * 多线程任务功能
 * [CRC16校验](http://www.cnblogs.com/dathlin/p/7821808.html)
 * [常用控件库](http://www.cnblogs.com/dathlin/p/8150516.html)
+* [连接池使用](https://www.cnblogs.com/dathlin/p/9191211.html)
 
 
 **Detail Introduction**
@@ -91,7 +92,7 @@ The goal of this project is to develop a .Net and java. Most software systems wi
 本组件提供java版本，为.net版本的阉割版，除去了所有的服务器功能代码，保留了绝大多数的客户端功能代码，方便的和PLC，设备进行数据交互，和C#程序进行数据交互，本jar组件适用用安卓开发，方便搭建一个.net 服务器 + windows 客户端 + asp.net 客户端 + j2ee 客户端 + java 客户端 + android 客户端，未来可能支持python，目前的java功能代码如下：
 
 * [三菱PLC的数据交互](https://www.cnblogs.com/dathlin/p/9176069.html)
-* 西门子PLC的数据交互
+* [西门子PLC的数据交互](https://www.cnblogs.com/dathlin/p/9196129.html)
 * Modbus Tcp 客户端开发
 * 同步网络通讯功能 **NetSimplify**
 * 异步网络通讯功能 **NetComplex**
