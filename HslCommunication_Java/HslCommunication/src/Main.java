@@ -12,6 +12,8 @@ import HslCommunication.Profinet.Melsec.MelsecMcNet;
 import HslCommunication.Profinet.Siemens.SiemensPLCS;
 import HslCommunication.Profinet.Siemens.SiemensS7Net;
 
+import java.util.Arrays;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -34,8 +36,15 @@ public class Main {
             //System.out.println(i);
 
 
-            MelsecMcAsciiNet melsec = new MelsecMcAsciiNet("192.168.1.192",12345);
-
+            MelsecMcAsciiNet melsec = new MelsecMcAsciiNet("192.168.1.192",6001);
+            OperateResultExOne<short[]> read = melsec.ReadInt16("D100",(short) 2);
+            if(read.IsSuccess)
+            {
+                System.out.println(Arrays.toString(read.Content));
+            }
+            else {
+                System.out.println(read.ToMessageShowString());
+            }
 
         }
         catch (Exception ex){

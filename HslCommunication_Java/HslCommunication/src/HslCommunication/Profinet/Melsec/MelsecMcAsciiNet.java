@@ -83,7 +83,7 @@ public class MelsecMcAsciiNet extends NetworkDeviceBase<MelsecQnA3EAsciiMessage,
     private OperateResultExTwo<MelsecMcDataType, Integer> AnalysisAddress(String address) {
         OperateResultExTwo<MelsecMcDataType, Integer> result = new OperateResultExTwo<MelsecMcDataType, Integer>();
         try {
-            switch (address.indexOf(0)) {
+            switch (address.charAt(0)) {
                 case 'M':
                 case 'm': {
                     result.Content1 = MelsecMcDataType.M;
