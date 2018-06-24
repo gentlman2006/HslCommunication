@@ -35,6 +35,7 @@ public class Main {
             //System.out.println(Utilities.bytes2HexString( Utilities.getBytes(String.format("%04x",100),"ASCII")));
             //System.out.println(i);
 
+            //System.out.println(Arrays.toString("123".split("\\." )));
 
             MelsecMcAsciiNet melsec = new MelsecMcAsciiNet("192.168.1.192",6001);
             OperateResultExOne<short[]> read = melsec.ReadInt16("D100",(short) 2);
