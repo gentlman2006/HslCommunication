@@ -19,7 +19,7 @@ namespace HslCommunication.Profinet.Omron
         #region Constructor
 
         /// <summary>
-        /// 实例化三菱的Qna兼容3E帧协议的通讯对象
+        /// 实例化一个欧姆龙PLC Fins帧协议的通讯对象
         /// </summary>
         public OmronFinsNet( )
         {
@@ -27,7 +27,7 @@ namespace HslCommunication.Profinet.Omron
         }
 
         /// <summary>
-        /// 实例化一个三菱的Qna兼容3E帧协议的通讯对象
+        /// 实例化一个欧姆龙PLC Fins帧协议的通讯对象
         /// </summary>
         /// <param name="ipAddress">PLCd的Ip地址</param>
         /// <param name="port">PLC的端口</param>
