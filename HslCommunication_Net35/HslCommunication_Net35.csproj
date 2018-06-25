@@ -217,6 +217,7 @@
     <Compile Include="LogNet\Logs\LogNetSingle.cs" />
     <Compile Include="Core\Net\NetSupport.cs" />
     <Compile Include="Core\Types\OperateResult.cs" />
+    <Compile Include="ModBus\ModbusAddress.cs" />
     <Compile Include="ModBus\ModbusInfo.cs" />
     <Compile Include="ModBus\ModBusMonitorAddress.cs" />
     <Compile Include="ModBus\ModbusRtu\ModbusRtu.cs" />

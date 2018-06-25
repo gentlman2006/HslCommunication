@@ -98,8 +98,40 @@ namespace HslCommunication.ModBus
 
 
         #region Static Method
-        
 
+
+        /// <summary>
+        /// 解析数据地址，解析出地址类型，起始地址
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
+        public static OperateResult<byte, int> AnalysisReadAddress( string address )
+        {
+            try
+            {
+                if (address.IndexOf( 'X' ) < 0)
+                {
+                    // 正常地址，功能码03
+                    int add = Convert.ToInt32( address );
+                    return OperateResult.CreateSuccessResult( ModbusInfo.ReadRegister, add );
+                }
+                else
+                {
+                    // 带功能码的地址
+                    string[] list = address.Split( 'X' );
+                    byte function = byte.Parse( list[0] );
+                    int add = Convert.ToInt32( list[1] );
+                    return OperateResult.CreateSuccessResult( function, add );
+                }
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte, int>( )
+                {
+                    Message = ex.Message
+                };
+            }
+        }
 
 
         #endregion

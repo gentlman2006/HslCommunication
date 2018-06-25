@@ -122,31 +122,17 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
-        private OperateResult<byte, int> AnalysisReadAddress( string address )
+        private OperateResult<ModbusAddress> AnalysisReadAddress( string address )
         {
             try
             {
-                if (address.IndexOf( 'X' ) < 0)
-                {
-                    // 正常地址，功能码03
-                    int add = Convert.ToInt32( address );
-                    return OperateResult.CreateSuccessResult( ModbusInfo.ReadRegister, add );
-                }
-                else
-                {
-                    // 带功能码的地址
-                    string[] list = address.Split( 'X' );
-                    byte function = byte.Parse( list[0] );
-                    int add = Convert.ToInt32( list[1] );
-                    return OperateResult.CreateSuccessResult( function, add );
-                }
+                ModbusAddress mAddress = new ModbusAddress( address );
+                mAddress.Address = (ushort)CheckAddressStartWithZero( mAddress.Address );
+                return OperateResult.CreateSuccessResult( mAddress );
             }
             catch (Exception ex)
             {
-                return new OperateResult<byte, int>( )
-                {
-                    Message = ex.Message
-                };
+                return new OperateResult<ModbusAddress>( ) { Message = ex.Message };
             }
         }
 
@@ -501,12 +487,12 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 从Modbus服务器批量读取寄存器的信息，需要指定起始地址，读取长度
         /// </summary>
-        /// <param name="address">起始地址，格式为"1234"，或者是带功能码格式03X1234</param>
+        /// <param name="address">起始地址，格式为"1234"，或者是带功能码格式x=3;1234</param>
         /// <param name="length">读取的数量</param>
         /// <returns>带有成功标志的字节信息</returns>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
-            OperateResult<byte,int> analysis = AnalysisReadAddress( address );
+            OperateResult<ModbusAddress> analysis = AnalysisReadAddress( address );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             List<byte> lists = new List<byte>( );
@@ -514,7 +500,7 @@ namespace HslCommunication.ModBus
             while (alreadyFinished < length)
             {
                 ushort lengthTmp = (ushort)Math.Min( (length - alreadyFinished), 120 );
-                OperateResult<byte[]> read = ReadModBusBase( analysis.Content1, (analysis.Content2 + alreadyFinished).ToString( ), lengthTmp );
+                OperateResult<byte[]> read = ReadModBusBase( analysis.Content.Function, (analysis.Content.Address + alreadyFinished).ToString( ), lengthTmp );
                 if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );
 
                 lists.AddRange( read.Content );
