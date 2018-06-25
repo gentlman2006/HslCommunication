@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HslCommunication.BasicFramework;
+using HslCommunication.Core.Address;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +10,10 @@ namespace HslCommunication.ModBus
     /// <summary>
     /// Modbus协议地址格式，可以携带站号，功能码，地址信息
     /// </summary>
-    public class ModbusAddress
+    public class ModbusAddress : DeviceAddressBase
     {
+        #region Constructor
+
         /// <summary>
         /// 实例化一个默认的对象
         /// </summary>
@@ -31,6 +35,13 @@ namespace HslCommunication.ModBus
             AnalysisAddress( address );
         }
 
+
+
+        #endregion
+
+        #region Public Properties
+
+
         /// <summary>
         /// 站号信息
         /// </summary>
@@ -41,17 +52,17 @@ namespace HslCommunication.ModBus
         /// </summary>
         public byte Function { get; set; }
 
-        /// <summary>
-        /// 起始地址
-        /// </summary>
-        public ushort Address { get; set; }
+        #endregion
+
+        #region Analysis Address
+
 
 
         /// <summary>
         /// 解析Modbus的地址码
         /// </summary>
         /// <param name="address"></param>
-        public void AnalysisAddress( string address )
+        public override void AnalysisAddress( string address )
         {
             if (address.IndexOf( ';' ) < 0)
             {
@@ -81,12 +92,17 @@ namespace HslCommunication.ModBus
             }
         }
 
+        #endregion
+
+        #region Create Command
+
+
         /// <summary>
         /// 创建一个读取的字节对象
         /// </summary>
-        /// <param name="station"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
+        /// <param name="station">读取的站号</param>
+        /// <param name="length">读取数据的长度</param>
+        /// <returns>原始的modbus指令</returns>
         public byte[] CreateReadBytes( byte station, ushort length )
         {
             byte[] buffer = new byte[6];
@@ -99,6 +115,69 @@ namespace HslCommunication.ModBus
             return buffer;
         }
 
+        /// <summary>
+        /// 创建一个写入单个线圈的指令
+        /// </summary>
+        /// <param name="station">站号</param>
+        /// <param name="value">值</param>
+        /// <returns>原始的modbus指令</returns>
+        public byte[] CreateWriteOneCoil( byte station, bool value )
+        {
+            byte[] buffer = new byte[6];
+            buffer[0] = this.Station < 0 ? station : (byte)this.Station;
+            buffer[1] = ModbusInfo.ReadCoil;
+            buffer[2] = BitConverter.GetBytes( this.Address )[1];
+            buffer[3] = BitConverter.GetBytes( this.Address )[0];
+            buffer[4] = (byte)(value ? 0xFF : 0x00);
+            buffer[5] = 0x00;
+            return buffer;
+        }
+
+
+        /// <summary>
+        /// 创建一个写入单个寄存器的指令
+        /// </summary>
+        /// <param name="station">站号</param>
+        /// <param name="data">值</param>
+        /// <returns>原始的modbus指令</returns>
+        public byte[] CreateWriteOneRegister( byte station, byte[] data )
+        {
+            byte[] buffer = new byte[6];
+            buffer[0] = this.Station < 0 ? station : (byte)this.Station;
+            buffer[1] = ModbusInfo.WriteOneRegister;
+            buffer[2] = BitConverter.GetBytes( this.Address )[1];
+            buffer[3] = BitConverter.GetBytes( this.Address )[0];
+            buffer[4] = data[1];
+            buffer[5] = data[0];
+            return buffer;
+        }
+
+
+        /// <summary>
+        /// 创建一个写入批量线圈的指令
+        /// </summary>
+        /// <param name="station">站号</param>
+        /// <param name="values">值</param>
+        /// <returns>原始的modbus指令</returns>
+        public byte[] CreateWriteCoil( byte station, bool[] values )
+        {
+            byte[] data = SoftBasic.BoolArrayToByte( values );
+            byte[] buffer = new byte[7 + data.Length];
+            buffer[0] = this.Station < 0 ? station : (byte)this.Station;
+            buffer[1] = ModbusInfo.WriteRegister;
+            buffer[2] = BitConverter.GetBytes( this.Address )[1];
+            buffer[3] = BitConverter.GetBytes( this.Address )[0];
+            buffer[4] = (byte)(values.Length / 256);
+            buffer[5] = (byte)(values.Length % 256);
+            buffer[6] = (byte)(data.Length);
+            data.CopyTo( buffer, 7 );
+            return buffer;
+        }
+
+
+        #endregion
+
+        #region Address Add
 
 
         /// <summary>
@@ -127,6 +206,11 @@ namespace HslCommunication.ModBus
         }
 
 
+        #endregion
+
+        #region Object Override
+
+
         /// <summary>
         /// 获取本对象的字符串表示形式
         /// </summary>
@@ -141,5 +225,6 @@ namespace HslCommunication.ModBus
             return sb.ToString( );
         }
 
+        #endregion
     }
 }
