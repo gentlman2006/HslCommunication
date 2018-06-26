@@ -29,6 +29,8 @@
         private void InitializeComponent( )
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label24 = new System.Windows.Forms.Label();
             this.textBox17 = new System.Windows.Forms.TextBox();
@@ -106,8 +108,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -144,6 +145,26 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(978, 54);
             this.panel1.TabIndex = 0;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(683, 28);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(87, 21);
+            this.checkBox3.TabIndex = 26;
+            this.checkBox3.Text = "字符串颠倒";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(569, 28);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(111, 21);
+            this.checkBox2.TabIndex = 25;
+            this.checkBox2.Text = "数据高地位颠倒";
+            this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // comboBox1
             // 
@@ -702,6 +723,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button4);
             this.groupBox1.Controls.Add(this.textBox5);
             this.groupBox1.Controls.Add(this.button_read_string);
             this.groupBox1.Controls.Add(this.button_read_double);
@@ -926,25 +948,15 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
-            // checkBox2
+            // button4
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(569, 28);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(111, 21);
-            this.checkBox2.TabIndex = 25;
-            this.checkBox2.Text = "数据高地位颠倒";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(683, 28);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(87, 21);
-            this.checkBox3.TabIndex = 26;
-            this.checkBox3.Text = "字符串颠倒";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.button4.Location = new System.Drawing.Point(408, 19);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(89, 28);
+            this.button4.TabIndex = 19;
+            this.button4.Text = "离散输入读取";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click_1);
             // 
             // FormModbusRtu
             // 
@@ -1065,5 +1077,6 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.Button button4;
     }
 }

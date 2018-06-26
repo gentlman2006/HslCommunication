@@ -42,6 +42,15 @@ namespace HslCommunication.Core
         bool TransBool( byte[] buffer, int index );
 
         /// <summary>
+        /// 从缓存中提取出bool数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">位的索引</param>
+        /// <param name="length">bool长度</param>
+        /// <returns>bool数组</returns>
+        bool[] TransBool( byte[] buffer, int index, int length );
+
+        /// <summary>
         /// 从缓存中提取byte结果
         /// </summary>
         /// <param name="buffer">缓存数据</param>
@@ -224,7 +233,7 @@ namespace HslCommunication.Core
         /// <param name="value">等待转化的数据</param>
         /// <returns>buffer数据</returns>
         byte[] TransByte( bool value );
-
+        
         /// <summary>
         /// bool数组变量转化缓存数据
         /// </summary>

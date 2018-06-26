@@ -170,6 +170,12 @@ namespace HslCommunicationDemo
             readResultRender( busRtuClient.ReadCoil( textBox3.Text ), textBox3.Text, textBox4 );
         }
 
+        private void button4_Click_1( object sender, EventArgs e )
+        {
+            // 离散输入读取
+            readResultRender( busRtuClient.ReadDiscrete( textBox3.Text ), textBox3.Text, textBox4 );
+        }
+
         private void button_read_short_Click( object sender, EventArgs e )
         {
             // 读取short变量
@@ -567,8 +573,9 @@ namespace HslCommunicationDemo
             HslCommunication.Core.IByteTransform ByteTransform = new HslCommunication.Core.ReverseWordTransform( );
         }
 
+
         #endregion
 
-
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HslCommunication.BasicFramework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,21 @@ namespace HslCommunication.Core
         public virtual bool TransBool( byte[] buffer, int index )
         {
             return buffer[index] != 0x00;
+        }
+
+
+        /// <summary>
+        /// 从缓存中提取出bool数组结果
+        /// </summary>
+        /// <param name="buffer">缓存数据</param>
+        /// <param name="index">位的索引</param>
+        /// <param name="length">bool长度</param>
+        /// <returns>bool数组</returns>
+        public bool[] TransBool( byte[] buffer, int index, int length )
+        {
+            byte[] tmp = new byte[length];
+            Array.Copy( buffer, index, tmp, 0, length );
+            return SoftBasic.ByteToBoolArray( tmp, length * 8 );
         }
 
         /// <summary>
@@ -321,13 +337,7 @@ namespace HslCommunication.Core
         {
             if (values == null) return null;
 
-            byte[] buffer = new byte[values.Length];
-            for (int i = 0; i < values.Length; i++)
-            {
-                if (values[i]) buffer[i] = 0x01;
-            }
-
-            return buffer;
+            return BasicFramework.SoftBasic.BoolArrayToByte( values );
         }
 
 

@@ -63,7 +63,14 @@ namespace HslCommunication.Algorithms.Fourier
         }
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="xreal"></param>
+        /// <param name="width"></param>
+        /// <param name="heigh"></param>
+        /// <param name="lineColor"></param>
+        /// <returns></returns>
         public static Bitmap GetFFTImage( double[] xreal,int width,int heigh ,Color lineColor)
         {
             double[] ximag = new double[xreal.Length];                // 构造虚对象

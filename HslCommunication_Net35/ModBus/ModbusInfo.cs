@@ -101,38 +101,77 @@ namespace HslCommunication.ModBus
 
 
         /// <summary>
-        /// 解析数据地址，解析出地址类型，起始地址
+        /// 将modbus指令打包成Modbus-Tcp指令
         /// </summary>
-        /// <param name="address">数据地址</param>
-        /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
-        public static OperateResult<byte, int> AnalysisReadAddress( string address )
+        /// <param name="value">Modbus指令</param>
+        /// <param name="id">消息的序号</param>
+        /// <returns>Modbus-Tcp指令</returns>
+        public static byte[] PackCommandToTcp( byte[] value, ushort id )
+        {
+            byte[] buffer = new byte[value.Length + 6];
+            buffer[0] = BitConverter.GetBytes( id )[1];
+            buffer[1] = BitConverter.GetBytes( id )[0];
+
+            buffer[4] = BitConverter.GetBytes( value.Length )[1];
+            buffer[5] = BitConverter.GetBytes( value.Length )[0];
+
+            value.CopyTo( buffer, 6 );
+            return buffer;
+        }
+
+
+        /// <summary>
+        /// 将modbus指令打包成Modbus-Rtu指令
+        /// </summary>
+        /// <param name="value">Modbus指令</param>
+        /// <returns>Modbus-Rtu指令</returns>
+        public static byte[] PackCommandToRtu( byte[] value )
+        {
+            return Serial.SoftCRC16.CRC16( value );
+        }
+
+
+        /// <summary>
+        /// 分析Modbus协议的地址信息，该地址适应于tcp及rtu模式
+        /// </summary>
+        /// <param name="address">带格式的地址，比如"100"，"x=4;100"，"s=1;100","s=1;x=4;100"</param>
+        /// <param name="isStartWithZero">起始地址是否从0开始</param>
+        /// <returns>转换后的地址信息</returns>
+        public static OperateResult<ModbusAddress> AnalysisReadAddress( string address, bool isStartWithZero )
         {
             try
             {
-                if (address.IndexOf( 'X' ) < 0)
+                ModbusAddress mAddress = new ModbusAddress( address );
+                if (!isStartWithZero)
                 {
-                    // 正常地址，功能码03
-                    int add = Convert.ToInt32( address );
-                    return OperateResult.CreateSuccessResult( ModbusInfo.ReadRegister, add );
+                    if (mAddress.Address < 1) throw new Exception( "地址值在起始地址为1的情况下，必须大于1" );
+                    mAddress.Address = (ushort)(mAddress.Address - 1);
                 }
-                else
-                {
-                    // 带功能码的地址
-                    string[] list = address.Split( 'X' );
-                    byte function = byte.Parse( list[0] );
-                    int add = Convert.ToInt32( list[1] );
-                    return OperateResult.CreateSuccessResult( function, add );
-                }
+                return OperateResult.CreateSuccessResult( mAddress );
             }
             catch (Exception ex)
             {
-                return new OperateResult<byte, int>( )
-                {
-                    Message = ex.Message
-                };
+                return new OperateResult<ModbusAddress>( ) { Message = ex.Message };
             }
         }
 
+        /// <summary>
+        /// 通过错误码来获取到对应的文本消息
+        /// </summary>
+        /// <param name="code">错误码</param>
+        /// <returns>错误的文本描述</returns>
+        public static string GetDescriptionByErrorCode( byte code )
+        {
+            switch (code)
+            {
+                case ModbusInfo.FunctionCodeNotSupport: return StringResources.ModbusTcpFunctionCodeNotSupport;
+                case ModbusInfo.FunctionCodeOverBound: return StringResources.ModbusTcpFunctionCodeOverBound;
+                case ModbusInfo.FunctionCodeQuantityOver: return StringResources.ModbusTcpFunctionCodeQuantityOver;
+                case ModbusInfo.FunctionCodeReadWriteException: return StringResources.ModbusTcpFunctionCodeReadWriteException;
+                default: return StringResources.UnknownError;
+            }
+        }
+        
 
         #endregion
 

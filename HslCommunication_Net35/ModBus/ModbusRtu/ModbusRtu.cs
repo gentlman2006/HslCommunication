@@ -84,115 +84,8 @@ namespace HslCommunication.ModBus
         }
 
         #endregion
-
-        #region Address Analysis
-
-
-        /// <summary>
-        /// 解析数据地址，解析出地址类型，起始地址
-        /// </summary>
-        /// <param name="address">数据地址</param>
-        /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
-        private OperateResult<int> AnalysisAddress( string address )
-        {
-            try
-            {
-                int add = Convert.ToInt32( address );
-                add = CheckAddressStartWithZero( add );
-                return OperateResult.CreateSuccessResult( add );
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<int>( )
-                {
-                    Message = ex.Message
-                };
-            }
-        }
-
-        /// <summary>
-        /// 解析数据地址，解析出地址类型，起始地址
-        /// </summary>
-        /// <param name="address">数据地址</param>
-        /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
-        private OperateResult<byte, int> AnalysisReadAddress( string address )
-        {
-            try
-            {
-                if (address.IndexOf( 'X' ) < 0)
-                {
-                    // 正常地址，功能码03
-                    int add = Convert.ToInt32( address );
-                    return OperateResult.CreateSuccessResult( ModbusInfo.ReadRegister, add );
-                }
-                else
-                {
-                    // 带功能码的地址
-                    string[] list = address.Split( 'X' );
-                    byte function = byte.Parse( list[0] );
-                    int add = Convert.ToInt32( list[1] );
-                    return OperateResult.CreateSuccessResult( function, add );
-                }
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<byte, int>( )
-                {
-                    Message = ex.Message
-                };
-            }
-        }
-
-        private int CheckAddressStartWithZero( int add )
-        {
-            if (isAddressStartWithZero)
-            {
-                if (add < 0)
-                {
-                    throw new Exception( "地址值必须大于等于0" );
-                }
-            }
-            else
-            {
-                if (add < 1)
-                {
-                    throw new Exception( "地址值必须大于等于1" );
-                }
-
-                add--;
-            }
-            return add;
-        }
         
-
-        #endregion
-
         #region Build Command
-
-
-        /// <summary>
-        /// 读取数据的基础指令，需要指定指令码，地址，长度
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="address"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        private OperateResult<byte[]> BuildReadCommandBase( byte code, string address, ushort count )
-        {
-            OperateResult<int> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
-            
-            byte[] buffer = new byte[6];
-            buffer[0] = station;
-            buffer[1] = code;
-            buffer[2] = (byte)(analysis.Content / 256);
-            buffer[3] = (byte)(analysis.Content % 256);
-            buffer[4] = (byte)(count / 256);
-            buffer[5] = (byte)(count % 256);
-
-            return OperateResult.CreateSuccessResult( SoftCRC16.CRC16( buffer ) );
-        }
-
 
 
         /// <summary>
@@ -203,18 +96,28 @@ namespace HslCommunication.ModBus
         /// <returns>携带有命令字节</returns>
         private OperateResult<byte[]> BuildReadCoilCommand( string address, ushort count )
         {
-            return BuildReadCommandBase( ModbusInfo.ReadCoil, address, count );
+            OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
+            
+            // 生成最终tcp指令
+            byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateReadCoils( station, count ) );
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
         /// <summary>
         /// 生成一个读取离散信息的指令头
         /// </summary>
         /// <param name="address">地址</param>
-        /// <param name="count">长度</param>
+        /// <param name="length">长度</param>
         /// <returns>携带有命令字节</returns>
-        private OperateResult<byte[]> BuildReadDiscreteCommand( string address, ushort count )
+        private OperateResult<byte[]> BuildReadDiscreteCommand( string address, ushort length )
         {
-            return BuildReadCommandBase( ModbusInfo.ReadDiscrete, address, count );
+            OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
+            
+            // 生成最终tcp指令
+            byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateReadDiscrete( station, length ) );
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
@@ -223,30 +126,44 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 生成一个读取寄存器的指令头
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="count"></param>
+        /// <param name="address">地址</param>
+        /// <param name="length">长度</param>
         /// <returns>携带有命令字节</returns>
-        private OperateResult<byte[]> BuildReadRegisterCommand( string address, ushort count )
+        private OperateResult<byte[]> BuildReadRegisterCommand( string address, ushort length )
         {
-            return BuildReadCommandBase( ModbusInfo.ReadRegister, address, count );
+            OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
+            
+            // 生成最终tcp指令
+            byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateReadRegister( station, length ) );
+            return OperateResult.CreateSuccessResult( buffer );
+        }
+
+
+
+        /// <summary>
+        /// 生成一个读取寄存器的指令头
+        /// </summary>
+        /// <param name="address">地址</param>
+        /// <param name="length">长度</param>
+        /// <returns>携带有命令字节</returns>
+        private OperateResult<byte[]> BuildReadRegisterCommand( ModbusAddress address, ushort length )
+        {
+            // 生成最终tcp指令
+            byte[] buffer = ModbusInfo.PackCommandToRtu( address.CreateReadRegister( station, length ) );
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
 
         private OperateResult<byte[]> BuildWriteOneCoilCommand( string address, bool value )
         {
-            OperateResult<int> analysis = AnalysisAddress( address );
+            OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
             
-            byte[] buffer = new byte[6];
-            buffer[0] = station;
-            buffer[1] = ModbusInfo.WriteOneCoil;
-            buffer[2] = (byte)(analysis.Content / 256);
-            buffer[3] = (byte)(analysis.Content % 256);
-            buffer[4] = (byte)(value ? 0xFF : 0x00);
-            buffer[5] = 0x00;
-
-            return OperateResult.CreateSuccessResult( SoftCRC16.CRC16( buffer ) );
+            // 生成最终tcp指令
+            byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteOneCoil( station, value ) );
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
@@ -255,84 +172,43 @@ namespace HslCommunication.ModBus
 
         private OperateResult<byte[]> BuildWriteOneRegisterCommand( string address, byte[] data )
         {
-            OperateResult<int> analysis = AnalysisAddress( address );
+            OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
             
-            byte[] buffer = new byte[6];
-            buffer[0] = station;
-            buffer[1] = ModbusInfo.WriteOneRegister;
-            buffer[2] = (byte)(analysis.Content / 256);
-            buffer[3] = (byte)(analysis.Content % 256);
-            buffer[4] = data[1];
-            buffer[5] = data[0];
-
-            return OperateResult.CreateSuccessResult( SoftCRC16.CRC16( buffer ) );
+            // 生成最终tcp指令
+            byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteOneRegister( station, data ) );
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
 
         private OperateResult<byte[]> BuildWriteCoilCommand( string address, bool[] values )
         {
-            byte[] data = SoftBasic.BoolArrayToByte( values );
-
-            OperateResult<int> analysis = AnalysisAddress( address );
+            OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
             
-            byte[] buffer = new byte[7 + data.Length];
-            buffer[0] = station;
-            buffer[1] = ModbusInfo.WriteCoil;
-            buffer[2] = (byte)(analysis.Content / 256);
-            buffer[3] = (byte)(analysis.Content % 256);
-            buffer[4] = (byte)(values.Length / 256);
-            buffer[5] = (byte)(values.Length % 256);
-
-            buffer[6] = (byte)(data.Length);
-            data.CopyTo( buffer, 7 );
-
-            return OperateResult.CreateSuccessResult( SoftCRC16.CRC16( buffer ) );
+            // 生成最终tcp指令
+            byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteCoil( station, values ) );
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
-        private OperateResult<byte[]> BuildWriteRegisterCommand( string address, byte[] data )
+        private OperateResult<byte[]> BuildWriteRegisterCommand( string address, byte[] values )
         {
-            OperateResult<int> analysis = AnalysisAddress( address );
+            OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
             
-            byte[] buffer = new byte[7 + data.Length];
-            buffer[0] = station;
-            buffer[1] = ModbusInfo.WriteRegister;
-            buffer[2] = (byte)(analysis.Content / 256);
-            buffer[3] = (byte)(analysis.Content % 256);
-            buffer[4] = (byte)(data.Length / 2 / 256);
-            buffer[5] = (byte)(data.Length / 2 % 256);
-
-            buffer[6] = (byte)(data.Length);
-            data.CopyTo( buffer, 7 );
-            return OperateResult.CreateSuccessResult( SoftCRC16.CRC16( buffer) );
+            // 生成最终tcp指令
+            byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteRegister( station, values ) );
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
 
         #endregion
-
+        
         #region Core Interative
-
-        /// <summary>
-        /// 通过错误码来获取到对应的文本消息
-        /// </summary>
-        /// <param name="code">错误码</param>
-        /// <returns>错误的文本描述</returns>
-        private string GetDescriptionByErrorCode( byte code )
-        {
-            switch (code)
-            {
-                case ModbusInfo.FunctionCodeNotSupport: return StringResources.ModbusTcpFunctionCodeNotSupport;
-                case ModbusInfo.FunctionCodeOverBound: return StringResources.ModbusTcpFunctionCodeOverBound;
-                case ModbusInfo.FunctionCodeQuantityOver: return StringResources.ModbusTcpFunctionCodeQuantityOver;
-                case ModbusInfo.FunctionCodeReadWriteException: return StringResources.ModbusTcpFunctionCodeReadWriteException;
-                default: return StringResources.UnknownError;
-            }
-        }
+        
 
         /// <summary>
         /// 检查当前的Modbus-Tcp响应是否是正确的
@@ -368,7 +244,7 @@ namespace HslCommunication.ModBus
                 return new OperateResult<byte[]>( )
                 {
                     IsSuccess = false,
-                    Message = GetDescriptionByErrorCode( result.Content[2] ),
+                    Message = ModbusInfo.GetDescriptionByErrorCode( result.Content[2] ),
                     ErrorCode = result.Content[2],
                 };
             }
@@ -436,7 +312,51 @@ namespace HslCommunication.ModBus
         /// <returns></returns>
         private OperateResult<byte[]> ReadModBusBase( byte code, string address, ushort length )
         {
-            OperateResult<byte[]> command = BuildReadCommandBase( code, address, length );
+            OperateResult<byte[]> command = null;
+            switch (code)
+            {
+                case ModbusInfo.ReadCoil:
+                    {
+                        command = BuildReadCoilCommand( address, length );
+                        break;
+                    }
+                case ModbusInfo.ReadDiscrete:
+                    {
+                        command = BuildReadDiscreteCommand( address, length );
+                        break;
+                    }
+                case ModbusInfo.ReadRegister:
+                    {
+                        command = BuildReadRegisterCommand( address, length );
+                        break;
+                    }
+                default: command = new OperateResult<byte[]>( ) { Message = StringResources.ModbusTcpFunctionCodeNotSupport }; break;
+            }
+            if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
+
+            OperateResult<byte[]> resultBytes = CheckModbusTcpResponse( command.Content );
+            if (resultBytes.IsSuccess)
+            {
+                // 二次数据处理
+                if (resultBytes.Content?.Length >= 9)
+                {
+                    byte[] buffer = new byte[resultBytes.Content.Length - 9];
+                    Array.Copy( resultBytes.Content, 9, buffer, 0, buffer.Length );
+                    resultBytes.Content = buffer;
+                }
+            }
+            return resultBytes;
+        }
+
+        /// <summary>
+        /// 读取服务器的数据，需要指定不同的功能码
+        /// </summary>
+        /// <param name="address">地址</param>
+        /// <param name="length">长度</param>
+        /// <returns></returns>
+        private OperateResult<byte[]> ReadModBusBase( ModbusAddress address, ushort length )
+        {
+            OperateResult<byte[]> command = BuildReadRegisterCommand( address, length );
             if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
             OperateResult<byte[]> resultBytes = CheckModbusTcpResponse( command.Content );
@@ -523,16 +443,15 @@ namespace HslCommunication.ModBus
 
 
 
-
         /// <summary>
         /// 从Modbus服务器批量读取寄存器的信息，需要指定起始地址，读取长度
         /// </summary>
-        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <param name="address">起始地址，格式为"1234"，或者是带功能码格式x=3;1234</param>
         /// <param name="length">读取的数量</param>
         /// <returns>带有成功标志的字节信息</returns>
         public OperateResult<byte[]> Read( string address, ushort length )
         {
-            OperateResult<byte, int> analysis = AnalysisReadAddress( address );
+            OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             List<byte> lists = new List<byte>( );
@@ -540,17 +459,14 @@ namespace HslCommunication.ModBus
             while (alreadyFinished < length)
             {
                 ushort lengthTmp = (ushort)Math.Min( (length - alreadyFinished), 120 );
-                OperateResult<byte[]> read = ReadModBusBase( analysis.Content1, (analysis.Content2 + alreadyFinished).ToString( ), lengthTmp );
+                OperateResult<byte[]> read = ReadModBusBase( analysis.Content.AddressAdd( alreadyFinished ), lengthTmp );
                 if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );
 
                 lists.AddRange( read.Content );
                 alreadyFinished += lengthTmp;
             }
-
             return OperateResult.CreateSuccessResult( lists.ToArray( ) );
         }
-
-
 
 
         /// <summary>

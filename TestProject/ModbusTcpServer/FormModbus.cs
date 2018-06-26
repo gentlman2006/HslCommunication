@@ -123,7 +123,8 @@ namespace ModbusTcpServer
                 BeginInvoke( new Action<HslCommunication.ModBus.ModbusTcpServer,byte[]>( BusTcpServer_OnDataReceived ), tcpServer, modbus );
                 return;
             }
-            textBox1.AppendText( "接收数据：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( modbus ) + Environment.NewLine );
+
+            textBox1.AppendText( "接收数据：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( modbus, ' ' ) + Environment.NewLine );
         }
 
         /// <summary>
@@ -417,6 +418,11 @@ namespace ModbusTcpServer
 
         private void button3_Click( object sender, EventArgs e )
         {
+            if (busTcpServer == null)
+            {
+                MessageBox.Show( "必须先启动服务器！" );
+                return;
+            }
             // 信任客户端配置
             using (FormTrustedClient form = new FormTrustedClient( busTcpServer ))
             {
