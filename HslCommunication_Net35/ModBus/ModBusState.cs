@@ -75,6 +75,21 @@ namespace HslCommunication.ModBus
         internal SimpleHybirdLock hybirdLock;
 
         /// <summary>
+        /// 指示客户端是否下线，已经下线则为1
+        /// </summary>
+        private int isSocketOffline = 0;
+
+        /// <summary>
+        /// 判断当前的客户端是否已经下线，下线成功的话，就返回True
+        /// </summary>
+        /// <returns></returns>
+        public bool IsModbusOffline( )
+        {
+            int tmp = System.Threading.Interlocked.CompareExchange( ref isSocketOffline, 1, 0 );
+            return tmp == 0;
+        }
+
+        /// <summary>
         /// 清除原先的接收状态
         /// </summary>
         public void Clear( )

@@ -5,9 +5,8 @@ import HslCommunication.BasicFramework.SoftIncrementCount;
 import HslCommunication.Core.IMessage.ModbusTcpMessage;
 import HslCommunication.Core.Net.NetworkBase.NetworkDeviceBase;
 import HslCommunication.Core.Transfer.ReverseWordTransform;
-import HslCommunication.Core.Types.OperateResultExOne;
-import HslCommunication.Core.Types.OperateResultExTwo;
 import HslCommunication.Core.Types.OperateResult;
+import HslCommunication.Core.Types.OperateResultExOne;
 import HslCommunication.StringResources;
 import HslCommunication.Utilities;
 
@@ -20,21 +19,22 @@ import java.io.ByteArrayOutputStream;
 public class ModbusTcpNet extends NetworkDeviceBase<ModbusTcpMessage, ReverseWordTransform> {
 
 
-    /// <summary>
-    /// 实例化一个MOdbus-Tcp协议的客户端对象
-    /// </summary>
+    /**
+     * 实例化一个MOdbus-Tcp协议的客户端对象
+     */
     public ModbusTcpNet() {
         softIncrementCount = new SoftIncrementCount(65535, 0);
         WordLength = 1;
     }
 
 
-    /// <summary>
-    /// 指定服务器地址，端口号，客户端自己的站号来初始化
-    /// </summary>
-    /// <param name="ipAddress">服务器的Ip地址</param>
-    /// <param name="port">服务器的端口号</param>
-    /// <param name="station">客户端自身的站号</param>
+    /**
+     * 指定服务器地址，端口号，客户端自己的站号来初始化
+     *
+     * @param ipAddress 服务器的Ip地址
+     * @param port      服务器的端口号
+     * @param station   客户端自身的站号，可以在读取的时候动态配置
+     */
     public ModbusTcpNet(String ipAddress, int port, byte station) {
         softIncrementCount = new SoftIncrementCount(65535, 0);
         setIpAddress(ipAddress);
@@ -122,252 +122,87 @@ public class ModbusTcpNet extends NetworkDeviceBase<ModbusTcpMessage, ReverseWor
     }
 
 
-    /**
-     * 解析数据地址，解析出地址类型，起始地址
-     *
-     * @param address 数据地址
-     * @return 解析出地址类型，起始地址，DB块的地址
-     */
-    private OperateResultExOne<Integer> AnalysisAddress(String address) {
-        try {
-            int add = Integer.parseInt(address);
-            add = CheckAddressStartWithZero(add);
-            return OperateResultExOne.CreateSuccessResult(add);
-        } catch (Exception ex) {
-            OperateResultExOne<Integer> resultExOne = new OperateResultExOne<>();
-            resultExOne.Message = ex.getMessage();
-            return resultExOne;
-        }
-    }
-
-
-    /**
-     * 解析数据地址，解析出地址类型，起始地址
-     *
-     * @param address 数据地址
-     * @return 解析出地址类型，起始地址
-     */
-    private OperateResultExTwo<Byte, Integer> AnalysisReadAddress(String address) {
-        try {
-            if (address.indexOf('X') < 0) {
-                // 正常地址，功能码03
-                int add = Integer.parseInt(address);
-                return OperateResultExTwo.CreateSuccessResult(ModbusInfo.ReadRegister, add);
-            } else {
-                // 带功能码的地址
-                String[] list = address.split("X");
-                byte function = Byte.parseByte(list[0]);
-                int add = Integer.parseInt(list[1]);
-                return OperateResultExTwo.CreateSuccessResult(function, add);
-            }
-        } catch (Exception ex) {
-            OperateResultExTwo<Byte, Integer> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.Message = ex.getMessage();
-            return resultExTwo;
-        }
-    }
-
-    private int CheckAddressStartWithZero(int add) {
-        if (isAddressStartWithZero) {
-            if (add < 0) {
-                throw new RuntimeException("地址值必须大于等于0");
-            }
-        } else {
-            if (add < 1) {
-                throw new RuntimeException("地址值必须大于等于1");
-            }
-
-            add--;
-        }
-        return add;
-    }
-
-
-    /**
-     * 读取数据的基础指令，需要指定指令码，地址，长度
-     *
-     * @param code    功能码
-     * @param address 起始地址
-     * @param count   读取长度
-     * @return 指令
-     */
-    private OperateResultExOne<byte[]> BuildReadCommandBase(byte code, String address, short count) {
-        OperateResultExOne<Integer> analysis = AnalysisAddress(address);
+    private OperateResultExOne<byte[]> BuildReadCoilCommand(String address, short count) {
+        OperateResultExOne<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress(address, isAddressStartWithZero);
         if (!analysis.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(analysis);
 
         short messageId = (short) softIncrementCount.GetCurrentValue();
-        byte[] buffer = new byte[12];
-        buffer[0] = (byte) (messageId / 256);
-        buffer[1] = (byte) (messageId % 256);
-        buffer[2] = 0x00;
-        buffer[3] = 0x00;
-        buffer[4] = 0x00;
-        buffer[5] = 0x06;
-        buffer[6] = station;
-        buffer[7] = code;
-        buffer[8] = (byte) (analysis.Content / 256);
-        buffer[9] = (byte) (analysis.Content % 256);
-        buffer[10] = (byte) (count / 256);
-        buffer[11] = (byte) (count % 256);
+        // 生成最终tcp指令
+        byte[] buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateReadCoils(station, count), messageId);
+        return OperateResultExOne.CreateSuccessResult(buffer);
+    }
 
+    private OperateResultExOne<byte[]> BuildReadDiscreteCommand(String address, short length) {
+        OperateResultExOne<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress(address, isAddressStartWithZero);
+        if (!analysis.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(analysis);
+
+        short messageId = (short) softIncrementCount.GetCurrentValue();
+        // 生成最终tcp指令
+        byte[] buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateReadDiscrete(station, length), messageId);
         return OperateResultExOne.CreateSuccessResult(buffer);
     }
 
 
-    /**
-     * 生成一个读取线圈的指令头
-     *
-     * @param address 地址
-     * @param count   长度
-     * @return 携带有命令字节
-     */
-    private OperateResultExOne<byte[]> BuildReadCoilCommand(String address, short count) {
-        return BuildReadCommandBase(ModbusInfo.ReadCoil, address, count);
+    private OperateResultExOne<byte[]> BuildReadRegisterCommand(String address, short length) {
+        OperateResultExOne<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress(address, isAddressStartWithZero);
+        if (!analysis.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(analysis);
+
+        short messageId = (short) softIncrementCount.GetCurrentValue();
+        // 生成最终tcp指令
+        byte[] buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateReadRegister(station, length), messageId);
+        return OperateResultExOne.CreateSuccessResult(buffer);
     }
 
 
-    /**
-     * 生成一个读取离散信息的指令头
-     *
-     * @param address 地址
-     * @param count   长度
-     * @return 携带有命令字节
-     */
-    private OperateResultExOne<byte[]> BuildReadDiscreteCommand(String address, short count) {
-        return BuildReadCommandBase(ModbusInfo.ReadDiscrete, address, count);
-    }
-
-
-    /**
-     * 生成一个读取寄存器的指令头
-     *
-     * @param address 起始地址
-     * @param count   长度
-     * @return 命令字节
-     */
-    private OperateResultExOne<byte[]> BuildReadRegisterCommand(String address, short count) {
-        return BuildReadCommandBase(ModbusInfo.ReadRegister, address, count);
+    private OperateResultExOne<byte[]> BuildReadRegisterCommand(ModbusAddress address, short length) {
+        short messageId = (short) softIncrementCount.GetCurrentValue();
+        // 生成最终tcp指令
+        byte[] buffer = ModbusInfo.PackCommandToTcp(address.CreateReadRegister(station, length), messageId);
+        return OperateResultExOne.CreateSuccessResult(buffer);
     }
 
 
     private OperateResultExOne<byte[]> BuildWriteOneCoilCommand(String address, boolean value) {
-        OperateResultExOne<Integer> analysis = AnalysisAddress(address);
+        OperateResultExOne<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress(address, isAddressStartWithZero);
         if (!analysis.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(analysis);
 
         short messageId = (short) softIncrementCount.GetCurrentValue();
-        byte[] buffer = new byte[12];
-        buffer[0] = (byte) (messageId / 256);
-        buffer[1] = (byte) (messageId % 256);
-        buffer[2] = 0x00;
-        buffer[3] = 0x00;
-        buffer[4] = 0x00;
-        buffer[5] = 0x06;
-        buffer[6] = station;
-        buffer[7] = ModbusInfo.WriteOneCoil;
-        buffer[8] = (byte) (analysis.Content / 256);
-        buffer[9] = (byte) (analysis.Content % 256);
-        buffer[10] = (byte) (value ? 0xFF : 0x00);
-        buffer[11] = 0x00;
-
+        // 生成最终tcp指令
+        byte[] buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteOneCoil(station, value), messageId);
         return OperateResultExOne.CreateSuccessResult(buffer);
     }
 
 
     private OperateResultExOne<byte[]> BuildWriteOneRegisterCommand(String address, byte[] data) {
-        OperateResultExOne<Integer> analysis = AnalysisAddress(address);
+        OperateResultExOne<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress(address, isAddressStartWithZero);
         if (!analysis.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(analysis);
 
         short messageId = (short) softIncrementCount.GetCurrentValue();
-        byte[] buffer = new byte[12];
-        buffer[0] = (byte) (messageId / 256);
-        buffer[1] = (byte) (messageId % 256);
-        buffer[2] = 0x00;
-        buffer[3] = 0x00;
-        buffer[4] = 0x00;
-        buffer[5] = 0x06;
-        buffer[6] = station;
-        buffer[7] = ModbusInfo.WriteOneRegister;
-        buffer[8] = (byte) (analysis.Content / 256);
-        buffer[9] = (byte) (analysis.Content % 256);
-        buffer[10] = data[1];
-        buffer[11] = data[0];
-
+        // 生成最终tcp指令
+        byte[] buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteOneRegister(station, data), messageId);
         return OperateResultExOne.CreateSuccessResult(buffer);
     }
 
 
     private OperateResultExOne<byte[]> BuildWriteCoilCommand(String address, boolean[] values) {
-        byte[] data = SoftBasic.BoolArrayToByte(values);
-
-        OperateResultExOne<Integer> analysis = AnalysisAddress(address);
+        OperateResultExOne<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress(address, isAddressStartWithZero);
         if (!analysis.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(analysis);
 
         short messageId = (short) softIncrementCount.GetCurrentValue();
-        byte[] buffer = new byte[13 + data.length];
-        buffer[0] = (byte) (messageId / 256);
-        buffer[1] = (byte) (messageId % 256);
-        buffer[2] = 0x00;
-        buffer[3] = 0x00;
-        buffer[4] = (byte) ((buffer.length - 6) / 256);
-        buffer[5] = (byte) ((buffer.length - 6) % 256);
-        buffer[6] = station;
-        buffer[7] = ModbusInfo.WriteCoil;
-        buffer[8] = (byte) (analysis.Content / 256);
-        buffer[9] = (byte) (analysis.Content % 256);
-        buffer[10] = (byte) (values.length / 256);
-        buffer[11] = (byte) (values.length % 256);
-
-        buffer[12] = (byte) (data.length);
-        System.arraycopy(data, 0, buffer, 13, data.length);
-
+        // 生成最终tcp指令
+        byte[] buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteCoil(station, values), messageId);
         return OperateResultExOne.CreateSuccessResult(buffer);
     }
 
 
-    private OperateResultExOne<byte[]> BuildWriteRegisterCommand(String address, byte[] data) {
-        OperateResultExOne<Integer> analysis = AnalysisAddress(address);
+    private OperateResultExOne<byte[]> BuildWriteRegisterCommand(String address, byte[] values) {
+        OperateResultExOne<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress(address, isAddressStartWithZero);
         if (!analysis.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(analysis);
 
         short messageId = (short) softIncrementCount.GetCurrentValue();
-        byte[] buffer = new byte[13 + data.length];
-        buffer[0] = (byte) (messageId / 256);
-        buffer[1] = (byte) (messageId % 256);
-        buffer[2] = 0x00;
-        buffer[3] = 0x00;
-        buffer[4] = (byte) ((buffer.length - 6) / 256);
-        buffer[5] = (byte) ((buffer.length - 6) % 256);
-        buffer[6] = station;
-        buffer[7] = ModbusInfo.WriteRegister;
-        buffer[8] = (byte) (analysis.Content / 256);
-        buffer[9] = (byte) (analysis.Content % 256);
-        buffer[10] = (byte) (data.length / 2 / 256);
-        buffer[11] = (byte) (data.length / 2 % 256);
-
-        buffer[12] = (byte) (data.length);
-        System.arraycopy(data, 0, buffer, 13, data.length);
+        // 生成最终tcp指令
+        byte[] buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteRegister(station, values), messageId);
         return OperateResultExOne.CreateSuccessResult(buffer);
-    }
-
-
-    /**
-     * 通过错误码来获取到对应的文本消息
-     *
-     * @param code 错误码
-     * @return 错误的文本描述
-     */
-    private String GetDescriptionByErrorCode(byte code) {
-        switch (code) {
-            case ModbusInfo.FunctionCodeNotSupport:
-                return StringResources.ModbusTcpFunctionCodeNotSupport;
-            case ModbusInfo.FunctionCodeOverBound:
-                return StringResources.ModbusTcpFunctionCodeOverBound;
-            case ModbusInfo.FunctionCodeQuantityOver:
-                return StringResources.ModbusTcpFunctionCodeQuantityOver;
-            case ModbusInfo.FunctionCodeReadWriteException:
-                return StringResources.ModbusTcpFunctionCodeReadWriteException;
-            default:
-                return StringResources.UnknownError;
-        }
     }
 
 
@@ -383,24 +218,22 @@ public class ModbusTcpNet extends NetworkDeviceBase<ModbusTcpMessage, ReverseWor
             if ((send[7] + 0x80) == result.Content[7]) {
                 // 发生了错误
                 result.IsSuccess = false;
-                result.Message = GetDescriptionByErrorCode(result.Content[8]);
+                result.Message = ModbusInfo.GetDescriptionByErrorCode(result.Content[8]);
                 result.ErrorCode = result.Content[8];
             }
         }
         return result;
     }
 
-
     /**
      * 读取服务器的数据，需要指定不同的功能码
      *
-     * @param code    指令
      * @param address 地址
      * @param length  长度
-     * @return 指令字节信息
+     * @return 结果数据
      */
-    private OperateResultExOne<byte[]> ReadModBusBase(byte code, String address, short length) {
-        OperateResultExOne<byte[]> command = BuildReadCommandBase(code, address, length);
+    private OperateResultExOne<byte[]> ReadModBusBase(ModbusAddress address, short length) {
+        OperateResultExOne<byte[]> command = BuildReadRegisterCommand(address, length);
         if (!command.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(command);
 
         OperateResultExOne<byte[]> resultBytes = CheckModbusTcpResponse(command.Content);
@@ -413,6 +246,52 @@ public class ModbusTcpNet extends NetworkDeviceBase<ModbusTcpMessage, ReverseWor
             }
         }
         return resultBytes;
+    }
+
+
+    /**
+     * 读取服务器的数据，需要指定不同的功能码
+     *
+     * @param code    指令
+     * @param address 地址
+     * @param length  长度
+     * @return 指令字节信息
+     */
+    private OperateResultExOne<byte[]> ReadModBusBase(byte code, String address, short length) {
+
+        OperateResultExOne<byte[]> command = null;
+        switch (code) {
+            case ModbusInfo.ReadCoil: {
+                command = BuildReadCoilCommand(address, length);
+                break;
+            }
+            case ModbusInfo.ReadDiscrete: {
+                command = BuildReadDiscreteCommand(address, length);
+                break;
+            }
+            case ModbusInfo.ReadRegister: {
+                command = BuildReadRegisterCommand(address, length);
+                break;
+            }
+            default: {
+                command = new OperateResultExOne<byte[]>();
+                command.Message = StringResources.ModbusTcpFunctionCodeNotSupport;
+                break;
+            }
+        }
+        if (!command.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(command);
+
+        OperateResultExOne<byte[]> resultBytes = CheckModbusTcpResponse(command.Content);
+        if (resultBytes.IsSuccess) {
+            // 二次数据处理
+            if (resultBytes.Content.length >= 9) {
+                byte[] buffer = new byte[resultBytes.Content.length - 9];
+                System.arraycopy(resultBytes, 9, buffer, 0, buffer.length);
+                resultBytes.Content = buffer;
+            }
+        }
+        return resultBytes;
+
     }
 
 
@@ -483,7 +362,7 @@ public class ModbusTcpNet extends NetworkDeviceBase<ModbusTcpMessage, ReverseWor
      */
     @Override
     public OperateResultExOne<byte[]> Read(String address, short length) {
-        OperateResultExTwo<Byte, Integer> analysis = AnalysisReadAddress(address);
+        OperateResultExOne<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress(address, isAddressStartWithZero);
         if (!analysis.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(analysis);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -491,7 +370,7 @@ public class ModbusTcpNet extends NetworkDeviceBase<ModbusTcpMessage, ReverseWor
         int alreadyFinished = 0;
         while (alreadyFinished < length) {
             short lengthTmp = (short) Math.min((length - alreadyFinished), 120);
-            OperateResultExOne<byte[]> read = ReadModBusBase(analysis.Content1, String.valueOf(analysis.Content2 + alreadyFinished), lengthTmp);
+            OperateResultExOne<byte[]> read = ReadModBusBase(analysis.Content.AddressAdd(alreadyFinished), lengthTmp);
             if (!read.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(read);
 
             try {

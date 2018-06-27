@@ -36,16 +36,7 @@ public class Main {
             //System.out.println(i);
 
             //System.out.println(Arrays.toString("123".split("\\." )));
-
-            MelsecMcAsciiNet melsec = new MelsecMcAsciiNet("192.168.1.192",6001);
-            OperateResultExOne<short[]> read = melsec.ReadInt16("D100",(short) 2);
-            if(read.IsSuccess)
-            {
-                System.out.println(Arrays.toString(read.Content));
-            }
-            else {
-                System.out.println(read.ToMessageShowString());
-            }
+            ModbusTcpTets();
 
         }
         catch (Exception ex){
@@ -159,6 +150,20 @@ public class Main {
         }
     }
 
+    private  static void MelsecAsciiTest(){
+
+        MelsecMcAsciiNet melsec = new MelsecMcAsciiNet("192.168.1.192",6001);
+        OperateResultExOne<short[]> read = melsec.ReadInt16("D100",(short) 2);
+        if(read.IsSuccess)
+        {
+            System.out.println(Arrays.toString(read.Content));
+        }
+        else {
+            System.out.println(read.ToMessageShowString());
+        }
+    }
+
+
     private static void SiemesTest(){
         SiemensS7Net siemens_net = new SiemensS7Net(SiemensPLCS.S1200,"192.168.1.195");
         OperateResult connect = siemens_net.ConnectServer();
@@ -229,7 +234,7 @@ public class Main {
 
     private static void ModbusTcpTets(){
         ModbusTcpNet modbusTcpNet = new ModbusTcpNet("127.0.0.1",502,(byte) 0x01);
-        System.out.println(modbusTcpNet.ReadDouble("200").Content);
+        System.out.println(modbusTcpNet.ReadInt16("s=2;x=4;200").Content);
     }
 
     private static void NetComplexClientTest(){

@@ -883,8 +883,11 @@ namespace HslCommunication.ModBus
                     if (receiveCount == 0)
                     {
                         state.WorkSocket?.Close( );
-                        LogNet?.WriteDebug( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线" );
-                        System.Threading.Interlocked.Decrement( ref onlineCount );
+                        if (state.IsModbusOffline( ))
+                        {
+                            LogNet?.WriteDebug( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线" );
+                            System.Threading.Interlocked.Decrement( ref onlineCount );
+                        }
                         return;
                     }
                     else
@@ -896,8 +899,11 @@ namespace HslCommunication.ModBus
                 {
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close( );
-                    LogNet?.WriteException( ToString(), $"客户端 [ {state.IpEndPoint} ] 异常下线，消息子节接收失败！", ex );
-                    System.Threading.Interlocked.Decrement( ref onlineCount );
+                    if (state.IsModbusOffline( ))
+                    {
+                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，消息子节接收失败！", ex );
+                        System.Threading.Interlocked.Decrement( ref onlineCount );
+                    }
                     return;
                 }
 
@@ -914,8 +920,11 @@ namespace HslCommunication.ModBus
                 catch(Exception ex)
                 {
                     state.WorkSocket?.Close( );
-                    LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，再次启动接收失败！", ex );
-                    System.Threading.Interlocked.Decrement( ref onlineCount );
+                    if (state.IsModbusOffline( ))
+                    {
+                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，再次启动接收失败！", ex );
+                        System.Threading.Interlocked.Decrement( ref onlineCount );
+                    }
                     return;
                 }
 
@@ -939,8 +948,11 @@ namespace HslCommunication.ModBus
                     catch(Exception ex)
                     {
                         state.WorkSocket?.Close( );
-                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，启动内容接收失败！", ex );
-                        System.Threading.Interlocked.Decrement( ref onlineCount );
+                        if (state.IsModbusOffline( ))
+                        {
+                            LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，启动内容接收失败！", ex );
+                            System.Threading.Interlocked.Decrement( ref onlineCount );
+                        }
                         return;
                     }
                 }
@@ -948,8 +960,11 @@ namespace HslCommunication.ModBus
                 {
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close( );
-                    LogNet?.WriteWarn( ToString(), $"客户端 [ {state.IpEndPoint} ] 下线，不是标准的Modbus协议！" );
-                    System.Threading.Interlocked.Decrement( ref onlineCount );
+                    if (state.IsModbusOffline( ))
+                    {
+                        LogNet?.WriteWarn( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线，不是标准的Modbus协议！" );
+                        System.Threading.Interlocked.Decrement( ref onlineCount );
+                    }
                 }
             }
         }
@@ -974,8 +989,11 @@ namespace HslCommunication.ModBus
                 {
                     // 关闭连接，记录日志
                     state.WorkSocket?.Close( );
-                    LogNet?.WriteException( ToString(), $"客户端 [ {state.IpEndPoint} ] 下线，内容数据接收失败！", ex );
-                    System.Threading.Interlocked.Decrement( ref onlineCount );
+                    if (state.IsModbusOffline( ))
+                    {
+                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线，内容数据接收失败！", ex );
+                        System.Threading.Interlocked.Decrement( ref onlineCount );
+                    }
                     return;
                 }
                 
@@ -995,8 +1013,11 @@ namespace HslCommunication.ModBus
                 {
                     // 指令长度验证错误，关闭网络连接
                     state.WorkSocket?.Close( );
-                    LogNet?.WriteError( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线，消息长度检查失败！" );
-                    System.Threading.Interlocked.Decrement( ref onlineCount );
+                    if (state.IsModbusOffline( ))
+                    {
+                        LogNet?.WriteError( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线，消息长度检查失败！" );
+                        System.Threading.Interlocked.Decrement( ref onlineCount );
+                    }
                     return;
                 }
 
@@ -1014,8 +1035,11 @@ namespace HslCommunication.ModBus
                 catch (Exception ex)
                 {
                     state.WorkSocket?.Close( );
-                    LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，重新接收消息失败！", ex );
-                    System.Threading.Interlocked.Decrement( ref onlineCount );
+                    if (state.IsModbusOffline( ))
+                    {
+                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，重新接收消息失败！", ex );
+                        System.Threading.Interlocked.Decrement( ref onlineCount );
+                    }
                     return;
                 }
 
@@ -1030,8 +1054,11 @@ namespace HslCommunication.ModBus
                 {
                     state.WorkSocket?.Close( );
                     state.hybirdLock.Leave( );
-                    LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，开始回发消息失败！", ex );
-                    System.Threading.Interlocked.Decrement( ref onlineCount );
+                    if (state.IsModbusOffline( ))
+                    {
+                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，开始回发消息失败！", ex );
+                        System.Threading.Interlocked.Decrement( ref onlineCount );
+                    }
                     return;
                 }
 
@@ -1053,9 +1080,12 @@ namespace HslCommunication.ModBus
                 catch (Exception ex)
                 {
                     state.WorkSocket?.Close( );
-                    LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，确认回发消息失败！", ex );
-                    state = null;
-                    System.Threading.Interlocked.Decrement( ref onlineCount );
+                    if (state.IsModbusOffline( ))
+                    {
+                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，确认回发消息失败！", ex );
+                        state = null;
+                        System.Threading.Interlocked.Decrement( ref onlineCount );
+                    }
                 }
             }
         }
@@ -1652,9 +1682,8 @@ namespace HslCommunication.ModBus
 
         
 
-
         #endregion
-        
+
         #region Private Member
 
         private int onlineCount = 0;               // 在线的客户端的数量
