@@ -152,7 +152,7 @@ Using Fins-tcp protocol
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Omron.png)
 
 ## Modbus-Tcp 客户端服务器 [ Modbus-tcp Communication ]
-Client, using read/write coils and register
+Client, using read/write coils and register, read discrete input , read register input
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Modbus1.png)
 
 Server, you can build your own modbus-tcp server easily
