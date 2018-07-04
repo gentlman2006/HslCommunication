@@ -37,15 +37,33 @@ namespace ModbusTcpServer
         private void FormSiemens_Load( object sender, EventArgs e )
         {
             panel2.Enabled = false;
-            
+
+
+            checkBox2.CheckedChanged += CheckBox2_CheckedChanged;
+            checkBox3.CheckedChanged += CheckBox3_CheckedChanged;
         }
 
+        private void CheckBox3_CheckedChanged( object sender, EventArgs e )
+        {
+            if (busTcpServer != null)
+            {
+                busTcpServer.IsStringReverse = checkBox3.Checked;
+            }
+        }
+
+        private void CheckBox2_CheckedChanged( object sender, EventArgs e )
+        {
+            if (busTcpServer != null)
+            {
+                busTcpServer.IsMultiWordReverse = checkBox2.Checked;
+            }
+        }
 
         private System.Windows.Forms.Timer timerSecond;
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )
         {
-
+            busTcpServer?.ServerClose( );
         }
 
         /// <summary>
@@ -92,6 +110,8 @@ namespace ModbusTcpServer
                 busTcpServer.LogNet = new HslCommunication.LogNet.LogNetSingle( "logs.txt" );        // 配置日志信息
                 busTcpServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
                 busTcpServer.OnDataReceived += BusTcpServer_OnDataReceived;
+                busTcpServer.IsMultiWordReverse = checkBox2.Checked;
+                busTcpServer.IsStringReverse = checkBox3.Checked;
                 busTcpServer.ServerStart( port );
 
                 button1.Enabled = false;
@@ -496,6 +516,31 @@ namespace ModbusTcpServer
             }
         }
 
+        private void button9_Click( object sender, EventArgs e )
+        {
+            // 将服务器的数据池存储起来
+            if (busTcpServer != null)
+            {
+                busTcpServer.SaveDataPool( "123.txt" );
+                MessageBox.Show( "存储完成" );
+            }
+        }
 
+        private void button8_Click( object sender, EventArgs e )
+        {
+            // 从文件加载服务器的数据池
+            if (busTcpServer != null)
+            {
+                if (System.IO.File.Exists( "123.txt" ))
+                {
+                    busTcpServer.LoadDataPool( "123.txt" );
+                    MessageBox.Show( "加载完成" );
+                }
+                else
+                {
+                    MessageBox.Show( "文件不存在！" );
+                }
+            }
+        }
     }
 }

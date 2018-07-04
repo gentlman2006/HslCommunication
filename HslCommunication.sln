@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNetServer", "TestPro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PushNetServer", "TestProject\PushNetServer\PushNetServer.csproj", "{5DC89157-35FC-4A71-96B1-19FFF54DEDA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunicationCoreDemo", "TestProject\HslCommunicationCoreDemo\HslCommunicationCoreDemo.csproj", "{BE120537-35F6-43E1-92F6-CCD37CA5B4F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HslCommunicationCoreDemo", "TestProject\HslCommunicationCoreDemo\HslCommunicationCoreDemo.csproj", "{BE120537-35F6-43E1-92F6-CCD37CA5B4F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

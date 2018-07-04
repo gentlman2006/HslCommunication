@@ -29,6 +29,8 @@
         private void InitializeComponent( )
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.button5 = new System.Windows.Forms.Button();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -51,6 +53,7 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button7 = new System.Windows.Forms.Button();
             this.label19 = new System.Windows.Forms.Label();
             this.button14 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
@@ -90,7 +93,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -103,6 +107,8 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.checkBox3);
+            this.panel1.Controls.Add(this.checkBox2);
             this.panel1.Controls.Add(this.button5);
             this.panel1.Controls.Add(this.textBox10);
             this.panel1.Controls.Add(this.label14);
@@ -117,9 +123,29 @@
             this.panel1.Size = new System.Drawing.Size(978, 54);
             this.panel1.TabIndex = 0;
             // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(726, 16);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(87, 21);
+            this.checkBox3.TabIndex = 27;
+            this.checkBox3.Text = "字符串颠倒";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(609, 16);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(111, 21);
+            this.checkBox2.TabIndex = 26;
+            this.checkBox2.Text = "数据高地位颠倒";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(610, 11);
+            this.button5.Location = new System.Drawing.Point(496, 11);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(91, 28);
             this.button5.TabIndex = 9;
@@ -129,16 +155,16 @@
             // 
             // textBox10
             // 
-            this.textBox10.Location = new System.Drawing.Point(494, 14);
+            this.textBox10.Location = new System.Drawing.Point(426, 14);
             this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(105, 23);
+            this.textBox10.Size = new System.Drawing.Size(61, 23);
             this.textBox10.TabIndex = 8;
             this.textBox10.Text = "COM4";
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(440, 17);
+            this.label14.Location = new System.Drawing.Point(391, 17);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(44, 17);
             this.label14.TabIndex = 7;
@@ -336,6 +362,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button9);
+            this.groupBox2.Controls.Add(this.button8);
             this.groupBox2.Controls.Add(this.button7);
             this.groupBox2.Controls.Add(this.label19);
             this.groupBox2.Controls.Add(this.button14);
@@ -358,6 +386,16 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "单数据写入测试";
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(329, 24);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(82, 28);
+            this.button7.TabIndex = 18;
+            this.button7.Text = "离散写入";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // label19
             // 
@@ -751,15 +789,25 @@
             this.linkLabel2.Text = "创作不易，感谢打赏";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
-            // button7
+            // button8
             // 
-            this.button7.Location = new System.Drawing.Point(329, 24);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(82, 28);
-            this.button7.TabIndex = 18;
-            this.button7.Text = "离散写入";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.button8.Location = new System.Drawing.Point(17, 164);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(60, 28);
+            this.button8.TabIndex = 19;
+            this.button8.Text = "加载";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(17, 130);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(60, 28);
+            this.button9.TabIndex = 20;
+            this.button9.Text = "存储";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // FormModbus
             // 
@@ -861,5 +909,9 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button button8;
     }
 }

@@ -39,7 +39,26 @@ namespace HslCommunicationDemo
         {
             panel2.Enabled = false;
             userCurve1.SetLeftCurve( "A", new float[0], Color.Tomato );
-            
+
+
+            checkBox2.CheckedChanged += CheckBox2_CheckedChanged;
+            checkBox3.CheckedChanged += CheckBox3_CheckedChanged;
+        }
+
+        private void CheckBox3_CheckedChanged( object sender, EventArgs e )
+        {
+            if (busTcpClient != null)
+            {
+                busTcpClient.IsStringReverse = checkBox3.Checked;
+            }
+        }
+
+        private void CheckBox2_CheckedChanged( object sender, EventArgs e )
+        {
+            if(busTcpClient!=null)
+            {
+                busTcpClient.IsMultiWordReverse = checkBox2.Checked;
+            }
         }
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )
@@ -573,10 +592,6 @@ namespace HslCommunicationDemo
 
 
         #endregion
-
-        private void checkBox2_CheckedChanged( object sender, EventArgs e )
-        {
-            // 高地位颠倒
-        }
+        
     }
 }
