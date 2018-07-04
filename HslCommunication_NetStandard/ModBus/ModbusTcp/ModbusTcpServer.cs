@@ -22,10 +22,10 @@ namespace HslCommunication.ModBus
         /// </summary>
         public ModbusTcpServer( )
         {
-            Coils = new bool[65536];
-            InputCoils = new bool[65536];
-            Register = new byte[65536 * 2];
-            InputRegister = new byte[65536 * 2];
+            Coils = new bool[DataPoolLength];
+            InputCoils = new bool[DataPoolLength];
+            Register = new byte[DataPoolLength * 2];
+            InputRegister = new byte[DataPoolLength * 2];
             hybirdLockCoil = new SimpleHybirdLock( );
             hybirdLockInput = new SimpleHybirdLock( );
             hybirdLockRegister = new SimpleHybirdLock( );
@@ -75,7 +75,24 @@ namespace HslCommunication.ModBus
         /// 当前在线的客户端的数量
         /// </summary>
         public int OnlineCount => onlineCount;
-        
+
+        /// <summary>
+        /// 多字节的数据是否高低位反转，常用于Int32,UInt32,float,double,Int64,UInt64类型读写
+        /// </summary>
+        public bool IsMultiWordReverse
+        {
+            get { return byteTransform.IsMultiWordReverse; }
+            set { byteTransform.IsMultiWordReverse = value; }
+        }
+
+        /// <summary>
+        /// 字符串数据是否按照字来反转
+        /// </summary>
+        public bool IsStringReverse
+        {
+            get { return byteTransform.IsStringReverse; }
+            set { byteTransform.IsStringReverse = value; }
+        }
 
         #endregion
 
@@ -90,14 +107,109 @@ namespace HslCommunication.ModBus
         private SimpleHybirdLock hybirdLockRegister;  // 寄存器池同步锁
         private byte[] InputRegister;                 // 输入寄存器
         private SimpleHybirdLock hybirdLockInputR;    // 输入寄存器的同步锁
-        private IByteTransform byteTransform;
+        private ReverseWordTransform byteTransform;
+        private const int DataPoolLength = 65536;     // 数据的长度
 
 
         #endregion
 
-        #region Address Analysis
 
 
+        #region Data Persistence
+
+        /// <summary>
+        /// 将本系统的数据池数据存储到指定的文件
+        /// </summary>
+        /// <param name="path">文件的路径</param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="System.IO.PathTooLongException"></exception>
+        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
+        /// <exception cref="System.IO.IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="System.Security.SecurityException"></exception>
+        /// <example>
+        /// modbusTcpServer.SaveDataPool("data.txt"); // 在当前的程序目录下存储数据池信息，当程序关闭的时候需要进行存储
+        /// </example>
+        public void SaveDataPool( string path )
+        {
+            byte[] buffer = new byte[DataPoolLength * 6];
+            // 存储线圈
+            hybirdLockCoil.Enter( );
+            for (int i = 0; i < DataPoolLength; i++)
+            {
+                if (Coils[i]) buffer[i] = 0x01;
+            }
+            hybirdLockCoil.Leave( );
+
+            // 存储离散信息
+            hybirdLockInput.Enter( );
+            for (int i = 0; i < DataPoolLength; i++)
+            {
+                if (InputCoils[i]) buffer[DataPoolLength + i] = 0x01;
+            }
+            hybirdLockInput.Leave( );
+
+            // 存储寄存器
+            hybirdLockRegister.Enter( );
+            Array.Copy( Register, 0, buffer, DataPoolLength * 2, DataPoolLength * 2 );
+            hybirdLockRegister.Leave( );
+
+            // 存储输入寄存器
+            hybirdLockInputR.Enter( );
+            Array.Copy( InputRegister, 0, buffer, DataPoolLength * 4, DataPoolLength * 2 );
+            hybirdLockInputR.Leave( );
+
+
+            System.IO.File.WriteAllBytes( path, buffer );
+        }
+
+        /// <summary>
+        /// 从文件加载数据池信息
+        /// </summary>
+        /// <param name="path">文件路径</param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="System.IO.PathTooLongException"></exception>
+        /// <exception cref="System.IO.DirectoryNotFoundException"></exception>
+        /// <exception cref="System.IO.IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="System.Security.SecurityException"></exception>
+        /// <exception cref="System.IO.FileNotFoundException"></exception>
+        /// <example>
+        /// modbusTcpServer.LoadDataPool("data.txt"); // 从当前的程序目录下为文件加载数据池信息，当程序打开的时候需要进行加载
+        /// </example>
+        public void LoadDataPool( string path )
+        {
+            byte[] buffer = System.IO.File.ReadAllBytes( path );
+            if (buffer.Length < DataPoolLength * 6) throw new Exception( "文件数据不对" );
+
+            // 线圈数据加载
+            hybirdLockCoil.Enter( );
+            for (int i = 0; i < DataPoolLength; i++)
+            {
+                if (buffer[i] == 0x01) Coils[i] = true;
+            }
+            hybirdLockCoil.Leave( );
+
+            // 离散寄存器信息加载
+            hybirdLockInput.Enter( );
+            for (int i = 0; i < DataPoolLength; i++)
+            {
+                if (buffer[DataPoolLength + i] == 0x01) InputCoils[i] = true;
+            }
+            hybirdLockInput.Leave( );
+
+            hybirdLockRegister.Enter( );
+            Array.Copy( buffer, DataPoolLength * 2, Register, 0, DataPoolLength * 2 );
+            hybirdLockRegister.Leave( );
+
+            hybirdLockInputR.Enter( );
+            Array.Copy( buffer, DataPoolLength * 4, InputRegister, 0, DataPoolLength * 2 );
+            hybirdLockInputR.Leave( );
+        }
 
         #endregion
 
