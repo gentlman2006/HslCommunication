@@ -248,7 +248,7 @@ namespace HslCommunication.ModBus
             hybirdLockCoil.Enter( );
             for (int i = add; i < add + length; i++)
             {
-                if (i < ushort.MaxValue)
+                if (i <= ushort.MaxValue)
                 {
                     result[i - add] = Coils[i];
                 }
@@ -287,7 +287,7 @@ namespace HslCommunication.ModBus
             hybirdLockCoil.Enter( );
             for (int i = add; i < add + data.Length; i++)
             {
-                if (i < ushort.MaxValue)
+                if (i <= ushort.MaxValue)
                 {
                     Coils[i] = data[i - add];
                 }
@@ -332,7 +332,7 @@ namespace HslCommunication.ModBus
             hybirdLockInput.Enter( );
             for (int i = add; i < add + length; i++)
             {
-                if (i < ushort.MaxValue)
+                if (i <= ushort.MaxValue)
                 {
                     result[i - add] = InputCoils[i];
                 }
@@ -370,7 +370,7 @@ namespace HslCommunication.ModBus
             hybirdLockInput.Enter( );
             for (int i = add; i < add + data.Length; i++)
             {
-                if (i < ushort.MaxValue)
+                if (i <= ushort.MaxValue)
                 {
                     InputCoils[i] = data[i - add];
                 }
