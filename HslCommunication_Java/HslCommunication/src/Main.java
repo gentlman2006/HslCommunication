@@ -235,6 +235,8 @@ public class Main {
     private static void ModbusTcpTets(){
         ModbusTcpNet modbusTcpNet = new ModbusTcpNet("127.0.0.1",502,(byte) 0x01);
         System.out.println(modbusTcpNet.ReadInt16("s=2;x=4;200").Content);
+
+        modbusTcpNet.Write("100",new int[]{12345,-12345});
     }
 
     private static void NetComplexClientTest(){

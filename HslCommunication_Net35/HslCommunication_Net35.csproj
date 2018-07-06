@@ -46,257 +46,522 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithms\ConnectPool\ConnectPool.cs" />
-    <Compile Include="Algorithms\ConnectPool\IConnector.cs" />
-    <Compile Include="Algorithms\Fourier\FFTHelper.cs" />
-    <Compile Include="BasicFramework\FormPortraitSelect.cs">
+    <Compile Include="..\HslCommunication_Net45\Algorithms\ConnectPool\ConnectPool.cs">
+      <Link>Algorithms\ConnectPool\ConnectPool.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Algorithms\ConnectPool\IConnector.cs">
+      <Link>Algorithms\ConnectPool\IConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Algorithms\Fourier\FFTHelper.cs">
+      <Link>Algorithms\Fourier\FFTHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\FormAuthorAdvertisement.cs">
+      <Link>BasicFramework\FormAuthorAdvertisement.cs</Link>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BasicFramework\FormPortraitSelect.Designer.cs">
-      <DependentUpon>FormPortraitSelect.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BasicFramework\FormSupport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BasicFramework\FormSupport.Designer.cs">
-      <DependentUpon>FormSupport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BasicFramework\SoftCache.cs" />
-    <Compile Include="BasicFramework\SoftException.cs" />
-    <Compile Include="BasicFramework\FormAuthorAdvertisement.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BasicFramework\FormAuthorAdvertisement.designer.cs">
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\FormAuthorAdvertisement.designer.cs">
+      <Link>BasicFramework\FormAuthorAdvertisement.designer.cs</Link>
       <DependentUpon>FormAuthorAdvertisement.cs</DependentUpon>
     </Compile>
-    <Compile Include="BasicFramework\FormAuthorize.cs">
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\FormAuthorize.cs">
+      <Link>BasicFramework\FormAuthorize.cs</Link>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BasicFramework\FormAuthorize.designer.cs">
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\FormAuthorize.designer.cs">
+      <Link>BasicFramework\FormAuthorize.designer.cs</Link>
       <DependentUpon>FormAuthorize.cs</DependentUpon>
     </Compile>
-    <Compile Include="BasicFramework\FormPopup.cs">
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\FormPopup.cs">
+      <Link>BasicFramework\FormPopup.cs</Link>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BasicFramework\FormPopup.designer.cs">
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\FormPopup.designer.cs">
+      <Link>BasicFramework\FormPopup.designer.cs</Link>
       <DependentUpon>FormPopup.cs</DependentUpon>
     </Compile>
-    <Compile Include="BasicFramework\SoftAnimation.cs" />
-    <Compile Include="BasicFramework\SoftAuthorize.cs" />
-    <Compile Include="BasicFramework\SoftBaseClass.cs" />
-    <Compile Include="BasicFramework\SoftBasic.cs" />
-    <Compile Include="BasicFramework\SoftMail.cs" />
-    <Compile Include="BasicFramework\SoftMsgQueue.cs" />
-    <Compile Include="BasicFramework\SoftNumerical.cs" />
-    <Compile Include="BasicFramework\SoftPainting.cs" />
-    <Compile Include="BasicFramework\SoftSecurity.cs" />
-    <Compile Include="BasicFramework\SoftSqlOperate.cs" />
-    <Compile Include="BasicFramework\SoftVersion.cs" />
-    <Compile Include="Controls\UserCurve.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\UserCurve.Designer.cs">
-      <DependentUpon>UserCurve.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserGaugeChart.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\UserGaugeChart.Designer.cs">
-      <DependentUpon>UserGaugeChart.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserLantern.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\UserLantern.Designer.cs">
-      <DependentUpon>UserLantern.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserPieChart.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\UserPieChart.Designer.cs">
-      <DependentUpon>UserPieChart.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserSwitch.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\UserSwitch.Designer.cs">
-      <DependentUpon>UserSwitch.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserVerticalProgress.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\UserVerticalProgress.Designer.cs">
-      <DependentUpon>UserVerticalProgress.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Core\Address\DeviceAddressBase.cs" />
-    <Compile Include="Core\IMessage\AlienMessage.cs" />
-    <Compile Include="Core\IMessage\EFORTMessage.cs" />
-    <Compile Include="Core\IMessage\FetchWriteMessage.cs" />
-    <Compile Include="Core\IMessage\FinsMessage.cs" />
-    <Compile Include="Core\IMessage\HslMessage.cs" />
-    <Compile Include="Core\IMessage\MelsecA1EBinaryMessage.cs" />
-    <Compile Include="Core\IMessage\MelsecQnA3EAsciiMessage.cs" />
-    <Compile Include="Core\IMessage\MelsecQnA3EBinaryMessage.cs" />
-    <Compile Include="Core\IMessage\ModbusTcpMessage.cs" />
-    <Compile Include="Core\IMessage\S7Message.cs" />
-    <Compile Include="Core\Net\ClassNetHandle.cs" />
-    <Compile Include="Core\Net\CommunicationProtocol.cs" />
-    <Compile Include="Controls\UserButton.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\UserButton.designer.cs">
-      <DependentUpon>UserButton.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserClock.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\UserClock.designer.cs">
-      <DependentUpon>UserClock.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Core\IMessage\INetMessage.cs" />
-    <Compile Include="Core\Net\IReadWriteNet.cs" />
-    <Compile Include="Core\Net\NetworkBase\NetworkAlienClient.cs" />
-    <Compile Include="Core\Net\NetworkBase\NetworkBase.cs" />
-    <Compile Include="Core\Net\NetworkBase\NetworkDeviceBase.cs" />
-    <Compile Include="Core\Net\NetworkBase\NetworkFileServerBase.cs" />
-    <Compile Include="Core\Net\NetworkBase\NetworkServerBase.cs" />
-    <Compile Include="Core\Net\StateOne\AlienSession.cs" />
-    <Compile Include="Core\Net\StateOne\AppSession.cs" />
-    <Compile Include="Core\Net\StateOne\AsyncStateSend.cs" />
-    <Compile Include="Core\Net\StateOne\StateObject.cs" />
-    <Compile Include="Core\Net\NetworkBase\NetworkDoubleBase.cs" />
-    <Compile Include="Core\Net\StateOne\FileStateObject.cs" />
-    <Compile Include="Core\Net\NetworkBase\NetworkXBase.cs" />
-    <Compile Include="Core\Net\StateOne\StateOneBase.cs" />
-    <Compile Include="Core\Thread\ThreadLock.cs" />
-    <Compile Include="Core\Transfer\ByteTransformBase.cs" />
-    <Compile Include="Core\Transfer\ByteTransformHelper.cs" />
-    <Compile Include="Core\Transfer\IByteTransform.cs" />
-    <Compile Include="Core\Transfer\RegularByteTransform.cs" />
-    <Compile Include="Core\Transfer\ReverseBytesTransform.cs" />
-    <Compile Include="Core\Transfer\ReverseWordTransform.cs" />
-    <Compile Include="Core\Types\HslPieItem.cs" />
-    <Compile Include="Enthernet\DeviceNet\ClassDeviceNet.cs" />
-    <Compile Include="Enthernet\FileNet\AdvancedFileServer.cs" />
-    <Compile Include="Enthernet\FileNet\FileBaseInfo.cs" />
-    <Compile Include="Enthernet\FileNet\FileClientBase.cs" />
-    <Compile Include="Enthernet\FileNet\FileMarkId.cs" />
-    <Compile Include="Enthernet\FileNet\GroupFileContainer.cs" />
-    <Compile Include="Enthernet\FileNet\GroupFileItem.cs" />
-    <Compile Include="Enthernet\FileNet\IntegrationFileClient.cs" />
-    <Compile Include="Enthernet\FileNet\UltimateFileServer.cs" />
-    <Compile Include="Enthernet\PushNet\NetPushClient.cs" />
-    <Compile Include="Enthernet\PushNet\NetPushServer.cs" />
-    <Compile Include="Enthernet\PushNet\PushGroupClient.cs" />
-    <Compile Include="Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" />
-    <Compile Include="Enthernet\ComplexNet\NetComplexClient.cs" />
-    <Compile Include="Enthernet\ComplexNet\NetComplexServer.cs" />
-    <Compile Include="Enthernet\DeviceNet\DeviceState.cs" />
-    <Compile Include="Enthernet\SimplifyNet\NetSimplifyClient.cs" />
-    <Compile Include="Enthernet\SimplifyNet\NetSimplifyServer.cs" />
-    <Compile Include="Core\Types\HslTimeOut.cs" />
-    <Compile Include="Enthernet\UdpNet\NetUdpClient.cs" />
-    <Compile Include="Enthernet\UdpNet\NetUdpServer.cs" />
-    <Compile Include="LogNet\Core\ILogNet.cs" />
-    <Compile Include="LogNet\Core\LogBase.cs" />
-    <Compile Include="LogNet\Core\Types.cs" />
-    <Compile Include="LogNet\View\FormLogNetView.cs">
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\FormPortraitSelect.cs">
+      <Link>BasicFramework\FormPortraitSelect.cs</Link>
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LogNet\View\FormLogNetView.Designer.cs">
-      <DependentUpon>FormLogNetView.cs</DependentUpon>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\FormPortraitSelect.designer.cs">
+      <Link>BasicFramework\FormPortraitSelect.designer.cs</Link>
+      <DependentUpon>FormPortraitSelect.cs</DependentUpon>
     </Compile>
-    <Compile Include="LogNet\View\LogNetAnalysisControl.cs">
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\FormSupport.cs">
+      <Link>BasicFramework\FormSupport.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\FormSupport.designer.cs">
+      <Link>BasicFramework\FormSupport.designer.cs</Link>
+      <DependentUpon>FormSupport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftAnimation.cs">
+      <Link>BasicFramework\SoftAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftAuthorize.cs">
+      <Link>BasicFramework\SoftAuthorize.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftBaseClass.cs">
+      <Link>BasicFramework\SoftBaseClass.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftBasic.cs">
+      <Link>BasicFramework\SoftBasic.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftCache.cs">
+      <Link>BasicFramework\SoftCache.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftException.cs">
+      <Link>BasicFramework\SoftException.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftMail.cs">
+      <Link>BasicFramework\SoftMail.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftMsgQueue.cs">
+      <Link>BasicFramework\SoftMsgQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftNumerical.cs">
+      <Link>BasicFramework\SoftNumerical.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftPainting.cs">
+      <Link>BasicFramework\SoftPainting.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftSecurity.cs">
+      <Link>BasicFramework\SoftSecurity.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftSqlOperate.cs">
+      <Link>BasicFramework\SoftSqlOperate.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftVersion.cs">
+      <Link>BasicFramework\SoftVersion.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftZipped.cs">
+      <Link>BasicFramework\SoftZipped.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserButton.cs">
+      <Link>Controls\UserButton.cs</Link>
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LogNet\View\LogNetAnalysisControl.Designer.cs">
+    <Compile Include="..\HslCommunication_Net45\Controls\UserButton.designer.cs">
+      <Link>Controls\UserButton.designer.cs</Link>
+      <DependentUpon>UserButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserClock.cs">
+      <Link>Controls\UserClock.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserClock.designer.cs">
+      <Link>Controls\UserClock.designer.cs</Link>
+      <DependentUpon>UserClock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserCurve.cs">
+      <Link>Controls\UserCurve.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserCurve.designer.cs">
+      <Link>Controls\UserCurve.designer.cs</Link>
+      <DependentUpon>UserCurve.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserGaugeChart.cs">
+      <Link>Controls\UserGaugeChart.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserGaugeChart.designer.cs">
+      <Link>Controls\UserGaugeChart.designer.cs</Link>
+      <DependentUpon>UserGaugeChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserLantern.cs">
+      <Link>Controls\UserLantern.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserLantern.designer.cs">
+      <Link>Controls\UserLantern.designer.cs</Link>
+      <DependentUpon>UserLantern.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserPieChart.cs">
+      <Link>Controls\UserPieChart.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserPieChart.designer.cs">
+      <Link>Controls\UserPieChart.designer.cs</Link>
+      <DependentUpon>UserPieChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserSwitch.cs">
+      <Link>Controls\UserSwitch.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserSwitch.designer.cs">
+      <Link>Controls\UserSwitch.designer.cs</Link>
+      <DependentUpon>UserSwitch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserVerticalProgress.cs">
+      <Link>Controls\UserVerticalProgress.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserVerticalProgress.designer.cs">
+      <Link>Controls\UserVerticalProgress.designer.cs</Link>
+      <DependentUpon>UserVerticalProgress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Address\DeviceAddressBase.cs">
+      <Link>Core\Address\DeviceAddressBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\AlienMessage.cs">
+      <Link>Core\IMessage\AlienMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\EFORTMessage.cs">
+      <Link>Core\IMessage\EFORTMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\FetchWriteMessage.cs">
+      <Link>Core\IMessage\FetchWriteMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\FinsMessage.cs">
+      <Link>Core\IMessage\FinsMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\HslMessage.cs">
+      <Link>Core\IMessage\HslMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\INetMessage.cs">
+      <Link>Core\IMessage\INetMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\MelsecA1EBinaryMessage.cs">
+      <Link>Core\IMessage\MelsecA1EBinaryMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\MelsecQnA3EAsciiMessage.cs">
+      <Link>Core\IMessage\MelsecQnA3EAsciiMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\MelsecQnA3EBinaryMessage.cs">
+      <Link>Core\IMessage\MelsecQnA3EBinaryMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\ModbusTcpMessage.cs">
+      <Link>Core\IMessage\ModbusTcpMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\S7Message.cs">
+      <Link>Core\IMessage\S7Message.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\ClassNetHandle.cs">
+      <Link>Core\Net\ClassNetHandle.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\CommunicationProtocol.cs">
+      <Link>Core\Net\CommunicationProtocol.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\IReadWriteNet.cs">
+      <Link>Core\Net\IReadWriteNet.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\NetSupport.cs">
+      <Link>Core\Net\NetSupport.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\NetworkBase\NetworkAlienClient.cs">
+      <Link>Core\Net\NetworkBase\NetworkAlienClient.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\NetworkBase\NetworkBase.cs">
+      <Link>Core\Net\NetworkBase\NetworkBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\NetworkBase\NetworkDeviceBase.cs">
+      <Link>Core\Net\NetworkBase\NetworkDeviceBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\NetworkBase\NetworkDoubleBase.cs">
+      <Link>Core\Net\NetworkBase\NetworkDoubleBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\NetworkBase\NetworkFileServerBase.cs">
+      <Link>Core\Net\NetworkBase\NetworkFileServerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\NetworkBase\NetworkServerBase.cs">
+      <Link>Core\Net\NetworkBase\NetworkServerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\NetworkBase\NetworkXBase.cs">
+      <Link>Core\Net\NetworkBase\NetworkXBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\StateOne\AlienSession.cs">
+      <Link>Core\Net\StateOne\AlienSession.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\StateOne\AppSession.cs">
+      <Link>Core\Net\StateOne\AppSession.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\StateOne\AsyncStateSend.cs">
+      <Link>Core\Net\StateOne\AsyncStateSend.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\StateOne\FileStateObject.cs">
+      <Link>Core\Net\StateOne\FileStateObject.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\StateOne\StateObject.cs">
+      <Link>Core\Net\StateOne\StateObject.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Net\StateOne\StateOneBase.cs">
+      <Link>Core\Net\StateOne\StateOneBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Security\Security.cs">
+      <Link>Core\Security\Security.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Thread\ThreadLock.cs">
+      <Link>Core\Thread\ThreadLock.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Transfer\ByteTransformBase.cs">
+      <Link>Core\Transfer\ByteTransformBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Transfer\ByteTransformHelper.cs">
+      <Link>Core\Transfer\ByteTransformHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Transfer\IByteTransform.cs">
+      <Link>Core\Transfer\IByteTransform.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Transfer\RegularByteTransform.cs">
+      <Link>Core\Transfer\RegularByteTransform.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Transfer\ReverseBytesTransform.cs">
+      <Link>Core\Transfer\ReverseBytesTransform.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Transfer\ReverseWordTransform.cs">
+      <Link>Core\Transfer\ReverseWordTransform.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Types\HslPieItem.cs">
+      <Link>Core\Types\HslPieItem.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Types\HslTimeOut.cs">
+      <Link>Core\Types\HslTimeOut.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Types\IDataTransfer.cs">
+      <Link>Core\Types\IDataTransfer.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Types\OperateResult.cs">
+      <Link>Core\Types\OperateResult.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\ComplexNet\NetComplexClient.cs">
+      <Link>Enthernet\ComplexNet\NetComplexClient.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\ComplexNet\NetComplexServer.cs">
+      <Link>Enthernet\ComplexNet\NetComplexServer.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\DeviceNet\ClassDeviceNet.cs">
+      <Link>Enthernet\DeviceNet\ClassDeviceNet.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\DeviceNet\DeviceState.cs">
+      <Link>Enthernet\DeviceNet\DeviceState.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\FileNet\AdvancedFileServer.cs">
+      <Link>Enthernet\FileNet\AdvancedFileServer.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\FileNet\FileBaseInfo.cs">
+      <Link>Enthernet\FileNet\FileBaseInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\FileNet\FileClientBase.cs">
+      <Link>Enthernet\FileNet\FileClientBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\FileNet\FileMarkId.cs">
+      <Link>Enthernet\FileNet\FileMarkId.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\FileNet\GroupFileContainer.cs">
+      <Link>Enthernet\FileNet\GroupFileContainer.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\FileNet\GroupFileItem.cs">
+      <Link>Enthernet\FileNet\GroupFileItem.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\FileNet\IntegrationFileClient.cs">
+      <Link>Enthernet\FileNet\IntegrationFileClient.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\FileNet\UltimateFileServer.cs">
+      <Link>Enthernet\FileNet\UltimateFileServer.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\PushNet\NetPushClient.cs">
+      <Link>Enthernet\PushNet\NetPushClient.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\PushNet\NetPushServer.cs">
+      <Link>Enthernet\PushNet\NetPushServer.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\PushNet\PushGroupClient.cs">
+      <Link>Enthernet\PushNet\PushGroupClient.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\SimplifyNet\NetSimplifyClient.cs">
+      <Link>Enthernet\SimplifyNet\NetSimplifyClient.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\SimplifyNet\NetSimplifyServer.cs">
+      <Link>Enthernet\SimplifyNet\NetSimplifyServer.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\SoftUpdateNet\ClassSoftUpdate.cs">
+      <Link>Enthernet\SoftUpdateNet\ClassSoftUpdate.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\UdpNet\NetUdpClient.cs">
+      <Link>Enthernet\UdpNet\NetUdpClient.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\UdpNet\NetUdpServer.cs">
+      <Link>Enthernet\UdpNet\NetUdpServer.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\Core\ILogNet.cs">
+      <Link>LogNet\Core\ILogNet.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\Core\LogBase.cs">
+      <Link>LogNet\Core\LogBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\Core\Types.cs">
+      <Link>LogNet\Core\Types.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\LogNetManagment.cs">
+      <Link>LogNet\LogNetManagment.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\Logs\LogNetDateTime.cs">
+      <Link>LogNet\Logs\LogNetDateTime.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\Logs\LogNetFileSize.cs">
+      <Link>LogNet\Logs\LogNetFileSize.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\Logs\LogNetSingle.cs">
+      <Link>LogNet\Logs\LogNetSingle.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\View\FormLogNetView.cs">
+      <Link>LogNet\View\FormLogNetView.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\View\FormLogNetView.designer.cs">
+      <Link>LogNet\View\FormLogNetView.designer.cs</Link>
+      <DependentUpon>FormLogNetView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\View\LogNetAnalysisControl.cs">
+      <Link>LogNet\View\LogNetAnalysisControl.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\LogNet\View\LogNetAnalysisControl.designer.cs">
+      <Link>LogNet\View\LogNetAnalysisControl.designer.cs</Link>
       <DependentUpon>LogNetAnalysisControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="LogNet\LogNetManagment.cs" />
-    <Compile Include="LogNet\Logs\LogNetDateTime.cs" />
-    <Compile Include="LogNet\Logs\LogNetFileSize.cs" />
-    <Compile Include="LogNet\Logs\LogNetSingle.cs" />
-    <Compile Include="Core\Net\NetSupport.cs" />
-    <Compile Include="Core\Types\OperateResult.cs" />
-    <Compile Include="ModBus\ModbusAddress.cs" />
-    <Compile Include="ModBus\ModbusInfo.cs" />
-    <Compile Include="ModBus\ModBusMonitorAddress.cs" />
-    <Compile Include="ModBus\ModbusRtu\ModbusRtu.cs" />
-    <Compile Include="ModBus\ModBusState.cs" />
-    <Compile Include="ModBus\ModbusTcp\ModbusTcpNet.cs" />
-    <Compile Include="Core\Types\IDataTransfer.cs" />
-    <Compile Include="ModBus\ModbusTcp\ModbusTcpServer.cs" />
-    <Compile Include="ModBus\MonitorAddress.cs" />
-    <Compile Include="Profinet\Melsec\MelsecA1EDataType.cs" />
-    <Compile Include="Profinet\Melsec\MelsecA1ENet.cs" />
-    <Compile Include="Profinet\Melsec\MelsecMcAsciiNet.cs" />
-    <Compile Include="Profinet\Melsec\MelsecMcDataType.cs" />
-    <Compile Include="Profinet\Melsec\MelsecMcNet.cs" />
-    <Compile Include="Profinet\Melsec\MelsecNetMultiAsync.cs" />
-    <Compile Include="Profinet\Omron\OmronFinsDataType.cs" />
-    <Compile Include="Profinet\Omron\OmronFinsNet.cs" />
-    <Compile Include="Profinet\Omron\OmronInfo.cs" />
-    <Compile Include="Profinet\Siemens\SiemensFetchWriteNet.cs" />
-    <Compile Include="Profinet\Siemens\SiemensPLCS.cs" />
-    <Compile Include="Profinet\Siemens\SiemensS7Net.cs" />
+    <Compile Include="..\HslCommunication_Net45\ModBus\ModbusAddress.cs">
+      <Link>ModBus\ModbusAddress.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\ModBus\ModbusInfo.cs">
+      <Link>ModBus\ModbusInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\ModBus\ModBusMonitorAddress.cs">
+      <Link>ModBus\ModBusMonitorAddress.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\ModBus\ModbusRtu\ModbusRtu.cs">
+      <Link>ModBus\ModbusRtu\ModbusRtu.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\ModBus\ModBusState.cs">
+      <Link>ModBus\ModBusState.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\ModBus\ModbusTcp\ModbusTcpNet.cs">
+      <Link>ModBus\ModbusTcp\ModbusTcpNet.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\ModBus\ModbusTcp\ModbusTcpServer.cs">
+      <Link>ModBus\ModbusTcp\ModbusTcpServer.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\ModBus\MonitorAddress.cs">
+      <Link>ModBus\MonitorAddress.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1EDataType.cs">
+      <Link>Profinet\Melsec\MelsecA1EDataType.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1ENet.cs">
+      <Link>Profinet\Melsec\MelsecA1ENet.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecMcAsciiNet.cs">
+      <Link>Profinet\Melsec\MelsecMcAsciiNet.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecMcDataType.cs">
+      <Link>Profinet\Melsec\MelsecMcDataType.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecMcNet.cs">
+      <Link>Profinet\Melsec\MelsecMcNet.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecNetMultiAsync.cs">
+      <Link>Profinet\Melsec\MelsecNetMultiAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronFinsDataType.cs">
+      <Link>Profinet\Omron\OmronFinsDataType.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronFinsNet.cs">
+      <Link>Profinet\Omron\OmronFinsNet.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronInfo.cs">
+      <Link>Profinet\Omron\OmronInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Siemens\SiemensFetchWriteNet.cs">
+      <Link>Profinet\Siemens\SiemensFetchWriteNet.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Siemens\SiemensPLCS.cs">
+      <Link>Profinet\Siemens\SiemensPLCS.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Siemens\SiemensS7Net.cs">
+      <Link>Profinet\Siemens\SiemensS7Net.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Robot\EFORT\EfortData.cs">
+      <Link>Robot\EFORT\EfortData.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Robot\EFORT\ER7BC10.cs">
+      <Link>Robot\EFORT\ER7BC10.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Serial\CRCSupport.cs">
+      <Link>Serial\CRCSupport.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Serial\SerialCommunicationBase.cs">
+      <Link>Serial\SerialCommunicationBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\StringResources.cs">
+      <Link>StringResources.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Core\Security\Security.cs" />
-    <Compile Include="Robot\EFORT\EfortData.cs" />
-    <Compile Include="Robot\EFORT\ER7BC10.cs" />
-    <Compile Include="Serial\CRCSupport.cs" />
-    <Compile Include="Serial\SerialCommunicationBase.cs" />
-    <Compile Include="StringResources.cs" />
-    <Compile Include="BasicFramework\SoftZipped.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BasicFramework\FormAuthorAdvertisement.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\BasicFramework\FormAuthorAdvertisement.resx">
+      <Link>BasicFramework\FormAuthorAdvertisement.resx</Link>
       <DependentUpon>FormAuthorAdvertisement.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BasicFramework\FormAuthorize.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\BasicFramework\FormAuthorize.resx">
+      <Link>BasicFramework\FormAuthorize.resx</Link>
       <DependentUpon>FormAuthorize.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BasicFramework\FormPopup.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\BasicFramework\FormPopup.resx">
+      <Link>BasicFramework\FormPopup.resx</Link>
       <DependentUpon>FormPopup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BasicFramework\FormPortraitSelect.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\BasicFramework\FormPortraitSelect.resx">
+      <Link>BasicFramework\FormPortraitSelect.resx</Link>
       <DependentUpon>FormPortraitSelect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BasicFramework\FormSupport.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\BasicFramework\FormSupport.resx">
+      <Link>BasicFramework\FormSupport.resx</Link>
       <DependentUpon>FormSupport.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\UserButton.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserButton.resx">
+      <Link>Controls\UserButton.resx</Link>
       <DependentUpon>UserButton.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\UserClock.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserClock.resx">
+      <Link>Controls\UserClock.resx</Link>
       <DependentUpon>UserClock.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\UserCurve.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserCurve.resx">
+      <Link>Controls\UserCurve.resx</Link>
       <DependentUpon>UserCurve.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\UserGaugeChart.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserGaugeChart.resx">
+      <Link>Controls\UserGaugeChart.resx</Link>
       <DependentUpon>UserGaugeChart.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\UserLantern.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserLantern.resx">
+      <Link>Controls\UserLantern.resx</Link>
       <DependentUpon>UserLantern.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\UserPieChart.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserPieChart.resx">
+      <Link>Controls\UserPieChart.resx</Link>
       <DependentUpon>UserPieChart.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\UserSwitch.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserSwitch.resx">
+      <Link>Controls\UserSwitch.resx</Link>
       <DependentUpon>UserSwitch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\UserVerticalProgress.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserVerticalProgress.resx">
+      <Link>Controls\UserVerticalProgress.resx</Link>
       <DependentUpon>UserVerticalProgress.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LogNet\View\FormLogNetView.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\LogNet\View\FormLogNetView.resx">
+      <Link>LogNet\View\FormLogNetView.resx</Link>
       <DependentUpon>FormLogNetView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LogNet\View\LogNetAnalysisControl.resx">
+    <EmbeddedResource Include="..\HslCommunication_Net45\LogNet\View\LogNetAnalysisControl.resx">
+      <Link>LogNet\View\LogNetAnalysisControl.resx</Link>
       <DependentUpon>LogNetAnalysisControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -414,12 +679,16 @@
     <None Include="imgaes\WindowsForm_817_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Doc.txt" />
     <None Include="mm_facetoface_collect_qrcode_1525331158525.png" />
     <None Include="imgaes\alipay.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgaes\abstr11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\HslCommunication_Net45\Doc.txt">
+      <Link>Doc.txt</Link>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
