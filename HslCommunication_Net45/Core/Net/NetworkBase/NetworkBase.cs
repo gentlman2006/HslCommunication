@@ -9,6 +9,10 @@ using System.Threading;
 using System.Net;
 using HslCommunication.Core.IMessage;
 
+#if (NET45 || NETSTANDARD2_0)
+using System.Threading.Tasks;
+#endif
+
 /*************************************************************************************
  * 
  *    说明：
@@ -126,7 +130,7 @@ namespace HslCommunication.Core.Net
             var result = new OperateResult<byte[]>( );
             var receiveDone = new ManualResetEvent( false );
             var state = new StateObject( length );
-
+            
             try
             {
                 state.WaitDone = receiveDone;

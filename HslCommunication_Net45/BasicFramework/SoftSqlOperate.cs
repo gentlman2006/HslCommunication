@@ -8,6 +8,10 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 
+#if NET45
+using System.Threading.Tasks;
+#endif
+
 namespace HslCommunication.BasicFramework
 {
     //=================================================================================================
