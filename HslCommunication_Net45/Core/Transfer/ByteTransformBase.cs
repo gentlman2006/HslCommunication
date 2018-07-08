@@ -291,7 +291,7 @@ namespace HslCommunication.Core
             double[] tmp = new double[length];
             for (int i = 0; i < length; i++)
             {
-                tmp[i] = TransDouble( buffer, index + 4 * i );
+                tmp[i] = TransDouble( buffer, index + 8 * i );
             }
             return tmp;
         }
