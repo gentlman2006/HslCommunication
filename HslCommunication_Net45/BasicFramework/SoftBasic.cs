@@ -229,6 +229,19 @@ namespace HslCommunication.BasicFramework
             return true;
         }
 
+        /// <summary>
+        /// 判断两个字节的指定部分是否相同
+        /// </summary>
+        /// <param name="b1">第一个字节</param>
+        /// <param name="b2">第二个字节</param>
+        /// <returns>返回是否相等</returns>
+        public static bool IsTwoBytesEquel( byte[] b1, byte[] b2)
+        {
+            if (b1 == null || b2 == null) return false;
+            if (b1.Length != b2.Length) return false;
+            return IsTwoBytesEquel( b1, 0, b2, 0, b1.Length );
+        }
+
 
         /// <summary>
         /// 判断两个数据的令牌是否相等
