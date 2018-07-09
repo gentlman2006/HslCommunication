@@ -297,10 +297,10 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 4];
             for (int i = 0; i < values.Length; i++)
             {
-                BitConverter.GetBytes( values[i] ).CopyTo( buffer, 4 * i );
+                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 4 * i );
             }
 
-            return ReverseBytesByWord( buffer, IsMultiWordReverse );
+            return buffer;
         }
 
 
@@ -316,10 +316,10 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 4];
             for (int i = 0; i < values.Length; i++)
             {
-                BitConverter.GetBytes( values[i] ).CopyTo( buffer, 4 * i );
+                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 4 * i );
             }
 
-            return ReverseBytesByWord( buffer, IsMultiWordReverse );
+            return buffer;
         }
 
 
@@ -335,10 +335,10 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 8];
             for (int i = 0; i < values.Length; i++)
             {
-                BitConverter.GetBytes( values[i] ).CopyTo( buffer, 8 * i );
+                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 8 * i );
             }
 
-            return ReverseBytesByWord( buffer, IsMultiWordReverse );
+            return buffer;
         }
 
         /// <summary>
@@ -353,10 +353,10 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 8];
             for (int i = 0; i < values.Length; i++)
             {
-                BitConverter.GetBytes( values[i] ).CopyTo( buffer, 8 * i );
+                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 8 * i );
             }
 
-            return ReverseBytesByWord( buffer, IsMultiWordReverse );
+            return buffer;
         }
 
 
@@ -372,10 +372,10 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 4];
             for (int i = 0; i < values.Length; i++)
             {
-                BitConverter.GetBytes( values[i] ).CopyTo( buffer, 4 * i );
+                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 4 * i );
             }
 
-            return ReverseBytesByWord( buffer, IsMultiWordReverse );
+            return buffer;
         }
 
         /// <summary>
@@ -390,10 +390,10 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 8];
             for (int i = 0; i < values.Length; i++)
             {
-                BitConverter.GetBytes( values[i] ).CopyTo( buffer, 8 * i );
+                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 8 * i );
             }
 
-            return ReverseBytesByWord( buffer, IsMultiWordReverse );
+            return buffer;
         }
         
 

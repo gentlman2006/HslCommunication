@@ -55,6 +55,8 @@
     <Compile Include="Core\Transfer\ByteTransformHelperTest.cs" />
     <Compile Include="Core\Transfer\RegularByteTransformTest.cs" />
     <Compile Include="Core\Transfer\ReverseBytesTransformTest.cs" />
+    <Compile Include="Core\Transfer\ReverseWordTransformTest.cs" />
+    <Compile Include="Core\Transfer\ReverseWordTransformTest2.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
