@@ -232,11 +232,11 @@ public class ReverseWordTransform extends ByteTransformBase
 
         byte[] buffer = new byte[values.length * 4];
         for (int i = 0; i < values.length; i++) {
-            byte[] tmp = Utilities.getBytes(values[i]);
+            byte[] tmp = ReverseBytesByWord(Utilities.getBytes(values[i]), IsMultiWordReverse);
             System.arraycopy(tmp, 0, buffer, 4 * i, tmp.length);
         }
 
-        return ReverseBytesByWord(buffer, IsMultiWordReverse);
+        return buffer;
     }
 
 
@@ -252,11 +252,11 @@ public class ReverseWordTransform extends ByteTransformBase
 
         byte[] buffer = new byte[values.length * 8];
         for (int i = 0; i < values.length; i++) {
-            byte[] tmp = Utilities.getBytes(values[i]);
+            byte[] tmp = ReverseBytesByWord(Utilities.getBytes(values[i]), IsMultiWordReverse);
             System.arraycopy(tmp, 0, buffer, 8 * i, tmp.length);
         }
 
-        return ReverseBytesByWord(buffer, IsMultiWordReverse);
+        return buffer;
     }
 
 
@@ -271,11 +271,11 @@ public class ReverseWordTransform extends ByteTransformBase
 
         byte[] buffer = new byte[values.length * 4];
         for (int i = 0; i < values.length; i++) {
-            byte[] tmp = Utilities.getBytes(values[i]);
+            byte[] tmp = ReverseBytesByWord(Utilities.getBytes(values[i]), IsMultiWordReverse);
             System.arraycopy(tmp, 0, buffer, 4 * i, tmp.length);
         }
 
-        return ReverseBytesByWord(buffer, IsMultiWordReverse);
+        return buffer;
     }
 
 
@@ -290,11 +290,11 @@ public class ReverseWordTransform extends ByteTransformBase
 
         byte[] buffer = new byte[values.length * 8];
         for (int i = 0; i < values.length; i++) {
-            byte[] tmp = Utilities.getBytes(values[i]);
+            byte[] tmp = ReverseBytesByWord(Utilities.getBytes(values[i]), IsMultiWordReverse);
             System.arraycopy(tmp, 0, buffer, 8 * i, tmp.length);
         }
 
-        return ReverseBytesByWord(buffer, IsMultiWordReverse);
+        return buffer;
     }
 
 
