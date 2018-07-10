@@ -18,6 +18,7 @@ namespace HslCommunication.BasicFramework
     /// <summary>
     /// 系统版本类，由三部分组成，包含了一个大版本，小版本，修订版，还有一个开发者维护的内部版
     /// </summary>
+    [Serializable]
     public sealed class SystemVersion
     {
         /// <summary>

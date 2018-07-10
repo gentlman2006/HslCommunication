@@ -565,80 +565,6 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region byte[]数组和short,ushort相互转化
-
-
-        /*******************************************************************************************************
-         * 
-         *    2018年3月19日 10:57:11
-         *    感谢：毛毛虫 提供的BUG报告 316664767@qq.com
-         * 
-         ********************************************************************************************************/
-
-        /// <summary>
-        /// 从byte数组中提取出short数组，并指定是否需要高地位置换
-        /// </summary>
-        /// <param name="InBytes"></param>
-        /// <param name="reverse"></param>
-        /// <returns></returns>
-        public static short[] ByteToShortArray( byte[] InBytes, bool reverse )
-        {
-            if (InBytes == null) return null;
-
-            short[] array = new short[InBytes.Length / 2];
-            for (int i = 0; i < array.Length; i++)
-            {
-                byte[] temp = new byte[2];
-
-                if (reverse)
-                {
-                    temp[0] = InBytes[2 * i + 1];
-                    temp[1] = InBytes[2 * i + 0];
-                }
-                else
-                {
-                    temp[0] = InBytes[2 * i + 0];
-                    temp[1] = InBytes[2 * i + 1];
-                }
-                array[i] = BitConverter.ToInt16( temp, 0 );
-            }
-
-            return array;
-        }
-
-        /// <summary>
-        /// 从byte数组中提取出ushort数组，并指定是否需要高地位置换
-        /// </summary>
-        /// <param name="InBytes"></param>
-        /// <param name="reverse"></param>
-        /// <returns></returns>
-        public static ushort[] ByteToUShortArray( byte[] InBytes, bool reverse )
-        {
-            if (InBytes == null) return null;
-
-            ushort[] array = new ushort[InBytes.Length / 2];
-            for (int i = 0; i < array.Length; i++)
-            {
-                byte[] temp = new byte[2];
-
-                if (reverse)
-                {
-                    temp[0] = InBytes[2 * i + 1];
-                    temp[1] = InBytes[2 * i + 0];
-                }
-                else
-                {
-                    temp[0] = InBytes[2 * i + 0];
-                    temp[1] = InBytes[2 * i + 1];
-                }
-                array[i] = BitConverter.ToUInt16( temp, 0 );
-            }
-
-            return array;
-        }
-
-        #endregion
-
         #region 基础框架块
 
         /// <summary>
@@ -652,11 +578,12 @@ namespace HslCommunication.BasicFramework
         #region 深度克隆对象
 
         /// <summary>
-        /// 使用序列化反序列化深度克隆一个对象
+        /// 使用序列化反序列化深度克隆一个对象，该对象需要支持序列化特性
         /// </summary>
-        /// <param name="oringinal"></param>
-        /// <returns></returns>
+        /// <param name="oringinal">源对象，支持序列化</param>
+        /// <returns>新的一个实例化的对象</returns>
         /// <exception cref="NullReferenceException"></exception>
+        /// <exception cref="NonSerializedAttribute"></exception>
         public static object DeepClone( object oringinal )
         {
             using (System.IO.MemoryStream stream = new System.IO.MemoryStream( ))

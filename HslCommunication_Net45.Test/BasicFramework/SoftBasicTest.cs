@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HslCommunication.BasicFramework;
+using Newtonsoft.Json.Linq;
 
 namespace HslCommunication_Net45.Test.BasicFramework
 {
@@ -118,7 +119,90 @@ namespace HslCommunication_Net45.Test.BasicFramework
             Assert.IsTrue( SoftBasic.IsTwoTokenEquel( guid1, guid2 ) );
         }
 
+        [TestMethod]
+        public void GetValueFromJsonObjectTest( )
+        {
+            JObject json = new JObject( );
+            json.Add( "A", new JValue( "Abcdea234a" ) );
 
+            Assert.AreEqual( "Abcdea234a", SoftBasic.GetValueFromJsonObject( json, "A", "" ));
+        }
+
+
+        [TestMethod]
+        public void ByteToHexStringTest( )
+        {
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05, 0x12, 0x36, 0xF2, 0x27 };
+            string str = "13 A6 15 85 5B 05 12 36 F2 27";
+
+            Assert.AreEqual( str, SoftBasic.ByteToHexString( b1, ' ' ) );
+        }
+
+        [TestMethod]
+        public void ByteToHexStringTest2( )
+        {
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05, 0x12, 0x36, 0xF2, 0x27 };
+            string str = "13A615855B051236F227";
+
+            Assert.AreEqual( str, SoftBasic.ByteToHexString( b1 ) );
+        }
+
+
+        [TestMethod]
+        public void ByteToHexStringTest3( )
+        {
+            string str1 = "1234";
+            string str2 = "3100320033003400";
+
+            Assert.AreEqual( str2, SoftBasic.ByteToHexString( str1 ) );
+        }
+
+        [TestMethod]
+        public void HexStringToBytesTest( )
+        {
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05, 0x12, 0x36, 0xF2, 0x27 };
+            string str = "13 A6 15 85 5B 05 12 36 F2 27";
+
+            Assert.IsTrue( SoftBasic.IsTwoBytesEquel( b1, SoftBasic.HexStringToBytes( str ) ) );
+        }
+
+
+        [TestMethod]
+        public void BoolArrayToByteTest( )
+        {
+            bool[] values = new bool[] { true, false, false, true, true, true, false, true, false, false, false, true, false, true, false, false };
+            byte[] buffer = new byte[2] { 0xB9, 0x28 };
+
+            Assert.IsTrue( SoftBasic.IsTwoBytesEquel( buffer, SoftBasic.BoolArrayToByte( values ) ) );
+        }
+
+        [TestMethod]
+        public void ByteToBoolArrayTest( )
+        {
+            bool[] values = new bool[] { true, false, false, true, true, true, false, true, false, false, false, true, false, true, false};
+            byte[] buffer = new byte[2] { 0xB9, 0x28 };
+            bool[] result = SoftBasic.ByteToBoolArray( buffer, 15 );
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                if(values[i]!=result[i])
+                {
+                    Assert.Fail( "值不一致" );
+                }
+            }
+        }
+
+        [TestMethod]
+        public void DeepCloneTest( )
+        {
+            SystemVersion version1 = new SystemVersion( "1.2.3" );
+            SystemVersion version2 = (SystemVersion)SoftBasic.DeepClone( version1 );
+
+            if (version1.MainVersion != version2.MainVersion) Assert.Fail( "主版本不一致" );
+            if (version1.SecondaryVersion != version2.SecondaryVersion) Assert.Fail( "副版本不一致" );
+            if (version1.EditVersion != version2.EditVersion) Assert.Fail( "修订版不一致" );
+            if (version1.InnerVersion != version2.InnerVersion) Assert.Fail( "内部版不一致" );
+        }
     }
 
 
