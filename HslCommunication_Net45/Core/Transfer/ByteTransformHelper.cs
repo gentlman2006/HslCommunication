@@ -7,6 +7,7 @@ namespace HslCommunication.Core
 {
     /// <summary>
     /// 所有数据转换类的静态辅助方法
+    /// Static helper method for all data conversion classes
     /// </summary>
     public static class ByteTransformHelper
     {

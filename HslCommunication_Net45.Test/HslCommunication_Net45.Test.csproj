@@ -51,6 +51,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicFramework\SoftBasicTest.cs" />
     <Compile Include="Core\Net\NetHandleTest.cs" />
     <Compile Include="Core\Transfer\ByteTransformHelperTest.cs" />
     <Compile Include="Core\Transfer\RegularByteTransformTest.cs" />
