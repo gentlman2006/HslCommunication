@@ -58,6 +58,7 @@
     <Compile Include="BasicFramework\SoftBasicTest.cs" />
     <Compile Include="BasicFramework\SoftZippedTest.cs" />
     <Compile Include="Core\Net\NetHandleTest.cs" />
+    <Compile Include="Core\Security\SecurityTest.cs" />
     <Compile Include="Core\Transfer\ByteTransformHelperTest.cs" />
     <Compile Include="Core\Transfer\RegularByteTransformTest.cs" />
     <Compile Include="Core\Transfer\ReverseBytesTransformTest.cs" />

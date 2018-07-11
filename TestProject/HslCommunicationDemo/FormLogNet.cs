@@ -160,5 +160,17 @@ namespace HslCommunicationDemo
                 form.ShowDialog( );
             }
         }
+
+        private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            try
+            {
+                System.Diagnostics.Process.Start( linkLabel1.Text );
+            }
+            catch (Exception ex)
+            {
+                HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
+            }
+        }
     }
 }

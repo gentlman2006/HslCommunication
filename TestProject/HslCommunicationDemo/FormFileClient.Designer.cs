@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent( )
         {
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("文件列表");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("文件列表");
             this.label20 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -44,6 +44,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.button6 = new System.Windows.Forms.Button();
             this.textBox_file_date = new System.Windows.Forms.TextBox();
             this.label32 = new System.Windows.Forms.Label();
             this.textBox_file_tag = new System.Windows.Forms.TextBox();
@@ -68,6 +70,7 @@
             this.textBox_delete_factory = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.textBox_download_fileName = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.textBox_download_id = new System.Windows.Forms.TextBox();
@@ -80,6 +83,7 @@
             this.textBox_download_factory = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.textBox_upload_tag = new System.Windows.Forms.TextBox();
             this.label31 = new System.Windows.Forms.Label();
             this.textBox_upload_name = new System.Windows.Forms.TextBox();
@@ -96,10 +100,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.button6 = new System.Windows.Forms.Button();
-            this.label18 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -146,6 +146,7 @@
             this.linkLabel1.TabIndex = 9;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "http://www.cnblogs.com/dathlin/p/7885368.html";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // label2
             // 
@@ -272,6 +273,25 @@
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "浏览服务器文件";
             // 
+            // label18
+            // 
+            this.label18.ForeColor = System.Drawing.Color.Red;
+            this.label18.Location = new System.Drawing.Point(509, 22);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(425, 43);
+            this.label18.TabIndex = 33;
+            this.label18.Text = "注意：当服务器是AFS时，只有文件名和文件大小是有效的，而UFS时，下面数据都是有效的";
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(424, 22);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(70, 28);
+            this.button6.TabIndex = 32;
+            this.button6.Text = "刷新";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
             // textBox_file_date
             // 
             this.textBox_file_date.Location = new System.Drawing.Point(576, 170);
@@ -372,10 +392,10 @@
             // 
             this.treeView1.Location = new System.Drawing.Point(9, 22);
             this.treeView1.Name = "treeView1";
-            treeNode2.Name = "节点0";
-            treeNode2.Text = "文件列表";
+            treeNode1.Name = "节点0";
+            treeNode1.Text = "文件列表";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode2});
+            treeNode1});
             this.treeView1.Size = new System.Drawing.Size(409, 209);
             this.treeView1.TabIndex = 0;
             this.treeView1.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView1_BeforeExpand);
@@ -497,6 +517,15 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "文件下载";
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(762, 56);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(27, 17);
+            this.label9.TabIndex = 18;
+            this.label9.Text = "0/0";
+            // 
             // textBox_download_fileName
             // 
             this.textBox_download_fileName.Location = new System.Drawing.Point(517, 25);
@@ -615,6 +644,15 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "文件上传";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(762, 87);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(27, 17);
+            this.label10.TabIndex = 26;
+            this.label10.Text = "0/0";
             // 
             // textBox_upload_tag
             // 
@@ -752,43 +790,6 @@
             this.label6.Size = new System.Drawing.Size(68, 17);
             this.label6.TabIndex = 4;
             this.label6.Text = "文件路径：";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(762, 56);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(27, 17);
-            this.label9.TabIndex = 18;
-            this.label9.Text = "0/0";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(762, 87);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(27, 17);
-            this.label10.TabIndex = 26;
-            this.label10.Text = "0/0";
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(424, 22);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(70, 28);
-            this.button6.TabIndex = 32;
-            this.button6.Text = "刷新";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // label18
-            // 
-            this.label18.ForeColor = System.Drawing.Color.Red;
-            this.label18.Location = new System.Drawing.Point(509, 22);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(425, 43);
-            this.label18.TabIndex = 33;
-            this.label18.Text = "注意：当服务器是AFS时，只有文件名和文件大小是有效的，而UFS时，下面数据都是有效的";
             // 
             // FormFileClient
             // 

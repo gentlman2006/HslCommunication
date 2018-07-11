@@ -53,6 +53,8 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.label19 = new System.Windows.Forms.Label();
             this.button14 = new System.Windows.Forms.Button();
@@ -93,8 +95,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -386,6 +386,26 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "单数据写入测试";
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(17, 130);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(60, 28);
+            this.button9.TabIndex = 20;
+            this.button9.Text = "存储";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(17, 164);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(60, 28);
+            this.button8.TabIndex = 19;
+            this.button8.Text = "加载";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // button7
             // 
@@ -789,26 +809,6 @@
             this.linkLabel2.Text = "创作不易，感谢打赏";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(17, 164);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(60, 28);
-            this.button8.TabIndex = 19;
-            this.button8.Text = "加载";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
-            // 
-            // button9
-            // 
-            this.button9.Location = new System.Drawing.Point(17, 130);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(60, 28);
-            this.button9.TabIndex = 20;
-            this.button9.Text = "存储";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
-            // 
             // FormModbus
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -826,7 +826,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "FormModbus";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Modbus虚拟服务器【同时支持Tcp和Rtu模式的服务器，数据仅支持线圈读写和寄存器读写】";
+            this.Text = "Modbus虚拟服务器【同时支持Tcp和Rtu模式的服务器，数据支持线圈读写和寄存器读写，输入寄存器读取，离散输入读取】";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSiemens_FormClosing);
             this.Load += new System.EventHandler(this.FormSiemens_Load);
             this.panel1.ResumeLayout(false);

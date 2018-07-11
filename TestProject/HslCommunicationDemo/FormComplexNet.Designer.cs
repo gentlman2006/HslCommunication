@@ -29,6 +29,7 @@
         private void InitializeComponent( )
         {
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label11 = new System.Windows.Forms.Label();
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
@@ -58,7 +59,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -83,6 +83,15 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(977, 518);
             this.panel2.TabIndex = 20;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(59, 492);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(32, 17);
+            this.label11.TabIndex = 20;
+            this.label11.Text = "消息";
             // 
             // textBox8
             // 
@@ -220,6 +229,7 @@
             this.linkLabel1.TabIndex = 16;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "http://www.cnblogs.com/dathlin/p/7697782.html";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // label2
             // 
@@ -361,15 +371,6 @@
             this.label1.Size = new System.Drawing.Size(56, 17);
             this.label1.TabIndex = 0;
             this.label1.Text = "Ip地址：";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(59, 492);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(32, 17);
-            this.label11.TabIndex = 20;
-            this.label11.Text = "消息";
             // 
             // FormComplexNet
             // 

@@ -30,7 +30,7 @@ namespace HslCommunication.BasicFramework
                 "而且用于通信的数据全部经过DES加密，公钥私钥仅内部可见，保证了安全性。";
             label7.Text = "左边为我个人的公众号，本人提供软件定制服务，主要包含中小型的软件系统和个人使用的文件处理工具，"+
                 "具体案例可以参照公众号展示说明。";
-            toolStripStatusLabel2.Text = SoftBasic.FrameworkVersion.ToString();
+            toolStripStatusLabel4.Text = SoftBasic.FrameworkVersion.ToString();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

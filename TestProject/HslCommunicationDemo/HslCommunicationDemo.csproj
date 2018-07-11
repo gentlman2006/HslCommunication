@@ -100,6 +100,18 @@
     <Compile Include="FormLogNet.Designer.cs">
       <DependentUpon>FormLogNet.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormRegister.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRegister.Designer.cs">
+      <DependentUpon>FormRegister.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSeqCreate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSeqCreate.Designer.cs">
+      <DependentUpon>FormSeqCreate.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSerialDebug.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -224,6 +236,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormLogNet.resx">
       <DependentUpon>FormLogNet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRegister.resx">
+      <DependentUpon>FormRegister.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSeqCreate.resx">
+      <DependentUpon>FormSeqCreate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSerialDebug.resx">
       <DependentUpon>FormSerialDebug.cs</DependentUpon>

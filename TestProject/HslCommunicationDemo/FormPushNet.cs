@@ -89,7 +89,7 @@ namespace HslCommunicationDemo
             }
             catch (Exception ex)
             {
-                MessageBox.Show( ex.Message );
+                HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
             }
         }
     }

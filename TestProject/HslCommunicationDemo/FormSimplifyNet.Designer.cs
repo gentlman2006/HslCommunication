@@ -34,6 +34,7 @@
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button6 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -57,7 +58,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.button6 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -100,6 +100,7 @@
             this.linkLabel1.TabIndex = 9;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "http://www.cnblogs.com/dathlin/p/7697782.html";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // label2
             // 
@@ -130,6 +131,15 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(978, 83);
             this.panel1.TabIndex = 7;
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(875, 45);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(91, 28);
+            this.button6.TabIndex = 9;
+            this.button6.Text = "压力测试";
+            this.button6.UseVisualStyleBackColor = true;
             // 
             // button5
             // 
@@ -348,15 +358,6 @@
             this.label7.Size = new System.Drawing.Size(56, 17);
             this.label7.TabIndex = 7;
             this.label7.Text = "指令头：";
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(875, 45);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(91, 28);
-            this.button6.TabIndex = 9;
-            this.button6.Text = "压力测试";
-            this.button6.UseVisualStyleBackColor = true;
             // 
             // FormSimplifyNet
             // 

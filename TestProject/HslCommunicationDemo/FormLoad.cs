@@ -302,5 +302,25 @@ namespace HslCommunicationDemo
             }
             Show( );
         }
+
+        private void button26_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormSeqCreate form = new FormSeqCreate( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
+
+        private void button27_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            using (FormRegister form = new FormRegister( ))
+            {
+                form.ShowDialog( );
+            }
+            Show( );
+        }
     }
 }

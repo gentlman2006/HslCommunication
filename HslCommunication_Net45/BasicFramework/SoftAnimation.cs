@@ -25,10 +25,12 @@ namespace HslCommunication.BasicFramework
     /// </summary>
     public class SoftAnimation
     {
+
         /// <summary>
         /// 最小的时间片段
         /// </summary>
         private static int TimeFragment { get; set; } = 20;
+
         /// <summary>
         /// 调整控件背景色
         /// </summary>
@@ -45,16 +47,19 @@ namespace HslCommunication.BasicFramework
                     new object[] { control, color, time, getcolor, setcolor });
             }
         }
+
         private static byte GetValue(byte Start, byte End, int i, int count)
         {
             if (Start == End) return Start;
             return (byte)((End - Start) * i / count + Start);
         }
+
         private static float GetValue(float Start, float End, int i, int count)
         {
             if (Start == End) return Start;
             return (End - Start) * i / count + Start;
         }
+
         private static void ThreadPoolColorAnimation(object obj)
         {
             object[] objs = obj as object[];
@@ -90,6 +95,7 @@ namespace HslCommunication.BasicFramework
 
             }
         }
+
         private static void ThreadPoolFloatAnimation(object obj)
         {
             object[] objs = obj as object[];

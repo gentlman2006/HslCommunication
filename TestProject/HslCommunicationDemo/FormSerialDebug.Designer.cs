@@ -47,17 +47,17 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label6 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -100,6 +100,7 @@
             this.linkLabel1.TabIndex = 9;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "http://www.cnblogs.com/dathlin/p/8974215.html";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // label2
             // 
@@ -263,91 +264,14 @@
             this.panel2.Size = new System.Drawing.Size(978, 540);
             this.panel2.TabIndex = 13;
             // 
-            // label6
+            // textBox6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(8, 9);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(80, 17);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "数据发送区：";
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(119, 8);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(135, 21);
-            this.checkBox1.TabIndex = 2;
-            this.checkBox1.Text = "是否使用二进制通信";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(528, 6);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(33, 23);
-            this.textBox3.TabIndex = 13;
-            this.textBox3.Text = "A0";
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(567, 6);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(33, 23);
-            this.textBox4.TabIndex = 14;
-            this.textBox4.Text = "01";
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(387, 8);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(135, 21);
-            this.checkBox2.TabIndex = 15;
-            this.checkBox2.Text = "是否自动计算校验码";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(11, 43);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(858, 23);
-            this.textBox5.TabIndex = 16;
-            this.textBox5.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox5_KeyDown);
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(875, 40);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(91, 28);
-            this.button3.TabIndex = 17;
-            this.button3.Text = "发送数据";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(8, 107);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(80, 17);
-            this.label7.TabIndex = 18;
-            this.label7.Text = "数据接收区：";
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Checked = true;
-            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.Location = new System.Drawing.Point(94, 106);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(123, 21);
-            this.checkBox3.TabIndex = 19;
-            this.checkBox3.Text = "是否显示发送数据";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.textBox6.Location = new System.Drawing.Point(11, 133);
+            this.textBox6.Multiline = true;
+            this.textBox6.Name = "textBox6";
+            this.textBox6.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox6.Size = new System.Drawing.Size(955, 402);
+            this.textBox6.TabIndex = 21;
             // 
             // checkBox4
             // 
@@ -361,14 +285,91 @@
             this.checkBox4.Text = "是否显示时间";
             this.checkBox4.UseVisualStyleBackColor = true;
             // 
-            // textBox6
+            // checkBox3
             // 
-            this.textBox6.Location = new System.Drawing.Point(11, 133);
-            this.textBox6.Multiline = true;
-            this.textBox6.Name = "textBox6";
-            this.textBox6.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox6.Size = new System.Drawing.Size(955, 402);
-            this.textBox6.TabIndex = 21;
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Checked = true;
+            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox3.Location = new System.Drawing.Point(94, 106);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(123, 21);
+            this.checkBox3.TabIndex = 19;
+            this.checkBox3.Text = "是否显示发送数据";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(8, 107);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(80, 17);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "数据接收区：";
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(875, 40);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(91, 28);
+            this.button3.TabIndex = 17;
+            this.button3.Text = "发送数据";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(11, 43);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(858, 23);
+            this.textBox5.TabIndex = 16;
+            this.textBox5.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox5_KeyDown);
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(387, 8);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(135, 21);
+            this.checkBox2.TabIndex = 15;
+            this.checkBox2.Text = "是否自动计算校验码";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(567, 6);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(33, 23);
+            this.textBox4.TabIndex = 14;
+            this.textBox4.Text = "01";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(528, 6);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(33, 23);
+            this.textBox3.TabIndex = 13;
+            this.textBox3.Text = "A0";
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(119, 8);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(135, 21);
+            this.checkBox1.TabIndex = 2;
+            this.checkBox1.Text = "是否使用二进制通信";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(8, 9);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(80, 17);
+            this.label6.TabIndex = 1;
+            this.label6.Text = "数据发送区：";
             // 
             // FormSerialDebug
             // 
