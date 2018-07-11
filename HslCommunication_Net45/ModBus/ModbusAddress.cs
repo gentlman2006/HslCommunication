@@ -185,8 +185,8 @@ namespace HslCommunication.ModBus
             buffer[1] = ModbusInfo.WriteOneRegister;
             buffer[2] = BitConverter.GetBytes( this.Address )[1];
             buffer[3] = BitConverter.GetBytes( this.Address )[0];
-            buffer[4] = data[1];
-            buffer[5] = data[0];
+            buffer[4] = data[0];
+            buffer[5] = data[1];
             return buffer;
         }
 
