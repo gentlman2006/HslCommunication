@@ -35,7 +35,7 @@ namespace HslCommunicationDemo
         private void button2_Click( object sender, EventArgs e )
         {
             // 计算该机器码的注册码
-            textBox4.AppendText( DateTime.Now.ToString( ) + " [ " + AuthorizeEncrypted( textBox1.Text ) + " ]" + Environment.NewLine );
+            textBox4.AppendText( DateTime.Now.ToString( ) + " " + AuthorizeEncrypted( textBox3.Text )  + Environment.NewLine );
         }
 
 
@@ -43,7 +43,7 @@ namespace HslCommunicationDemo
         /// <summary>
         /// 一个自定义的加密方法，传入一个原始数据，返回一个加密结果
         /// </summary>
-        /// <param name="origin"></param>
+        /// <param name="origin">原始的</param>
         /// <returns></returns>
         private string AuthorizeEncrypted( string origin )
         {
@@ -66,11 +66,11 @@ namespace HslCommunicationDemo
                     if (form.ShowDialog( ) != DialogResult.OK)
                     {
                         // 授权失败，退出
-                        Close( );
+                        MessageBox.Show( "授权失败！" );
                     }
                     else
                     {
-                        // softAuthorize.SaveToFile( );
+                        MessageBox.Show( "授权成功！" );
                     }
                 }
             }
@@ -85,6 +85,31 @@ namespace HslCommunicationDemo
             try
             {
                 System.Diagnostics.Process.Start( linkLabel1.Text );
+            }
+            catch(Exception ex)
+            {
+                HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
+            }
+        }
+
+        private void checkBox1_CheckedChanged( object sender, EventArgs e )
+        {
+            if (checkBox1.Checked)
+            {
+                textBox1.PasswordChar = '\0';
+            }
+            else
+            {
+                textBox1.PasswordChar = '*';
+            }
+        }
+
+        private void button4_Click( object sender, EventArgs e )
+        {
+            try
+            {
+                System.IO.File.Delete( Application.StartupPath + @"\Authorize.txt" );
+                MessageBox.Show( "删除成功，重新打开窗口生效。" );
             }
             catch(Exception ex)
             {

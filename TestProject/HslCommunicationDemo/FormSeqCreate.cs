@@ -54,5 +54,17 @@ namespace HslCommunicationDemo
             double spend = (DateTime.Now - start).TotalMilliseconds;
             textBox1.AppendText( "耗时：" + spend + Environment.NewLine );
         }
+
+        private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            try
+            {
+                System.Diagnostics.Process.Start( linkLabel1.Text );
+            }
+            catch (Exception ex)
+            {
+                HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
+            }
+        }
     }
 }

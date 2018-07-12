@@ -51,6 +51,7 @@ namespace HslCommunication.BasicFramework
 
         private string AboutCode { get; set; } = "";
 
+
         private void linkLabel1_Click(object sender, EventArgs e)
         {
             MessageBox.Show(AboutCode);

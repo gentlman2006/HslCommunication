@@ -31,9 +31,9 @@ namespace HslCommunication.BasicFramework
                 }
                 FormsPopup.Add(form);
             }
-            catch
+            catch(Exception ex)
             {
-
+                Console.WriteLine( SoftBasic.GetExceptionMessage( ex ) );
             }
         }
         /// <summary>
@@ -48,9 +48,9 @@ namespace HslCommunication.BasicFramework
                     FormsPopup[i].LocationUpMove(FormsPopup.Count - 1 - i);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Console.WriteLine( SoftBasic.GetExceptionMessage( ex ) );
             }
         }
 
@@ -100,6 +100,8 @@ namespace HslCommunication.BasicFramework
         private Color InfoColor { get; set; } = Color.DimGray;
         private int InfoExistTime { get; set; } = -1;
 
+        private Timer time = null;
+
         //下面是可用的常量,按照不合的动画结果声明本身须要的
         private const int AW_HOR_POSITIVE = 0x0001;//自左向右显示窗口,该标记可以在迁移转变动画和滑动动画中应用。应用AW_CENTER标记时忽视该标记
         private const int AW_HOR_NEGATIVE = 0x0002;//自右向左显示窗口,该标记可以在迁移转变动画和滑动动画中应用。应用AW_CENTER标记时忽视该标记
@@ -124,7 +126,7 @@ namespace HslCommunication.BasicFramework
 
             if (InfoExistTime > 100)
             {
-                Timer time = new Timer();
+                time = new Timer( );
                 time.Interval = InfoExistTime;
                 time.Tick += delegate
                 {
@@ -159,14 +161,14 @@ namespace HslCommunication.BasicFramework
             //AnimateWindow(this.Handle, 1000, AW_BLEND | AW_HIDE);
             try
             {
+                time.Enabled = false;
                 FormsPopup.Remove(this);
                 ResetLocation();
             }
-            catch
+            catch (Exception ex)
             {
-
+                Console.WriteLine( SoftBasic.GetExceptionMessage( ex ) );
             }
-            Dispose();
         }
 
 

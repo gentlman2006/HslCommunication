@@ -66,10 +66,11 @@
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.button23 = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.button27 = new System.Windows.Forms.Button();
+            this.button26 = new System.Windows.Forms.Button();
             this.button25 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
-            this.button26 = new System.Windows.Forms.Button();
-            this.button27 = new System.Windows.Forms.Button();
+            this.button28 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -508,6 +509,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.button28);
             this.groupBox8.Controls.Add(this.button27);
             this.groupBox8.Controls.Add(this.button26);
             this.groupBox8.Controls.Add(this.button25);
@@ -520,6 +522,28 @@
             this.groupBox8.TabIndex = 15;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Others";
+            // 
+            // button27
+            // 
+            this.button27.Location = new System.Drawing.Point(19, 143);
+            this.button27.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button27.Name = "button27";
+            this.button27.Size = new System.Drawing.Size(150, 32);
+            this.button27.TabIndex = 3;
+            this.button27.Text = "注册码功能";
+            this.button27.UseVisualStyleBackColor = true;
+            this.button27.Click += new System.EventHandler(this.button27_Click);
+            // 
+            // button26
+            // 
+            this.button26.Location = new System.Drawing.Point(19, 104);
+            this.button26.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button26.Name = "button26";
+            this.button26.Size = new System.Drawing.Size(150, 32);
+            this.button26.TabIndex = 2;
+            this.button26.Text = "订单号，序列号生成";
+            this.button26.UseVisualStyleBackColor = true;
+            this.button26.Click += new System.EventHandler(this.button26_Click);
             // 
             // button25
             // 
@@ -543,27 +567,16 @@
             this.button24.UseVisualStyleBackColor = true;
             this.button24.Click += new System.EventHandler(this.button24_Click);
             // 
-            // button26
+            // button28
             // 
-            this.button26.Location = new System.Drawing.Point(19, 104);
-            this.button26.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button26.Name = "button26";
-            this.button26.Size = new System.Drawing.Size(150, 32);
-            this.button26.TabIndex = 2;
-            this.button26.Text = "订单号，序列号生成";
-            this.button26.UseVisualStyleBackColor = true;
-            this.button26.Click += new System.EventHandler(this.button26_Click);
-            // 
-            // button27
-            // 
-            this.button27.Location = new System.Drawing.Point(19, 143);
-            this.button27.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button27.Name = "button27";
-            this.button27.Size = new System.Drawing.Size(150, 32);
-            this.button27.TabIndex = 3;
-            this.button27.Text = "注册码功能";
-            this.button27.UseVisualStyleBackColor = true;
-            this.button27.Click += new System.EventHandler(this.button27_Click);
+            this.button28.Location = new System.Drawing.Point(19, 183);
+            this.button28.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button28.Name = "button28";
+            this.button28.Size = new System.Drawing.Size(150, 32);
+            this.button28.TabIndex = 4;
+            this.button28.Text = "邮件发送功能";
+            this.button28.UseVisualStyleBackColor = true;
+            this.button28.Click += new System.EventHandler(this.button28_Click);
             // 
             // FormLoad
             // 
@@ -649,6 +662,7 @@
         private System.Windows.Forms.Button button25;
         private System.Windows.Forms.Button button27;
         private System.Windows.Forms.Button button26;
+        private System.Windows.Forms.Button button28;
     }
 }
 

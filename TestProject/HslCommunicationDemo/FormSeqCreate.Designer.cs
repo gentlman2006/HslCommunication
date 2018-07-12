@@ -33,6 +33,8 @@
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.userButton1 = new HslCommunication.Controls.UserButton();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -104,11 +106,35 @@
             this.userButton1.UIText = "获取流水号";
             this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.linkLabel1.Location = new System.Drawing.Point(66, 9);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(287, 17);
+            this.linkLabel1.TabIndex = 9;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "http://www.cnblogs.com/dathlin/p/7811489.html";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.label2.Location = new System.Drawing.Point(17, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(44, 17);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "博客：";
+            // 
             // FormSeqCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 645);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.userButton3);
             this.Controls.Add(this.userButton2);
             this.Controls.Add(this.textBox1);
@@ -132,5 +158,7 @@
         private HslCommunication.Controls.UserButton userButton2;
         private System.Windows.Forms.TextBox textBox1;
         private HslCommunication.Controls.UserButton userButton1;
+        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.Label label2;
     }
 }

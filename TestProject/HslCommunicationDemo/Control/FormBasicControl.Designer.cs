@@ -40,8 +40,8 @@
             this.userLantern1 = new HslCommunication.Controls.UserLantern();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.userLantern3 = new HslCommunication.Controls.UserLantern();
             this.label4 = new System.Windows.Forms.Label();
+            this.userLantern3 = new HslCommunication.Controls.UserLantern();
             this.label5 = new System.Windows.Forms.Label();
             this.userClock1 = new HslCommunication.Controls.UserClock();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -57,9 +57,10 @@
             this.userVerticalProgress2 = new HslCommunication.Controls.UserVerticalProgress();
             this.userVerticalProgress1 = new HslCommunication.Controls.UserVerticalProgress();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.userVerticalProgress7 = new HslCommunication.Controls.UserVerticalProgress();
-            this.label7 = new System.Windows.Forms.Label();
             this.userVerticalProgress8 = new HslCommunication.Controls.UserVerticalProgress();
+            this.label7 = new System.Windows.Forms.Label();
+            this.userVerticalProgress7 = new HslCommunication.Controls.UserVerticalProgress();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -187,6 +188,15 @@
             this.panel2.Size = new System.Drawing.Size(436, 217);
             this.panel2.TabIndex = 29;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(326, 159);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(32, 17);
+            this.label4.TabIndex = 29;
+            this.label4.Text = "闪烁";
+            // 
             // userLantern3
             // 
             this.userLantern3.BackColor = System.Drawing.Color.Transparent;
@@ -196,15 +206,6 @@
             this.userLantern3.Name = "userLantern3";
             this.userLantern3.Size = new System.Drawing.Size(143, 135);
             this.userLantern3.TabIndex = 28;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(326, 159);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(32, 17);
-            this.label4.TabIndex = 29;
-            this.label4.Text = "闪烁";
             // 
             // label5
             // 
@@ -228,6 +229,7 @@
             // panel3
             // 
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.button1);
             this.panel3.Controls.Add(this.userClock1);
             this.panel3.Controls.Add(this.label5);
             this.panel3.Location = new System.Drawing.Point(556, 239);
@@ -384,6 +386,27 @@
             this.panel5.Size = new System.Drawing.Size(536, 270);
             this.panel5.TabIndex = 44;
             // 
+            // userVerticalProgress8
+            // 
+            this.userVerticalProgress8.BackColor = System.Drawing.SystemColors.Control;
+            this.userVerticalProgress8.BorderColor = System.Drawing.Color.Blue;
+            this.userVerticalProgress8.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userVerticalProgress8.Location = new System.Drawing.Point(430, 16);
+            this.userVerticalProgress8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userVerticalProgress8.Name = "userVerticalProgress8";
+            this.userVerticalProgress8.Size = new System.Drawing.Size(33, 216);
+            this.userVerticalProgress8.TabIndex = 46;
+            this.userVerticalProgress8.Value = 50;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(479, 239);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(32, 17);
+            this.label7.TabIndex = 45;
+            this.label7.Text = "随机";
+            // 
             // userVerticalProgress7
             // 
             this.userVerticalProgress7.BackColor = System.Drawing.SystemColors.Control;
@@ -397,26 +420,15 @@
             this.userVerticalProgress7.UseAnimation = true;
             this.userVerticalProgress7.Value = 50;
             // 
-            // label7
+            // button1
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(479, 239);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(32, 17);
-            this.label7.TabIndex = 45;
-            this.label7.Text = "随机";
-            // 
-            // userVerticalProgress8
-            // 
-            this.userVerticalProgress8.BackColor = System.Drawing.SystemColors.Control;
-            this.userVerticalProgress8.BorderColor = System.Drawing.Color.Blue;
-            this.userVerticalProgress8.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userVerticalProgress8.Location = new System.Drawing.Point(430, 16);
-            this.userVerticalProgress8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userVerticalProgress8.Name = "userVerticalProgress8";
-            this.userVerticalProgress8.Size = new System.Drawing.Size(33, 216);
-            this.userVerticalProgress8.TabIndex = 46;
-            this.userVerticalProgress8.Value = 50;
+            this.button1.Location = new System.Drawing.Point(300, 341);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(123, 38);
+            this.button1.TabIndex = 32;
+            this.button1.Text = "右下角弹窗";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // FormBasicControl
             // 
@@ -481,5 +493,6 @@
         private HslCommunication.Controls.UserVerticalProgress userVerticalProgress7;
         private HslCommunication.Controls.UserLantern userLantern3;
         private HslCommunication.Controls.UserVerticalProgress userVerticalProgress8;
+        private System.Windows.Forms.Button button1;
     }
 }

@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="BasicFramework\SoftBasicTest.cs" />
     <Compile Include="BasicFramework\SoftZippedTest.cs" />
+    <Compile Include="Core\Net\HslProtocolTest.cs" />
     <Compile Include="Core\Net\NetHandleTest.cs" />
     <Compile Include="Core\Security\SecurityTest.cs" />
     <Compile Include="Core\Transfer\ByteTransformHelperTest.cs" />
@@ -72,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Documentation\Samples\" />
+    <Folder Include="Modbus\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

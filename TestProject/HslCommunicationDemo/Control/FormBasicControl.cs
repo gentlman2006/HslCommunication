@@ -45,5 +45,12 @@ namespace HslCommunicationDemo
 
         private Timer timerTick = null;
         private Random random;
+
+        private void button1_Click( object sender, EventArgs e )
+        {
+            // 右下角弹窗，存在10s就关闭，时间小于0就是无穷大
+            HslCommunication.BasicFramework.FormPopup popup = new HslCommunication.BasicFramework.FormPopup( "这是一条提示的消息！", Color.Blue, 5000 );
+            popup.Show( );
+        }
     }
 }

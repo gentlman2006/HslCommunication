@@ -130,7 +130,7 @@ namespace HslCommunication
         /// <param name="customer">自用自定义</param>
         /// <param name="token">令牌</param>
         /// <param name="data">字节数据</param>
-        /// <returns></returns>
+        /// <returns>包装后的数据信息</returns>
         internal static byte[] CommandBytes( int command, int customer, Guid token, byte[] data )
         {
             byte[] _temp = null;
@@ -169,8 +169,9 @@ namespace HslCommunication
         /// <summary>
         /// 解析接收到数据，先解压缩后进行解密
         /// </summary>
-        /// <param name="head"></param>
-        /// <param name="content"></param>
+        /// <param name="head">指令头</param>
+        /// <param name="content">指令的内容</param>
+        /// <return>真实的数据内容</return>
         internal static byte[] CommandAnalysis( byte[] head, byte[] content )
         {
             if (content != null)
@@ -194,10 +195,10 @@ namespace HslCommunication
         /// <summary>
         /// 获取发送字节数据的实际数据，带指令头
         /// </summary>
-        /// <param name="customer"></param>
-        /// <param name="token"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
+        /// <param name="customer">用户数据</param>
+        /// <param name="token">令牌</param>
+        /// <param name="data">字节信息</param>
+        /// <returns>包装后的指令信息</returns>
         internal static byte[] CommandBytes( int customer, Guid token, byte[] data )
         {
             return CommandBytes( ProtocolUserBytes, customer, token, data );
@@ -207,10 +208,10 @@ namespace HslCommunication
         /// <summary>
         /// 获取发送字节数据的实际数据，带指令头
         /// </summary>
-        /// <param name="customer"></param>
-        /// <param name="token"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
+        /// <param name="customer">用户数据</param>
+        /// <param name="token">令牌</param>
+        /// <param name="data">字符串数据信息</param>
+        /// <returns>包装后的指令信息</returns>
         internal static byte[] CommandBytes( int customer, Guid token, string data )
         {
             if (data == null) return CommandBytes( ProtocolUserString, customer, token, null );
