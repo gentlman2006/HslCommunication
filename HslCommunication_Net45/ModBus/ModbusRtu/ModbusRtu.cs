@@ -259,6 +259,20 @@ namespace HslCommunication.ModBus
 
         #endregion
 
+        #region Protect Override
+
+        /// <summary>
+        /// 检查当前接收的字节数据是否正确的
+        /// </summary>
+        /// <param name="rBytes"></param>
+        /// <returns></returns>
+        protected override bool CheckReceiveBytes( byte[] rBytes )
+        {
+            return SoftCRC16.CheckCRC16( rBytes );
+        }
+
+        #endregion
+
         #region Customer Support
 
         /// <summary>

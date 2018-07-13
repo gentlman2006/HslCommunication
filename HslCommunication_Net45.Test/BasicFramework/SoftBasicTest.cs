@@ -193,6 +193,17 @@ namespace HslCommunication_Net45.Test.BasicFramework
         }
 
         [TestMethod]
+        public void SpliceTwoByteArrayTest( )
+        {
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85 };
+            byte[] b2 = new byte[] { 0x5B, 0x05, 0x12 };
+            byte[] b3 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05, 0x12 };
+
+            byte[] buffer = SoftBasic.SpliceTwoByteArray( b1, b2 );
+            Assert.IsTrue( SoftBasic.IsTwoBytesEquel( b3, buffer ) );
+        }
+
+        [TestMethod]
         public void DeepCloneTest( )
         {
             SystemVersion version1 = new SystemVersion( "1.2.3" );

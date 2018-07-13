@@ -23,8 +23,8 @@ namespace HslCommunicationDemo
 
             comboBox1.SelectedIndex = 0;
         }
-        
 
+        // 01 10 00 64 00 10 20 00 00 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0A 00 0B 00 0C 00 0D 00 0E 00 0F
 
 
 
@@ -80,9 +80,24 @@ namespace HslCommunicationDemo
         private void SP_ReadData_DataReceived( object sender, SerialDataReceivedEventArgs e )
         {
             // 接收数据
-            System.Threading.Thread.Sleep( 20 );
-            byte[] buffer = new byte[SP_ReadData.BytesToRead];
-            SP_ReadData.Read( buffer, 0, SP_ReadData.BytesToRead );
+            byte[] buffer = null;
+            byte[] data = new byte[2048];
+            int receiveCount = 0;
+            while (true)
+            {
+                System.Threading.Thread.Sleep( 20 );
+                int count = SP_ReadData.Read( data, receiveCount, SP_ReadData.BytesToRead );
+                receiveCount += count;
+
+                if(count == 0)
+                {
+                    buffer = new byte[receiveCount];
+                    Array.Copy( data, 0, buffer, 0, receiveCount );
+                    break;
+                }
+            }
+
+            if (receiveCount == 0) return;
 
             Invoke( new Action( ( ) =>
              {

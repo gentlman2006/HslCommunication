@@ -1884,14 +1884,23 @@ namespace HslCommunication.ModBus
         /// <param name="e">消息</param>
         private void SerialPort_DataReceived( object sender, SerialDataReceivedEventArgs e )
         {
-            System.Threading.Thread.Sleep( 20 );            // 此处做个微小的延时，等待数据接收完成
-
+            int rCount = 0;
             byte[] buffer = new byte[1024];
-            int count = serialPort.Read( buffer, 0, serialPort.BytesToRead );
+            byte[] receive = null;
 
-            byte[] receive = new byte[count];
-            Array.Copy( buffer, 0, receive, 0, count );
+            while(true)
+            {
+                System.Threading.Thread.Sleep( 20 );            // 此处做个微小的延时，等待数据接收完成
+                int count = serialPort.Read( buffer, rCount, serialPort.BytesToRead );
+                rCount += count;
+                if(count == 0) break;
 
+                receive = new byte[rCount];
+                Array.Copy( buffer, 0, receive, 0, count );
+            }
+
+            if(receive == null) return;
+            
             if (receive.Length < 3)
             {
                 LogNet?.WriteError( ToString( ), $"Uknown Data：" + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );

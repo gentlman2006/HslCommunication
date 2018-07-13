@@ -18,7 +18,7 @@ namespace HslCommunication.BasicFramework
     /// </summary>
     public class SoftBasic
     {
-        #region MD5码计算块
+        #region MD5 Calculate
 
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region 数组比较
+        #region Byte Array compare
 
         /// <summary>
         /// 判断两个字节的指定部分是否相同
@@ -270,7 +270,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region 枚举相关块
+        #region Enum About
 
 
         /// <summary>
@@ -285,7 +285,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region JSON数据提取相关块
+        #region JSON Data Get
 
         /// <summary>
         /// 一个泛型方法，提供json对象的数据读取
@@ -331,7 +331,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region 异常错误信息格式化
+        #region Exception Message Format
 
 #if !NETSTANDARD2_0
 
@@ -394,7 +394,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region Hex字符串和Byte[]相互转化块
+        #region Hex string and Byte[] transform
 
 
         /// <summary>
@@ -481,7 +481,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region Bool[]数组和byte[]相互转化块
+        #region Bool[]  and byte[] transform
 
 
         /// <summary>
@@ -565,7 +565,29 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region 基础框架块
+        #region Byte[] Splice
+
+        /// <summary>
+        /// 拼接2个字节数组的数据
+        /// </summary>
+        /// <param name="bytes1">数组一</param>
+        /// <param name="bytes2">数组二</param>
+        /// <returns>拼接后的数组</returns>
+        public static byte[] SpliceTwoByteArray( byte[] bytes1, byte[] bytes2 )
+        {
+            if (bytes1 == null && bytes2 == null) return null;
+            if (bytes1 == null) return bytes2;
+            if (bytes2 == null) return bytes1;
+
+            byte[] buffer = new byte[bytes1.Length + bytes2.Length];
+            bytes1.CopyTo( buffer, 0 );
+            bytes2.CopyTo( buffer, bytes1.Length );
+            return buffer;
+        }
+
+        #endregion
+
+        #region Basic Framework
 
         /// <summary>
         /// 设置或获取系统框架的版本号
@@ -575,7 +597,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region 深度克隆对象
+        #region Deep Clone
 
         /// <summary>
         /// 使用序列化反序列化深度克隆一个对象，该对象需要支持序列化特性
@@ -601,7 +623,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region 获取唯一的一串字符串
+        #region Unique String Get
 
         /// <summary>
         /// 获取一串唯一的随机字符串，长度为20，由Guid码和4位数的随机数组成，保证字符串的唯一性

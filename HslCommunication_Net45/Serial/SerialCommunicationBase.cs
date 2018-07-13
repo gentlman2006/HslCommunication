@@ -154,7 +154,22 @@ namespace HslCommunication.Serial
                 hybirdLock.Leave( );
             }
 
+            receiveCount = 0;
             return result;
+        }
+
+        #endregion
+
+        #region virtual Method
+
+        /// <summary>
+        /// 检查当前接收的字节数据是否正确的
+        /// </summary>
+        /// <param name="rBytes"></param>
+        /// <returns></returns>
+        protected virtual bool CheckReceiveBytes(byte[] rBytes )
+        {
+            return true;
         }
 
         #endregion
@@ -185,8 +200,14 @@ namespace HslCommunication.Serial
 
         private void SP_ReadData_DataReceived( object sender, SerialDataReceivedEventArgs e )
         {
-            Thread.Sleep( 20 );
-            receiveCount = SP_ReadData.Read( buffer, 0, SP_ReadData.BytesToRead );
+            while (true)
+            {
+                Thread.Sleep( 20 );
+                int countRece = SP_ReadData.Read( buffer, receiveCount, SP_ReadData.BytesToRead );
+                receiveCount += countRece;
+
+                if (countRece == 0) break;
+            }
             resetEvent.Set( );
         }
 
