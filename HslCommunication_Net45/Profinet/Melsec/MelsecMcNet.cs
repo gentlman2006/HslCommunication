@@ -13,6 +13,10 @@ namespace HslCommunication.Profinet.Melsec
     /// <summary>
     /// 三菱PLC通讯类，采用Qna兼容3E帧协议实现，需要在PLC侧先的以太网模块先进行配置，必须为二进制通讯
     /// </summary>
+    /// <example>
+    ///   <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="Usage" title="简单的短连接使用" />
+    ///   <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="Usage2" title="简单的长连接使用" />
+    /// </example>
     public class MelsecMcNet : NetworkDeviceBase<MelsecQnA3EBinaryMessage, RegularByteTransform>
     {
 

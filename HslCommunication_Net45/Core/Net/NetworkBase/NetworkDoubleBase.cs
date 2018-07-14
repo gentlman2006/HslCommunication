@@ -16,6 +16,9 @@ namespace HslCommunication.Core.Net
     /// </summary>
     /// <typeparam name="TNetMessage">指定了消息的解析规则</typeparam>
     /// <typeparam name="TTransform">指定了数据转换的规则</typeparam>
+    /// <example>
+    ///   无，请使用继承类示例化，然后操作数据。
+    /// </example>
     public class NetworkDoubleBase<TNetMessage, TTransform> : NetworkBase where TNetMessage : INetMessage, new() where TTransform : IByteTransform, new()
     {
         #region Constructor
@@ -50,17 +53,28 @@ namespace HslCommunication.Core.Net
         #region Public Member
 
         /// <summary>
-        /// 当前客户端的数据变换机制
+        /// 当前客户端的数据变换机制，当你需要从字节数据转换类型数据的时候需要。
         /// </summary>
+        /// <example>
+        ///    主要是用来转换数据类型的，下面仅仅演示了2个方法，其他的类型转换，类似处理。
+        ///    <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDoubleBase.cs" region="ByteTransform" title="ByteTransform示例" />
+        /// </example>
         public TTransform ByteTransform
         {
             get { return byteTransform; }
             set { byteTransform = value; }
         }
-        
+
         /// <summary>
         /// 获取或设置连接的超时时间
         /// </summary>
+        /// <example>
+        /// 设置1秒的超时的示例
+        /// <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDoubleBase.cs" region="ConnectTimeOutExample" title="ConnectTimeOut示例" />
+        /// </example>
+        /// <remarks>
+        /// 不适用于异形模式的连接。
+        /// </remarks>
         public int ConnectTimeOut
         {
             get{return connectTimeOut;}
@@ -70,10 +84,17 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 获取或设置接收服务器反馈的时间，如果为负数，则不接收反馈
         /// </summary>
+        /// <example>
+        /// 设置1秒的接收超时的示例
+        /// <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDoubleBase.cs" region="ReceiveTimeOutExample" title="ReceiveTimeOut示例" />
+        /// </example>
+        /// <remarks>
+        /// 超时的通常原因是服务器端没有配置好，导致访问失败，为了不卡死软件，所以有了这个超时的属性。
+        /// </remarks>
         public int ReceiveTimeOut
         {
-            get{return receiveTimeOut;}
-            set{ receiveTimeOut = value;}
+            get { return receiveTimeOut; }
+            set { receiveTimeOut = value; }
         }
 
         /// <summary>
@@ -114,7 +135,7 @@ namespace HslCommunication.Core.Net
         }
 
         /// <summary>
-        /// 当前连接的唯一ID号，默认为长度20的guid码加随机数组成，也可以自己指定
+        /// 当前连接的唯一ID号，默认为长度20的guid码加随机数组成，方便列表管理，也可以自己指定
         /// </summary>
         /// <remarks>
         /// Current Connection ID, conclude guid and random data, also, you can spcified
@@ -139,6 +160,10 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 在读取数据之前可以调用本方法将客户端设置为长连接模式，相当于跳过了ConnectServer的结果验证，对异形客户端无效
         /// </summary>
+        /// <example>
+        /// 以下的方式演示了另一种长连接的机制
+        /// <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDoubleBase.cs" region="SetPersistentConnectionExample" title="SetPersistentConnection示例" />
+        /// </example>
         public void SetPersistentConnection( )
         {
             isPersistentConn = true;
@@ -152,6 +177,12 @@ namespace HslCommunication.Core.Net
         /// 切换短连接模式到长连接模式，后面的每次请求都共享一个通道
         /// </summary>
         /// <returns>返回连接结果，如果失败的话（也即IsSuccess为False），包含失败信息</returns>
+        /// <example>
+        ///   简单的连接示例，调用该方法后，连接设备，创建一个长连接的对象，后续的读写操作均公用一个连接对象。
+        ///   <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDoubleBase.cs" region="Connect1" title="连接设备" />
+        ///   如果想知道是否连接成功，请参照下面的代码。
+        ///   <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDoubleBase.cs" region="Connect2" title="判断连接结果" />
+        /// </example> 
         public OperateResult ConnectServer( )
         {
             isPersistentConn = true;
@@ -182,7 +213,17 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 使用指定的套接字创建异形客户端
         /// </summary>
+        /// <param name="session">异形客户端对象，查看<seealso cref="NetworkAlienClient"/>类型创建的客户端</param>
         /// <returns>通常都为成功</returns>
+        /// <example>
+        ///   简单的创建示例。
+        ///   <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDoubleBase.cs" region="AlienConnect1" title="连接设备" />
+        ///   如果想知道是否创建成功。通常都是成功。
+        ///   <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDoubleBase.cs" region="AlienConnect2" title="判断连接结果" />
+        /// </example> 
+        /// <remarks>
+        /// 不能和之前的长连接和短连接混用，详细参考 Demo程序 
+        /// </remarks>
         public OperateResult ConnectServer( AlienSession session )
         {
             isPersistentConn = true;
@@ -223,6 +264,10 @@ namespace HslCommunication.Core.Net
         /// 在长连接模式下，断开服务器的连接，并切换到短连接模式
         /// </summary>
         /// <returns>关闭连接，不需要查看IsSuccess属性查看</returns>
+        /// <example>
+        /// 直接关闭连接即可，基本上是不需要进行成功的判定
+        /// <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDoubleBase.cs" region="ConnectCloseExample" title="关闭连接结果" />
+        /// </example>
         public OperateResult ConnectClose( )
         {
             OperateResult result = new OperateResult( );
@@ -248,17 +293,21 @@ namespace HslCommunication.Core.Net
         /// 连接上服务器后需要进行的初始化操作
         /// </summary>
         /// <param name="socket">网络套接字</param>
-        /// <returns></returns>
+        /// <returns>是否初始化成功，依据具体的协议进行重写</returns>
+        /// <example>
+        /// 有些协议不需要握手信号，比如三菱的MC协议，Modbus协议，西门子和欧姆龙就存在握手信息，此处的例子是继承本类后重写的西门子的协议示例
+        /// <code lang="cs" source="..\HslCommunication\HslCommunication_Net45\Profinet\Siemens\SiemensS7Net.cs" region="NetworkDoubleBase Override" title="西门子重连示例" />
+        /// </example>
         protected virtual OperateResult InitializationOnConnect( Socket socket )
         {
             return OperateResult.CreateSuccessResult( );
         }
 
         /// <summary>
-        /// 在将要和服务器进行断开的情况下额外的操作
+        /// 在将要和服务器进行断开的情况下额外的操作，需要根据对应协议进行重写
         /// </summary>
         /// <param name="socket">网络套接字</param>
-        /// <returns></returns>
+        /// <returns>当断开连接时额外的操作结果</returns>
         protected virtual OperateResult ExtraOnDisconnect( Socket socket )
         {
             return OperateResult.CreateSuccessResult( );

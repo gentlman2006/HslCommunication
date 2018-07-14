@@ -83,10 +83,10 @@ namespace HslCommunication.Profinet.Siemens
         #region NetworkDoubleBase Override
 
         /// <summary>
-        /// 在客户端连接上服务器后，所做的一些初始化操作
+        /// 连接上服务器后需要进行的初始化操作
         /// </summary>
-        /// <param name="socket"></param>
-        /// <returns></returns>
+        /// <param name="socket">网络套接字</param>
+        /// <returns>是否初始化成功，依据具体的协议进行重写</returns>
         protected override OperateResult InitializationOnConnect( Socket socket )
         {
             // 第一层通信的初始化
