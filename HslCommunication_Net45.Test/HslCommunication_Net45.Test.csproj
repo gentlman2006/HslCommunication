@@ -65,6 +65,7 @@
     <Compile Include="Core\Transfer\ReverseBytesTransformTest.cs" />
     <Compile Include="Core\Transfer\ReverseWordTransformTest.cs" />
     <Compile Include="Core\Transfer\ReverseWordTransformTest2.cs" />
+    <Compile Include="Documentation\Samples\Core\NetworkDeviceBase.cs" />
     <Compile Include="Documentation\Samples\Core\NetworkDoubleBase.cs" />
     <Compile Include="Documentation\Samples\Profinet\melsecTest.cs" />
     <Compile Include="UnitTest1.cs" />
@@ -74,6 +75,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Documentation\Samples\LogNet\" />
     <Folder Include="Modbus\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

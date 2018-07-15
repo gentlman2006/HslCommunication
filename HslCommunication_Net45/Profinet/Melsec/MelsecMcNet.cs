@@ -14,8 +14,8 @@ namespace HslCommunication.Profinet.Melsec
     /// 三菱PLC通讯类，采用Qna兼容3E帧协议实现，需要在PLC侧先的以太网模块先进行配置，必须为二进制通讯
     /// </summary>
     /// <example>
-    ///   <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="Usage" title="简单的短连接使用" />
-    ///   <code lang="cs" source="..\HslCommunication\HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="Usage2" title="简单的长连接使用" />
+    ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="Usage" title="简单的短连接使用" />
+    ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="Usage2" title="简单的长连接使用" />
     /// </example>
     public class MelsecMcNet : NetworkDeviceBase<MelsecQnA3EBinaryMessage, RegularByteTransform>
     {
@@ -315,6 +315,50 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">读取地址，格式为"M100","D100","W1A0"</param>
         /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
         /// <returns>带成功标志的结果数据对象</returns>
+        /// <remarks>
+        /// 地址支持的列表如下：
+        /// <list type="table">
+        ///   <listheader>
+        ///     <term>地址名称</term>
+        ///     <term>示例</term>
+        ///     <term>地址进制</term>
+        ///   </listheader>
+        ///   <item>
+        ///     <term>数据寄存器</term>
+        ///     <term>D1000,D2000</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>链接寄存器</term>
+        ///     <term>W100,W1A0</term>
+        ///     <term>16</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>文件寄存器</term>
+        ///     <term>R100,R200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>变址寄存器</term>
+        ///     <term>Z100,Z200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>定时器的值</term>
+        ///     <term>T100,T200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>计数器的值</term>
+        ///     <term>C100,C200</term>
+        ///     <term>10</term>
+        ///   </item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        /// 假设起始地址为D100，以下为 <see cref="Int16"/> 类型数据及数组读取
+        /// 
+        /// </example>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
             var result = new OperateResult<byte[]>( );
@@ -373,6 +417,59 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">起始地址</param>
         /// <param name="length">读取的长度</param>
         /// <returns>带成功标志的结果数据对象</returns>
+        /// <remarks>
+        /// 地址支持的列表如下：
+        /// <list type="table">
+        ///   <listheader>
+        ///     <term>地址名称</term>
+        ///     <term>示例</term>
+        ///     <term>地址进制</term>
+        ///   </listheader>
+        ///   <item>
+        ///     <term>内部继电器</term>
+        ///     <term>M100,M200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>输入继电器</term>
+        ///     <term>X100,X1A0</term>
+        ///     <term>16</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>输出继电器</term>
+        ///     <term>Y100,Y1A0</term>
+        ///     <term>16</term>
+        ///   </item>
+        ///    <item>
+        ///     <term>锁存继电器</term>
+        ///     <term>L100,L200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>报警器</term>
+        ///     <term>F100,F200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>边沿继电器</term>
+        ///     <term>V100,V200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>链接继电器</term>
+        ///     <term>B100,B1A0</term>
+        ///     <term>16</term>
+        ///   </item>
+        ///    <item>
+        ///     <term>步进继电器</term>
+        ///     <term>S100,S200</term>
+        ///     <term>10</term>
+        ///   </item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        ///  <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="ReadBool" title="Bool类型示例" />
+        /// </example>
         public OperateResult<bool[]> ReadBool( string address, ushort length )
         {
             var result = new OperateResult<bool[]>( );
@@ -408,6 +505,7 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <returns>带成功标志的结果数据对象</returns>
+        /// <example>参照 <see cref="ReadBool(string, ushort)"/> 方法 </example>
         public OperateResult<bool> ReadBool( string address )
         {
             OperateResult<bool[]> read = ReadBool( address, 1 );

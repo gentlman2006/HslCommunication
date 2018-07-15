@@ -53,11 +53,19 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 组件的日志工具，支持日志记录
         /// </summary>
+        /// <remarks>只要实例化即可以记录日志，实例化的对象需要实现接口 <see cref="ILogNet"/> ，本组件提供了三个日志记录类，你可以实现基于 <see cref="ILogNet"/>  的对象。</remarks>
+        /// <example>
+        /// 如下的实例化适用于所有的Network及其派生类
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="LogNetExample" title="LogNet示例" />
+        /// </example>
         public ILogNet LogNet { get; set; }
 
         /// <summary>
         /// 网络类的身份令牌
         /// </summary>
+        /// <remarks>
+        /// 适用于Hsl协议相关的网络通信类，不适用于设备交互类。
+        /// </remarks>
         public Guid Token { get; set; }
 
         #endregion
