@@ -231,6 +231,7 @@
     <Compile Include="ModBus\ModbusTcp\ModbusTcpNet.cs" />
     <Compile Include="ModBus\ModbusTcp\ModbusTcpServer.cs" />
     <Compile Include="ModBus\MonitorAddress.cs" />
+    <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Profinet\Melsec\MelsecA1EDataType.cs" />
     <Compile Include="Profinet\Melsec\MelsecA1ENet.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcAsciiNet.cs" />

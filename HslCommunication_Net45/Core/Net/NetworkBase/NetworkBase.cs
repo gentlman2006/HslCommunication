@@ -41,6 +41,9 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 实例化一个NetworkBase对象
         /// </summary>
+        /// <remarks>
+        /// 令牌的默认值为空，都是0x00
+        /// </remarks>
         public NetworkBase( )
         {
             Token = Guid.Empty;
@@ -53,10 +56,12 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 组件的日志工具，支持日志记录
         /// </summary>
-        /// <remarks>只要实例化即可以记录日志，实例化的对象需要实现接口 <see cref="ILogNet"/> ，本组件提供了三个日志记录类，你可以实现基于 <see cref="ILogNet"/>  的对象。</remarks>
+        /// <remarks>
+        /// 只要实例化即可以记录日志，实例化的对象需要实现接口 <see cref="ILogNet"/> ，本组件提供了三个日志记录类，你可以实现基于 <see cref="ILogNet"/>  的对象。</remarks>
         /// <example>
-        /// 如下的实例化适用于所有的Network及其派生类
-        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="LogNetExample" title="LogNet示例" />
+        /// 如下的实例化适用于所有的Network及其派生类，以下举两个例子，三菱的设备类及服务器类
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkBase.cs" region="LogNetExample1" title="LogNet示例" />
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkBase.cs" region="LogNetExample2" title="LogNet示例" />
         /// </example>
         public ILogNet LogNet { get; set; }
 
@@ -66,6 +71,11 @@ namespace HslCommunication.Core.Net
         /// <remarks>
         /// 适用于Hsl协议相关的网络通信类，不适用于设备交互类。
         /// </remarks>
+        /// <example>
+        /// 此处以 <see cref="Enthernet.NetSimplifyServer"/> 服务器类及 <see cref="Enthernet.NetSimplifyClient"/> 客户端类的令牌设置举例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkBase.cs" region="TokenClientExample" title="Client示例" />
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkBase.cs" region="TokenServerExample" title="Server示例" />
+        /// </example>
         public Guid Token { get; set; }
 
         #endregion
@@ -86,7 +96,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 检查网络套接字是否操作超时，需要对套接字进行封装
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">通常是 <see cref="HslTimeOut"/> 对象 </param>
         protected void ThreadPoolCheckTimeOut( object obj )
         {
             if (obj is HslTimeOut timeout)
@@ -413,6 +423,9 @@ namespace HslCommunication.Core.Net
         /// <param name="ipAddress">Ip地址</param>
         /// <param name="port">端口号</param>
         /// <returns>返回套接字的封装结果对象</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkBase.cs" region="CreateSocketAndConnectExample" title="创建连接示例" />
+        /// </example>
         protected OperateResult<Socket> CreateSocketAndConnect( string ipAddress, int port )
         {
             return CreateSocketAndConnect( new IPEndPoint( IPAddress.Parse( ipAddress ), port ), 10000 );
@@ -426,6 +439,9 @@ namespace HslCommunication.Core.Net
         /// <param name="port">端口号</param>
         /// <param name="timeOut">连接的超时时间</param>
         /// <returns>返回套接字的封装结果对象</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkBase.cs" region="CreateSocketAndConnectExample" title="创建连接示例" />
+        /// </example>
         protected OperateResult<Socket> CreateSocketAndConnect( string ipAddress, int port, int timeOut )
         {
             return CreateSocketAndConnect( new IPEndPoint( IPAddress.Parse( ipAddress ), port ), timeOut );
@@ -438,6 +454,9 @@ namespace HslCommunication.Core.Net
         /// <param name="endPoint">连接的目标终结点</param>
         /// <param name="timeOut">连接的超时时间</param>
         /// <returns>返回套接字的封装结果对象</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkBase.cs" region="CreateSocketAndConnectExample" title="创建连接示例" />
+        /// </example>
         protected OperateResult<Socket> CreateSocketAndConnect( IPEndPoint endPoint, int timeOut )
         {
             var result = new OperateResult<Socket>( );
@@ -497,7 +516,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 当连接的结果返回
         /// </summary>
-        /// <param name="ar"></param>
+        /// <param name="ar">异步对象</param>
         private void ConnectCallBack( IAsyncResult ar )
         {
             if (ar.AsyncState is StateObject state)
@@ -602,8 +621,8 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 将缓冲区的数据写入到流里面去
         /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="buffer"></param>
+        /// <param name="stream">数据流</param>
+        /// <param name="buffer">缓冲区</param>
         /// <returns></returns>
         protected OperateResult WriteStream( Stream stream, byte[] buffer )
         {

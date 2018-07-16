@@ -24,6 +24,9 @@ namespace HslCommunication
     /// <summary>
     /// 操作结果的类，只带有成功标志和错误信息
     /// </summary>
+    /// <remarks>
+    /// 当 <see cref="IsSuccess"/> 为 True 时，忽略 <see cref="Message"/> 及 <see cref="ErrorCode"/> 的值
+    /// </remarks>
     public class OperateResult
     {
         #region Constructor
@@ -57,7 +60,7 @@ namespace HslCommunication
         /// <summary>
         /// 获取错误代号及文本描述
         /// </summary>
-        /// <returns></returns>
+        /// <returns>包含错误码及错误消息</returns>
         public string ToMessageShowString()
         {
             return $"{StringResources.ErrorCode}:{ErrorCode}{Environment.NewLine}{StringResources.TextDescription}:{Message}";
@@ -93,7 +96,7 @@ namespace HslCommunication
         /// </summary>
         /// <typeparam name="T">目标数据类型</typeparam>
         /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
+        /// <returns>带默认泛型对象的失败结果类</returns>
         public static OperateResult<T> CreateFailedResult<T>( OperateResult result ) 
         {
             return new OperateResult<T>( )
@@ -109,7 +112,7 @@ namespace HslCommunication
         /// <typeparam name="T1">目标数据类型一</typeparam>
         /// <typeparam name="T2">目标数据类型二</typeparam>
         /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
+        /// <returns>带默认泛型对象的失败结果类</returns>
         public static OperateResult<T1, T2> CreateFailedResult<T1, T2>( OperateResult result )
         {
             return new OperateResult<T1, T2>( )
@@ -127,7 +130,7 @@ namespace HslCommunication
         /// <typeparam name="T2">目标数据类型二</typeparam>
         /// <typeparam name="T3">目标数据类型三</typeparam>
         /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
+        /// <returns>带默认泛型对象的失败结果类</returns>
         public static OperateResult<T1, T2, T3> CreateFailedResult<T1, T2, T3>( OperateResult result )
         {
             return new OperateResult<T1, T2, T3>( )
@@ -146,7 +149,7 @@ namespace HslCommunication
         /// <typeparam name="T3">目标数据类型三</typeparam>
         /// <typeparam name="T4">目标数据类型四</typeparam>
         /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
+        /// <returns>带默认泛型对象的失败结果类</returns>
         public static OperateResult<T1, T2, T3, T4> CreateFailedResult<T1, T2, T3, T4>( OperateResult result )
         {
             return new OperateResult<T1, T2, T3, T4>( )
@@ -166,7 +169,7 @@ namespace HslCommunication
         /// <typeparam name="T4">目标数据类型四</typeparam>
         /// <typeparam name="T5">目标数据类型五</typeparam>
         /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
+        /// <returns>带默认泛型对象的失败结果类</returns>
         public static OperateResult<T1, T2, T3, T4, T5> CreateFailedResult<T1, T2, T3, T4, T5>( OperateResult result )
         {
             return new OperateResult<T1, T2, T3, T4, T5>( )
@@ -187,7 +190,7 @@ namespace HslCommunication
         /// <typeparam name="T5">目标数据类型五</typeparam>
         /// <typeparam name="T6">目标数据类型六</typeparam>
         /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
+        /// <returns>带默认泛型对象的失败结果类</returns>
         public static OperateResult<T1, T2, T3, T4, T5, T6> CreateFailedResult<T1, T2, T3, T4, T5, T6>( OperateResult result )
         {
             return new OperateResult<T1, T2, T3, T4, T5, T6>( )
@@ -208,7 +211,7 @@ namespace HslCommunication
         /// <typeparam name="T6">目标数据类型六</typeparam>
         /// <typeparam name="T7">目标数据类型七</typeparam>
         /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
+        /// <returns>带默认泛型对象的失败结果类</returns>
         public static OperateResult<T1, T2, T3, T4, T5, T6, T7> CreateFailedResult<T1, T2, T3, T4, T5, T6, T7>( OperateResult result )
         {
             return new OperateResult<T1, T2, T3, T4, T5, T6, T7>( )
@@ -230,7 +233,7 @@ namespace HslCommunication
         /// <typeparam name="T7">目标数据类型七</typeparam>
         /// <typeparam name="T8">目标数据类型八</typeparam>
         /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
+        /// <returns>带默认泛型对象的失败结果类</returns>
         public static OperateResult<T1, T2, T3, T4, T5, T6, T7, T8> CreateFailedResult<T1, T2, T3, T4, T5, T6, T7, T8>( OperateResult result )
         {
             return new OperateResult<T1, T2, T3, T4, T5, T6, T7, T8>( )
@@ -254,7 +257,7 @@ namespace HslCommunication
         /// <typeparam name="T8">目标数据类型八</typeparam>
         /// <typeparam name="T9">目标数据类型九</typeparam>
         /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
+        /// <returns>带默认泛型对象的失败结果类</returns>
         public static OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9> CreateFailedResult<T1, T2, T3, T4, T5, T6, T7, T8, T9>( OperateResult result )
         {
             return new OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9>( )
@@ -279,7 +282,7 @@ namespace HslCommunication
         /// <typeparam name="T9">目标数据类型九</typeparam>
         /// <typeparam name="T10">目标数据类型十</typeparam>
         /// <param name="result">之前的结果对象</param>
-        /// <returns></returns>
+        /// <returns>带默认泛型对象的失败结果类</returns>
         public static OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> CreateFailedResult<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>( OperateResult result )
         {
             return new OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>( )

@@ -445,6 +445,9 @@
     <Compile Include="..\HslCommunication_Net45\ModBus\MonitorAddress.cs">
       <Link>ModBus\MonitorAddress.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\NamespaceDoc.cs">
+      <Link>NamespaceDoc.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1EDataType.cs">
       <Link>Profinet\Melsec\MelsecA1EDataType.cs</Link>
     </Compile>

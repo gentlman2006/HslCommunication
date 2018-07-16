@@ -39,6 +39,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 服务器的端口号
         /// </summary>
+        /// <remarks>需要在服务器启动之前设置为有效</remarks>
         public int Port { get; set; }
 
         #endregion
@@ -117,6 +118,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 服务器启动时额外的初始化信息
         /// </summary>
+        /// <remarks>需要在派生类中重写</remarks>
         protected virtual void StartInitialization( )
         {
 

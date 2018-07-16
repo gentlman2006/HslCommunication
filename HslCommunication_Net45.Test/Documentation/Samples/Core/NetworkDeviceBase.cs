@@ -102,22 +102,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Core
             #endregion
         }
 
-        public void LogNetExample( )
-        {
-            MelsecMcNet obj = new MelsecMcNet( "192.168.0.100", 6000 );
-
-            #region LogNetExample
-
-            // obj 为NetworkBase所有的派生类对象
-
-            // 举例实现日志文件为单日志文件
-            obj.LogNet = new HslCommunication.LogNet.LogNetSingle( "D://123.txt" );
-
-            #endregion
-
-        }
-
-
+        
 
         public void ReadInt16( )
         {

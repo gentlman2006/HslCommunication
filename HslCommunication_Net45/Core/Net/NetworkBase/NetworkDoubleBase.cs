@@ -17,7 +17,7 @@ namespace HslCommunication.Core.Net
     /// <typeparam name="TNetMessage">指定了消息的解析规则</typeparam>
     /// <typeparam name="TTransform">指定了数据转换的规则</typeparam>
     /// <example>
-    ///   无，请使用继承类示例化，然后操作数据。
+    /// 无，请使用继承类实例化，然后进行数据交互。
     /// </example>
     public class NetworkDoubleBase<TNetMessage, TTransform> : NetworkBase where TNetMessage : INetMessage, new() where TTransform : IByteTransform, new()
     {

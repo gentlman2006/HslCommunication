@@ -59,7 +59,7 @@ namespace HslCommunication.Algorithms.Fourier
         /// 快速傅立叶变换
         /// </summary>
         /// <param name="xreal">实数部分</param>
-        /// <returns></returns>
+        /// <returns>变换后的数组值</returns>
         public static double[] FFT( double[] xreal )
         {
             return FFT( xreal, new double[xreal.Length] );
@@ -69,13 +69,13 @@ namespace HslCommunication.Algorithms.Fourier
 #if !NETSTANDARD2_0
 
         /// <summary>
-        /// 
+        /// 获取FFT变换后的显示图形，需要指定图形的相关参数
         /// </summary>
-        /// <param name="xreal"></param>
-        /// <param name="width"></param>
-        /// <param name="heigh"></param>
-        /// <param name="lineColor"></param>
-        /// <returns></returns>
+        /// <param name="xreal">实数部分的值</param>
+        /// <param name="width">图形的宽度</param>
+        /// <param name="heigh">图形的高度</param>
+        /// <param name="lineColor">线条颜色</param>
+        /// <returns>等待呈现的图形</returns>
         public static Bitmap GetFFTImage( double[] xreal,int width,int heigh ,Color lineColor)
         {
             double[] ximag = new double[xreal.Length];                // 构造虚对象
@@ -220,7 +220,7 @@ namespace HslCommunication.Algorithms.Fourier
         /// </summary>
         /// <param name="xreal">实数部分</param>
         /// <param name="ximag">虚数部分</param>
-        /// <returns></returns>
+        /// <returns>变换后的数组值</returns>
         public static double[] FFT( double[] xreal, double[] ximag )
         {
             //n值为2的N次方
@@ -287,7 +287,7 @@ namespace HslCommunication.Algorithms.Fourier
         /// </summary>
         /// <param name="xreal">实数部分</param>
         /// <param name="ximag">虚数部分</param>
-        /// <returns></returns>
+        /// <returns>2的多少次方</returns>
         public static int IFFT( double[] xreal, double[] ximag )
         {
             //n值为2的N次方

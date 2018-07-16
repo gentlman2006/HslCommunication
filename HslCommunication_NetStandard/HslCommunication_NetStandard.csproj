@@ -114,6 +114,7 @@
     <Compile Include="..\HslCommunication_Net45\ModBus\ModbusTcp\ModbusTcpNet.cs" Link="ModBus\ModbusTcp\ModbusTcpNet.cs" />
     <Compile Include="..\HslCommunication_Net45\ModBus\ModbusTcp\ModbusTcpServer.cs" Link="ModBus\ModbusTcp\ModbusTcpServer.cs" />
     <Compile Include="..\HslCommunication_Net45\ModBus\MonitorAddress.cs" Link="ModBus\MonitorAddress.cs" />
+    <Compile Include="..\HslCommunication_Net45\NamespaceDoc.cs" Link="NamespaceDoc.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1EDataType.cs" Link="Profinet\Melsec\MelsecA1EDataType.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1ENet.cs" Link="Profinet\Melsec\MelsecA1ENet.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecMcAsciiNet.cs" Link="Profinet\Melsec\MelsecMcAsciiNet.cs" />

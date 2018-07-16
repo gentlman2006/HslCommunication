@@ -24,8 +24,8 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 获取文件的md5码
         /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
+        /// <param name="filePath">文件的路径，既可以是完整的路径，也可以是相对的路径</param>
+        /// <returns>Md5字符串</returns>
         public static string CalculateFileMD5( string filePath )
         {
             string str_md5 = string.Empty;
@@ -40,7 +40,7 @@ namespace HslCommunication.BasicFramework
         /// 获取数据流的md5码
         /// </summary>
         /// <param name="stream">数据流，可以是内存流，也可以是文件流</param>
-        /// <returns></returns>
+        /// <returns>Md5字符串</returns>
         public static string CalculateStreamMD5( Stream stream )
         {
             MD5 md5 = new MD5CryptoServiceProvider( );
@@ -54,7 +54,7 @@ namespace HslCommunication.BasicFramework
         /// 获取内存图片的md5码
         /// </summary>
         /// <param name="bitmap">内存图片</param>
-        /// <returns></returns>
+        /// <returns>Md5字符串</returns>
         public static string CalculateStreamMD5(Bitmap bitmap)
         {
             MemoryStream ms = new MemoryStream();
@@ -74,8 +74,8 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 从一个字节大小返回带单位的描述
         /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        /// <param name="size">实际的大小值</param>
+        /// <returns>最终的字符串值</returns>
         public static string GetSizeDescription( long size )
         {
             if (size < 1000)
@@ -294,7 +294,7 @@ namespace HslCommunication.BasicFramework
         /// <param name="json">json对象</param>
         /// <param name="value_name">值名称</param>
         /// <param name="default_value">默认值</param>
-        /// <returns></returns>
+        /// <returns>值对象</returns>
         public static T GetValueFromJsonObject<T>( JObject json, string value_name, T default_value )
         {
             if (json.Property( value_name ) != null)
@@ -339,6 +339,7 @@ namespace HslCommunication.BasicFramework
         /// 显示一个完整的错误信息
         /// </summary>
         /// <param name="ex">异常对象</param>
+        /// <remarks>调用本方法可以显示一个异常的详细信息</remarks>
         /// <exception cref="NullReferenceException"></exception>
         public static void ShowExceptionMessage( Exception ex )
         {
@@ -350,6 +351,7 @@ namespace HslCommunication.BasicFramework
         /// 显示一个完整的错误信息，和额外的字符串描述信息
         /// </summary>
         /// <param name="extraMsg">额外的描述信息</param>
+        /// <remarks>调用本方法可以显示一个异常的详细信息</remarks>
         /// <param name="ex">异常对象</param>
         /// <exception cref="NullReferenceException"></exception>
         public static void ShowExceptionMessage( string extraMsg, Exception ex )
@@ -364,7 +366,8 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="ex">异常对象</param>
         /// <returns>完整的字符串数据</returns>
-        /// <exception cref="NullReferenceException"></exception>
+        /// <remarks>获取异常的完整信息</remarks>
+        /// <exception cref="NullReferenceException">ex不能为空</exception>
         public static string GetExceptionMessage( Exception ex )
         {
             return StringResources.ExceptionMessage + ex.Message + Environment.NewLine +
@@ -453,8 +456,9 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 将16进制的字符串转化成Byte数据，将检测每2个字符转化，也就是说，中间可以是任意字符
         /// </summary>
-        /// <param name="hex"></param>
-        /// <returns></returns>
+        /// <param name="hex">十六进制的字符串，中间可以是任意的分隔符</param>
+        /// <returns>转换后的字节数组</returns>
+        /// <remarks>参数举例：AA 01 34 A8</remarks>
         public static byte[] HexStringToBytes( string hex )
         {
             hex = hex.ToUpper( );
@@ -487,8 +491,8 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 将bool数组转换到byte数组
         /// </summary>
-        /// <param name="array"></param>
-        /// <returns></returns>
+        /// <param name="array">bool数组</param>
+        /// <returns>转换后的字节数组</returns>
         public static byte[] BoolArrayToByte( bool[] array )
         {
             if (array == null) return null;
@@ -526,7 +530,7 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="InBytes">原先的字节数组</param>
         /// <param name="length">想要转换的长度，如果超出自动会缩小到数组最大长度</param>
-        /// <returns></returns>
+        /// <returns>转换后的bool数组</returns>
         public static bool[] ByteToBoolArray( byte[] InBytes, int length )
         {
             if (InBytes == null) return null;

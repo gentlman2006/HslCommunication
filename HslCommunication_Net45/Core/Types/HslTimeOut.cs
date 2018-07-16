@@ -35,6 +35,7 @@ namespace HslCommunication
             IsSuccessful = false;
             HybirdLock = new SimpleHybirdLock( );
         }
+
         /// <summary>
         /// 操作的开始时间
         /// </summary>
