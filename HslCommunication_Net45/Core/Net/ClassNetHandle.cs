@@ -24,6 +24,13 @@ namespace HslCommunication
     /// <summary>
     /// 用于网络传递的信息头，使用上等同于int
     /// </summary>
+    /// <remarks>
+    /// 通常用于<see cref="Enthernet.NetComplexServer"/>和<see cref="Enthernet.NetComplexClient"/>之间的通信，以及<see cref="Enthernet.NetSimplifyServer"/>和<see cref="Enthernet.NetSimplifyClient"/>通讯
+    /// </remarks>
+    /// <example>
+    /// 使用上等同于int，只是本结构体允许将4字节的int拆分成3部分单独访问
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetHandle.cs" region="NetHandleExample" title="NetHandle示例" />
+    /// </example>
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Explicit)]
     public struct NetHandle
     {
@@ -223,7 +230,7 @@ namespace HslCommunication
         /// <summary>
         /// 判断两个实例是否相同
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">对比的对象</param>
         /// <returns>相同返回<c>True</c>，否则返回<c>False</c></returns>
         public override bool Equals(object obj)
         {
@@ -240,7 +247,7 @@ namespace HslCommunication
         /// <summary>
         /// 获取哈希值
         /// </summary>
-        /// <returns></returns>
+        /// <returns>返回当前对象的哈希值</returns>
         public override int GetHashCode()
         {
             return base.GetHashCode();

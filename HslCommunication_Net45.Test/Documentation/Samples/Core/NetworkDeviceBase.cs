@@ -61,7 +61,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Core
             #region ReadCustomerExample
 
             MelsecMcNet melsec = new MelsecMcNet( "192.168.0.100", 6000 );
-            OperateResult<DataMy> read = melsec.ReadCustomer<DataMy>( "D1000" );
+            OperateResult<DataMy> read = melsec.ReadCustomer<DataMy>( "M100" );
             if (read.IsSuccess)
             {
                 // success
@@ -87,7 +87,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Core
             dataMy.press = 123.456f;
             dataMy.others = 1234232132;
 
-            OperateResult write = melsec.WriteCustomer( "D1000" ,dataMy );
+            OperateResult write = melsec.WriteCustomer( "M100" ,dataMy );
             if (write.IsSuccess)
             {
                 // success

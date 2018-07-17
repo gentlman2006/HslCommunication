@@ -151,15 +151,15 @@ namespace TestTool.TestForm
             bool[] X1A0 = melsec_net.ReadBool("X1A0",1).Content;            // 读取X1A0是否通，十六进制地址
             bool[] Y1A0 = melsec_net.ReadBool("Y1A0",1).Content;            // 读取Y1A0是否通，十六进制地址
             bool[] B1A0 = melsec_net.ReadBool("B1A0",1).Content;            // 读取B1A0是否通，十六进制地址
-            short short_D1000 = melsec_net.ReadInt16("D1000").Content;   // 读取D1000的short值  ,W3C0,R3C0 效果是一样的
-            ushort ushort_D1000 = melsec_net.ReadUInt16("D1000").Content; // 读取D1000的ushort值
-            int int_D1000 = melsec_net.ReadInt32("D1000").Content;          // 读取D1000-D1001组成的int数据
-            uint uint_D1000 = melsec_net.ReadUInt32("D1000").Content;       // 读取D1000-D1001组成的uint数据
-            float float_D1000 = melsec_net.ReadFloat("D1000").Content;    // 读取D1000-D1001组成的float数据
-            long long_D1000 = melsec_net.ReadInt64("D1000").Content;       // 读取D1000-D1003组成的long数据
-            ulong ulong_D1000 = melsec_net.ReadUInt64( "D1000" ).Content;       // 读取D1000-D1003组成的long数据
-            double double_D1000 = melsec_net.ReadDouble("D1000").Content; // 读取D1000-D1003组成的double数据
-            string str_D1000 = melsec_net.ReadString("D1000", 10).Content; // 读取D1000-D1009组成的条码数据
+            short short_M100 = melsec_net.ReadInt16("M100").Content;   // 读取M100的short值  ,W3C0,R3C0 效果是一样的
+            ushort ushort_M100 = melsec_net.ReadUInt16("M100").Content; // 读取M100的ushort值
+            int int_M100 = melsec_net.ReadInt32("M100").Content;          // 读取M100-D1001组成的int数据
+            uint uint_M100 = melsec_net.ReadUInt32("M100").Content;       // 读取M100-D1001组成的uint数据
+            float float_M100 = melsec_net.ReadFloat("M100").Content;    // 读取M100-D1001组成的float数据
+            long long_M100 = melsec_net.ReadInt64("M100").Content;       // 读取M100-D1003组成的long数据
+            ulong ulong_M100 = melsec_net.ReadUInt64( "M100" ).Content;       // 读取M100-D1003组成的long数据
+            double double_M100 = melsec_net.ReadDouble("M100").Content; // 读取M100-D1003组成的double数据
+            string str_M100 = melsec_net.ReadString("M100", 10).Content; // 读取M100-D1009组成的条码数据
 
 
             
@@ -167,14 +167,14 @@ namespace TestTool.TestForm
             melsec_net.Write( "Y1A0", new bool[] { true } );                        // 写入Y1A0为通
             melsec_net.Write( "X1A0", new bool[] { true } );                        // 写入X1A0为通
             melsec_net.Write( "B1A0", new bool[] { true } );                        // 写入B1A0为通
-            melsec_net.Write( "D1000", (short)1234);                // 写入D1000  short值  ,W3C0,R3C0 效果是一样的
-            melsec_net.Write( "D1000", (ushort)45678);              // 写入D1000  ushort值
-            melsec_net.Write( "D1000", 1234566);                    // 写入D1000  int值
-            melsec_net.Write( "D1000", (uint)1234566);               // 写入D1000  uint值
-            melsec_net.Write( "D1000", 123.456f);                    // 写入D1000  float值
-            melsec_net.Write( "D1000", 123.456d);                    // 写入D1000  double值
-            melsec_net.Write( "D1000", 123456661235123534L);          // 写入D1000  long值
-            melsec_net.Write( "D1000", "K123456789");                // 写入D1000  string值
+            melsec_net.Write( "M100", (short)1234);                // 写入M100  short值  ,W3C0,R3C0 效果是一样的
+            melsec_net.Write( "M100", (ushort)45678);              // 写入M100  ushort值
+            melsec_net.Write( "M100", 1234566);                    // 写入M100  int值
+            melsec_net.Write( "M100", (uint)1234566);               // 写入M100  uint值
+            melsec_net.Write( "M100", 123.456f);                    // 写入M100  float值
+            melsec_net.Write( "M100", 123.456d);                    // 写入M100  double值
+            melsec_net.Write( "M100", 123456661235123534L);          // 写入M100  long值
+            melsec_net.Write( "M100", "K123456789");                // 写入M100  string值
         }
 
         private void userButton23_Click(object sender, EventArgs e)

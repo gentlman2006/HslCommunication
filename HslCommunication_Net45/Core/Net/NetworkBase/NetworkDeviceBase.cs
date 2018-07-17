@@ -116,7 +116,7 @@ namespace HslCommunication.Core.Net
         /// 此处演示三菱的读取示例，先定义一个类，实现<see cref="IDataTransfer"/>接口
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="IDataTransfer Example" title="DataMy示例" />
         /// 接下来就可以实现数据的读取了
-        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="ReadCustomerExample" title="ReadCustomer示例" />
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteCustomerExample" title="WriteCustomer示例" />
         /// </example>
         public OperateResult WriteCustomer<T>( string address, T data ) where T : IDataTransfer, new()
         {

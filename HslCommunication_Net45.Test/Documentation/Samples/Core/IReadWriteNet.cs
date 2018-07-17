@@ -24,7 +24,7 @@ namespace HslCommunication_Net45.Documentation.Samples.Core
             // 添加各自的数据地址，不同的设备的数据地址格式肯定不一致的
             List<string> address = new List<string>( );
             address.Add( "x=4;100" );                // 假设modbus的数据地址是输入寄存器的100的地址，类型为short
-            address.Add( "D1000" );                  // 假设三菱的数据地址是数据寄存器D1000
+            address.Add( "M100" );                  // 假设三菱的数据地址是数据寄存器M100
             address.Add( "DB1.100" );                // 假设西门子的数据地址在DB块1的偏移地址100上
 
             short[] values = new short[3];

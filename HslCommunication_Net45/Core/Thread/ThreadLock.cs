@@ -164,16 +164,16 @@ namespace HslCommunication.Core
             do
             {
                 startVal = currentVal;//设置值
-                //以下为业务逻辑，允许实现非常复杂的设置
+                // 以下为业务逻辑，允许实现非常复杂的设置
                 action?.Invoke();
-                //需要清零值的时候必须用下面的原子操作
+                // 需要清零值的时候必须用下面的原子操作
                 currentVal = Interlocked.CompareExchange(ref Target, desiredVal, startVal);
             }
-            while (startVal != currentVal);//更改失败就强制更新
+            while (startVal != currentVal);// 更改失败就强制更新
 
-            //退出保存状态
+            // 退出保存状态
             Interlocked.Exchange(ref OperaterStatus, 0);
-            //最终状态确认
+            // 最终状态确认
             if (Target != desiredVal) StartOperaterInfomation();
         }
     }
@@ -534,6 +534,10 @@ namespace HslCommunication.Core
     /// <summary>
     /// 一个简单的混合线程同步锁，采用了基元用户加基元内核同步构造实现
     /// </summary>
+    /// <example>
+    /// 以下演示常用的锁的使用方式，还包含了如何优雅的处理异常锁
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\ThreadLock.cs" region="SimpleHybirdLockExample1" title="SimpleHybirdLock示例" />
+    /// </example>
     public sealed class SimpleHybirdLock : IDisposable
     {
 

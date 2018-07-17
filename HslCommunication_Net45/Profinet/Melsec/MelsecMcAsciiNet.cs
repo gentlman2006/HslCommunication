@@ -11,6 +11,10 @@ namespace HslCommunication.Profinet.Melsec
     /// <summary>
     /// 三菱PLC通讯类，采用Qna兼容3E帧协议实现，需要在PLC侧先的以太网模块先进行配置，必须为ASCII通讯格式
     /// </summary>
+    /// <example>
+    ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="Usage" title="简单的短连接使用" />
+    ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="Usage2" title="简单的长连接使用" />
+    /// </example>
     public class MelsecMcAsciiNet : NetworkDeviceBase<MelsecQnA3EAsciiMessage, RegularByteTransform>
     {
         #region Constructor
@@ -370,6 +374,52 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">读取地址，格式为"M100","D100","W1A0"</param>
         /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
         /// <returns>带成功标志的结果数据对象</returns>
+        /// <remarks>
+        /// 地址支持的列表如下：
+        /// <list type="table">
+        ///   <listheader>
+        ///     <term>地址名称</term>
+        ///     <term>示例</term>
+        ///     <term>地址进制</term>
+        ///   </listheader>
+        ///   <item>
+        ///     <term>数据寄存器</term>
+        ///     <term>D1000,D2000</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>链接寄存器</term>
+        ///     <term>W100,W1A0</term>
+        ///     <term>16</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>文件寄存器</term>
+        ///     <term>R100,R200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>变址寄存器</term>
+        ///     <term>Z100,Z200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>定时器的值</term>
+        ///     <term>T100,T200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>计数器的值</term>
+        ///     <term>C100,C200</term>
+        ///     <term>10</term>
+        ///   </item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        /// 假设起始地址为D100，D100存储了温度，100.6℃值为1006，D101存储了压力，1.23Mpa值为123，D102，D103存储了产量计数，读取如下：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="ReadExample2" title="Read示例" />
+        /// 以下是读取不同类型数据的示例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="ReadExample1" title="Read示例" />
+        /// </example>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
             var result = new OperateResult<byte[]>( );
@@ -446,6 +496,59 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">起始地址</param>
         /// <param name="length">读取的长度</param>
         /// <returns>带成功标志的结果数据对象</returns>
+        /// <remarks>
+        /// 地址支持的列表如下：
+        /// <list type="table">
+        ///   <listheader>
+        ///     <term>地址名称</term>
+        ///     <term>示例</term>
+        ///     <term>地址进制</term>
+        ///   </listheader>
+        ///   <item>
+        ///     <term>内部继电器</term>
+        ///     <term>M100,M200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>输入继电器</term>
+        ///     <term>X100,X1A0</term>
+        ///     <term>16</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>输出继电器</term>
+        ///     <term>Y100,Y1A0</term>
+        ///     <term>16</term>
+        ///   </item>
+        ///    <item>
+        ///     <term>锁存继电器</term>
+        ///     <term>L100,L200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>报警器</term>
+        ///     <term>F100,F200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>边沿继电器</term>
+        ///     <term>V100,V200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>链接继电器</term>
+        ///     <term>B100,B1A0</term>
+        ///     <term>16</term>
+        ///   </item>
+        ///    <item>
+        ///     <term>步进继电器</term>
+        ///     <term>S100,S200</term>
+        ///     <term>10</term>
+        ///   </item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        ///  <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="ReadBool" title="Bool类型示例" />
+        /// </example>
         public OperateResult<bool[]> ReadBool( string address, ushort length )
         {
             var result = new OperateResult<bool[]>( );
@@ -485,6 +588,7 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <returns>带成功标志的结果数据对象</returns>
+        /// <example>参照 <see cref="ReadBool(string, ushort)"/> 方法 </example>
         public OperateResult<bool> ReadBool( string address )
         {
             OperateResult<bool[]> read = ReadBool( address, 1 );
@@ -493,7 +597,7 @@ namespace HslCommunication.Profinet.Melsec
             return OperateResult.CreateSuccessResult<bool>( read.Content[0] );
         }
 
-        
+
         #endregion
 
         #region Write Base
@@ -504,6 +608,12 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">初始地址</param>
         /// <param name="value">原始的字节数据</param>
+        /// <example>
+        /// 假设起始地址为D100，D100存储了温度，100.6℃值为1006，D101存储了压力，1.23Mpa值为123，D102，D103存储了产量计数，写入如下：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="WriteExample2" title="Write示例" />
+        /// 以下是读取不同类型数据的示例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="WriteExample1" title="Write示例" />
+        /// </example>
         /// <returns>结果</returns>
         public override OperateResult Write( string address, byte[] value )
         {
@@ -638,6 +748,9 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据，长度为8的倍数</param>
+        /// <example>
+        /// 详细请查看<see cref="Write(string, bool[])"/>方法的示例
+        /// </example>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, bool value )
         {
@@ -649,6 +762,9 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据，可以指定任意的长度</param>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="WriteBool" title="Write示例" />
+        /// </example>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, bool[] values )
         {

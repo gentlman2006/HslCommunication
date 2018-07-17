@@ -8,14 +8,15 @@ using HslCommunication;
 
 namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
 {
-    public class melsecTest
+    public class MelsecAscii
     {
+
         public void ClassTest( )
         {
             #region Usage
 
             // 实例化对象，指定PLC的ip地址和端口号
-            MelsecMcNet melsecMc = new MelsecMcNet( "192.168.1.110", 6000 );
+            MelsecMcAsciiNet melsecMc = new MelsecMcAsciiNet( "192.168.1.110", 6000 );
             // 举例读取D100的值
             short D100 = melsecMc.ReadInt16( "D100" ).Content;
 
@@ -27,7 +28,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
             #region Usage2
 
             // 实例化对象，指定PLC的ip地址和端口号
-            MelsecMcNet melsecMc = new MelsecMcNet( "192.168.1.110", 6000 );
+            MelsecMcAsciiNet melsecMc = new MelsecMcAsciiNet( "192.168.1.110", 6000 );
 
             // 连接对象
             OperateResult connect = melsecMc.ConnectServer( );
@@ -51,7 +52,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
             #region ReadExample1
 
 
-            MelsecMcNet melsec_net = new MelsecMcNet( "192.168.0.100", 6000 );
+            MelsecMcAsciiNet melsec_net = new MelsecMcAsciiNet( "192.168.0.100", 6000 );
 
             // 此处以D寄存器作为示例
             short short_D1000 = melsec_net.ReadInt16( "D1000" ).Content;         // 读取D1000的short值 
@@ -81,10 +82,10 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
         {
             #region ReadExample2
 
-            MelsecMcNet melsec_net = new MelsecMcNet( "192.168.0.100", 6000 );
+            MelsecMcAsciiNet melsec_net = new MelsecMcAsciiNet( "192.168.0.100", 6000 );
 
             OperateResult<byte[]> read = melsec_net.Read( "D100", 4 );
-            if(read.IsSuccess)
+            if (read.IsSuccess)
             {
                 float temp = melsec_net.ByteTransform.TransInt16( read.Content, 0 ) / 10f;
                 float press = melsec_net.ByteTransform.TransInt16( read.Content, 2 ) / 100f;
@@ -105,7 +106,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
         {
             #region WriteExample1
 
-            MelsecMcNet melsec_net = new MelsecMcNet( "192.168.0.100", 6000 );
+            MelsecMcAsciiNet melsec_net = new MelsecMcAsciiNet( "192.168.0.100", 6000 );
 
             // 此处以D寄存器作为示例
             melsec_net.Write( "D1000", (short)1234 );                // 写入D1000  short值  ,W3C0,R3C0 效果是一样的
@@ -122,10 +123,10 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
             melsec_net.Write( "D1000", new short[] { 123, 3566, -123 } );                // 写入D1000  short值  ,W3C0,R3C0 效果是一样的
             melsec_net.Write( "D1000", new ushort[] { 12242, 42321, 12323 } );              // 写入D1000  ushort值
             melsec_net.Write( "D1000", new int[] { 1234312312, 12312312, -1237213 } );                    // 写入D1000  int值
-            melsec_net.Write( "D1000", new uint[] { 523123212, 213,13123 } );               // 写入D1000  uint值
+            melsec_net.Write( "D1000", new uint[] { 523123212, 213, 13123 } );               // 写入D1000  uint值
             melsec_net.Write( "D1000", new float[] { 123.456f, 35.3f, -675.2f } );                    // 写入D1000  float值
             melsec_net.Write( "D1000", new double[] { 12343.542312d, 213123.123d, -231232.53432d } );                    // 写入D1000  double值
-            melsec_net.Write( "D1000", new long[] { 1231231242312,34312312323214,-1283862312631823 } );          // 写入D1000  long值
+            melsec_net.Write( "D1000", new long[] { 1231231242312, 34312312323214, -1283862312631823 } );          // 写入D1000  long值
             melsec_net.Write( "D1000", new ulong[] { 1231231242312, 34312312323214, 9731283862312631823 } );          // 写入D1000  ulong值
 
             #endregion
@@ -135,7 +136,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
         {
             #region WriteExample2
 
-            MelsecMcNet melsec_net = new MelsecMcNet( "192.168.0.100", 6000 );
+            MelsecMcAsciiNet melsec_net = new MelsecMcAsciiNet( "192.168.0.100", 6000 );
 
             // 拼凑数据，这样的话，一次通讯就完成数据的全部写入
             byte[] buffer = new byte[8];
@@ -166,7 +167,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
         {
             #region ReadBool
 
-            MelsecMcNet melsec_net = new MelsecMcNet( "192.168.0.100", 6000 );
+            MelsecMcAsciiNet melsec_net = new MelsecMcAsciiNet( "192.168.0.100", 6000 );
 
             // 以下是简单的读取，没有仔细校验的方式
             bool X1 = melsec_net.ReadBool( "X1" ).Content;
@@ -213,7 +214,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
         {
             #region WriteBool
 
-            MelsecMcNet melsec_net = new MelsecMcNet( "192.168.0.100", 6000 );
+            MelsecMcAsciiNet melsec_net = new MelsecMcAsciiNet( "192.168.0.100", 6000 );
 
             // 以下是简单的写入，没有仔细校验的方式
             melsec_net.Write( "M100", true );

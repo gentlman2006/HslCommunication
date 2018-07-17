@@ -17,8 +17,8 @@ namespace HslCommunication.Core
         /// </summary>
         /// <typeparam name="TResult">结果类型</typeparam>
         /// <param name="result">源</param>
-        /// <param name="translator"></param>
-        /// <returns></returns>
+        /// <param name="translator">实际转换的委托</param>
+        /// <returns>转换结果</returns>
         public static OperateResult<TResult> GetResultFromBytes<TResult>( OperateResult<byte[]> result, Func<byte[], TResult> translator )
         {
             var tmp = new OperateResult<TResult>( );

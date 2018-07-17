@@ -49,11 +49,17 @@ namespace HslCommunication.Profinet.Melsec
         /// <summary>
         /// 网络号
         /// </summary>
+        /// <remarks>
+        /// 依据PLC的配置而配置，如果PLC配置了1，那么此处也填0，如果PLC配置了2，此处就填2，测试不通的话，继续测试0
+        /// </remarks>
         public byte NetworkNumber { get; set; } = 0x00;
 
         /// <summary>
         /// 网络站号
         /// </summary>
+        /// <remarks>
+        /// 依据PLC的配置而配置，如果PLC配置了1，那么此处也填0，如果PLC配置了2，此处就填2，测试不通的话，继续测试0
+        /// </remarks>
         public byte NetworkStationNumber { get; set; } = 0x00;
 
 
@@ -65,7 +71,7 @@ namespace HslCommunication.Profinet.Melsec
         /// 解析数据地址
         /// </summary>
         /// <param name="address">数据地址</param>
-        /// <returns></returns>
+        /// <returns>解析值</returns>
         private OperateResult<MelsecMcDataType, ushort> AnalysisAddress( string address )
         {
             var result = new OperateResult<MelsecMcDataType, ushort>( );
@@ -241,7 +247,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">起始地址</param>
         /// <param name="value"></param>
         /// <param name="length">指定长度</param>
-        /// <returns></returns>
+        /// <returns>解析后的指令</returns>
         private OperateResult<MelsecMcDataType, byte[]> BuildWriteCommand( string address, byte[] value, int length = -1 )
         {
             var result = new OperateResult<MelsecMcDataType, byte[]>( );
@@ -356,8 +362,10 @@ namespace HslCommunication.Profinet.Melsec
         /// </list>
         /// </remarks>
         /// <example>
-        /// 假设起始地址为D100，以下为 <see cref="Int16"/> 类型数据及数组读取
-        /// 
+        /// 假设起始地址为D100，D100存储了温度，100.6℃值为1006，D101存储了压力，1.23Mpa值为123，D102，D103存储了产量计数，读取如下：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="ReadExample2" title="Read示例" />
+        /// 以下是读取不同类型数据的示例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="ReadExample1" title="Read示例" />
         /// </example>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
@@ -514,7 +522,7 @@ namespace HslCommunication.Profinet.Melsec
             return OperateResult.CreateSuccessResult<bool>( read.Content[0] );
         }
 
-        
+
 
         #endregion
 
@@ -526,6 +534,12 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">初始地址</param>
         /// <param name="value">原始的字节数据</param>
+        /// <example>
+        /// 假设起始地址为D100，D100存储了温度，100.6℃值为1006，D101存储了压力，1.23Mpa值为123，D102，D103存储了产量计数，写入如下：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="WriteExample2" title="Write示例" />
+        /// 以下是写入不同类型数据的示例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="WriteExample1" title="Write示例" />
+        /// </example>
         /// <returns>结果</returns>
         public override OperateResult Write( string address, byte[] value )
         {
@@ -645,6 +659,9 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据，长度为8的倍数</param>
+        /// <example>
+        /// 详细请查看<see cref="Write(string, bool[])"/>方法的示例
+        /// </example>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, bool value )
         {
@@ -656,6 +673,9 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据，可以指定任意的长度</param>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="WriteBool" title="Write示例" />
+        /// </example>
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, bool[] values )
         {

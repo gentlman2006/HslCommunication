@@ -68,12 +68,18 @@
     <Compile Include="Core\Transfer\ReverseWordTransformTest.cs" />
     <Compile Include="Core\Transfer\ReverseWordTransformTest2.cs" />
     <Compile Include="Documentation\Samples\BasicFramework\SoftBasicExample.cs" />
+    <Compile Include="Documentation\Samples\Core\NetHandle.cs" />
+    <Compile Include="Documentation\Samples\Core\NetSupport.cs" />
     <Compile Include="Documentation\Samples\Core\NetworkBase.cs" />
     <Compile Include="Documentation\Samples\Core\NetworkDeviceBase.cs" />
     <Compile Include="Documentation\Samples\Core\NetworkDoubleBase.cs" />
+    <Compile Include="Documentation\Samples\Core\ThreadLock.cs" />
     <Compile Include="Documentation\Samples\Enthernet\NetComplexClient.cs" />
     <Compile Include="Documentation\Samples\Enthernet\NetSimplifyClient.cs" />
+    <Compile Include="Documentation\Samples\Profinet\MelsecAscii.cs" />
     <Compile Include="Documentation\Samples\Profinet\melsecTest.cs" />
+    <Compile Include="Documentation\Samples\Profinet\SiemensFetchWriteNet.cs" />
+    <Compile Include="Documentation\Samples\Profinet\SiemensS7Net.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
