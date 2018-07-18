@@ -304,7 +304,7 @@ public class ByteTransformBase implements IByteTransform
     /**
      * long数组变量转化缓存数据
      * @param values 等待转化的数组
-     * @return v
+     * @return buffer数据
      */
     public byte[] TransByte( long[] values ){
         if (values == null) return null;
