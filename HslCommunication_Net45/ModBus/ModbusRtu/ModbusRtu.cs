@@ -11,6 +11,41 @@ namespace HslCommunication.ModBus
     /// <summary>
     /// Modbus-Rtu通讯协议的类库，多项式码0xA001
     /// </summary>
+    /// <remarks>
+    /// 本客户端支持的标准的modbus-tcp协议，内置的消息号会进行自增，地址格式采用富文本表示形式
+    /// <note type="important">
+    /// 地址共可以携带3个信息，最完整的表示方式"s=2;x=3;100"，对应的modbus报文是 02 03 00 64 00 01 的前四个字节，站号，功能码，起始地址，下面举例
+    /// <list type="definition">
+    /// <item>
+    ///     <term>读取线圈</term>
+    ///     <description>ReadCoil("100")表示读取线圈100的值，ReadCoil("s=2;100")表示读取站号为2，线圈地址为100的值</description>
+    /// </item>
+    /// <item>
+    ///     <term>读取离散输入</term>
+    ///     <description>ReadDiscrete("100")表示读取离散输入100的值，ReadDiscrete("s=2;100")表示读取站号为2，离散地址为100的值</description>
+    /// </item>
+    /// <item>
+    ///     <term>读取寄存器</term>
+    ///     <description>ReadInt16("100")表示读取寄存器100的值，ReadInt16("s=2;100")表示读取站号为2，寄存器100的值</description>
+    /// </item>
+    /// <item>
+    ///     <term>读取输入寄存器</term>
+    ///     <description>ReadInt16("x=4;100")表示读取输入寄存器100的值，ReadInt16("s=2;x=4;100")表示读取站号为2，输入寄存器100的值</description>
+    /// </item>
+    /// </list>
+    /// 对于写入来说也是一致的
+    /// <list type="definition">
+    /// <item>
+    ///     <term>写入线圈</term>
+    ///     <description>WriteCoil("100",true)表示读取线圈100的值，WriteCoil("s=2;100",true)表示读取站号为2，线圈地址为100的值</description>
+    /// </item>
+    /// <item>
+    ///     <term>写入寄存器</term>
+    ///     <description>Write("100",(short)123)表示写寄存器100的值123，Write("s=2;100",(short)123)表示写入站号为2，寄存器100的值123</description>
+    /// </item>
+    /// </list>
+    /// </note>
+    /// </remarks>
     public class ModbusRtu : SerialBase
     {
         #region Constructor
@@ -46,9 +81,13 @@ namespace HslCommunication.ModBus
 
         #region Public Member
 
+
         /// <summary>
         /// 获取或设置起始的地址是否从0开始，默认为True
         /// </summary>
+        /// <remarks>
+        /// <note type="warning">因为有些设备的起始地址是从1开始的，就要设置本属性为<c>True</c></note>
+        /// </remarks>
         public bool AddressStartWithZero
         {
             get { return isAddressStartWithZero; }
@@ -56,8 +95,11 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
-        /// 获取或者重新修改服务器的站号信息
+        /// 获取或者重新修改服务器的默认站号信息
         /// </summary>
+        /// <remarks>
+        /// 当你调用 ReadCoil("100") 时，对应的站号就是本属性的值，当你调用 ReadCoil("s=2;100") 时，就忽略本属性的值，读写寄存器的时候同理
+        /// </remarks>
         public byte Station
         {
             get { return station; }
@@ -68,6 +110,9 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 多字节的数据是否高低位反转，常用于Int32,UInt32,float,double,Int64,UInt64类型读写
         /// </summary>
+        /// <remarks>
+        /// 对于Int32,UInt32,float,double,Int64,UInt64类型来说，存在多地址的电脑情况，需要和服务器进行匹配
+        /// </remarks>
         public bool IsMultiWordReverse
         {
             get { return ByteTransform.IsMultiWordReverse; }
@@ -77,14 +122,18 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 字符串数据是否按照字来反转
         /// </summary>
+        /// <remarks>
+        /// 字符串按照2个字节的排列进行颠倒，根据实际情况进行设置
+        /// </remarks>
         public bool IsStringReverse
         {
             get { return ByteTransform.IsStringReverse; }
             set { ByteTransform.IsStringReverse = value; }
         }
 
+
         #endregion
-        
+
         #region Build Command
 
 
@@ -493,6 +542,18 @@ namespace HslCommunication.ModBus
             return ByteTransformHelper.GetInt16ResultFromBytes( Read( address, 1 ), ByteTransform );
         }
 
+        /// <summary>
+        /// 读取指定地址的short数组
+        /// </summary>
+        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带有成功标志的short数据</returns>
+        public OperateResult<short[]> ReadInt16( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, length );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<short[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransInt16( read.Content, 0, length ) );
+        }
 
         /// <summary>
         /// 读取指定地址的ushort数据
@@ -502,6 +563,19 @@ namespace HslCommunication.ModBus
         public OperateResult<ushort> ReadUInt16( string address )
         {
             return ByteTransformHelper.GetUInt16ResultFromBytes( Read( address, 1 ), ByteTransform );
+        }
+
+        /// <summary>
+        /// 读取指定地址的ushort数组
+        /// </summary>
+        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带有成功标志的ushort数据</returns>
+        public OperateResult<ushort[]> ReadUInt16( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, length );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<ushort[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt16( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -515,6 +589,19 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
+        /// 读取指定地址的int数组
+        /// </summary>
+        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <param name="length">数组的长度</param>
+        /// <returns>带有成功标志的int数据</returns>
+        public OperateResult<int[]> ReadInt32( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * 2) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<int[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransInt32( read.Content, 0, length ) );
+        }
+
+        /// <summary>
         /// 读取指定地址的uint数据
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
@@ -522,6 +609,19 @@ namespace HslCommunication.ModBus
         public OperateResult<uint> ReadUInt32( string address )
         {
             return ByteTransformHelper.GetUInt32ResultFromBytes( Read( address, 2 ), ByteTransform );
+        }
+
+        /// <summary>
+        /// 读取指定地址的uint数组
+        /// </summary>
+        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带有成功标志的uint数据</returns>
+        public OperateResult<uint[]> ReadUInt32( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * 2) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<uint[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt32( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -535,6 +635,19 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
+        /// 读取指定地址的float数组
+        /// </summary>
+        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带有成功标志的float数据</returns>
+        public OperateResult<float[]> ReadFloat( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * 2) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<float[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransSingle( read.Content, 0, length ) );
+        }
+
+        /// <summary>
         /// 读取指定地址的long数据
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
@@ -542,6 +655,19 @@ namespace HslCommunication.ModBus
         public OperateResult<long> ReadInt64( string address )
         {
             return ByteTransformHelper.GetInt64ResultFromBytes( Read( address, 4 ), ByteTransform );
+        }
+
+        /// <summary>
+        /// 读取指定地址的long数组
+        /// </summary>
+        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带有成功标志的long数据</returns>
+        public OperateResult<long[]> ReadInt64( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * 4) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<long[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransInt64( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -555,6 +681,19 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
+        /// 读取指定地址的ulong数组
+        /// </summary>
+        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带有成功标志的ulong数据</returns>
+        public OperateResult<ulong[]> ReadUInt64( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * 4) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<ulong[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt64( read.Content, 0, length ) );
+        }
+
+        /// <summary>
         /// 读取指定地址的double数据
         /// </summary>
         /// <param name="address">起始地址，格式为"1234"</param>
@@ -562,6 +701,19 @@ namespace HslCommunication.ModBus
         public OperateResult<double> ReadDouble( string address )
         {
             return ByteTransformHelper.GetDoubleResultFromBytes( Read( address, 4 ), ByteTransform );
+        }
+
+        /// <summary>
+        /// 读取指定地址的double数组
+        /// </summary>
+        /// <param name="address">起始地址，格式为"1234"</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带有成功标志的double数据</returns>
+        public OperateResult<double[]> ReadDouble( string address, ushort length )
+        {
+            OperateResult<byte[]> read = Read( address, (ushort)(length * 4) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<double[]>( read );
+            return OperateResult.CreateSuccessResult( ByteTransform.TransDouble( read.Content, 0, length ) );
         }
 
         /// <summary>
