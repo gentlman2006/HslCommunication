@@ -11,6 +11,12 @@ namespace HslCommunication.Profinet.Melsec
     /// <summary>
     /// 三菱PLC通讯协议，采用A兼容1E帧协议实现，使用二进制码通讯，请根据实际型号来进行选取
     /// </summary>
+    /// <remarks>
+    /// 本类适用于的PLC列表
+    /// <list type="number">
+    /// <item>FX3U(C) PLC   测试人sandy_liao</item>
+    /// </list>
+    /// </remarks>
     public class MelsecA1ENet : NetworkDeviceBase<MelsecA1EBinaryMessage, RegularByteTransform>
     {
 

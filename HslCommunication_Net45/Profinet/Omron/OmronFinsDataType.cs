@@ -13,13 +13,12 @@ namespace HslCommunication.Profinet.Omron
         /// <summary>
         /// 实例化一个Fins的数据类型
         /// </summary>
-        /// <param name="bitCode"></param>
-        /// <param name="wordCode"></param>
+        /// <param name="bitCode">进行位操作的指令</param>
+        /// <param name="wordCode">进行字操作的指令</param>
         public OmronFinsDataType( byte bitCode, byte wordCode )
         {
             BitCode = bitCode;
             WordCode = wordCode;
-
         }
 
 

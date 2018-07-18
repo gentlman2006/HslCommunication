@@ -13,6 +13,13 @@ namespace HslCommunication.Profinet.Omron
     /// <summary>
     /// 欧姆龙PLC通讯类，采用Fins-Tcp通信协议实现
     /// </summary>
+    /// <remarks>
+    /// <note type="important">实例化之后，使用之前，需要初始化三个参数信息，具体见三个参数的说明：<see cref="SA1"/>，<see cref="DA1"/>，<see cref="DA2"/></note>
+    /// </remarks>
+    /// <example>
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\OmronFinsNet.cs" region="Usage" title="简单的短连接使用" />
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\OmronFinsNet.cs" region="Usage2" title="简单的长连接使用" />
+    /// </example>
     public class OmronFinsNet : NetworkDeviceBase<FinsMessage,ReverseWordTransform>
     {
 
@@ -63,13 +70,19 @@ namespace HslCommunication.Profinet.Omron
 
         
         /// <summary>
-        /// PLC的节点地址，默认0x13
+        /// PLC的节点地址，默认0x13，需要根据实际来填写
         /// </summary>
+        /// <remarks>
+        /// <note type="important">假如你的PLC的Ip地址为192.168.0.10，那么这个值就是10</note>
+        /// </remarks>
         public byte DA1 { get; set; } = 0x13;
 
         /// <summary>
         /// PLC的单元号地址
         /// </summary>
+        /// <remarks>
+        /// <note type="important">通常都为0</note>
+        /// </remarks>
         public byte DA2 { get; set; } = 0x00;
 
         /// <summary>
@@ -83,6 +96,9 @@ namespace HslCommunication.Profinet.Omron
         /// <summary>
         /// 上位机的节点地址，默认0x0B
         /// </summary>
+        /// <remarks>
+        /// <note type="important">假如你的电脑的Ip地址为192.168.0.13，那么这个值就是13</note>
+        /// </remarks>
         public byte SA1
         {
             get { return computerSA1; }
@@ -107,9 +123,7 @@ namespace HslCommunication.Profinet.Omron
         #endregion
 
         #region Address Analysis
-
-
-
+        
         /// <summary>
         /// 解析数据地址，Omron手册第188页
         /// </summary>
@@ -401,8 +415,8 @@ namespace HslCommunication.Profinet.Omron
         /// <summary>
         /// 在连接上欧姆龙PLC后，需要进行一步握手协议
         /// </summary>
-        /// <param name="socket"></param>
-        /// <returns></returns>
+        /// <param name="socket">连接的套接字</param>
+        /// <returns>初始化成功与否</returns>
         protected override OperateResult InitializationOnConnect( Socket socket )
         {
             // handSingle就是握手信号字节
@@ -443,6 +457,47 @@ namespace HslCommunication.Profinet.Omron
         /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
         /// <returns>带成功标志的结果数据对象</returns>
+        /// <remarks>
+        /// 地址支持的列表如下：
+        /// <list type="table">
+        ///   <listheader>
+        ///     <term>地址名称</term>
+        ///     <term>示例</term>
+        ///     <term>地址进制</term>
+        ///   </listheader>
+        ///   <item>
+        ///     <term>DM Area</term>
+        ///     <term>D100,D200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>CIO Area</term>
+        ///     <term>C100,C200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>Work Area</term>
+        ///     <term>W100,W200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>Holding Bit Area</term>
+        ///     <term>H100,H200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>Auxiliary Bit Area</term>
+        ///     <term>A100,A200</term>
+        ///     <term>10</term>
+        ///   </item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        /// 假设起始地址为D100，D100存储了温度，100.6℃值为1006，D101存储了压力，1.23Mpa值为123，D102,D103存储了产量计数，读取如下：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\OmronFinsNet.cs" region="ReadExample2" title="Read示例" />
+        /// 以下是读取不同类型数据的示例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\OmronFinsNet.cs" region="ReadExample1" title="Read示例" />
+        /// </example>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
             //获取指令
@@ -469,6 +524,44 @@ namespace HslCommunication.Profinet.Omron
         /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
         /// <param name="length">读取的长度</param>
         /// <returns>带成功标志的结果数据对象</returns>
+        /// <remarks>
+        /// 地址支持的列表如下：
+        /// <list type="table">
+        ///   <listheader>
+        ///     <term>地址名称</term>
+        ///     <term>示例</term>
+        ///     <term>地址进制</term>
+        ///   </listheader>
+        ///   <item>
+        ///     <term>DM Area</term>
+        ///     <term>D100.0,D200.10</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>CIO Area</term>
+        ///     <term>C100.0,C200.10</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>Work Area</term>
+        ///     <term>W100.0,W200.10</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>Holding Bit Area</term>
+        ///     <term>H100.0,H200.10</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>Auxiliary Bit Area</term>
+        ///     <term>A100.0,A200.1</term>
+        ///     <term>10</term>
+        ///   </item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\OmronFinsNet.cs" region="ReadBool" title="ReadBool示例" />
+        /// </example>
         public OperateResult<bool[]> ReadBool( string address, ushort length )
         {
             //获取指令
@@ -493,6 +586,12 @@ namespace HslCommunication.Profinet.Omron
         /// </summary>
         /// <param name="address">读取地址，格式为"D100.0","C100.15","W100.7","H100.4","A100.9"</param>
         /// <returns>带成功标志的结果数据对象</returns>
+        /// <remarks>
+        /// 地址的格式请参照<see cref="ReadBool(string, ushort)"/>方法
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\OmronFinsNet.cs" region="ReadBool" title="ReadBool示例" />
+        /// </example>
         public OperateResult<bool> ReadBool( string address )
         {
             OperateResult<bool[]> read = ReadBool( address, 1 );
@@ -506,7 +605,7 @@ namespace HslCommunication.Profinet.Omron
             }
         }
 
-        
+
         #endregion
 
         #region Write Base
@@ -518,6 +617,47 @@ namespace HslCommunication.Profinet.Omron
         /// <param name="address">初始地址</param>
         /// <param name="value">原始的字节数据</param>
         /// <returns>结果</returns>
+        /// <remarks>
+        /// 地址支持的列表如下：
+        /// <list type="table">
+        ///   <listheader>
+        ///     <term>地址名称</term>
+        ///     <term>示例</term>
+        ///     <term>地址进制</term>
+        ///   </listheader>
+        ///   <item>
+        ///     <term>DM Area</term>
+        ///     <term>D100,D200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>CIO Area</term>
+        ///     <term>C100,C200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>Work Area</term>
+        ///     <term>W100,W200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>Holding Bit Area</term>
+        ///     <term>H100,H200</term>
+        ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>Auxiliary Bit Area</term>
+        ///     <term>A100,A200</term>
+        ///     <term>10</term>
+        ///   </item>
+        /// </list>
+        /// </remarks>
+        /// <example>
+        /// 假设起始地址为D100，D100存储了温度，100.6℃值为1006，D101存储了压力，1.23Mpa值为123，D102,D103存储了产量计数，读取如下：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\OmronFinsNet.cs" region="WriteExample2" title="Write示例" />
+        /// 以下是写入不同类型数据的示例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\OmronFinsNet.cs" region="WriteExample1" title="Write示例" />
+        /// </example>
         public override OperateResult Write( string address, byte[] value )
         {
             //获取指令
@@ -595,6 +735,9 @@ namespace HslCommunication.Profinet.Omron
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据，长度为8的倍数</param>
         /// <returns>返回写入结果</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\OmronFinsNet.cs" region="WriteBool" title="WriteBool示例" />
+        /// </example>
         public OperateResult Write( string address, bool value )
         {
             return Write( address, new bool[] { value } );
@@ -607,6 +750,9 @@ namespace HslCommunication.Profinet.Omron
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据，可以指定任意的长度</param>
         /// <returns>返回写入结果</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\OmronFinsNet.cs" region="WriteBool" title="WriteBool示例" />
+        /// </example>
         public OperateResult Write( string address, bool[] values )
         {
             OperateResult result = new OperateResult( );

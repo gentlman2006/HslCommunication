@@ -9,11 +9,48 @@ using HslCommunication.Core.Net;
 
 namespace HslCommunication.ModBus
 {
-
-
     /// <summary>
     /// Modbus-Tcp协议的客户端通讯类，方便的和服务器进行数据交互
     /// </summary>
+    /// <remarks>
+    /// 本客户端支持的标准的modbus-tcp协议，内置的消息号会进行自增，地址格式采用富文本表示形式
+    /// <note type="important">
+    /// 地址共可以携带3个信息，最完整的表示方式"s=2;x=3;100"，对应的modbus报文是 02 03 00 64 00 01 的前四个字节，站号，功能码，起始地址，下面举例
+    /// <list type="definition">
+    /// <item>
+    ///     <term>读取线圈</term>
+    ///     <description>ReadCoil("100")表示读取线圈100的值，ReadCoil("s=2;100")表示读取站号为2，线圈地址为100的值</description>
+    /// </item>
+    /// <item>
+    ///     <term>读取离散输入</term>
+    ///     <description>ReadDiscrete("100")表示读取离散输入100的值，ReadDiscrete("s=2;100")表示读取站号为2，离散地址为100的值</description>
+    /// </item>
+    /// <item>
+    ///     <term>读取寄存器</term>
+    ///     <description>ReadInt16("100")表示读取寄存器100的值，ReadInt16("s=2;100")表示读取站号为2，寄存器100的值</description>
+    /// </item>
+    /// <item>
+    ///     <term>读取输入寄存器</term>
+    ///     <description>ReadInt16("x=4;100")表示读取输入寄存器100的值，ReadInt16("s=2;x=4;100")表示读取站号为2，输入寄存器100的值</description>
+    /// </item>
+    /// </list>
+    /// 对于写入来说也是一致的
+    /// <list type="definition">
+    /// <item>
+    ///     <term>写入线圈</term>
+    ///     <description>WriteCoil("100",true)表示读取线圈100的值，WriteCoil("s=2;100",true)表示读取站号为2，线圈地址为100的值</description>
+    /// </item>
+    /// <item>
+    ///     <term>写入寄存器</term>
+    ///     <description>Write("100",(short)123)表示写寄存器100的值123，Write("s=2;100",(short)123)表示写入站号为2，寄存器100的值123</description>
+    /// </item>
+    /// </list>
+    /// </note>
+    /// </remarks>
+    /// <example>
+    /// 基本的用法请参照下面的代码示例
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Modbus\Modbus.cs" region="Example1" title="Modbus示例" />
+    /// </example>
     public class ModbusTcpNet : NetworkDeviceBase<ModbusTcpMessage, ReverseWordTransform>
     {
         #region Constructor
@@ -25,6 +62,7 @@ namespace HslCommunication.ModBus
         {
             softIncrementCount = new SoftIncrementCount( ushort.MaxValue );
             WordLength = 1;
+            station = 1;
         }
 
 
@@ -58,6 +96,9 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 获取或设置起始的地址是否从0开始，默认为True
         /// </summary>
+        /// <remarks>
+        /// <note type="warning">因为有些设备的起始地址是从1开始的，就要设置本属性为<c>True</c></note>
+        /// </remarks>
         public bool AddressStartWithZero
         {
             get { return isAddressStartWithZero; }
@@ -65,8 +106,11 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
-        /// 获取或者重新修改服务器的站号信息
+        /// 获取或者重新修改服务器的默认站号信息
         /// </summary>
+        /// <remarks>
+        /// 当你调用 ReadCoil("100") 时，对应的站号就是本属性的值，当你调用 ReadCoil("s=2;100") 时，就忽略本属性的值，读写寄存器的时候同理
+        /// </remarks>
         public byte Station
         {
             get { return station; }
@@ -76,6 +120,9 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 多字节的数据是否高低位反转，常用于Int32,UInt32,float,double,Int64,UInt64类型读写
         /// </summary>
+        /// <remarks>
+        /// 对于Int32,UInt32,float,double,Int64,UInt64类型来说，存在多地址的电脑情况，需要和服务器进行匹配
+        /// </remarks>
         public bool IsMultiWordReverse
         {
             get { return ByteTransform.IsMultiWordReverse; }
@@ -85,6 +132,9 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 字符串数据是否按照字来反转
         /// </summary>
+        /// <remarks>
+        /// 字符串按照2个字节的排列进行颠倒，根据实际情况进行设置
+        /// </remarks>
         public bool IsStringReverse
         {
             get { return ByteTransform.IsStringReverse; }
@@ -166,7 +216,12 @@ namespace HslCommunication.ModBus
         }
 
 
-
+        /// <summary>
+        /// 生成一个写入单线圈的指令头
+        /// </summary>
+        /// <param name="address">地址</param>
+        /// <param name="value">长度</param>
+        /// <returns>携带有命令字节</returns>
         private OperateResult<byte[]> BuildWriteOneCoilCommand( string address, bool value )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
@@ -256,7 +311,7 @@ namespace HslCommunication.ModBus
         /// <param name="code">指令</param>
         /// <param name="address">地址</param>
         /// <param name="length">长度</param>
-        /// <returns></returns>
+        /// <returns>带是否成功的结果数据</returns>
         private OperateResult<byte[]> ReadModBusBase( byte code, string address, ushort length )
         {
             OperateResult<byte[]> command = null;
@@ -301,7 +356,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">地址</param>
         /// <param name="length">长度</param>
-        /// <returns></returns>
+        /// <returns>带是否成功的结果数据</returns>
         private OperateResult<byte[]> ReadModBusBase( ModbusAddress address, ushort length )
         {
             OperateResult<byte[]> command = BuildReadRegisterCommand( address, length );
@@ -392,6 +447,9 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址，格式为"1234"，或者是带功能码格式x=3;1234</param>
         /// <param name="length">读取的数量</param>
         /// <returns>带有成功标志的字节信息</returns>
+        /// <remarks>
+        /// 富地址格式，具体参照类的示例代码
+        /// </remarks>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );

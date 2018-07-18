@@ -46,6 +46,10 @@ namespace HslCommunication.ModBus
     /// </list>
     /// </note>
     /// </remarks>
+    /// <example>
+    /// 基本的用法请参照下面的代码示例，初始化部分的代码省略
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Modbus\Modbus.cs" region="Example2" title="Modbus示例" />
+    /// </example>
     public class ModbusRtu : SerialBase
     {
         #region Constructor

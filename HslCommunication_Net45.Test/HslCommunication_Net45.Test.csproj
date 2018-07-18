@@ -76,8 +76,10 @@
     <Compile Include="Documentation\Samples\Core\ThreadLock.cs" />
     <Compile Include="Documentation\Samples\Enthernet\NetComplexClient.cs" />
     <Compile Include="Documentation\Samples\Enthernet\NetSimplifyClient.cs" />
+    <Compile Include="Documentation\Samples\Modbus\Modbus.cs" />
     <Compile Include="Documentation\Samples\Profinet\MelsecAscii.cs" />
     <Compile Include="Documentation\Samples\Profinet\melsecTest.cs" />
+    <Compile Include="Documentation\Samples\Profinet\OmronFinsNet.cs" />
     <Compile Include="Documentation\Samples\Profinet\SiemensFetchWriteNet.cs" />
     <Compile Include="Documentation\Samples\Profinet\SiemensS7Net.cs" />
     <Compile Include="UnitTest1.cs" />
@@ -88,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Documentation\Samples\LogNet\" />
-    <Folder Include="Modbus\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

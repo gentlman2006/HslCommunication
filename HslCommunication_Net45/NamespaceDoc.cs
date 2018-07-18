@@ -2,11 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HslCommunication.Core;
 
 namespace HslCommunication
 {
     /// <summary>
     /// 一个包含网络通讯库，PLC访问库，日志库，多线程处理，Modbus服务区客户端，数据转换，版本类，基础控件等工具库
+    /// 
+    /// <note type="important">
+    /// 本组件的目标是集成一个框架，统一所有的设备读写方法，抽象成统一的接口<see cref="IReadWriteNet"/>，对于上层操作只需要关注地址，读取类型即可，另一个目标是使用本框架轻松实现C#后台+C#客户端+web浏览器+android手机的全方位功能实现。
+    /// </note>
+    /// 
+    /// 本库提供了C#版本和java版本，java版本的使用和C#几乎是一模一样的。
     /// </summary>
     /// <remarks>
     /// 本软件著作权归Richard.Hu所有，开源项目地址：https://github.com/dathlin/HslCommunication  开源协议：LGPL-3.0
@@ -316,7 +323,7 @@ namespace HslCommunication
     ///             <item>埃夫特机器人修复tostring()的方法。</item>
     ///             <item>modbus客户端新增两个属性，指示是否字节颠倒和字符串颠倒，根据不同的服务器配置。</item>
     ///             <item>IReadWriteNet接口补充几个数组读取的方法。</item>
-    ///             <item>新增一个全新的连接池功能类，详细  <a herf="https://www.cnblogs.com/dathlin/p/9191211.html">https://www.cnblogs.com/dathlin/p/9191211.html</a> </item>
+    ///             <item>新增一个全新的连接池功能类，详细请参见 https://www.cnblogs.com/dathlin/p/9191211.html </item>
     ///             <item>其他的小bug修复，细节优化。</item>
     ///         </list>
     ///     </revision>

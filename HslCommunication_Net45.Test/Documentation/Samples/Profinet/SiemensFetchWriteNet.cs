@@ -86,7 +86,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
 
             SiemensFetchWriteNet siemens = new SiemensFetchWriteNet( " 192.168.1.110", 2000 );
 
-            OperateResult<byte[]> read = siemens.Read( "M100", 4 );
+            OperateResult<byte[]> read = siemens.Read( "M100", 8 );
             if (read.IsSuccess)
             {
                 float temp = siemens.ByteTransform.TransInt16( read.Content, 0 ) / 10f;

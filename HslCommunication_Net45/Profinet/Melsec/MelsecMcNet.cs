@@ -13,6 +13,15 @@ namespace HslCommunication.Profinet.Melsec
     /// <summary>
     /// 三菱PLC通讯类，采用Qna兼容3E帧协议实现，需要在PLC侧先的以太网模块先进行配置，必须为二进制通讯
     /// </summary>
+    /// <remarks>
+    /// 目前组件测试通过的PLC型号列表，有些来自于网友的测试
+    /// <list type="number">
+    /// <item>Q06UDV PLC  感谢hwdq0012</item>
+    /// <item>fx5u PLC  感谢山楂</item>
+    /// <item>Q02CPU PLC </item>
+    /// <item>L02CPU PLC </item>
+    /// </list>
+    /// </remarks>
     /// <example>
     ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="Usage" title="简单的短连接使用" />
     ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\melsecTest.cs" region="Usage2" title="简单的长连接使用" />

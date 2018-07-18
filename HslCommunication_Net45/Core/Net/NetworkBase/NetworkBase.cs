@@ -623,7 +623,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="stream">数据流</param>
         /// <param name="buffer">缓冲区</param>
-        /// <returns></returns>
+        /// <returns>是否写入成功</returns>
         protected OperateResult WriteStream( Stream stream, byte[] buffer )
         {
             ManualResetEvent WaitDone = new ManualResetEvent( false );
