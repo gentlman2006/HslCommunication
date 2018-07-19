@@ -35,7 +35,7 @@ namespace HslCommunication.Algorithms.ConnectPool
         /// <summary>
         /// 获取可用的对象
         /// </summary>
-        /// <returns></returns>
+        /// <returns>可用的连接对象</returns>
         public TConnector GetAvailableConnector( )
         {
             while (!canGetConnector)

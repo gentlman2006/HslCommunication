@@ -76,6 +76,9 @@ namespace HslCommunication.Algorithms.Fourier
         /// <param name="heigh">图形的高度</param>
         /// <param name="lineColor">线条颜色</param>
         /// <returns>等待呈现的图形</returns>
+        /// <remarks>
+        /// <note type="warning">.net standrard2.0 下不支持。</note>
+        /// </remarks>
         public static Bitmap GetFFTImage( double[] xreal,int width,int heigh ,Color lineColor)
         {
             double[] ximag = new double[xreal.Length];                // 构造虚对象

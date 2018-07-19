@@ -194,6 +194,7 @@ namespace HslCommunication.Core.Net
         }
 
 
+
         /// <summary>
         /// 读取设备的int类型的数据
         /// </summary>

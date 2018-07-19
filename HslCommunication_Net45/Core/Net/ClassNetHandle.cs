@@ -40,6 +40,7 @@ namespace HslCommunication
         /// 赋值操作，可以直接赋值int数据
         /// </summary>
         /// <param name="value">int数值</param>
+        /// <returns>等值的消息对象</returns>
         public static implicit operator NetHandle(int value)
         {
             return new NetHandle(value);
@@ -49,6 +50,7 @@ namespace HslCommunication
         /// 也可以赋值给int数据
         /// </summary>
         /// <param name="netHandle">netHandle对象</param>
+        /// <returns>等值的消息对象</returns>
         public static implicit operator int(NetHandle netHandle)
         {
             return netHandle.m_CodeValue;

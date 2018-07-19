@@ -9,8 +9,11 @@ using System.Windows.Forms;
 
 namespace HslCommunicationDemo
 {
+    #region FormSeqCreate
+
     public partial class FormSeqCreate : Form
     {
+
         public FormSeqCreate( )
         {
             InitializeComponent( );
@@ -55,6 +58,8 @@ namespace HslCommunicationDemo
             textBox1.AppendText( "耗时：" + spend + Environment.NewLine );
         }
 
+
+        // 忽略
         private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
         {
             try
@@ -67,4 +72,7 @@ namespace HslCommunicationDemo
             }
         }
     }
+
+
+    #endregion
 }

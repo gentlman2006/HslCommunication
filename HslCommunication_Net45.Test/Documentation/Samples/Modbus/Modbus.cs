@@ -132,6 +132,55 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Modbus
 
         #endregion
 
+        private void ReadExample( )
+        {
+            #region ReadExample1
+
+            ModbusTcpNet modbus = new ModbusTcpNet( "192.168.0.1" );   // 实例化
+
+            // 假设100存储了short的报警，101,102存储了float的温度，103，104存储了int的产量
+            OperateResult<byte[]> read = modbus.Read( "100", 5 );
+            if(read.IsSuccess)
+            {
+                // 共计10个字节的结果内容
+                short alarm = modbus.ByteTransform.TransInt16( read.Content, 0 );
+                float temp = modbus.ByteTransform.TransSingle( read.Content, 2 );
+                int product = modbus.ByteTransform.TransInt32( read.Content, 6 );
+            }
+            else
+            {
+                // failed
+            }
+
+
+            #endregion
+        }
+
+        private void WriteExample( )
+        {
+            #region WriteExample1
+
+            ModbusTcpNet modbus = new ModbusTcpNet( "192.168.0.1" );   // 实例化
+
+            // 假设100存储了short的报警，101,102存储了float的温度，103，104存储了int的产量
+            byte[] buffer = new byte[10];
+            modbus.ByteTransform.TransByte( (short)1 ).CopyTo( buffer, 0 );
+            modbus.ByteTransform.TransByte( 123.456f ).CopyTo( buffer, 2 );
+            modbus.ByteTransform.TransByte( 45678922 ).CopyTo( buffer, 6 );
+
+            OperateResult write = modbus.Write( "100", buffer );
+            if (write.IsSuccess)
+            {
+                // success
+            }
+            else
+            {
+                // failed
+            }
+
+
+            #endregion
+        }
     }
 
     public class ModbusTcpNetExample2
@@ -259,5 +308,58 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Modbus
 
         #endregion
 
+        private void ReadExample( )
+        {
+            #region ReadExample2
+
+            ModbusRtu modbus = new ModbusRtu( );   // 实例化
+            // 此处忽略初始化
+            // modbus.SerialPortInni( "COM3" );
+
+            // 假设100存储了short的报警，101,102存储了float的温度，103，104存储了int的产量
+            OperateResult<byte[]> read = modbus.Read( "100", 5 );
+            if (read.IsSuccess)
+            {
+                // 共计10个字节的结果内容
+                short alarm = modbus.ByteTransform.TransInt16( read.Content, 0 );
+                float temp = modbus.ByteTransform.TransSingle( read.Content, 2 );
+                int product = modbus.ByteTransform.TransInt32( read.Content, 6 );
+            }
+            else
+            {
+                // failed
+            }
+
+
+            #endregion
+        }
+
+        private void WriteExample( )
+        {
+            #region WriteExample2
+
+            ModbusRtu modbus = new ModbusRtu( );   // 实例化
+            // 此处忽略初始化
+            // modbus.SerialPortInni( "COM3" );
+
+            // 假设100存储了short的报警，101,102存储了float的温度，103，104存储了int的产量
+            byte[] buffer = new byte[10];
+            modbus.ByteTransform.TransByte( (short)1 ).CopyTo( buffer, 0 );
+            modbus.ByteTransform.TransByte( 123.456f ).CopyTo( buffer, 2 );
+            modbus.ByteTransform.TransByte( 45678922 ).CopyTo( buffer, 6 );
+
+            OperateResult write = modbus.Write( "100", buffer );
+            if (write.IsSuccess)
+            {
+                // success
+            }
+            else
+            {
+                // failed
+            }
+
+
+            #endregion
+        }
     }
 }

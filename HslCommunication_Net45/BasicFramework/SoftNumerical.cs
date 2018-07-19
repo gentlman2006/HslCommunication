@@ -21,6 +21,16 @@ namespace HslCommunication.BasicFramework
     /// <summary>
     /// 一个用于自动流水号生成的类，必须指定保存的文件，实时保存来确认安全
     /// </summary>
+    /// <remarks>
+    /// <note type="important">
+    /// 序号生成器软件，当获取序列号，清空序列号操作后，会自动的将ID号存储到本地的文件中，存储方式采用乐观并发模型实现。
+    /// </note>
+    /// </remarks>
+    /// <example>
+    /// 此处举个例子，也是Demo程序的源代码，包含了2个按钮的示例和瞬间调用100万次的性能示例。
+    /// <note type="tip">百万次调用的实际耗时取决于计算机的性能，不同的计算机的表现存在差异，比如作者的：i5-4590cpu,内存ddr3-8G表示差不多在800毫秒左右</note>
+    /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormSeqCreate.cs" region="FormSeqCreate" title="示例代码" />
+    /// </example>
     public sealed class SoftNumericalOrder : SoftFileSaveBase
     {
 
@@ -159,12 +169,12 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region 高性能存储块
+        #region High Performance Save
 
         /// <summary>
         /// 高性能存储块
         /// </summary>
-        private HslAsyncCoordinator AsyncCoordinator { get; set; }
+        private HslAsyncCoordinator AsyncCoordinator = null;
 
 
 

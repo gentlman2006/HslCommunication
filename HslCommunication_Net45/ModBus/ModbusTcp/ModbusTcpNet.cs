@@ -438,8 +438,8 @@ namespace HslCommunication.ModBus
             return OperateResult.CreateSuccessResult( SoftBasic.ByteToBoolArray( read.Content, length ) );
         }
 
-        
-        
+
+
 
         /// <summary>
         /// 从Modbus服务器批量读取寄存器的信息，需要指定起始地址，读取长度
@@ -448,8 +448,12 @@ namespace HslCommunication.ModBus
         /// <param name="length">读取的数量</param>
         /// <returns>带有成功标志的字节信息</returns>
         /// <remarks>
-        /// 富地址格式，具体参照类的示例代码
+        /// 富地址格式，支持携带站号信息，功能码信息，具体参照类的示例代码
         /// </remarks>
+        /// <example>
+        /// 此处演示批量读取的示例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Modbus\Modbus.cs" region="ReadExample1" title="Read示例" />
+        /// </example>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
@@ -530,6 +534,13 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址，格式为"1234"</param>
         /// <param name="value">写入的数据，长度根据data的长度来指示</param>
         /// <returns>返回写入结果</returns>
+        /// <remarks>
+        /// 富地址格式，支持携带站号信息，功能码信息，具体参照类的示例代码
+        /// </remarks>
+        /// <example>
+        /// 此处演示批量写入的示例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Modbus\Modbus.cs" region="WriteExample1" title="Write示例" />
+        /// </example>
         public override OperateResult Write( string address, byte[] value )
         {
             OperateResult<byte[]> command = BuildWriteRegisterCommand( address, value );
