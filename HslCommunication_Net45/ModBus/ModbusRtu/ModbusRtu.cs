@@ -59,7 +59,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         public ModbusRtu( )
         {
-            ByteTransform = new ReverseWordTransform( );
+            byteTransform = new ReverseWordTransform( );
         }
 
 
@@ -69,7 +69,7 @@ namespace HslCommunication.ModBus
         /// <param name="station">客户端自身的站号</param>
         public ModbusRtu( byte station = 0x01 )
         {
-            ByteTransform = new ReverseWordTransform( );
+            byteTransform = new ReverseWordTransform( );
             this.station = station;
         }
 
@@ -79,7 +79,7 @@ namespace HslCommunication.ModBus
 
         private byte station = ModbusInfo.ReadCoil;                  // 本客户端的站号
         private bool isAddressStartWithZero = true;                  // 线圈值的地址值是否从零开始
-        private ReverseWordTransform ByteTransform;  // 数组转换规则
+        private ReverseWordTransform byteTransform;                  // 数组转换规则
 
         #endregion
 
@@ -119,8 +119,8 @@ namespace HslCommunication.ModBus
         /// </remarks>
         public bool IsMultiWordReverse
         {
-            get { return ByteTransform.IsMultiWordReverse; }
-            set { ByteTransform.IsMultiWordReverse = value; }
+            get { return byteTransform.IsMultiWordReverse; }
+            set { byteTransform.IsMultiWordReverse = value; }
         }
 
         /// <summary>
@@ -131,10 +131,20 @@ namespace HslCommunication.ModBus
         /// </remarks>
         public bool IsStringReverse
         {
-            get { return ByteTransform.IsStringReverse; }
-            set { ByteTransform.IsStringReverse = value; }
+            get { return byteTransform.IsStringReverse; }
+            set { byteTransform.IsStringReverse = value; }
         }
 
+        /// <summary>
+        /// 获取本对象的数据转换辅助对象
+        /// </summary>
+        /// <remarks>
+        /// 本转换对象只能获取，无法设置。
+        /// </remarks>
+        public IByteTransform ByteTransform
+        {
+            get { return byteTransform; }
+        }
 
         #endregion
 
@@ -451,7 +461,7 @@ namespace HslCommunication.ModBus
             var read = ReadModBusBase( ModbusInfo.ReadCoil, address, 1 );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool>( read );
 
-            return ByteTransformHelper.GetBoolResultFromBytes( read, ByteTransform );
+            return ByteTransformHelper.GetBoolResultFromBytes( read, byteTransform );
         }
 
 
@@ -486,7 +496,7 @@ namespace HslCommunication.ModBus
             var read = ReadModBusBase( ModbusInfo.ReadDiscrete, address, 1 );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool>( read );
 
-            return ByteTransformHelper.GetBoolResultFromBytes( read, ByteTransform );
+            return ByteTransformHelper.GetBoolResultFromBytes( read, byteTransform );
         }
 
 
@@ -543,7 +553,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的short数据</returns>
         public OperateResult<short> ReadInt16( string address )
         {
-            return ByteTransformHelper.GetInt16ResultFromBytes( Read( address, 1 ), ByteTransform );
+            return ByteTransformHelper.GetInt16ResultFromBytes( Read( address, 1 ), byteTransform );
         }
 
         /// <summary>
@@ -556,7 +566,7 @@ namespace HslCommunication.ModBus
         {
             OperateResult<byte[]> read = Read( address, length );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<short[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransInt16( read.Content, 0, length ) );
+            return OperateResult.CreateSuccessResult( byteTransform.TransInt16( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -566,7 +576,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的ushort数据</returns>
         public OperateResult<ushort> ReadUInt16( string address )
         {
-            return ByteTransformHelper.GetUInt16ResultFromBytes( Read( address, 1 ), ByteTransform );
+            return ByteTransformHelper.GetUInt16ResultFromBytes( Read( address, 1 ), byteTransform );
         }
 
         /// <summary>
@@ -579,7 +589,7 @@ namespace HslCommunication.ModBus
         {
             OperateResult<byte[]> read = Read( address, length );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<ushort[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt16( read.Content, 0, length ) );
+            return OperateResult.CreateSuccessResult( byteTransform.TransUInt16( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -589,7 +599,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的int数据</returns>
         public OperateResult<int> ReadInt32( string address )
         {
-            return ByteTransformHelper.GetInt32ResultFromBytes( Read( address, 2 ), ByteTransform );
+            return ByteTransformHelper.GetInt32ResultFromBytes( Read( address, 2 ), byteTransform );
         }
 
         /// <summary>
@@ -602,7 +612,7 @@ namespace HslCommunication.ModBus
         {
             OperateResult<byte[]> read = Read( address, (ushort)(length * 2) );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransInt32( read.Content, 0, length ) );
+            return OperateResult.CreateSuccessResult( byteTransform.TransInt32( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -612,7 +622,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的uint数据</returns>
         public OperateResult<uint> ReadUInt32( string address )
         {
-            return ByteTransformHelper.GetUInt32ResultFromBytes( Read( address, 2 ), ByteTransform );
+            return ByteTransformHelper.GetUInt32ResultFromBytes( Read( address, 2 ), byteTransform );
         }
 
         /// <summary>
@@ -625,7 +635,7 @@ namespace HslCommunication.ModBus
         {
             OperateResult<byte[]> read = Read( address, (ushort)(length * 2) );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<uint[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt32( read.Content, 0, length ) );
+            return OperateResult.CreateSuccessResult( byteTransform.TransUInt32( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -635,7 +645,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的float数据</returns>
         public OperateResult<float> ReadFloat( string address )
         {
-            return ByteTransformHelper.GetSingleResultFromBytes( Read( address, 2 ), ByteTransform );
+            return ByteTransformHelper.GetSingleResultFromBytes( Read( address, 2 ), byteTransform );
         }
 
         /// <summary>
@@ -648,7 +658,7 @@ namespace HslCommunication.ModBus
         {
             OperateResult<byte[]> read = Read( address, (ushort)(length * 2) );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<float[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransSingle( read.Content, 0, length ) );
+            return OperateResult.CreateSuccessResult( byteTransform.TransSingle( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -658,7 +668,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的long数据</returns>
         public OperateResult<long> ReadInt64( string address )
         {
-            return ByteTransformHelper.GetInt64ResultFromBytes( Read( address, 4 ), ByteTransform );
+            return ByteTransformHelper.GetInt64ResultFromBytes( Read( address, 4 ), byteTransform );
         }
 
         /// <summary>
@@ -671,7 +681,7 @@ namespace HslCommunication.ModBus
         {
             OperateResult<byte[]> read = Read( address, (ushort)(length * 4) );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<long[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransInt64( read.Content, 0, length ) );
+            return OperateResult.CreateSuccessResult( byteTransform.TransInt64( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -681,7 +691,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的ulong数据</returns>
         public OperateResult<ulong> ReadUInt64( string address )
         {
-            return ByteTransformHelper.GetUInt64ResultFromBytes( Read( address, 4 ), ByteTransform );
+            return ByteTransformHelper.GetUInt64ResultFromBytes( Read( address, 4 ), byteTransform );
         }
 
         /// <summary>
@@ -694,7 +704,7 @@ namespace HslCommunication.ModBus
         {
             OperateResult<byte[]> read = Read( address, (ushort)(length * 4) );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<ulong[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt64( read.Content, 0, length ) );
+            return OperateResult.CreateSuccessResult( byteTransform.TransUInt64( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -704,7 +714,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的double数据</returns>
         public OperateResult<double> ReadDouble( string address )
         {
-            return ByteTransformHelper.GetDoubleResultFromBytes( Read( address, 4 ), ByteTransform );
+            return ByteTransformHelper.GetDoubleResultFromBytes( Read( address, 4 ), byteTransform );
         }
 
         /// <summary>
@@ -717,7 +727,7 @@ namespace HslCommunication.ModBus
         {
             OperateResult<byte[]> read = Read( address, (ushort)(length * 4) );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<double[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransDouble( read.Content, 0, length ) );
+            return OperateResult.CreateSuccessResult( byteTransform.TransDouble( read.Content, 0, length ) );
         }
 
         /// <summary>
@@ -728,7 +738,7 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的string数据</returns>
         public OperateResult<string> ReadString( string address, ushort length )
         {
-            return ByteTransformHelper.GetStringResultFromBytes( Read( address, length ), ByteTransform );
+            return ByteTransformHelper.GetStringResultFromBytes( Read( address, length ), byteTransform );
         }
 
 
@@ -857,7 +867,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, string value )
         {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
+            byte[] temp = byteTransform.TransByte( value, Encoding.ASCII );
             temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
         }
@@ -871,7 +881,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, string value, int length )
         {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
+            byte[] temp = byteTransform.TransByte( value, Encoding.ASCII );
             temp = SoftBasic.ArrayExpandToLength( temp, length );
             return Write( address, temp );
         }
@@ -884,7 +894,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult WriteUnicodeString( string address, string value )
         {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
+            byte[] temp = byteTransform.TransByte( value, Encoding.Unicode );
             return Write( address, temp );
         }
 
@@ -897,7 +907,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult WriteUnicodeString( string address, string value, int length )
         {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
+            byte[] temp = byteTransform.TransByte( value, Encoding.Unicode );
             temp = SoftBasic.ArrayExpandToLength( temp, length * 2 );
             return Write( address, temp );
         }
@@ -930,7 +940,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, short[] values )
         {
-            return Write( address, ByteTransform.TransByte( values ) );
+            return Write( address, byteTransform.TransByte( values ) );
         }
 
         /// <summary>
@@ -957,7 +967,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, ushort[] values )
         {
-            return Write( address, ByteTransform.TransByte( values ) );
+            return Write( address, byteTransform.TransByte( values ) );
         }
 
 
@@ -985,7 +995,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, int[] values )
         {
-            return Write( address, ByteTransform.TransByte( values ) );
+            return Write( address, byteTransform.TransByte( values ) );
         }
 
         /// <summary>
@@ -1011,7 +1021,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, uint[] values )
         {
-            return Write( address, ByteTransform.TransByte( values ) );
+            return Write( address, byteTransform.TransByte( values ) );
         }
 
         /// <summary>
@@ -1037,7 +1047,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, float[] values )
         {
-            return Write( address, ByteTransform.TransByte( values ) );
+            return Write( address, byteTransform.TransByte( values ) );
         }
 
         /// <summary>
@@ -1064,7 +1074,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, long[] values )
         {
-            return Write( address, ByteTransform.TransByte( values ) );
+            return Write( address, byteTransform.TransByte( values ) );
         }
 
         /// <summary>
@@ -1090,7 +1100,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, ulong[] values )
         {
-            return Write( address, ByteTransform.TransByte( values ) );
+            return Write( address, byteTransform.TransByte( values ) );
         }
 
         /// <summary>
@@ -1116,7 +1126,7 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, double[] values )
         {
-            return Write( address, ByteTransform.TransByte( values ) );
+            return Write( address, byteTransform.TransByte( values ) );
         }
 
         /// <summary>
