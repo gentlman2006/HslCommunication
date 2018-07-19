@@ -141,7 +141,7 @@ namespace HslCommunication.ModBus
         /// <remarks>
         /// 本转换对象只能获取，无法设置。
         /// </remarks>
-        public IByteTransform ByteTransform
+        public ReverseWordTransform ByteTransform
         {
             get { return byteTransform; }
         }
@@ -526,6 +526,10 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址，格式为"1234"，或者是带功能码格式x=3;1234</param>
         /// <param name="length">读取的数量</param>
         /// <returns>带有成功标志的字节信息</returns>
+        /// <example>
+        /// 此处演示批量读取的示例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Modbus\Modbus.cs" region="ReadExample2" title="Read示例" />
+        /// </example>
         public OperateResult<byte[]> Read( string address, ushort length )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
@@ -804,6 +808,13 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址，格式为"1234"</param>
         /// <param name="value">写入的数据，长度根据data的长度来指示</param>
         /// <returns>返回写入结果</returns>
+        /// <remarks>
+        /// 富地址格式，支持携带站号信息，功能码信息，具体参照类的示例代码
+        /// </remarks>
+        /// <example>
+        /// 此处演示批量写入的示例
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Modbus\Modbus.cs" region="WriteExample2" title="Write示例" />
+        /// </example>
         public OperateResult Write( string address, byte[] value )
         {
             OperateResult<byte[]> command = BuildWriteRegisterCommand( address, value );
