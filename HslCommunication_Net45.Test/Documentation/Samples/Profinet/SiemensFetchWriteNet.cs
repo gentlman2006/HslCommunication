@@ -19,7 +19,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
             // 实例化对象，指定PLC的ip地址
             SiemensFetchWriteNet siemens = new SiemensFetchWriteNet( " 192.168.1.110", 2000 );
             // 举例读取M100的值
-            short D100 = siemens.ReadInt16( "M100" ).Content;
+            short M100 = siemens.ReadInt16( "M100" ).Content;
 
             #endregion
         }
@@ -40,7 +40,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
             }
 
             // 举例读取M100的值
-            short D100 = siemens.ReadInt16( "M100" ).Content;
+            short M100 = siemens.ReadInt16( "M100" ).Content;
 
             siemens.ConnectClose( );
 

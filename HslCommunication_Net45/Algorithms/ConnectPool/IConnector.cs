@@ -8,6 +8,11 @@ namespace HslCommunication.Algorithms.ConnectPool
     /// <summary>
     /// 连接池的接口，连接池的管理对象必须实现此接口
     /// </summary>
+    /// <remarks>为了使用完整的连接池功能，需要先实现本接口，然后配合<see cref="ConnectPool{TConnector}"/>来使用</remarks>
+    /// <example>
+    /// 下面举例实现一个modbus的连接池对象
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Algorithms\ConnectPool.cs" region="IConnector Example" title="IConnector示例" />
+    /// </example>
     public interface IConnector
     {
 

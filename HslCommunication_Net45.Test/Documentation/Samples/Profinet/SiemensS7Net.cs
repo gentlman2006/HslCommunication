@@ -18,7 +18,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
             // 实例化对象，指定PLC的ip地址
             SiemensS7Net siemens = new SiemensS7Net( SiemensPLCS.S1200," 192.168.1.110" );
             // 举例读取M100的值
-            short D100 = siemens.ReadInt16( "M100" ).Content;
+            short M100 = siemens.ReadInt16( "M100" ).Content;
 
             #endregion
         }
@@ -39,7 +39,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
             }
 
             // 举例读取M100的值
-            short D100 = siemens.ReadInt16( "M100" ).Content;
+            short M100 = siemens.ReadInt16( "M100" ).Content;
 
             siemens.ConnectClose( );
 

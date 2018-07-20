@@ -221,8 +221,8 @@ namespace HslCommunication.Algorithms.Fourier
         /// <summary>
         /// 快速傅立叶变换
         /// </summary>
-        /// <param name="xreal">实数部分</param>
-        /// <param name="ximag">虚数部分</param>
+        /// <param name="xreal">实数部分，数组长度最好为2的n次方</param>
+        /// <param name="ximag">虚数部分，数组长度最好为2的n次方</param>
         /// <returns>变换后的数组值</returns>
         public static double[] FFT( double[] xreal, double[] ximag )
         {
@@ -288,8 +288,8 @@ namespace HslCommunication.Algorithms.Fourier
         /// <summary>
         /// 快速傅立叶变换的逆变换
         /// </summary>
-        /// <param name="xreal">实数部分</param>
-        /// <param name="ximag">虚数部分</param>
+        /// <param name="xreal">实数部分，数组长度最好为2的n次方</param>
+        /// <param name="ximag">虚数部分，数组长度最好为2的n次方</param>
         /// <returns>2的多少次方</returns>
         public static int IFFT( double[] xreal, double[] ximag )
         {

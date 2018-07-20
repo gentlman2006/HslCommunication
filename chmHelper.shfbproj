@@ -30,6 +30,14 @@
     <FooterText>%28C%29 2018 Richard.Hu, All Rights Reserved</FooterText>
     <FeedbackEMailAddress>hsl200909%40163.com</FeedbackEMailAddress>
     <FeedbackEMailLinkText>hsl200909%40163.com</FeedbackEMailLinkText>
+    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
+    <SyntaxFilters>Standard</SyntaxFilters>
+    <PresentationStyle>VS2013</PresentationStyle>
+    <CleanIntermediates>True</CleanIntermediates>
+    <KeepLogFile>True</KeepLogFile>
+    <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
+    <IndentHtml>False</IndentHtml>
+    <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
