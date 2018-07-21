@@ -166,7 +166,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 获取本计算机唯一的机器码
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串形式的机器码</returns>
         public static string GetInfo()
         {
             string unique = "";

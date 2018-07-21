@@ -26,6 +26,10 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="filePath">文件的路径，既可以是完整的路径，也可以是相对的路径</param>
         /// <returns>Md5字符串</returns>
+        /// <example>
+        /// 下面举例实现获取一个文件的md5码
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="CalculateFileMD5Example" title="CalculateFileMD5示例" />
+        /// </example>
         public static string CalculateFileMD5( string filePath )
         {
             string str_md5 = string.Empty;
@@ -41,6 +45,10 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="stream">数据流，可以是内存流，也可以是文件流</param>
         /// <returns>Md5字符串</returns>
+        /// <example>
+        /// 下面举例实现获取一个流的md5码
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="CalculateStreamMD5Example1" title="CalculateStreamMD5示例" />
+        /// </example>
         public static string CalculateStreamMD5( Stream stream )
         {
             MD5 md5 = new MD5CryptoServiceProvider( );
@@ -55,6 +63,10 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="bitmap">内存图片</param>
         /// <returns>Md5字符串</returns>
+        /// <example>
+        /// 下面举例实现获取一个图像的md5码
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="CalculateStreamMD5Example2" title="CalculateStreamMD5示例" />
+        /// </example>
         public static string CalculateStreamMD5(Bitmap bitmap)
         {
             MemoryStream ms = new MemoryStream();
@@ -76,6 +88,10 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="size">实际的大小值</param>
         /// <returns>最终的字符串值</returns>
+        /// <example>
+        /// 比如说我们获取了文件的长度，这个长度可以来自于本地，也可以来自于数据库查询
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="GetSizeDescriptionExample" title="GetSizeDescription示例" />
+        /// </example>
         public static string GetSizeDescription( long size )
         {
             if (size < 1000)
@@ -111,6 +127,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="array">原数据</param>
         /// <param name="data">等待新增的数据</param>
         /// <param name="max">原数据的最大值</param>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="AddArrayDataExample" title="AddArrayData示例" />
+        /// </example>
         public static void AddArrayData<T>( ref T[] array, T[] data, int max )
         {
             if (data == null) return;           // 数据为空
@@ -168,6 +187,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="data">原先数据的数据</param>
         /// <param name="length">新数组的长度</param>
         /// <returns>新数组长度信息</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="ArrayExpandToLengthExample" title="ArrayExpandToLength示例" />
+        /// </example>
         public static T[] ArrayExpandToLength<T>( T[] data, int length )
         {
             if (data == null) return new T[length];
@@ -188,6 +210,9 @@ namespace HslCommunication.BasicFramework
         /// <typeparam name="T">数组的类型</typeparam>
         /// <param name="data">原先数据的数据</param>
         /// <returns>新数组长度信息</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="ArrayExpandToLengthEvenExample" title="ArrayExpandToLengthEven示例" />
+        /// </example>
         public static T[] ArrayExpandToLengthEven<T>( T[] data )
         {
             if (data == null) return new T[0];
@@ -216,6 +241,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="length">校验的长度</param>
         /// <returns>返回是否相等</returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="IsTwoBytesEquelExample1" title="IsTwoBytesEquel示例" />
+        /// </example>
         public static bool IsTwoBytesEquel( byte[] b1, int start1, byte[] b2, int start2, int length )
         {
             if (b1 == null || b2 == null) return false;
@@ -235,6 +263,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="b1">第一个字节</param>
         /// <param name="b2">第二个字节</param>
         /// <returns>返回是否相等</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="IsTwoBytesEquelExample2" title="IsTwoBytesEquel示例" />
+        /// </example>
         public static bool IsTwoBytesEquel( byte[] b1, byte[] b2)
         {
             if (b1 == null || b2 == null) return false;
@@ -249,6 +280,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="head">字节数据</param>
         /// <param name="token">GUID数据</param>
         /// <returns>返回是否相等</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="IsTwoTokenEquelExample" title="IsByteTokenEquel示例" />
+        /// </example>
         public static bool IsByteTokenEquel( byte[] head, Guid token )
         {
             return IsTwoBytesEquel( head, 12, token.ToByteArray( ), 0, 16 );
@@ -278,6 +312,9 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <typeparam name="TEnum">枚举的类型值</typeparam>
         /// <returns>枚举值数组</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="GetEnumValuesExample" title="GetEnumValues示例" />
+        /// </example>
         public static TEnum[] GetEnumValues<TEnum>( ) where TEnum : struct
         {
             return (TEnum[])Enum.GetValues( typeof( TEnum ) );
@@ -295,6 +332,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="value_name">值名称</param>
         /// <param name="default_value">默认值</param>
         /// <returns>值对象</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="GetValueFromJsonObjectExample" title="GetValueFromJsonObject示例" />
+        /// </example>
         public static T GetValueFromJsonObject<T>( JObject json, string value_name, T default_value )
         {
             if (json.Property( value_name ) != null)
@@ -316,6 +356,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="json">json对象</param>
         /// <param name="property">值名称</param>
         /// <param name="value">值数据</param>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="JsonSetValueExample" title="JsonSetValue示例" />
+        /// </example>
         public static void JsonSetValue<T>( JObject json, string property, T value )
         {
             if (json.Property( property ) != null)
@@ -368,6 +411,9 @@ namespace HslCommunication.BasicFramework
         /// <returns>完整的字符串数据</returns>
         /// <remarks>获取异常的完整信息</remarks>
         /// <exception cref="NullReferenceException">ex不能为空</exception>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="GetExceptionMessageExample1" title="GetExceptionMessage示例" />
+        /// </example>
         public static string GetExceptionMessage( Exception ex )
         {
             return StringResources.ExceptionMessage + ex.Message + Environment.NewLine +
@@ -382,6 +428,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="ex">异常对象</param>
         /// <returns>完整的字符串数据</returns>
         /// <exception cref="NullReferenceException"></exception>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="GetExceptionMessageExample2" title="GetExceptionMessage示例" />
+        /// </example>
         public static string GetExceptionMessage( string extraMsg, Exception ex )
         {
             if (string.IsNullOrEmpty( extraMsg ))
@@ -406,6 +455,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="InBytes">字节数组</param>
         /// <returns>返回的字符串</returns>
         /// <exception cref="NullReferenceException"></exception>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="ByteToHexStringExample1" title="ByteToHexString示例" />
+        /// </example>
         public static string ByteToHexString( byte[] InBytes )
         {
             return ByteToHexString( InBytes, (char)0 );
@@ -418,6 +470,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="segment">分割符</param>
         /// <returns>返回的字符串</returns>
         /// <exception cref="NullReferenceException"></exception>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="ByteToHexStringExample2" title="ByteToHexString示例" />
+        /// </example>
         public static string ByteToHexString( byte[] InBytes, char segment )
         {
             StringBuilder sb = new StringBuilder( );
@@ -459,6 +514,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="hex">十六进制的字符串，中间可以是任意的分隔符</param>
         /// <returns>转换后的字节数组</returns>
         /// <remarks>参数举例：AA 01 34 A8</remarks>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="HexStringToBytesExample" title="HexStringToBytes示例" />
+        /// </example>
         public static byte[] HexStringToBytes( string hex )
         {
             hex = hex.ToUpper( );
@@ -493,6 +551,9 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="array">bool数组</param>
         /// <returns>转换后的字节数组</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="BoolArrayToByte" title="BoolArrayToByte示例" />
+        /// </example>
         public static byte[] BoolArrayToByte( bool[] array )
         {
             if (array == null) return null;
@@ -531,6 +592,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="InBytes">原先的字节数组</param>
         /// <param name="length">想要转换的长度，如果超出自动会缩小到数组最大长度</param>
         /// <returns>转换后的bool数组</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="ByteToBoolArray" title="ByteToBoolArray示例" />
+        /// </example> 
         public static bool[] ByteToBoolArray( byte[] InBytes, int length )
         {
             if (InBytes == null) return null;
@@ -577,6 +641,9 @@ namespace HslCommunication.BasicFramework
         /// <param name="bytes1">数组一</param>
         /// <param name="bytes2">数组二</param>
         /// <returns>拼接后的数组</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="SpliceTwoByteArray" title="SpliceTwoByteArray示例" />
+        /// </example> 
         public static byte[] SpliceTwoByteArray( byte[] bytes1, byte[] bytes2 )
         {
             if (bytes1 == null && bytes2 == null) return null;
@@ -596,6 +663,9 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 设置或获取系统框架的版本号
         /// </summary>
+        /// <remarks>
+        /// 当你要显示本组件框架的版本号的时候，就可以用这个属性来显示
+        /// </remarks>
         public static SystemVersion FrameworkVersion { get; set; } = new SystemVersion( "5.1.3" );
 
 
@@ -610,6 +680,14 @@ namespace HslCommunication.BasicFramework
         /// <returns>新的一个实例化的对象</returns>
         /// <exception cref="NullReferenceException"></exception>
         /// <exception cref="NonSerializedAttribute"></exception>
+        /// <remarks>
+        /// <note type="warning">
+        /// <paramref name="oringinal"/> 参数必须实现序列化的特性
+        /// </note>
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="DeepClone" title="DeepClone示例" />
+        /// </example>
         public static object DeepClone( object oringinal )
         {
             using (System.IO.MemoryStream stream = new System.IO.MemoryStream( ))
@@ -633,6 +711,9 @@ namespace HslCommunication.BasicFramework
         /// 获取一串唯一的随机字符串，长度为20，由Guid码和4位数的随机数组成，保证字符串的唯一性
         /// </summary>
         /// <returns>随机字符串数据</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="GetUniqueStringByGuidAndRandom" title="GetUniqueStringByGuidAndRandom示例" />
+        /// </example>
         public static string GetUniqueStringByGuidAndRandom( )
         {
             Random random = new Random( );
