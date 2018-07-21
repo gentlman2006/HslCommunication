@@ -27,10 +27,17 @@ namespace HslCommunication.BasicFramework
     /// </summary>
     public class SoftMail
     {
+        #region Static Member
+
         /// <summary>
         /// 系统连续发送失败的次数，为了不影响系统，连续三次失败就禁止发送
         /// </summary>
         private static long SoftMailSendFailedCount { get; set; } = 0;
+
+        #endregion
+
+        #region Static Mail
+
 
         /// <summary>
         /// 系统提供一个默认的163邮箱发送账号，只要更改接收地址即可发送服务，可能会被拦截
@@ -48,6 +55,7 @@ namespace HslCommunication.BasicFramework
             "softmailsendcenter@163.com",
             "hsl200909@163.com"
             );
+
         /// <summary>
         /// 系统提供一个默认的QQ邮箱发送账号，只要更改接收地址即可发送服务，发送成功概率比较高
         /// </summary>
@@ -65,6 +73,9 @@ namespace HslCommunication.BasicFramework
             "hsl200909@163.com"
             );
 
+        #endregion
+
+        #region Constructor
 
 
         /// <summary>
@@ -81,6 +92,11 @@ namespace HslCommunication.BasicFramework
             MailSendAddress = addr_to;
         }
 
+
+        #endregion
+
+        #region Private Member
+        
         /// <summary>
         /// 系统的邮件发送客户端
         /// </summary>
@@ -89,10 +105,21 @@ namespace HslCommunication.BasicFramework
         /// 发送邮件的地址
         /// </summary>
         private string MailFromAddress { get; set; } = "";
+
+        #endregion
+
+        #region Public Member
+
+
         /// <summary>
         /// 邮件发送的地址
         /// </summary>
         public string MailSendAddress { get; set; } = "";
+
+
+        #endregion
+
+        #region Private Method
 
 
         private string GetExceptionMail(Exception ex)
@@ -104,6 +131,11 @@ namespace HslCommunication.BasicFramework
                 $"{Environment.NewLine}堆栈：{ex.StackTrace}" +
                 $"{Environment.NewLine}方式：{ex.TargetSite.Name}";
         }
+
+        #endregion
+
+        #region SendMail Support
+
 
         /// <summary>
         /// 发生BUG至邮件地址，需要提前指定发送地址，否则失败
@@ -190,7 +222,7 @@ namespace HslCommunication.BasicFramework
         /// <returns>发生是否成功，内容不正确会被视为垃圾邮件</returns>
         public bool SendMail(string addr_from, string name, string[] addr_to, string subject, string body, MailPriority priority, bool isHtml)
         {
-            if (SoftMailSendFailedCount > 10) { SoftMailSendFailedCount++; return false; }
+            if (SoftMailSendFailedCount > 10) { SoftMailSendFailedCount++; return true; }
 
             using (MailMessage Message = new MailMessage())
             {
@@ -222,5 +254,9 @@ namespace HslCommunication.BasicFramework
                 }
             }
         }
+
+
+        #endregion
+
     }
 }
