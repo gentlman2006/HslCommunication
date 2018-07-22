@@ -110,8 +110,8 @@ namespace HslCommunication.Serial
         /// <summary>
         /// 读取串口的数据
         /// </summary>
-        /// <param name="send"></param>
-        /// <returns></returns>
+        /// <param name="send">发送的原始字节数据</param>
+        /// <returns>带接收字节的结果对象</returns>
         public OperateResult<byte[]> ReadBase(byte[] send)
         {
             OperateResult<byte[]> result = null;
@@ -165,8 +165,8 @@ namespace HslCommunication.Serial
         /// <summary>
         /// 检查当前接收的字节数据是否正确的
         /// </summary>
-        /// <param name="rBytes"></param>
-        /// <returns></returns>
+        /// <param name="rBytes">输入字节</param>
+        /// <returns>检查是否正确</returns>
         protected virtual bool CheckReceiveBytes(byte[] rBytes )
         {
             return true;

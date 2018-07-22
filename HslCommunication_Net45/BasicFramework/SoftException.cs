@@ -20,7 +20,7 @@ namespace HslCommunication.BasicFramework
     /// <summary>
     /// 一个自定义的支持序列化反序列化的异常类，具体用法参照第四版《CLR Via C#》P414
     /// </summary>
-    /// <typeparam name="TExceptionArgs"></typeparam>
+    /// <typeparam name="TExceptionArgs">泛型异常</typeparam>
     [Serializable]
     public sealed class Exception<TExceptionArgs> : Exception, ISerializable where TExceptionArgs : ExceptionArgs
     {
@@ -31,25 +31,29 @@ namespace HslCommunication.BasicFramework
         private const string c_args = "Args";
 
         private readonly TExceptionArgs m_args;
+
         /// <summary>
         /// 消息
         /// </summary>
         public TExceptionArgs Args { get { return m_args; } }
+
+
         /// <summary>
         /// 实例化一个异常对象
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
+        /// <param name="message">消息</param>
+        /// <param name="innerException">内部异常类</param>
         public Exception(string message = null, Exception innerException = null) : this(null, message, innerException)
         {
 
         }
+
         /// <summary>
         /// 实例化一个异常对象
         /// </summary>
-        /// <param name="args"></param>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
+        /// <param name="args">异常消息</param>
+        /// <param name="message">消息</param>
+        /// <param name="innerException">内部异常类</param>
         public Exception(TExceptionArgs args, string message = null, Exception innerException = null) : base(message, innerException)
         {
             m_args = args;
@@ -74,17 +78,20 @@ namespace HslCommunication.BasicFramework
          * 
          ******************************************************************************************************/
 
+
         /// <summary>
         /// 获取存储对象的序列化数据
         /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
+        /// <param name="info">序列化的信息</param>
+        /// <param name="context">流的上下文</param>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue(c_args, m_args);
             base.GetObjectData(info, context);
         }
+
+
         /// <summary>
         /// 获取描述当前异常的消息
         /// </summary>
@@ -96,11 +103,13 @@ namespace HslCommunication.BasicFramework
                 return m_args == null ? baseMsg : baseMsg + " (" + m_args.Message + ")";
             }
         }
+
+
         /// <summary>
         /// 确定指定的object是否等于当前的object
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <param name="obj">异常对象</param>
+        /// <returns>是否一致</returns>
         public override bool Equals(object obj)
         {
             Exception<TExceptionArgs> other = obj as Exception<TExceptionArgs>;
@@ -108,10 +117,11 @@ namespace HslCommunication.BasicFramework
             return object.Equals(m_args, other.m_args) && base.Equals(obj);
         }
 
+
         /// <summary>
         /// 用作特定类型的哈希函数
         /// </summary>
-        /// <returns></returns>
+        /// <returns>int值</returns>
         public override int GetHashCode()
         {
             return base.GetHashCode();

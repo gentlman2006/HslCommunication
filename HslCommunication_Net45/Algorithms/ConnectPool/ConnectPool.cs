@@ -27,7 +27,7 @@ namespace HslCommunication.Algorithms.ConnectPool
         /// <summary>
         /// 实例化一个连接池对象，需要指定如果创建新实例的方法
         /// </summary>
-        /// <param name="createConnector"></param>
+        /// <param name="createConnector">创建连接对象的委托</param>
         public ConnectPool( Func<TConnector> createConnector )
         {
             this.CreateConnector = createConnector;
