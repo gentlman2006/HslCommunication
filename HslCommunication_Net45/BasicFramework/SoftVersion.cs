@@ -21,6 +21,10 @@ namespace HslCommunication.BasicFramework
     [Serializable]
     public sealed class SystemVersion
     {
+
+        #region Constructor
+
+
         /// <summary>
         /// 根据格式化字符串的版本号初始化
         /// </summary>
@@ -74,7 +78,22 @@ namespace HslCommunication.BasicFramework
             m_EditVersion = edit;
             m_InnerVersion = inner;
         }
-        private int m_MainVersion = 2;
+
+
+        #endregion
+
+        #region Private Member
+
+        private int m_MainVersion = 2;                // 主版本
+        private int m_SecondaryVersion = 0;           // 次版本
+        private int m_EditVersion = 0;                // 修订版
+        private int m_InnerVersion = 0;               // 内部版
+
+        #endregion
+
+        #region Public Properties
+
+
         /// <summary>
         /// 主版本
         /// </summary>
@@ -85,7 +104,8 @@ namespace HslCommunication.BasicFramework
                 return m_MainVersion;
             }
         }
-        private int m_SecondaryVersion = 0;
+
+
         /// <summary>
         /// 次版本
         /// </summary>
@@ -97,7 +117,6 @@ namespace HslCommunication.BasicFramework
             }
         }
 
-        private int m_EditVersion = 0;
         /// <summary>
         /// 修订版
         /// </summary>
@@ -108,7 +127,6 @@ namespace HslCommunication.BasicFramework
                 return m_EditVersion;
             }
         }
-        private int m_InnerVersion = 0;
         /// <summary>
         /// 内部版本号，或者是版本号表示为年月份+内部版本的表示方式
         /// </summary>
@@ -117,6 +135,12 @@ namespace HslCommunication.BasicFramework
             get { return m_InnerVersion; }
         }
 
+
+        #endregion
+
+        #region Object Override
+
+
         /// <summary>
         /// 根据格式化为支持返回的不同信息的版本号
         /// C返回1.0.0.0
@@ -124,7 +148,7 @@ namespace HslCommunication.BasicFramework
         /// S返回1.0
         /// </summary>
         /// <param name="format">格式化信息</param>
-        /// <returns></returns>
+        /// <returns>版本号信息</returns>
         public string ToString(string format)
         {
             if (format == "C")
@@ -148,24 +172,50 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 获取版本号的字符串形式，如果内部版本号为0，则显示时不携带
         /// </summary>
-        /// <returns></returns>
+        /// <returns>版本号信息</returns>
         public override string ToString()
         {
             if (InnerVersion == 0)
             {
-                return $"{MainVersion}.{SecondaryVersion}.{EditVersion}";
+                return ToString( "N" );
             }
             else
             {
-                return $"{MainVersion}.{SecondaryVersion}.{EditVersion}.{InnerVersion}";
+                return ToString( "C" );
             }
         }
+
+
+        /// <summary>
+        /// 判断两个实例是否相等
+        /// </summary>
+        /// <param name="obj">版本号</param>
+        /// <returns>是否一致</returns>
+        public override bool Equals( object obj )
+        {
+            return base.Equals( obj );
+        }
+
+
+        /// <summary>
+        /// 获取哈希值
+        /// </summary>
+        /// <returns>哈希值</returns>
+        public override int GetHashCode( )
+        {
+            return base.GetHashCode( );
+        }
+
+        #endregion
+
+        #region operator implementation
+
         /// <summary>
         /// 判断是否相等
         /// </summary>
         /// <param name="SV1">第一个版本</param>
         /// <param name="SV2">第二个版本</param>
-        /// <returns></returns>
+        /// <returns>是否相同</returns>
         public static bool operator == (SystemVersion SV1, SystemVersion SV2)
         {
             if (SV1.MainVersion != SV2.MainVersion)
@@ -195,7 +245,7 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="SV1">第一个版本号</param>
         /// <param name="SV2">第二个版本号</param>
-        /// <returns></returns>
+        /// <returns>是否相同</returns>
         public static bool operator != (SystemVersion SV1, SystemVersion SV2)
         {
             if (SV1.MainVersion != SV2.MainVersion)
@@ -225,7 +275,7 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="SV1">第一个版本</param>
         /// <param name="SV2">第二个版本</param>
-        /// <returns></returns>
+        /// <returns>是否相同</returns>
         public static bool operator > (SystemVersion SV1, SystemVersion SV2)
         {
             if (SV1.MainVersion > SV2.MainVersion)
@@ -270,12 +320,13 @@ namespace HslCommunication.BasicFramework
 
             return false;
         }
+
         /// <summary>
         /// 判断第一个版本是否小于第二个版本
         /// </summary>
-        /// <param name="SV1"></param>
-        /// <param name="SV2"></param>
-        /// <returns></returns>
+        /// <param name="SV1">第一个版本号</param>
+        /// <param name="SV2">第二个版本号</param>
+        /// <returns>是否小于</returns>
         public static bool operator < (SystemVersion SV1, SystemVersion SV2)
         {
             if (SV1.MainVersion < SV2.MainVersion)
@@ -320,23 +371,9 @@ namespace HslCommunication.BasicFramework
 
             return false;
         }
-        /// <summary>
-        /// 判断两个实例是否相等
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-        /// <summary>
-        /// 获取哈希值
-        /// </summary>
-        /// <returns></returns>
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+
+        #endregion
+
     }
 
     /// <summary>
@@ -348,18 +385,21 @@ namespace HslCommunication.BasicFramework
         /// 版本的发行日期
         /// </summary>
         public DateTime ReleaseDate { get; set; } = DateTime.Now;
+
         /// <summary>
         /// 版本的更新细节
         /// </summary>
         public StringBuilder UpdateDetails { get; set; } = new StringBuilder();
+
         /// <summary>
         /// 版本号
         /// </summary>
         public SystemVersion VersionNum { get; set; } = new SystemVersion(1, 0, 0);
+
         /// <summary>
         /// 获取版本号
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串信息</returns>
         public override string ToString()
         {
             return VersionNum.ToString();
