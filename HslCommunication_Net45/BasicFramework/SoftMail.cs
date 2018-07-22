@@ -23,8 +23,15 @@ namespace HslCommunication.BasicFramework
 
 
     /// <summary>
-    /// 软件的邮箱类，用于发送邮箱数据，连续发送10次失败则禁止发送
+    /// 软件的邮箱类，用于发送邮箱数据
     /// </summary>
+    /// <remarks>
+    /// 如果您想实现自己的邮件发送中心，就可以去对应的邮件服务器注册，如果是想快速实现邮件的发送，本系统提供了2个静态的已经注册好了的邮箱发送器。
+    /// </remarks>
+    /// <example>
+    /// 以下的代码演示了通过静态的发送对象来发送邮件，包含了发送普通的邮件，和发送html邮件。
+    /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormMail.cs" region="SoftMail" title="SoftMail示例" />
+    /// </example>
     public class SoftMail
     {
         #region Static Member
@@ -67,7 +74,7 @@ namespace HslCommunication.BasicFramework
                 mail.Port = 587;
                 mail.EnableSsl = true;
                 mail.DeliveryMethod = SmtpDeliveryMethod.Network;
-                mail.Credentials = new System.Net.NetworkCredential("974856779", "tvnlczxdumutbbic");//密码ahvzdscexdstbdgh,tvnlczxdumutbbic
+                mail.Credentials = new System.Net.NetworkCredential("974856779", "tvnlczxdumutbbic");//密码tvnlczxdumutbbic
             },
             "974856779@qq.com",
             "hsl200909@163.com"
@@ -84,6 +91,12 @@ namespace HslCommunication.BasicFramework
         /// <param name="mailIni">初始化的方法</param>
         /// <param name="addr_From">发送地址，应该和账户匹配</param>
         /// <param name="addr_to">邮件接收地址</param>
+        /// <remarks>
+        /// 初始化的方法比较复杂，需要参照示例代码。
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45\BasicFramework\SoftMail.cs" region="Static Mail" title="SoftMail示例" />
+        /// </example>
         public SoftMail(Action<SmtpClient> mailIni, string addr_From = "", string addr_to = "")
         {
             smtpClient = new SmtpClient();

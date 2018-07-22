@@ -10,6 +10,8 @@ using HslCommunication.BasicFramework;
 
 namespace HslCommunicationDemo
 {
+    #region SoftMail
+
     public partial class FormMail : Form
     {
         public FormMail( )
@@ -24,8 +26,10 @@ namespace HslCommunicationDemo
 
         private void button3_Click( object sender, EventArgs e )
         {
+            // 发送普通的文本
             try
             {
+                // SoftMail.MailSystem163.SendMail( "[你的邮件地址]", "[这是主题]", "[这是内容]" );
                 SoftMail.MailSystem163.SendMail( textBox5.Text, textBox1.Text, textBox4.Text );
                 MessageBox.Show( "发送成功！" );
             }
@@ -37,8 +41,10 @@ namespace HslCommunicationDemo
 
         private void button1_Click( object sender, EventArgs e )
         {
+            // 发送html文本
             try
             {
+                // SoftMail.MailSystem163.SendMail( "[你的邮件地址]", "[这是主题]", "[上面的html内容]",true );
                 SoftMail.MailSystem163.SendMail( textBox6.Text, textBox2.Text, textBox3.Text, true );
                 MessageBox.Show( "发送成功！" );
             }
@@ -48,4 +54,7 @@ namespace HslCommunicationDemo
             }
         }
     }
+
+
+    #endregion
 }
