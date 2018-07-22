@@ -31,6 +31,8 @@ namespace HslCommunication.BasicFramework
         {
             return MD5Encrypt(pToEncrypt, "zxcvBNMM");
         }
+
+
         /// <summary>
         /// 加密数据，采用对称加密的方式
         /// </summary>
