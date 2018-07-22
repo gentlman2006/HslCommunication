@@ -191,7 +191,7 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="conStr">数据库的连接字符串</param>
         /// <param name="cmdStr">sql语句，选择数据表的语句</param>
-        /// <returns></returns>
+        /// <returns>返回的int数据</returns>
         public static int ExecuteSelectCount(string conStr, string cmdStr)
         {
             using (SqlConnection conn = new SqlConnection(conStr))
@@ -207,7 +207,7 @@ namespace HslCommunication.BasicFramework
         /// </summary>
         /// <param name="conn">数据库的连接对象</param>
         /// <param name="cmdStr">sql语句，选择数据表的语句</param>
-        /// <returns></returns>
+        /// <returns>返回的int数据</returns>
         public static int ExecuteSelectCount(SqlConnection conn, string cmdStr)
         {
             using (SqlCommand cmd = new SqlCommand(cmdStr, conn))
@@ -233,7 +233,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 根据sdr对象初始化数据的方法
         /// </summary>
-        /// <param name="sdr"></param>
+        /// <param name="sdr">数据库reader对象</param>
         void LoadBySqlDataReader(SqlDataReader sdr);
 
     }

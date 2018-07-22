@@ -32,7 +32,7 @@ namespace HslCommunication.BasicFramework
         private static int TimeFragment { get; set; } = 20;
 
         /// <summary>
-        /// 调整控件背景色
+        /// 调整控件背景色，采用了线性的颜色插补方式，实现了控件的背景色渐变，需要指定控件，颜色，以及渐变的时间
         /// </summary>
         /// <param name="control">控件</param>
         /// <param name="color">设置的颜色</param>

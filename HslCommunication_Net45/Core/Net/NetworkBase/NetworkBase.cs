@@ -118,7 +118,7 @@ namespace HslCommunication.Core.Net
                 }
             }
         }
-        
+
 
 
         #endregion
@@ -144,6 +144,8 @@ namespace HslCommunication.Core.Net
         protected OperateResult<byte[]> Receive( Socket socket, int length )
         {
             if (length == 0) return OperateResult.CreateSuccessResult( new byte[0] );
+
+//#if NET35
 
             var result = new OperateResult<byte[]>( );
             var receiveDone = new ManualResetEvent( false );
@@ -202,7 +204,22 @@ namespace HslCommunication.Core.Net
             state.Clear( );
             state = null;
             return result;
+
+//#else
+            //SocketAsyncEventArgs eventArgs = new SocketAsyncEventArgs( );
+            //byte[] buffer = new byte[length];
+            //eventArgs.SetBuffer( buffer, 0, length );
+            //int receiveCount = 0;
+            //while (true)
+            //{
+            //    socket.ReceiveAsync( eventArgs );
+            //    receiveCount += eventArgs.BytesTransferred;
+            //    if (receiveCount == length) break;
+            //}
+            //return OperateResult.CreateSuccessResult( buffer );
+//#endif
         }
+
 
         private void ReceiveCallback( IAsyncResult ar )
         {

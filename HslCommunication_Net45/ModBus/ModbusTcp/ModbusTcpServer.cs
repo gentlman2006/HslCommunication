@@ -15,8 +15,14 @@ using System.IO.Ports;
 namespace HslCommunication.ModBus
 {
     /// <summary>
-    /// Modbus的虚拟服务器，同时支持Tcp和Rtu的机制，支持线圈和寄存器的读写操作
+    /// Modbus的虚拟服务器，同时支持Tcp和Rtu的机制，支持线圈，离散输入，寄存器和输入寄存器的读写操作，可以用来当做系统的数据交换池
     /// </summary>
+    /// <remarks>
+    /// 可以基于本类实现一个功能复杂的modbus服务器，在传统的.NET版本里，还支持modbus-rtu指令的收发，.NET Standard版本服务器不支持rtu操作。服务器支持的数据池如下：
+    /// <list type="number">
+    /// <item>线圈，gon</item>
+    /// </list>
+    /// </remarks>
     public class ModbusTcpServer : NetworkServerBase
     {
         #region Constructor
@@ -351,7 +357,6 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="data">是否通断</param>
-        /// <returns><c>True</c>或是<c>False</c></returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
         public void WriteDiscrete( string address, bool data )
         {
@@ -366,7 +371,6 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="data">是否通断</param>
-        /// <returns><c>True</c>或是<c>False</c></returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
         public void WriteDiscrete( string address, bool[] data )
         {
@@ -517,7 +521,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>uint值</returns>
         public uint ReadUInt32( string address )
         {
             return byteTransform.TransUInt32( ReadRegister( address, 2 ), 0 );
@@ -530,7 +534,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>uint数组</returns>
         public uint[] ReadUInt32( string address, ushort length )
         {
             uint[] result = new uint[length];
@@ -547,7 +551,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>float值</returns>
         public float ReadFloat( string address )
         {
             return byteTransform.TransSingle( ReadRegister( address, 2 ), 0 );
@@ -559,7 +563,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>float数组</returns>
         public float[] ReadFloat( string address, ushort length )
         {
             float[] result = new float[length];
@@ -577,7 +581,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>long值</returns>
         public long ReadInt64( string address )
         {
             return byteTransform.TransInt64( ReadRegister( address, 4 ), 0 );
@@ -590,7 +594,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>long数组</returns>
         public long[] ReadInt64( string address, ushort length )
         {
             long[] result = new long[length];
@@ -607,7 +611,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>ulong值</returns>
         public ulong ReadUInt64( string address )
         {
             return byteTransform.TransUInt64( ReadRegister( address, 4 ), 0 );
@@ -620,7 +624,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>ulong数组</returns>
         public ulong[] ReadUInt64( string address, ushort length )
         {
             ulong[] result = new ulong[length];
@@ -637,7 +641,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>double值</returns>
         public double ReadDouble( string address )
         {
             return byteTransform.TransDouble( ReadRegister( address, 4 ), 0 );
@@ -649,7 +653,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>double数组</returns>
         public double[] ReadDouble( string address, ushort length )
         {
             double[] result = new double[length];
@@ -667,7 +671,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">起始地址</param>
         /// <param name="length">寄存器长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
-        /// <returns></returns>
+        /// <returns>字符串信息</returns>
         public string ReadString( string address, ushort length )
         {
             string str = string.Empty;
