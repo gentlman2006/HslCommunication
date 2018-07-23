@@ -14,6 +14,9 @@ using HslCommunication;
 
 namespace PushNetServer
 {
+    #region NetPushServer
+
+
     public partial class FormServer : Form
     {
         public FormServer()
@@ -61,7 +64,9 @@ namespace PushNetServer
         }
 
 
+        
         // ==============================================================================================
+        // 实时显示当前订阅的客户端数量
 
 
         private Timer timerOneSecond;
@@ -73,6 +78,7 @@ namespace PushNetServer
         }
 
         // ===========================================================================================
+        // 推送随机数
 
         private Timer timer随机数;
         private void button3_Click( object sender, EventArgs e )
@@ -108,6 +114,7 @@ namespace PushNetServer
 
 
         // ========================================================================================================
+        // 推送时间消息
 
         private Timer timer时间;
 
@@ -134,6 +141,7 @@ namespace PushNetServer
         }
 
         // ========================================================================================================
+        // 推送json消息
 
         private Timer timerJson;
 
@@ -165,6 +173,7 @@ namespace PushNetServer
         }
 
         // ==============================================================================================
+        // 推送xml消息
 
         private Timer timerXml;
 
@@ -194,6 +203,12 @@ namespace PushNetServer
 
             pushServer.PushString( textBox18.Text, element.ToString( ) );
         }
+
+
+
+
+
+
 
         private void button7_Click( object sender, EventArgs e )
         {
@@ -228,4 +243,7 @@ namespace PushNetServer
             }
         }
     }
+
+
+    #endregion
 }

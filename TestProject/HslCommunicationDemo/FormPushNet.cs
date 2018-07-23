@@ -11,6 +11,8 @@ using HslCommunication;
 
 namespace HslCommunicationDemo
 {
+    #region FormPushNet
+
     public partial class FormPushNet : Form
     {
         public FormPushNet()
@@ -93,4 +95,8 @@ namespace HslCommunicationDemo
             }
         }
     }
+
+
+    #endregion
+
 }

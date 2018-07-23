@@ -24,6 +24,13 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 发布订阅服务器的类，支持按照关键字进行数据信息的订阅
     /// </summary>
+    /// <remarks>
+    /// 详细的使用说明，请参照博客<a href="http://www.cnblogs.com/dathlin/p/8992315.html">http://www.cnblogs.com/dathlin/p/8992315.html</a>
+    /// </remarks>
+    /// <example>
+    /// 此处贴上了Demo项目的服务器配置的示例代码
+    /// <code lang="cs" source="TestProject\PushNetServer\FormServer.cs" region="NetPushServer" title="NetPushServer示例" />
+    /// </example>
     public class NetPushServer : NetworkServerBase
     {
         #region Constructor
@@ -49,7 +56,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 处理请求接收连接后的方法
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">Accpt对象</param>
         protected override void ThreadPoolLogin( object obj )
         {
             if (obj is Socket socket)
@@ -118,8 +125,8 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 主动推送数据内容
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="content"></param>
+        /// <param name="key">关键字</param>
+        /// <param name="content">数据内容</param>
         public void PushString( string key, string content )
         {
             AddPushKey( key );

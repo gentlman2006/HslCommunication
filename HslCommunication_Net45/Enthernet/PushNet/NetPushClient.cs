@@ -12,6 +12,13 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 发布订阅类的客户端，使用指定的关键订阅相关的数据推送信息
     /// </summary>
+    /// <remarks>
+    /// 详细的使用说明，请参照博客<a href="http://www.cnblogs.com/dathlin/p/8992315.html">http://www.cnblogs.com/dathlin/p/8992315.html</a>
+    /// </remarks>
+    /// <example>
+    /// 此处贴上了Demo项目的服务器配置的示例代码
+    /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormPushNet.cs" region="FormPushNet" title="NetPushClient示例" />
+    /// </example>
     public class NetPushClient : NetworkXBase
     {
         #region Constructor
@@ -100,7 +107,7 @@ namespace HslCommunication.Enthernet
         /// 创建数据推送服务
         /// </summary>
         /// <param name="pushCallBack">触发数据推送的委托</param>
-        /// <returns></returns>
+        /// <returns>是否创建成功</returns>
         public OperateResult CreatePush( Action<NetPushClient, string> pushCallBack )
         {
             action = pushCallBack;
