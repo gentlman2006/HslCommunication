@@ -13,6 +13,13 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 异步访问数据的客户端类，用于向服务器请求一些确定的数据信息
     /// </summary>
+    /// <remarks>
+    /// 详细的使用说明，请参照博客<a href="http://www.cnblogs.com/dathlin/p/7697782.html">http://www.cnblogs.com/dathlin/p/7697782.html</a>
+    /// </remarks>
+    /// <example>
+    /// 此处贴上了Demo项目的服务器配置的示例代码
+    /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormSimplifyNet.cs" region="FormSimplifyNet" title="FormSimplifyNet示例" />
+    /// </example>
     public class NetSimplifyClient : NetworkDoubleBase<HslMessage, RegularByteTransform>
     {
         #region Constructor
@@ -20,6 +27,8 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 实例化一个客户端的对象，用于和服务器通信
         /// </summary>
+        /// <param name="ipAddress">服务器的ip地址</param>
+        /// <param name="port">服务器的端口号</param>
         public NetSimplifyClient( string ipAddress, int port )
         {
             IpAddress = ipAddress;
@@ -42,7 +51,7 @@ namespace HslCommunication.Enthernet
         /// </summary>
         /// <param name="customer">用户的指令头</param>
         /// <param name="send">发送数据</param>
-        /// <returns></returns>
+        /// <returns>带返回消息的结果对象</returns>
         public OperateResult<string> ReadFromServer(NetHandle customer,string send = null)
         {
             var result = new OperateResult<string>( );
@@ -65,7 +74,7 @@ namespace HslCommunication.Enthernet
         /// </summary>
         /// <param name="customer">用户的指令头</param>
         /// <param name="send">发送的字节内容</param>
-        /// <returns></returns>
+        /// <returns>带返回消息的结果对象</returns>
         public OperateResult<byte[]> ReadFromServer(NetHandle customer,byte[] send)
         {
             return ReadFromServerBase( HslProtocol.ProtocolUserBytes, customer, send);
@@ -77,7 +86,7 @@ namespace HslCommunication.Enthernet
         /// <param name="headcode">数据的指令头</param>
         /// <param name="customer">用户的指令头</param>
         /// <param name="send">需要发送的底层数据</param>
-        /// <returns></returns>
+        /// <returns>带返回消息的结果对象</returns>
         private OperateResult<byte[]> ReadFromServerBase(int headcode,int customer,byte[] send)
         {
             var read = ReadFromCoreServer( HslProtocol.CommandBytes( headcode, customer, Token, send ) );
@@ -105,7 +114,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 获取本对象的字符串表示形式
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串信息</returns>
         public override string ToString()
         {
             return "NetSimplifyClient";

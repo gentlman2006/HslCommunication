@@ -9,7 +9,8 @@ namespace HslCommunication
     /// <summary>
     /// 一个包含网络通讯库，PLC访问库，日志库，多线程处理，Modbus服务区客户端，数据转换，版本类，基础控件等工具库
     /// <br /><br />
-    /// 本组件免费开源，使用之前请认真的阅读本API文档，对于本文档中警告部分的内容务必理解，部署生产之前请详细测试，对于操作设备造成的任何损失，作者概不负责。
+    /// 本组件免费开源，使用之前请认真的阅读本API文档，对于本文档中警告部分的内容务必理解，部署生产之前请详细测试，如果在测试的过程中，
+    /// 发现了BUG，或是有问题的地方，欢迎联系作者进行修改，或是直接在github上进行提问。统一声明：对于操作设备造成的任何损失，作者概不负责。
     /// <br /><br />
     /// <note type="important">
     /// 本组件的目标是集成一个框架，统一所有的设备读写方法，抽象成统一的接口<see cref="IReadWriteNet"/>，对于上层操作只需要关注地址，读取类型即可，另一个目标是使用本框架轻松实现C#后台+C#客户端+web浏览器+android手机的全方位功能实现。
@@ -18,7 +19,11 @@ namespace HslCommunication
     /// 本库提供了C#版本和java版本，java版本的使用和C#几乎是一模一样的。
     /// </summary>
     /// <remarks>
-    /// 本软件著作权归Richard.Hu所有，开源项目地址：https://github.com/dathlin/HslCommunication  开源协议：LGPL-3.0
+    /// 本软件著作权归Richard.Hu所有，开源项目地址：<a href="https://github.com/dathlin/HslCommunication">https://github.com/dathlin/HslCommunication</a>  开源协议：LGPL-3.0
+    /// 博客地址：<a href="https://www.cnblogs.com/dathlin/p/7703805.html">https://www.cnblogs.com/dathlin/p/7703805.html</a>
+    /// <br /><br />
+    /// 打赏请扫码：<br />
+    /// <img src="https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/support.png" />
     /// </remarks>
     /// <revisionHistory>
     ///     <revision date="2017-10-21" version="3.7.10" author="Richard.Hu">

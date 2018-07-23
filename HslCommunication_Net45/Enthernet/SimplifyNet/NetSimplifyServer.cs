@@ -9,8 +9,15 @@ namespace HslCommunication.Enthernet
 {
 
     /// <summary>
-    /// 同步消息处理服务器，主要用来实现接收客户端信息并进行消息反馈的操作
+    /// 同步消息处理服务器，主要用来实现接收客户端信息并进行消息反馈的操作，适用于客户端进行远程的调用，要求服务器反馈数据。
     /// </summary>
+    /// <remarks>
+    /// 详细的使用说明，请参照博客<a href="http://www.cnblogs.com/dathlin/p/7697782.html">http://www.cnblogs.com/dathlin/p/7697782.html</a>
+    /// </remarks>
+    /// <example>
+    /// 此处贴上了Demo项目的服务器配置的示例代码
+    /// <code lang="cs" source="TestProject\SimplifyNetTest\FormServer.cs" region="Simplify Net" title="NetSimplifyServer示例" />
+    /// </example>
     public class NetSimplifyServer : NetworkServerBase
     {
         #region Constructor

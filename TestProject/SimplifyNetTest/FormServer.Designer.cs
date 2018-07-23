@@ -34,12 +34,12 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.textBox3 = new System.Windows.Forms.TextBox();
-            this.userButton1 = new HslCommunication.Controls.UserButton();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.userButton2 = new HslCommunication.Controls.UserButton();
+            this.userButton1 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
@@ -97,20 +97,6 @@
             this.textBox3.Size = new System.Drawing.Size(415, 23);
             this.textBox3.TabIndex = 5;
             // 
-            // userButton1
-            // 
-            this.userButton1.BackColor = System.Drawing.Color.Transparent;
-            this.userButton1.CustomerInformation = "";
-            this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton1.Location = new System.Drawing.Point(258, 13);
-            this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton1.Name = "userButton1";
-            this.userButton1.Size = new System.Drawing.Size(118, 39);
-            this.userButton1.TabIndex = 0;
-            this.userButton1.UIText = "启动服务";
-            this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -155,13 +141,27 @@
             this.userButton2.CustomerInformation = "";
             this.userButton2.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton2.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton2.Location = new System.Drawing.Point(555, 67);
+            this.userButton2.Location = new System.Drawing.Point(703, 67);
             this.userButton2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton2.Name = "userButton2";
             this.userButton2.Size = new System.Drawing.Size(118, 39);
             this.userButton2.TabIndex = 18;
             this.userButton2.UIText = "连接异形对象";
             this.userButton2.Click += new System.EventHandler(this.userButton2_Click);
+            // 
+            // userButton1
+            // 
+            this.userButton1.BackColor = System.Drawing.Color.Transparent;
+            this.userButton1.CustomerInformation = "";
+            this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton1.Location = new System.Drawing.Point(258, 13);
+            this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton1.Name = "userButton1";
+            this.userButton1.Size = new System.Drawing.Size(118, 39);
+            this.userButton1.TabIndex = 0;
+            this.userButton1.UIText = "启动服务";
+            this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
             // FormServer
             // 

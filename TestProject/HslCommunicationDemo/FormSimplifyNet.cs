@@ -11,6 +11,9 @@ using HslCommunication;
 
 namespace HslCommunicationDemo
 {
+    #region FormSimplifyNet
+
+
     public partial class FormSimplifyNet : Form
     {
         public FormSimplifyNet( )
@@ -136,4 +139,7 @@ namespace HslCommunicationDemo
             }
         }
     }
+
+
+    #endregion
 }

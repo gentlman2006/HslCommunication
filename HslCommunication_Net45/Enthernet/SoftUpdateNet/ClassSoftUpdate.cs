@@ -49,7 +49,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 系统的登录方法
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">接收的socket对象</param>
         protected override void ThreadPoolLogin(object obj)
         {
             Socket socket = obj as Socket;
@@ -176,7 +176,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 获取本对象的字符串表示形式
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串信息</returns>
         public override string ToString( )
         {
             return "NetSoftUpdateServer";

@@ -27,20 +27,22 @@ namespace SimplifyNetTest
         #region Simplify Net
 
         private NetSimplifyServer simplifyServer;
+        private Timer timerSecond;
 
         private void Start()
         {
             try
             {
-                simplifyServer = new NetSimplifyServer( );
-                simplifyServer.Token = new Guid( textBox3.Text );
-                simplifyServer.ReceiveStringEvent += SimplifyServer_ReceiveStringEvent;
+                simplifyServer = new NetSimplifyServer( );                                          // 实例化
+                simplifyServer.Token = new Guid( textBox3.Text );                                   // 设置令牌
+                simplifyServer.ReceiveStringEvent += SimplifyServer_ReceiveStringEvent;             // 接收字符串的时候触发
                 simplifyServer.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + @"\Logs\log.txt" );
-                simplifyServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
-                simplifyServer.ServerStart( int.Parse( textBox1.Text ) );
+                simplifyServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;                  // 日志保存前先显示出来
+                simplifyServer.ServerStart( int.Parse( textBox1.Text ) );                           // 启动服务
                 userButton1.Enabled = false;
 
-                timerSecond = new Timer( );
+
+                timerSecond = new Timer( );                            // 这个定时器的功能是每秒更新在线的客户端数量
                 timerSecond.Interval = 1000;
                 timerSecond.Tick += TimerSecond_Tick;
                 timerSecond.Start( );
@@ -67,7 +69,7 @@ namespace SimplifyNetTest
             textBox2.AppendText( e.HslMessage.ToString( ) + Environment.NewLine );
         }
 
-        private void SimplifyServer_ReceiveStringEvent( AppSession session, HslCommunication.NetHandle handle, string value )
+        private void SimplifyServer_ReceiveStringEvent( AppSession session, NetHandle handle, string value )
         {
             if (handle == 1)
             {
@@ -91,15 +93,16 @@ namespace SimplifyNetTest
 
         }
 
+        private void userButton1_Click( object sender, EventArgs e )
+        {
+            // 点击了启动服务的按钮
+            Start( );
+        }
+
 
         #endregion
 
-        private Timer timerSecond;
 
-        private void userButton1_Click( object sender, EventArgs e )
-        {
-            Start( );
-        }
 
         private void userButton2_Click( object sender, EventArgs e )
         {
