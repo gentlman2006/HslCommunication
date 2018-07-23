@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using HslCommunication.Enthernet;
 using HslCommunication.Core.Net;
+using HslCommunication;
 
 namespace SimplifyNetTest
 {
@@ -98,6 +99,26 @@ namespace SimplifyNetTest
         private void userButton1_Click( object sender, EventArgs e )
         {
             Start( );
+        }
+
+        private void userButton2_Click( object sender, EventArgs e )
+        {
+            // 连接异形客户端
+            using (FormInputAlien form = new FormInputAlien( ))
+            {
+                if (form.ShowDialog( ) == DialogResult.OK)
+                {
+                    OperateResult connect = simplifyServer.ConnectHslAlientClient( form.IpAddress, form.Port, form.DTU );
+                    if (connect.IsSuccess)
+                    {
+                        MessageBox.Show( "连接成功！" );
+                    }
+                    else
+                    {
+                        MessageBox.Show( "连接失败！原因：" + connect.Message );
+                    }
+                }
+            }
         }
     }
 }

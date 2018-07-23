@@ -66,11 +66,12 @@
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.button23 = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.button28 = new System.Windows.Forms.Button();
             this.button27 = new System.Windows.Forms.Button();
             this.button26 = new System.Windows.Forms.Button();
             this.button25 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
-            this.button28 = new System.Windows.Forms.Button();
+            this.button29 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -88,7 +89,7 @@
             this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Location = new System.Drawing.Point(220, 74);
+            this.groupBox1.Location = new System.Drawing.Point(203, 74);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -157,7 +158,7 @@
             this.groupBox2.Controls.Add(this.button21);
             this.groupBox2.Controls.Add(this.button19);
             this.groupBox2.Controls.Add(this.button6);
-            this.groupBox2.Location = new System.Drawing.Point(425, 74);
+            this.groupBox2.Location = new System.Drawing.Point(395, 74);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -204,7 +205,7 @@
             this.groupBox3.Controls.Add(this.button13);
             this.groupBox3.Controls.Add(this.button7);
             this.groupBox3.Controls.Add(this.button4);
-            this.groupBox3.Location = new System.Drawing.Point(17, 74);
+            this.groupBox3.Location = new System.Drawing.Point(9, 74);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -280,24 +281,25 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.button29);
             this.groupBox4.Controls.Add(this.button22);
             this.groupBox4.Controls.Add(this.button15);
             this.groupBox4.Controls.Add(this.button14);
             this.groupBox4.Controls.Add(this.button12);
             this.groupBox4.Controls.Add(this.button9);
             this.groupBox4.Controls.Add(this.button8);
-            this.groupBox4.Location = new System.Drawing.Point(17, 307);
+            this.groupBox4.Location = new System.Drawing.Point(9, 308);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox4.Size = new System.Drawing.Size(183, 266);
+            this.groupBox4.Size = new System.Drawing.Size(183, 325);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Hsl Support";
             // 
             // button22
             // 
-            this.button22.Location = new System.Drawing.Point(15, 224);
+            this.button22.Location = new System.Drawing.Point(15, 264);
             this.button22.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button22.Name = "button22";
             this.button22.Size = new System.Drawing.Size(150, 32);
@@ -308,7 +310,7 @@
             // 
             // button15
             // 
-            this.button15.Location = new System.Drawing.Point(15, 184);
+            this.button15.Location = new System.Drawing.Point(15, 224);
             this.button15.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button15.Name = "button15";
             this.button15.Size = new System.Drawing.Size(150, 32);
@@ -319,7 +321,7 @@
             // 
             // button14
             // 
-            this.button14.Location = new System.Drawing.Point(15, 64);
+            this.button14.Location = new System.Drawing.Point(15, 104);
             this.button14.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(150, 32);
@@ -330,7 +332,7 @@
             // 
             // button12
             // 
-            this.button12.Location = new System.Drawing.Point(15, 144);
+            this.button12.Location = new System.Drawing.Point(15, 184);
             this.button12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(150, 32);
@@ -341,7 +343,7 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(15, 104);
+            this.button9.Location = new System.Drawing.Point(15, 144);
             this.button9.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(150, 32);
@@ -394,7 +396,7 @@
             // groupBox5
             // 
             this.groupBox5.Controls.Add(this.button11);
-            this.groupBox5.Location = new System.Drawing.Point(631, 74);
+            this.groupBox5.Location = new System.Drawing.Point(586, 74);
             this.groupBox5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -420,11 +422,11 @@
             this.groupBox6.Controls.Add(this.button18);
             this.groupBox6.Controls.Add(this.button17);
             this.groupBox6.Controls.Add(this.button16);
-            this.groupBox6.Location = new System.Drawing.Point(220, 308);
+            this.groupBox6.Location = new System.Drawing.Point(204, 308);
             this.groupBox6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox6.Size = new System.Drawing.Size(185, 265);
+            this.groupBox6.Size = new System.Drawing.Size(185, 324);
             this.groupBox6.TabIndex = 12;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Controls";
@@ -487,11 +489,11 @@
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.button23);
-            this.groupBox7.Location = new System.Drawing.Point(425, 308);
+            this.groupBox7.Location = new System.Drawing.Point(395, 308);
             this.groupBox7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox7.Size = new System.Drawing.Size(185, 265);
+            this.groupBox7.Size = new System.Drawing.Size(185, 324);
             this.groupBox7.TabIndex = 14;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Robot";
@@ -514,14 +516,25 @@
             this.groupBox8.Controls.Add(this.button26);
             this.groupBox8.Controls.Add(this.button25);
             this.groupBox8.Controls.Add(this.button24);
-            this.groupBox8.Location = new System.Drawing.Point(631, 308);
+            this.groupBox8.Location = new System.Drawing.Point(586, 308);
             this.groupBox8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox8.Size = new System.Drawing.Size(185, 265);
+            this.groupBox8.Size = new System.Drawing.Size(185, 324);
             this.groupBox8.TabIndex = 15;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Others";
+            // 
+            // button28
+            // 
+            this.button28.Location = new System.Drawing.Point(19, 183);
+            this.button28.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button28.Name = "button28";
+            this.button28.Size = new System.Drawing.Size(150, 32);
+            this.button28.TabIndex = 4;
+            this.button28.Text = "邮件发送功能";
+            this.button28.UseVisualStyleBackColor = true;
+            this.button28.Click += new System.EventHandler(this.button28_Click);
             // 
             // button27
             // 
@@ -567,23 +580,23 @@
             this.button24.UseVisualStyleBackColor = true;
             this.button24.Click += new System.EventHandler(this.button24_Click);
             // 
-            // button28
+            // button29
             // 
-            this.button28.Location = new System.Drawing.Point(19, 183);
-            this.button28.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button28.Name = "button28";
-            this.button28.Size = new System.Drawing.Size(150, 32);
-            this.button28.TabIndex = 4;
-            this.button28.Text = "邮件发送功能";
-            this.button28.UseVisualStyleBackColor = true;
-            this.button28.Click += new System.EventHandler(this.button28_Click);
+            this.button29.Location = new System.Drawing.Point(15, 64);
+            this.button29.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button29.Name = "button29";
+            this.button29.Size = new System.Drawing.Size(150, 32);
+            this.button29.TabIndex = 6;
+            this.button29.Text = "异形 Simplify Net";
+            this.button29.UseVisualStyleBackColor = true;
+            this.button29.Click += new System.EventHandler(this.button29_Click);
             // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(835, 586);
+            this.ClientSize = new System.Drawing.Size(1004, 645);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.label3);
@@ -663,6 +676,7 @@
         private System.Windows.Forms.Button button27;
         private System.Windows.Forms.Button button26;
         private System.Windows.Forms.Button button28;
+        private System.Windows.Forms.Button button29;
     }
 }
 

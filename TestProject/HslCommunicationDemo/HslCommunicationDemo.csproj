@@ -124,6 +124,12 @@
     <Compile Include="FormSerialDebug.Designer.cs">
       <DependentUpon>FormSerialDebug.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormSimplifyNet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSimplifyNet.Designer.cs">
+      <DependentUpon>FormSimplifyNet.cs</DependentUpon>
+    </Compile>
     <Compile Include="PLC\FormMelsec1EBinary.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -172,11 +178,11 @@
     <Compile Include="FormUdpNet.Designer.cs">
       <DependentUpon>FormUdpNet.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSimplifyNet.cs">
+    <Compile Include="FormSimplifyNetAlien.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSimplifyNet.Designer.cs">
-      <DependentUpon>FormSimplifyNet.cs</DependentUpon>
+    <Compile Include="FormSimplifyNetAlien.Designer.cs">
+      <DependentUpon>FormSimplifyNetAlien.cs</DependentUpon>
     </Compile>
     <Compile Include="FormLoad.cs">
       <SubType>Form</SubType>
@@ -255,6 +261,9 @@
     <EmbeddedResource Include="FormSerialDebug.resx">
       <DependentUpon>FormSerialDebug.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormSimplifyNet.resx">
+      <DependentUpon>FormSimplifyNet.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PLC\FormMelsec1EBinary.resx">
       <DependentUpon>FormMelsec1EBinary.cs</DependentUpon>
     </EmbeddedResource>
@@ -279,8 +288,8 @@
     <EmbeddedResource Include="FormUdpNet.resx">
       <DependentUpon>FormUdpNet.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormSimplifyNet.resx">
-      <DependentUpon>FormSimplifyNet.cs</DependentUpon>
+    <EmbeddedResource Include="FormSimplifyNetAlien.resx">
+      <DependentUpon>FormSimplifyNetAlien.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLoad.resx">
       <DependentUpon>FormLoad.cs</DependentUpon>

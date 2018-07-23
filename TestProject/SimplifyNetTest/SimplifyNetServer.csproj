@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormInputAlien.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormInputAlien.Designer.cs">
+      <DependentUpon>FormInputAlien.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormServer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -55,6 +61,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormInputAlien.resx">
+      <DependentUpon>FormInputAlien.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormServer.resx">
       <DependentUpon>FormServer.cs</DependentUpon>
     </EmbeddedResource>

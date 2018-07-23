@@ -39,6 +39,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.userButton2 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // textBox1
@@ -148,11 +149,26 @@
             this.label7.TabIndex = 16;
             this.label7.Text = "在线客户端：";
             // 
+            // userButton2
+            // 
+            this.userButton2.BackColor = System.Drawing.Color.Transparent;
+            this.userButton2.CustomerInformation = "";
+            this.userButton2.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton2.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton2.Location = new System.Drawing.Point(555, 67);
+            this.userButton2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton2.Name = "userButton2";
+            this.userButton2.Size = new System.Drawing.Size(118, 39);
+            this.userButton2.TabIndex = 18;
+            this.userButton2.UIText = "连接异形对象";
+            this.userButton2.Click += new System.EventHandler(this.userButton2_Click);
+            // 
             // FormServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(995, 641);
+            this.Controls.Add(this.userButton2);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label5);
@@ -187,6 +203,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
+        private HslCommunication.Controls.UserButton userButton2;
     }
 }
 
