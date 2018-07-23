@@ -20,9 +20,16 @@ namespace HslCommunication.ModBus
     /// <remarks>
     /// 可以基于本类实现一个功能复杂的modbus服务器，在传统的.NET版本里，还支持modbus-rtu指令的收发，.NET Standard版本服务器不支持rtu操作。服务器支持的数据池如下：
     /// <list type="number">
-    /// <item>线圈，gon</item>
+    /// <item>线圈，功能码对应01，05，15</item>
+    /// <item>离散输入，功能码对应02</item>
+    /// <item>寄存器，功能码对应03，06，16</item>
+    /// <item>输入寄存器，功能码对应04</item>
     /// </list>
     /// </remarks>
+    /// <example>
+    /// 读写的地址格式为富文本地址，具体请参照下面的示例代码。
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Modbus\ModbusTcpServer.cs" region="ModbusTcpServerExample" title="ModbusTcpServer示例" />
+    /// </example>
     public class ModbusTcpServer : NetworkServerBase
     {
         #region Constructor
@@ -49,29 +56,6 @@ namespace HslCommunication.ModBus
 #if !NETSTANDARD2_0
             serialPort = new SerialPort( );
 #endif
-        }
-
-        #endregion
-
-        #region Private Method
-
-
-        /// <summary>
-        /// 判断操作线圈或是寄存器的是否发生了越界
-        /// </summary>
-        /// <param name="address">起始地址</param>
-        /// <param name="length">数据长度</param>
-        /// <returns>越界返回<c>True</c>，否则返回<c>False</c></returns>
-        private bool IsAddressOverBoundary( ushort address, ushort length )
-        {
-            if ((address + length) >= ushort.MaxValue)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         #endregion
@@ -231,7 +215,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取地址的线圈的通断情况
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"</param>
         /// <returns><c>True</c>或是<c>False</c></returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
         public bool ReadCoil( string address )
@@ -248,7 +232,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 批量读取地址的线圈的通断情况
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"</param>
         /// <param name="length">读取长度</param>
         /// <returns><c>True</c>或是<c>False</c></returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
@@ -271,7 +255,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 写入线圈的通断值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"</param>
         /// <param name="data">是否通断</param>
         /// <returns><c>True</c>或是<c>False</c></returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
@@ -286,7 +270,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 写入线圈数组的通断值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"</param>
         /// <param name="data">是否通断</param>
         /// <returns><c>True</c>或是<c>False</c></returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
@@ -315,7 +299,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取地址的离散线圈的通断情况
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"</param>
         /// <returns><c>True</c>或是<c>False</c></returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
         public bool ReadDiscrete( string address )
@@ -332,7 +316,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 批量读取地址的离散线圈的通断情况
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"</param>
         /// <param name="length">读取长度</param>
         /// <returns><c>True</c>或是<c>False</c></returns>
         /// <exception cref="IndexOutOfRangeException"></exception>
@@ -355,7 +339,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 写入离散线圈的通断值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"</param>
         /// <param name="data">是否通断</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         public void WriteDiscrete( string address, bool data )
@@ -369,7 +353,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 写入离散线圈数组的通断值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"</param>
         /// <param name="data">是否通断</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         public void WriteDiscrete( string address, bool[] data )
@@ -395,7 +379,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取自定义的寄存器的值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="length">数据长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>byte数组值</returns>
@@ -430,7 +414,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取一个寄存器的值，返回类型short
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>short值</returns>
         public short ReadInt16( string address )
@@ -441,7 +425,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 批量读取寄存器的值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="length">读取的short长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>short数组值</returns>
@@ -459,7 +443,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取一个寄存器的值，返回类型为ushort
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>ushort值</returns>
         public ushort ReadUInt16( string address )
@@ -470,7 +454,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 批量读取寄存器的值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="length">读取长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>ushort数组</returns>
@@ -488,7 +472,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取两个寄存器组成的int值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>int值</returns>
         public int ReadInt32( string address )
@@ -500,7 +484,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 批量读取寄存器组成的int值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>int数组</returns>
@@ -519,7 +503,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取两个寄存器组成的uint值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>uint值</returns>
         public uint ReadUInt32( string address )
@@ -531,7 +515,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 批量读取寄存器组成的uint值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>uint数组</returns>
@@ -549,7 +533,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取两个寄存器组成的float值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>float值</returns>
         public float ReadFloat( string address )
@@ -560,7 +544,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 批量读取寄存器组成的float值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>float数组</returns>
@@ -579,7 +563,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取四个寄存器组成的long值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>long值</returns>
         public long ReadInt64( string address )
@@ -591,7 +575,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 批量读取寄存器组成的long值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>long数组</returns>
@@ -609,7 +593,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取四个寄存器组成的ulong值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>ulong值</returns>
         public ulong ReadUInt64( string address )
@@ -621,7 +605,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 批量读取寄存器组成的ulong值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>ulong数组</returns>
@@ -639,7 +623,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取四个寄存器组成的double值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>double值</returns>
         public double ReadDouble( string address )
@@ -650,7 +634,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 批量读取寄存器组成的double值
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="length">数组长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>double数组</returns>
@@ -668,7 +652,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 读取ASCII字符串，长度为寄存器数量，最终的字符串长度为这个值的2倍
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="length">寄存器长度</param>
         /// <exception cref="IndexOutOfRangeException"></exception>
         /// <returns>字符串信息</returns>
@@ -704,7 +688,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 写入寄存器数据，指定字节数据
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">字节数据</param>
         public void Write( string address, byte[] value )
         {
@@ -733,7 +717,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 写入寄存器数据，指定字节数据
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="high">高位数据</param>
         /// <param name="low">地位数据</param>
         public void Write( string address, byte high, byte low )
@@ -745,7 +729,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数据
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, short value )
         {
@@ -755,7 +739,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数组
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, short[] value )
         {
@@ -767,7 +751,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数据
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, ushort value )
         {
@@ -777,7 +761,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数组
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, ushort[] value )
         {
@@ -789,7 +773,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数据
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, int value )
         {
@@ -799,7 +783,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数组
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, int[] value )
         {
@@ -811,7 +795,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数据
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, uint value )
         {
@@ -822,7 +806,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数组
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, uint[] value )
         {
@@ -834,7 +818,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数据
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, float value )
         {
@@ -845,7 +829,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数组
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, float[] value )
         {
@@ -856,7 +840,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数据
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, long value )
         {
@@ -867,7 +851,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数组
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, long[] value )
         {
@@ -879,7 +863,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数据
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, ulong value )
         {
@@ -890,7 +874,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数组
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, ulong[] value )
         {
@@ -902,7 +886,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数据
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, double value )
         {
@@ -912,7 +896,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Modbus服务器中的指定寄存器写入数组
         /// </summary>
-        /// <param name="address">起始地址</param>
+        /// <param name="address">起始地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">数据值</param>
         public void Write( string address, double[] value )
         {
@@ -923,7 +907,7 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 往Mobus服务器中的指定寄存器写入字符串
         /// </summary>
-        /// <param name="address">其实地址</param>
+        /// <param name="address">其实地址，示例："100"，如果是输入寄存器："x=4;100"</param>
         /// <param name="value">ASCII编码的字符串的信息</param>
         public void Write( string address, string value )
         {

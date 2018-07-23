@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicFramework\SoftBasicTest.cs" />
+    <Compile Include="BasicFramework\SoftSecurityTest.cs" />
     <Compile Include="BasicFramework\SoftZippedTest.cs" />
     <Compile Include="Documentation\Samples\Algorithms\ConnectPool.cs" />
     <Compile Include="Documentation\Samples\BasicFramework\SoftAnimation.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Documentation\Samples\Enthernet\NetComplexClient.cs" />
     <Compile Include="Documentation\Samples\Enthernet\NetSimplifyClient.cs" />
     <Compile Include="Documentation\Samples\Modbus\Modbus.cs" />
+    <Compile Include="Documentation\Samples\Modbus\ModbusTcpServer.cs" />
     <Compile Include="Documentation\Samples\Profinet\MelsecAscii.cs" />
     <Compile Include="Documentation\Samples\Profinet\melsecTest.cs" />
     <Compile Include="Documentation\Samples\Profinet\OmronFinsNet.cs" />
@@ -92,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Documentation\Samples\LogNet\" />
+    <Folder Include="Modbus\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
