@@ -92,6 +92,15 @@ namespace HslCommunication.ModBus
         }
 
 
+        /// <summary>
+        /// 获取或设置服务器的站号信息，对于rtu模式，只有站号对了，才会反馈回数据信息。默认为1。
+        /// </summary>
+        public int Station
+        {
+            get { return station; }
+            set { station = value; }
+        }
+
         #endregion
 
         #region Data Pool
@@ -107,6 +116,7 @@ namespace HslCommunication.ModBus
         private SimpleHybirdLock hybirdLockInputR;    // 输入寄存器的同步锁
         private ReverseWordTransform byteTransform;
         private const int DataPoolLength = 65536;     // 数据的长度
+        private int station = 1;                      // 服务器的站号数据，对于tcp无效，对于rtu来说，如果小于0，则忽略站号信息
 
         #endregion
 
@@ -1903,7 +1913,14 @@ namespace HslCommunication.ModBus
                 if (!CheckModbusMessageLegal( modbusCore ))
                 {
                     // 指令长度验证错误，关闭网络连接
-                    LogNet?.WriteError( ToString( ), $"Receive Nosense Modbus-tcp : " + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
+                    LogNet?.WriteError( ToString( ), $"Receive Nosense Modbus-rtu : " + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
+                    return;
+                }
+
+                // 验证站号是否一致
+                if(station >= 0 && station != modbusCore[0])
+                {
+                    LogNet?.WriteError( ToString( ), $"Station not match Modbus-rtu : " + BasicFramework.SoftBasic.ByteToHexString( receive, ' ' ) );
                     return;
                 }
 
