@@ -14,6 +14,13 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 一个基于异步高性能的客户端网络类，支持主动接收服务器的消息
     /// </summary>
+    /// <remarks>
+    /// 详细的使用说明，请参照博客<a href="http://www.cnblogs.com/dathlin/p/7697782.html">http://www.cnblogs.com/dathlin/p/7697782.html</a>
+    /// </remarks>
+    /// <example>
+    /// 此处贴上了Demo项目的服务器配置的示例代码
+    /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormComplexNet.cs" region="NetComplexClient" title="NetComplexClient示例" />
+    /// </example>
     public class NetComplexClient : NetworkXBase
     {
         #region Constructor

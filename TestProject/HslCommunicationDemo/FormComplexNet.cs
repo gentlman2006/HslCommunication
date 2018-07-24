@@ -12,6 +12,9 @@ using System.Net;
 
 namespace HslCommunicationDemo
 {
+    #region NetComplexClient
+
+
     public partial class FormComplexNet : Form
     {
         public FormComplexNet( )
@@ -206,4 +209,7 @@ namespace HslCommunicationDemo
             }
         }
     }
+
+
+    #endregion
 }

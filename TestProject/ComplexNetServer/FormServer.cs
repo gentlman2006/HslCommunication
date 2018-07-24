@@ -12,6 +12,8 @@ using HslCommunication.LogNet;
 
 namespace ComplexNetServer
 {
+    #region NetComplexServer
+
     public partial class FormServer : Form
     {
         public FormServer( )
@@ -155,4 +157,6 @@ namespace ComplexNetServer
             complexServer.SendAllClients( handle, textBox4.Text );
         }
     }
+
+    #endregion
 }

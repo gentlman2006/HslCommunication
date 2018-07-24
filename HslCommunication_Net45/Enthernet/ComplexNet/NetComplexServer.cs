@@ -13,6 +13,13 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 高性能的异步网络服务器类，适合搭建局域网聊天程序，消息推送程序
     /// </summary>
+    /// <remarks>
+    /// 详细的使用说明，请参照博客<a href="http://www.cnblogs.com/dathlin/p/8097897.html">http://www.cnblogs.com/dathlin/p/8097897.html</a>
+    /// </remarks>
+    /// <example>
+    /// 此处贴上了Demo项目的服务器配置的示例代码
+    /// <code lang="cs" source="TestProject\ComplexNetServer\FormServer.cs" region="NetComplexServer" title="NetComplexServer示例" />
+    /// </example>
     public class NetComplexServer : NetworkServerBase
     {
         #region Constructor
@@ -101,8 +108,8 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 异常下线
         /// </summary>
-        /// <param name="session"></param>
-        /// <param name="ex"></param>
+        /// <param name="session">会话信息</param>
+        /// <param name="ex">异常</param>
         internal override void SocketReceiveException( AppSession session, Exception ex )
         {
             if (ex.Message.Contains( StringResources.SocketRemoteCloseException ))
@@ -116,7 +123,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 正常下线
         /// </summary>
-        /// <param name="session"></param>
+        /// <param name="session">会话信息</param>
         internal override void AppSessionRemoteClose( AppSession session )
         {
             TcpStateDownLine( session, true );
@@ -206,7 +213,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 登录后的处理方法
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">异步的接收socket对象</param>
         protected override void ThreadPoolLogin( object obj )
         {
             if (obj is Socket socket)
@@ -457,7 +464,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 获取本对象的字符串表示形式
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串</returns>
         public override string ToString()
         {
             return "NetComplexServer";
