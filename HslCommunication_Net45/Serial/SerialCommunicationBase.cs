@@ -35,6 +35,7 @@ namespace HslCommunication.Serial
         /// <summary>
         /// 初始化串口信息，9600波特率，8位数据位，1位停止位，无奇偶校验
         /// </summary>
+        /// <param name="portName">端口号信息，例如"COM3"</param>
         public void SerialPortInni( string portName )
         {
             if (SP_ReadData.IsOpen)
@@ -55,9 +56,11 @@ namespace HslCommunication.Serial
 
             SP_ReadData.DataReceived += SP_ReadData_DataReceived;
         }
+
         /// <summary>
         /// 根据自定义初始化方法进行初始化串口信息
         /// </summary>
+        /// <param name="initi">初始化的委托方法</param>
         public void SerialPortInni( Action<SerialPort> initi )
         {
             if (SP_ReadData.IsOpen)
@@ -218,7 +221,7 @@ namespace HslCommunication.Serial
         /// <summary>
         /// 返回表示当前对象的字符串
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串</returns>
         public override string ToString()
         {
             return "SerialBase";
