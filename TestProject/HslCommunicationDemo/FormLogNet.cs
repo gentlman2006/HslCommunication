@@ -17,6 +17,9 @@ namespace HslCommunicationDemo
             InitializeComponent( );
         }
 
+        #region ILogNet
+
+
         private void FormLogNet_Load( object sender, EventArgs e )
         {
             logNet = new LogNetSingle( "log.txt" );
@@ -134,6 +137,10 @@ namespace HslCommunicationDemo
                 MessageBox.Show( "没有文件！" );
             }
         }
+
+
+
+        #endregion
 
         private void button4_Click( object sender, EventArgs e )
         {

@@ -10,6 +10,17 @@ namespace HslCommunication.LogNet
     /// <summary>
     /// 一个日志组件，可以根据时间来区分不同的文件存储
     /// </summary>
+    /// <remarks>
+    /// 此日志实例将根据日期时间来进行分类，支持的时间分类如下：
+    /// <list type="number">
+    /// <item>小时</item>
+    /// <item>天</item>
+    /// <item>周</item>
+    /// <item>月份</item>
+    /// <item>季度</item>
+    /// <item>年份</item>
+    /// </list>
+    /// </remarks>
     public class LogNetDateTime : LogNetBase, ILogNet
     {
 
@@ -54,7 +65,7 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 获取需要保存的日志文件
         /// </summary>
-        /// <returns></returns>
+        /// <returns>完整的文件路径，含文件名</returns>
         protected override string GetFileSaveName()
         {
             if (string.IsNullOrEmpty(m_filePath)) return string.Empty;
@@ -96,7 +107,7 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 获取所有的文件夹中的日志文件
         /// </summary>
-        /// <returns></returns>
+        /// <returns>所有的文件路径集合</returns>
         public string[] GetExistLogFileNames()
         {
             if (!string.IsNullOrEmpty(m_filePath))

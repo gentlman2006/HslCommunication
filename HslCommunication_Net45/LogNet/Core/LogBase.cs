@@ -10,7 +10,15 @@ namespace HslCommunication.LogNet
 {
     /// <summary>
     /// 日志存储类的基类，提供一些基础的服务
-    /// </summary>    
+    /// </summary>
+    /// <remarks>
+    /// 基于此类可以实现任意的规则的日志存储规则，欢迎大家补充实现，本组件实现了3个日志类
+    /// <list type="number">
+    /// <item>单文件日志类 <see cref="LogNetSingle"/></item>
+    /// <item>根据文件大小的类 <see cref="LogNetFileSize"/></item>
+    /// <item>根据时间进行存储的类 <see cref="LogNetDateTime"/></item>
+    /// </list>
+    /// </remarks>
     public abstract class LogNetBase : IDisposable
     {
         #region Constructor
@@ -176,7 +184,7 @@ namespace HslCommunication.LogNet
         /// 写入一条异常信息
         /// </summary>
         /// <param name="keyWord">关键字</param>
-        /// <param name="ex"></param>
+        /// <param name="ex">异常信息</param>
         public void WriteException(string keyWord, Exception ex)
         {
             WriteException( keyWord, string.Empty, ex );
@@ -207,7 +215,7 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 写入一条解释性的消息，不需要带有回车键
         /// </summary>
-        /// <param name="description"></param>
+        /// <param name="description">解释性的文本</param>
         public void WriteDescrition(string description)
         {
             if (string.IsNullOrEmpty(description)) return;
@@ -273,7 +281,7 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 设置日志的存储等级，高于该等级的才会被存储
         /// </summary>
-        /// <param name="degree"></param>
+        /// <param name="degree">消息等级</param>
         public void SetMessageDegree(HslMessageDegree degree)
         {
             m_messageDegree = degree;
@@ -483,7 +491,7 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 获取要存储的文件的名称
         /// </summary>
-        /// <returns></returns>
+        /// <returns>完整的文件路径信息，带文件名</returns>
         protected virtual string GetFileSaveName()
         {
             return string.Empty;
@@ -492,8 +500,8 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 返回检查的路径名称，将会包含反斜杠
         /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
+        /// <param name="filePath">路径信息</param>
+        /// <returns>检查后的结果对象</returns>
         protected string CheckPathEndWithSprit(string filePath)
         {
             if (!string.IsNullOrEmpty(filePath))
@@ -561,7 +569,7 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 释放资源
         /// </summary>
-        /// <param name="disposing"></param>
+        /// <param name="disposing">是否初次调用</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

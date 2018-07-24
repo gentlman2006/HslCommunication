@@ -82,9 +82,9 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 通过异常文本格式化成字符串用于保存或发送
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="ex"></param>
-        /// <returns></returns>
+        /// <param name="text">文本消息</param>
+        /// <param name="ex">异常</param>
+        /// <returns>异常最终信息</returns>
         public static string GetSaveStringFromException(string text, Exception ex)
         {
             StringBuilder builder = new StringBuilder(text);

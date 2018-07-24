@@ -5,6 +5,17 @@ namespace HslCommunication.LogNet
     /// <summary>
     /// 一个通用的日志接口
     /// </summary>
+    /// <remarks>
+    /// 本组件的日志核心机制，如果您使用了本组件却不想使用本组件的日志组件功能，可以自己实现新的日志组件，只要继承本接口接口。其他常用的日志组件如下：（都是可以实现的）
+    /// <list type="number">
+    /// <item>Log4Net</item>
+    /// <item>NLog</item>
+    /// </list>
+    /// </remarks>
+    /// <example>
+    /// 实现类就不放示例代码了，存储日志的使用都是一样的，就是实例化的时候不一致，以下示例代码以单文件日志为例
+    /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormLogNet.cs" region="ILogNet" title="ILogNet示例" />
+    /// </example>
     public interface ILogNet : IDisposable
     {
         /// <summary>
@@ -120,19 +131,19 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 设置日志的存储等级，高于该等级的才会被存储
         /// </summary>
-        /// <param name="degree"></param>
+        /// <param name="degree">登记信息</param>
         void SetMessageDegree(HslMessageDegree degree);
 
         /// <summary>
         /// 获取已存在的日志文件名称
         /// </summary>
-        /// <returns></returns>
+        /// <returns>文件列表</returns>
         string[] GetExistLogFileNames();
 
         /// <summary>
         /// 过滤掉指定的关键字的日志，该信息不存储，但仍然触发BeforeSaveToFile事件
         /// </summary>
-        /// <param name="keyword"></param>
+        /// <param name="keyword">关键字</param>
         void FiltrateKeyword( string keyword );
     }
 }

@@ -9,6 +9,9 @@ namespace HslCommunication.LogNet
     /// <summary>
     /// 根据文件的大小来存储日志信息
     /// </summary>
+    /// <remarks>
+    /// 此日志的实例是根据文件的大小储存，例如设置了2M，每隔2M，系统将生成一个新的日志文件。
+    /// </remarks>
     public class LogNetFileSize : LogNetBase, ILogNet
     {
 
@@ -55,7 +58,7 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 获取需要保存的日志文件
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串数据</returns>
         protected override string GetFileSaveName()
         {
             //路径没有设置则返回空
@@ -118,7 +121,7 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 返回所有的日志文件
         /// </summary>
-        /// <returns></returns>
+        /// <returns>所有的日志文件信息</returns>
         public string[] GetExistLogFileNames()
         {
             if (!string.IsNullOrEmpty(m_filePath))

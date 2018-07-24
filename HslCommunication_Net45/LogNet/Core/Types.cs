@@ -148,7 +148,7 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 返回表示当前对象的字符串
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串信息</returns>
         public override string ToString( )
         {
             if (string.IsNullOrEmpty( KeyWord ))
@@ -164,7 +164,7 @@ namespace HslCommunication.LogNet
         /// <summary>
         /// 返回表示当前对象的字符串，剔除了关键字
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串信息</returns>
         public string ToStringWithoutKeyword()
         {
             return $"[{Degree}] {Time.ToString( "yyyy-MM-dd HH:mm:ss.fff" )} Thread [{ThreadId.ToString( "D2" )}] {Text}";
