@@ -1261,7 +1261,7 @@ namespace HslCommunication.ModBus
                 ushort length = byteTransform.TransUInt16( modbus, 4 );
 
                 // 越界检测
-                if ((address + length) >= ushort.MaxValue)
+                if ((address + length) > ushort.MaxValue + 1)
                 {
                     return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeOverBound );
                 }
@@ -1291,7 +1291,7 @@ namespace HslCommunication.ModBus
                 ushort length = byteTransform.TransUInt16( modbus, 4 );
 
                 // 越界检测
-                if ((address + length) >= ushort.MaxValue)
+                if ((address + length) > ushort.MaxValue + 1)
                 {
                     return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeOverBound );
                 }
@@ -1322,7 +1322,7 @@ namespace HslCommunication.ModBus
                 ushort length = byteTransform.TransUInt16( modbus, 4 );
 
                 // 越界检测
-                if ((address + length) >= ushort.MaxValue)
+                if ((address + length) > ushort.MaxValue + 1)
                 {
                     return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeOverBound );
                 }
@@ -1351,7 +1351,7 @@ namespace HslCommunication.ModBus
                 ushort length = byteTransform.TransUInt16( modbus, 4 );
 
                 // 越界检测
-                if ((address + length) >= ushort.MaxValue)
+                if ((address + length) > ushort.MaxValue + 1)
                 {
                     return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeOverBound );
                 }
@@ -1425,7 +1425,7 @@ namespace HslCommunication.ModBus
                 ushort address = byteTransform.TransUInt16( modbus, 2 );
                 ushort length = byteTransform.TransUInt16( modbus, 4 );
 
-                if ((address + length) > ushort.MaxValue)
+                if ((address + length) > ushort.MaxValue + 1)
                 {
                     return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeOverBound );
                 }
@@ -1456,7 +1456,7 @@ namespace HslCommunication.ModBus
                 ushort address = byteTransform.TransUInt16( modbus, 2 );
                 ushort length = byteTransform.TransUInt16( modbus, 4 );
 
-                if ((address + length) > ushort.MaxValue)
+                if ((address + length) > ushort.MaxValue + 1)
                 {
                     return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeOverBound );
                 }
