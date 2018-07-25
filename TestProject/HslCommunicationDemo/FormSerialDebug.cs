@@ -159,7 +159,7 @@ namespace HslCommunicationDemo
                 }
                 else
                 {
-                    textBox6.AppendText( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( send ) + Environment.NewLine );
+                    textBox6.AppendText( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( send, ' ' ) + Environment.NewLine );
                 }
             }
             SP_ReadData?.Write( send, 0, send.Length );
