@@ -16,7 +16,8 @@ namespace HslCommunication.Core.Net
     /// </summary>
     public class NetworkFileServerBase : NetworkServerBase
     {
-        #region 文件的标记块
+        #region File Mark
+
         /// <summary>
         /// 所有文件操作的词典锁
         /// </summary>
@@ -53,7 +54,7 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
-        #region 接收信息头数据
+        #region Receie File Head
 
         /// <summary>
         /// 接收本次操作的信息头数据
@@ -64,7 +65,7 @@ namespace HslCommunication.Core.Net
         /// <param name="factory">第一大类</param>
         /// <param name="group">第二大类</param>
         /// <param name="id">第三大类</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         protected OperateResult ReceiveInformationHead(
             Socket socket,
             out int command,
@@ -126,7 +127,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 获取一个随机的文件名，由GUID码和随机数字组成
         /// </summary>
-        /// <returns></returns>
+        /// <returns>文件名</returns>
         protected string CreateRandomFileName( )
         {
             return BasicFramework.SoftBasic.GetUniqueStringByGuidAndRandom( );
@@ -135,10 +136,10 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 返回服务器的绝对路径
         /// </summary>
-        /// <param name="factory"></param>
-        /// <param name="group"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="factory">第一大类</param>
+        /// <param name="group">第二大类</param>
+        /// <param name="id">第三大类</param>
+        /// <returns>是否成功的结果对象</returns>
         protected string ReturnAbsoluteFilePath( string factory, string group, string id )
         {
             string result = m_FilesDirectoryPath;
@@ -152,11 +153,11 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 返回服务器的绝对路径
         /// </summary>
-        /// <param name="factory"></param>
-        /// <param name="group"></param>
-        /// <param name="id"></param>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
+        /// <param name="factory">第一大类</param>
+        /// <param name="group">第二大类</param>
+        /// <param name="id">第三大类</param>
+        /// <param name="fileName">文件名</param>
+        /// <returns>是否成功的结果对象</returns>
         protected string ReturnAbsoluteFileName( string factory, string group, string id, string fileName )
         {
             return ReturnAbsoluteFilePath( factory, group, id ) + "\\" + fileName;
@@ -166,11 +167,11 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 返回相对路径的名称
         /// </summary>
-        /// <param name="factory"></param>
-        /// <param name="group"></param>
-        /// <param name="id"></param>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
+        /// <param name="factory">第一大类</param>
+        /// <param name="group">第二大类</param>
+        /// <param name="id">第三大类</param>
+        /// <param name="fileName">文件名</param>
+        /// <returns>是否成功的结果对象</returns>
         protected string ReturnRelativeFileName( string factory, string group, string id, string fileName )
         {
             string result = "";
@@ -183,7 +184,7 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
-        #region 定时清除标记块
+        #region Clear File Mark
 
         //private Timer timer;
 
@@ -217,9 +218,9 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 移动一个文件到新的文件去
         /// </summary>
-        /// <param name="fileNameOld"></param>
-        /// <param name="fileNameNew"></param>
-        /// <returns></returns>
+        /// <param name="fileNameOld">旧的文件名称</param>
+        /// <param name="fileNameNew">新的文件名称</param>
+        /// <returns>是否成功</returns>
         protected bool MoveFileToNewFile( string fileNameOld, string fileNameNew )
         {
             try
@@ -252,7 +253,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="socket">网络套接字</param>
         /// <param name="fullname">完整路径的文件名称</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         protected OperateResult DeleteFileAndCheck(
             Socket socket,
             string fullname
@@ -345,7 +346,7 @@ namespace HslCommunication.Core.Net
         /// <param name="factory">第一大类</param>
         /// <param name="group">第二大类</param>
         /// <param name="id">第三大类</param>
-        /// <returns></returns>
+        /// <returns>文件列表</returns>
         public virtual string[] GetDirectoryFiles( string factory, string group, string id )
         {
             if (string.IsNullOrEmpty( FilesDirectoryPath )) return new string[0];
@@ -364,7 +365,7 @@ namespace HslCommunication.Core.Net
         /// <param name="factory">第一大类</param>
         /// <param name="group">第二大类</param>
         /// <param name="id">第三大类</param>
-        /// <returns></returns>
+        /// <returns>文件夹列表</returns>
         public string[] GetDirectories( string factory, string group, string id )
         {
             if (string.IsNullOrEmpty( FilesDirectoryPath )) return new string[0];
@@ -391,7 +392,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 获取本对象的字符串标识形式
         /// </summary>
-        /// <returns></returns>
+        /// <returns>对象信息</returns>
         public override string ToString( )
         {
             return "NetworkFileServerBase";

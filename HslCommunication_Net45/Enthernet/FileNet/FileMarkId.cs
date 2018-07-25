@@ -15,6 +15,8 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 实例化一个文件标记对象
         /// </summary>
+        /// <param name="logNet">日志对象</param>
+        /// <param name="fileName">完整的文件名称</param>
         public FileMarkId( ILogNet logNet, string fileName )
         {
             LogNet = logNet;
@@ -30,7 +32,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 新增一个文件的操作，仅仅是删除文件
         /// </summary>
-        /// <param name="action"></param>
+        /// <param name="action">对当前文件的操作内容</param>
         public void AddOperation( Action action )
         {
             hybirdLock.Enter( );
@@ -54,7 +56,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 指示该对象是否能被清除
         /// </summary>
-        /// <returns></returns>
+        /// <returns>是否能够删除</returns>
         public bool CanClear( )
         {
             bool result = false;

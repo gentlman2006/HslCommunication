@@ -50,10 +50,10 @@ namespace HslCommunicationDemo
             // 定义连接服务器的一些属性，超时时间，IP及端口信息
             integrationFileClient = new IntegrationFileClient( )
             {
-                ConnectTimeOut = 5000,
-                ServerIpEndPoint = new System.Net.IPEndPoint( ipAddress, port ),
-                Token = new Guid( textBox15.Text ),                                         // 指定一个令牌
-                LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + "\\Logs\\log.txt" ),
+                ConnectTimeOut = 5000,                                                      // 连接的超时时间
+                ServerIpEndPoint = new System.Net.IPEndPoint( ipAddress, port ),            // 服务器的地址
+                Token = new Guid( textBox15.Text ),                                         // 指定一个令牌（不是必须的）
+                LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + "\\Logs\\log.txt" ),   // 指定日志（不是必须的）
             };
 
             // 创建本地文件存储的路径
@@ -274,10 +274,10 @@ namespace HslCommunicationDemo
         {
             // 文件的删除不需要放在后台线程，前台即可处理，无论多少大的文件，无论该文件是否在下载中，都是很快删除的
             OperateResult result = integrationFileClient.DeleteFile( 
-                textBox_delete_fileName.Text,
-                textBox_delete_factory.Text,
-                textBox_delete_id.Text, 
-                textBox_download_id.Text 
+                textBox_delete_fileName.Text,                       // 文件在服务器上保存的名称，举例123.txt
+                textBox_delete_factory.Text,                        // 第一级分类，指示文件存储的类别，对应在服务器端存储的路径不一致
+                textBox_delete_id.Text,                             // 第二级分类，指示文件存储的类别，对应在服务器端存储的路径不一致
+                textBox_download_id.Text                            // 第三级分类，指示文件存储的类别，对应在服务器端存储的路径不一致
                 );
             if (result.IsSuccess)
             {
@@ -298,6 +298,8 @@ namespace HslCommunicationDemo
 
         #endregion
 
+        #region DownloadPathFolders
+
 
         private void FillNodeByFactoryGroupId( TreeNode root, string factory, string group, string id, int grade )
         {
@@ -313,13 +315,19 @@ namespace HslCommunicationDemo
                     root.Nodes.Add( node );
                 }
 
-                //root.ExpandAll( ); occur an exception ?? I don't know
+                // root.ExpandAll( ); occur an exception ?? I don't know
             }
             else
             {
                 MessageBox.Show( read.ToMessageShowString( ) );
             }
         }
+
+
+        #endregion
+
+        #region DownloadPathFileNames
+
 
         private void FillNodeFilesByFactoryGroupId( TreeNode root, string factory, string group, string id )
         {
@@ -342,6 +350,7 @@ namespace HslCommunicationDemo
             }
         }
 
+        #endregion
 
         private void button6_Click( object sender, EventArgs e )
         {

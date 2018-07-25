@@ -51,7 +51,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 获取大小
         /// </summary>
-        /// <returns></returns>
+        /// <returns>文件大小的字符串描述形式</returns>
         public string GetTextFromFileSize( )
         {
             return SoftBasic.GetSizeDescription( FileSize );

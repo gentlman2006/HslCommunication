@@ -12,6 +12,13 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 与服务器文件引擎交互的客户端类，支持操作Advanced引擎和Ultimate引擎
     /// </summary>
+    /// <remarks>
+    /// 这里需要需要的是，本客户端支持Advanced引擎和Ultimate引擎文件服务器，服务的类型需要您根据自己的需求来选择。
+    /// </remarks>
+    /// <example>
+    /// 此处只演示创建实例，具体的上传，下载，删除的例子请参照对应的方法
+    /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormFileClient.cs" region="Intergration File Client" title="IntegrationFileClient示例" />
+    /// </example>
     public class IntegrationFileClient : FileClientBase
     {
         #region Constructor
@@ -34,7 +41,7 @@ namespace HslCommunication.Enthernet
         /// <param name="factory">第一大类</param>
         /// <param name="group">第二大类</param>
         /// <param name="id">第三大类</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         public OperateResult DeleteFile(
             string fileName,
             string factory,
@@ -59,7 +66,17 @@ namespace HslCommunication.Enthernet
         /// <param name="id">第三大类</param>
         /// <param name="processReport">下载的进度报告</param>
         /// <param name="fileSaveName">准备本地保存的名称</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
+        /// <remarks>
+        /// 用于分类的参数<paramref name="factory"/>，<paramref name="group"/>，<paramref name="id"/>中间不需要的可以为空，对应的是服务器上的路径系统。
+        /// <br /><br />
+        /// <note type="warning">
+        /// 失败的原因大多数来自于网络的接收异常，或是服务器不存在文件。
+        /// </note>
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormFileClient.cs" region="Download File" title="DownloadFile示例" />
+        /// </example>
         public OperateResult DownloadFile(
             string fileName,
             string factory,
@@ -81,7 +98,17 @@ namespace HslCommunication.Enthernet
         /// <param name="id">第三大类</param>
         /// <param name="processReport">下载的进度报告</param>
         /// <param name="stream">流数据</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
+        /// <remarks>
+        /// 用于分类的参数<paramref name="factory"/>，<paramref name="group"/>，<paramref name="id"/>中间不需要的可以为空，对应的是服务器上的路径系统。
+        /// <br /><br />
+        /// <note type="warning">
+        /// 失败的原因大多数来自于网络的接收异常，或是服务器不存在文件。
+        /// </note>
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormFileClient.cs" region="Download File" title="DownloadFile示例" />
+        /// </example>
         public OperateResult DownloadFile(
             string fileName,
             string factory,
@@ -105,7 +132,17 @@ namespace HslCommunication.Enthernet
         /// <param name="id">第三大类</param>
         /// <param name="processReport">下载的进度报告</param>
         /// <param name="bitmap">内存文件</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
+        /// <remarks>
+        /// 用于分类的参数<paramref name="factory"/>，<paramref name="group"/>，<paramref name="id"/>中间不需要的可以为空，对应的是服务器上的路径系统。
+        /// <br /><br />
+        /// <note type="warning">
+        /// 失败的原因大多数来自于网络的接收异常，或是服务器不存在文件。
+        /// </note>
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormFileClient.cs" region="Download File" title="DownloadFile示例" />
+        /// </example>
         public OperateResult DownloadFile(
             string fileName,
             string factory,
@@ -147,7 +184,17 @@ namespace HslCommunication.Enthernet
         /// <param name="fileTag">文件的额外描述</param>
         /// <param name="fileUpload">文件的上传人</param>
         /// <param name="processReport">上传的进度报告</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
+        /// <remarks>
+        /// 用于分类的参数<paramref name="factory"/>，<paramref name="group"/>，<paramref name="id"/>中间不需要的可以为空，对应的是服务器上的路径系统。
+        /// <br /><br />
+        /// <note type="warning">
+        /// 失败的原因大多数来自于网络的接收异常，或是客户端不存在文件。
+        /// </note>
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormFileClient.cs" region="Upload File" title="UploadFile示例" />
+        /// </example>
         public OperateResult UploadFile(
             string fileName,
             string serverName,
@@ -172,7 +219,17 @@ namespace HslCommunication.Enthernet
         /// <param name="fileTag">文件的额外描述</param>
         /// <param name="fileUpload">文件的上传人</param>
         /// <param name="processReport">上传的进度报告</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
+        /// <remarks>
+        /// 用于分类的参数<paramref name="factory"/>，<paramref name="group"/>，<paramref name="id"/>中间不需要的可以为空，对应的是服务器上的路径系统。
+        /// <br /><br />
+        /// <note type="warning">
+        /// 失败的原因大多数来自于网络的接收异常，或是客户端不存在文件。
+        /// </note>
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormFileClient.cs" region="Upload File" title="UploadFile示例" />
+        /// </example>
         public OperateResult UploadFile(
             Stream stream,
             string serverName,
@@ -198,8 +255,18 @@ namespace HslCommunication.Enthernet
         /// <param name="fileTag">文件的额外描述</param>
         /// <param name="fileUpload">文件的上传人</param>
         /// <param name="processReport">上传的进度报告</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <remarks>
+        /// 用于分类的参数<paramref name="factory"/>，<paramref name="group"/>，<paramref name="id"/>中间不需要的可以为空，对应的是服务器上的路径系统。
+        /// <br /><br />
+        /// <note type="warning">
+        /// 失败的原因大多数来自于网络的接收异常，或是客户端不存在文件。
+        /// </note>
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormFileClient.cs" region="Upload File" title="UploadFile示例" />
+        /// </example>
         public OperateResult UploadFile(
             Bitmap bitmap,
             string serverName,
@@ -230,7 +297,7 @@ namespace HslCommunication.Enthernet
         /// <param name="factory">第一类</param>
         /// <param name="group">第二类</param>
         /// <param name="id">第三类</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         private string TranslateFileName( string fileName, string factory, string group, string id )
         {
             string file_save_server_name = fileName;
@@ -255,7 +322,7 @@ namespace HslCommunication.Enthernet
         /// <param name="factory">第一类</param>
         /// <param name="group">第二类</param>
         /// <param name="id">第三类</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         private string TranslatePathName( string factory, string group, string id )
         {
             string file_save_server_name = "";
@@ -285,7 +352,17 @@ namespace HslCommunication.Enthernet
         /// <param name="factory">第一大类</param>
         /// <param name="group">第二大类</param>
         /// <param name="id">第三大类</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
+        /// <remarks>
+        /// 用于分类的参数<paramref name="factory"/>，<paramref name="group"/>，<paramref name="id"/>中间不需要的可以为空，对应的是服务器上的路径系统。
+        /// <br /><br />
+        /// <note type="warning">
+        /// 失败的原因大多数来自于网络的接收异常。
+        /// </note>
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormFileClient.cs" region="DownloadPathFileNames" title="DownloadPathFileNames示例" />
+        /// </example>
         public OperateResult DownloadPathFileNames(
             out GroupFileItem[] fileNames,
             string factory,
@@ -310,11 +387,21 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 获取指定路径下的所有的文档
         /// </summary>
-        /// <param name="folders"></param>
-        /// <param name="factory"></param>
-        /// <param name="group"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="folders">输出结果</param>
+        /// <param name="factory">第一大类</param>
+        /// <param name="group">第二大类</param>
+        /// <param name="id">第三大类</param>
+        /// <returns>是否成功的结果对象</returns>
+        /// <remarks>
+        /// 用于分类的参数<paramref name="factory"/>，<paramref name="group"/>，<paramref name="id"/>中间不需要的可以为空，对应的是服务器上的路径系统。
+        /// <br /><br />
+        /// <note type="warning">
+        /// 失败的原因大多数来自于网络的接收异常。
+        /// </note>
+        /// </remarks>
+        /// <example>
+        /// <code lang="cs" source="TestProject\HslCommunicationDemo\FormFileClient.cs" region="DownloadPathFolders" title="DownloadPathFolders示例" />
+        /// </example>
         public OperateResult DownloadPathFolders(
             out string[] folders,
             string factory,
@@ -344,7 +431,7 @@ namespace HslCommunication.Enthernet
         /// <param name="group">第二大类</param>
         /// <param name="id">第三大类</param>
         /// <typeparam name="T">数组的类型</typeparam>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         private OperateResult DownloadStringArrays<T>(
             out T[] arrays,
             int protocol,

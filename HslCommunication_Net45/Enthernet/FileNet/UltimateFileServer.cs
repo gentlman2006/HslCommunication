@@ -17,7 +17,13 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 终极文件管理服务器，实现所有的文件分类管理，读写分离，不支持直接访问文件名
     /// </summary>
-
+    /// <remarks>
+    /// 本文件的服务器支持存储文件携带的额外信息，文件名被映射成了新的名称，无法在服务器直接查看文件信息。
+    /// </remarks>
+    /// <example>
+    /// 以下的示例来自Demo项目，创建了一个简单的服务器对象。
+    /// <code lang="cs" source="TestProject\FileNetServer\FormFileServer.cs" region="Ultimate Server" title="UltimateFileServer示例" />
+    /// </example>
     public class UltimateFileServer : Core.Net.NetworkFileServerBase
     {
         #region Constructor
@@ -32,7 +38,7 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
-        #region 文件列表存储器
+        #region File list Container
 
         /// <summary>
         /// 所有文件组操作的词典锁
@@ -81,7 +87,7 @@ namespace HslCommunication.Enthernet
         /// </summary>
         /// <param name="socket">套接字</param>
         /// <param name="savename">保存的文件名</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         private OperateResult ReceiveFileFromSocketAndUpdateGroup(
             Socket socket,
             string savename
@@ -127,7 +133,7 @@ namespace HslCommunication.Enthernet
         /// <param name="group">第二大类</param>
         /// <param name="id">第三大类</param>
         /// <param name="fileName">文件显示名称</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         private string TransformFactFileName( string factory, string group, string id, string fileName )
         {
             string path = ReturnAbsoluteFilePath( factory, group, id );
@@ -138,8 +144,8 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 删除已经存在的文件信息
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="fileName"></param>
+        /// <param name="path">文件的路径</param>
+        /// <param name="fileName">文件的名称</param>
         private void DeleteExsistingFile( string path, string fileName )
         {
             if (!string.IsNullOrEmpty( fileName ))
@@ -164,7 +170,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 处理数据
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">异步对象</param>
         protected override void ThreadPoolLogin( object obj )
         {
             if (obj is Socket socket)
@@ -315,7 +321,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 获取本对象的字符串表示形式
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串对象</returns>
         public override string ToString( )
         {
             return "UltimateFileServer";

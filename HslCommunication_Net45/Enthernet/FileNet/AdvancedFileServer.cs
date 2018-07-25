@@ -17,6 +17,13 @@ namespace HslCommunication.Enthernet
     /// <summary>
     /// 文件管理类服务器，负责服务器所有分类文件的管理，特点是不支持文件附加数据，但是支持直接访问文件名
     /// </summary>
+    /// <remarks>
+    /// 本文件的服务器不支持存储文件携带的额外信息，是直接将文件存放在服务器指定目录下的，文件名不更改，特点是服务器查看方便。
+    /// </remarks>
+    /// <example>
+    /// 以下的示例来自Demo项目，创建了一个简单的服务器对象。
+    /// <code lang="cs" source="TestProject\FileNetServer\FormFileServer.cs" region="Advanced Server" title="AdvancedFileServer示例" />
+    /// </example>
     public class AdvancedFileServer : HslCommunication.Core.Net.NetworkFileServerBase
     {
 
@@ -37,7 +44,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 处理数据
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">异步的socket对象</param>
         protected override void ThreadPoolLogin( object obj )
         {
             if (obj is Socket socket)
@@ -310,7 +317,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 获取本对象的字符串标识形式
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串对象</returns>
         public override string ToString()
         {
             return "AdvancedFileServer";

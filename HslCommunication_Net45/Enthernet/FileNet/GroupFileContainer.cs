@@ -19,7 +19,7 @@ namespace HslCommunication.Enthernet
         /// 实例化一个新的数据管理容器
         /// </summary>
         /// <param name="logNet">日志记录对象，可以为空</param>
-        /// <param name="path"></param>
+        /// <param name="path">文件的路径</param>
         public GroupFileContainer( ILogNet logNet, string path )
         {
             LogNet = logNet;
@@ -69,8 +69,8 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 下载文件时调用
         /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
+        /// <param name="fileName">文件的实际名称</param>
+        /// <returns>文件名映射过去的实际的文件名字</returns>
         public string GetCurrentFileMappingName( string fileName )
         {
             string source = Guid.NewGuid( ).ToString( "N" );
@@ -99,7 +99,7 @@ namespace HslCommunication.Enthernet
         /// <param name="mappingName">文件映射名称</param>
         /// <param name="owner">文件的拥有者</param>
         /// <param name="description">文件的额外描述</param>
-        /// <returns></returns>
+        /// <returns>映射的文件名称</returns>
         public string UpdateFileMappingName( string fileName, long fileSize, string mappingName, string owner, string description )
         {
             string source = string.Empty;
@@ -145,8 +145,8 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 删除一个文件信息
         /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
+        /// <param name="fileName">实际的文件名称</param>
+        /// <returns>映射之后的文件名</returns>
         public string DeleteFile( string fileName )
         {
             string source = string.Empty;

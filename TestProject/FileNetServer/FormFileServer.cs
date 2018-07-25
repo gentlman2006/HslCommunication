@@ -52,16 +52,17 @@ namespace FileNetServer
 
         private void AdvancedFileServerStart( )
         {
+            // textBox1.Text为端口号信息
             if (!int.TryParse( textBox1.Text, out int port ))
             {
                 MessageBox.Show( "Advanced文件服务器引擎的端口号输入异常" );
             }
 
             advancedFileServer = new AdvancedFileServer( );
-            advancedFileServer.FilesDirectoryPath = textBox3.Text;
-            advancedFileServer.FilesDirectoryPathTemp = textBox4.Text;
-            advancedFileServer.Token = new Guid( textBox2.Text );
-            advancedFileServer.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + "\\Logs\\AdvancedLog.txt" );
+            advancedFileServer.FilesDirectoryPath = textBox3.Text;                 // 所有文件存储的路径
+            advancedFileServer.FilesDirectoryPathTemp = textBox4.Text;             // 临时文件的目录
+            advancedFileServer.Token = new Guid( textBox2.Text );                  // 令牌
+            advancedFileServer.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + "\\Logs\\AdvancedLog.txt" );  // 设置日志
             advancedFileServer.LogNet.BeforeSaveToFile += LogNet1_BeforeSaveToFile;
             advancedFileServer.ServerStart( port );
         }
@@ -80,6 +81,7 @@ namespace FileNetServer
         {
             try
             {
+                // 启动文件服务器
                 AdvancedFileServerStart( );
                 button1.Enabled = false;
             }
@@ -105,9 +107,9 @@ namespace FileNetServer
             }
 
             ultimateFileServer = new UltimateFileServer( );
-            ultimateFileServer.FilesDirectoryPath = textBox8.Text;
-            ultimateFileServer.Token = new Guid( textBox9.Text );
-            ultimateFileServer.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + "\\Logs\\UltimateLog.txt" );
+            ultimateFileServer.FilesDirectoryPath = textBox8.Text;                   // 设置文件的存储路径
+            ultimateFileServer.Token = new Guid( textBox9.Text );                    // 令牌
+            ultimateFileServer.LogNet = new HslCommunication.LogNet.LogNetSingle( Application.StartupPath + "\\Logs\\UltimateLog.txt" );  // 日志
             ultimateFileServer.LogNet.BeforeSaveToFile += LogNet2_BeforeSaveToFile;
             ultimateFileServer.ServerStart( port );
         }
@@ -126,6 +128,7 @@ namespace FileNetServer
         {
             try
             {
+                // 启动服务器
                 UltimateFileServerStart( );
                 button2.Enabled = false;
             }

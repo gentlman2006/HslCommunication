@@ -45,11 +45,11 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 发送三个文件分类到服务器端
         /// </summary>
-        /// <param name="socket"></param>
-        /// <param name="factory"></param>
-        /// <param name="group"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="socket">套接字对象</param>
+        /// <param name="factory">一级分类</param>
+        /// <param name="group">二级分类</param>
+        /// <param name="id">三级分类</param>
+        /// <returns>是否成功的结果对象</returns>
         protected OperateResult SendFactoryGroupId(
             Socket socket,
             string factory,
@@ -87,10 +87,10 @@ namespace HslCommunication.Enthernet
         /// 删除服务器上的文件
         /// </summary>
         /// <param name="fileName">文件的名称</param>
-        /// <param name="factory"></param>
-        /// <param name="group"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="factory">一级分类</param>
+        /// <param name="group">二级分类</param>
+        /// <param name="id">三级分类</param>
+        /// <returns>是否成功的结果对象</returns>
         protected OperateResult DeleteFileBase( string fileName, string factory, string group, string id )
         {
             // connect server
@@ -131,13 +131,13 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 基础下载信息
         /// </summary>
-        /// <param name="factory"></param>
-        /// <param name="group"></param>
-        /// <param name="id"></param>
+        /// <param name="factory">一级分类</param>
+        /// <param name="group">二级分类</param>
+        /// <param name="id">三级分类</param>
         /// <param name="fileName">服务器的文件名称</param>
         /// <param name="processReport">下载的进度报告</param>
         /// <param name="source">数据源信息，决定最终存储到哪里去</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         protected OperateResult DownloadFileBase(
             string factory,
             string group,
@@ -197,13 +197,13 @@ namespace HslCommunication.Enthernet
         /// </summary>
         /// <param name="source">数据源，可以是文件名，也可以是数据流</param>
         /// <param name="serverName">在服务器保存的文件名，不包含驱动器路径</param>
-        /// <param name="factory"></param>
-        /// <param name="group"></param>
-        /// <param name="id"></param>
+        /// <param name="factory">一级分类</param>
+        /// <param name="group">二级分类</param>
+        /// <param name="id">三级分类</param>
         /// <param name="fileTag">文件的描述</param>
         /// <param name="fileUpload">文件的上传人</param>
         /// <param name="processReport">汇报进度</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果对象</returns>
         protected OperateResult UploadFileBase(
             object source,
             string serverName,
@@ -281,7 +281,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 获取本对象的字符串表示形式
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串信息</returns>
         public override string ToString()
         {
             return "FileClientBase";
