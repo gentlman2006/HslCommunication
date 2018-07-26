@@ -20,8 +20,9 @@ namespace HslCommunication
     /// </summary>
     /// <remarks>
     /// 本软件著作权归Richard.Hu所有，开源项目地址：<a href="https://github.com/dathlin/HslCommunication">https://github.com/dathlin/HslCommunication</a>  开源协议：LGPL-3.0
+    /// <br />
     /// 博客地址：<a href="https://www.cnblogs.com/dathlin/p/7703805.html">https://www.cnblogs.com/dathlin/p/7703805.html</a>
-    /// <br /><br />
+    /// <br />
     /// 打赏请扫码：<br />
     /// <img src="https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/support.png" />
     /// </remarks>
@@ -354,6 +355,17 @@ namespace HslCommunication
     ///             <item>修复modbus写入单个寄存器的高地位倒置的bug。</item>
     ///             <item>修复串口通信过程中字节接收不完整的异常。包含modbus服务器和modbus-rtu。</item>
     ///             <item>添加了.net 4.5项目，并且其他项目源代码引用该项目。添加了单元测试，逐步新增测试方法。</item>
+    ///         </list>
+    ///     </revision>
+    ///     <revision date="2018-07-27" version="5.2.0" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>项目新增api文档，提供离线版和在线版，文档提供了一些示例代码。</item>
+    ///             <item>modbus-rtu新增批量的数组读取方法。</item>
+    ///             <item>modbus-rtu公开ByteTransform属性，方便的进行数据转换。</item>
+    ///             <item>SoftMail删除发送失败10次不能继续发送的机制。</item>
+    ///             <item>modbus server新增站号属性，站号不对的话，不响应rtu反馈。</item>
+    ///             <item>modbus server修复读取65524和65535地址提示越界的bug。</item>
+    ///             <item>Demo项目提供了tcp/ip的调试工具。</item>
     ///         </list>
     ///     </revision>
     /// </revisionHistory>

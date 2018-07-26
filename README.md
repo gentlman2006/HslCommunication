@@ -132,7 +132,7 @@ If this library really helps you, you can support me by AliPay. Please choose th
 ![打赏](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/support.png)
 
 ## HslCommunicationDemo
-v5.1.1 function, support
+v5.2.0 function, support
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/demo.png)
 
 ## Controls
