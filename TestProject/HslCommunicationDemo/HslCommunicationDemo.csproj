@@ -130,6 +130,12 @@
     <Compile Include="FormSimplifyNet.Designer.cs">
       <DependentUpon>FormSimplifyNet.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormTcpDebug.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTcpDebug.Designer.cs">
+      <DependentUpon>FormTcpDebug.cs</DependentUpon>
+    </Compile>
     <Compile Include="PLC\FormMelsec1EBinary.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -263,6 +269,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormSimplifyNet.resx">
       <DependentUpon>FormSimplifyNet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTcpDebug.resx">
+      <DependentUpon>FormTcpDebug.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PLC\FormMelsec1EBinary.resx">
       <DependentUpon>FormMelsec1EBinary.cs</DependentUpon>

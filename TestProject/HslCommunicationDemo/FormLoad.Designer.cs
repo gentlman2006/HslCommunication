@@ -46,6 +46,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.button29 = new System.Windows.Forms.Button();
             this.button22 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
@@ -71,7 +72,7 @@
             this.button26 = new System.Windows.Forms.Button();
             this.button25 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
-            this.button29 = new System.Windows.Forms.Button();
+            this.button30 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -271,7 +272,7 @@
             // 
             this.linkLabel2.AutoSize = true;
             this.linkLabel2.LinkColor = System.Drawing.Color.Orchid;
-            this.linkLabel2.Location = new System.Drawing.Point(563, 13);
+            this.linkLabel2.Location = new System.Drawing.Point(749, 13);
             this.linkLabel2.Name = "linkLabel2";
             this.linkLabel2.Size = new System.Drawing.Size(116, 17);
             this.linkLabel2.TabIndex = 6;
@@ -296,6 +297,17 @@
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Hsl Support";
+            // 
+            // button29
+            // 
+            this.button29.Location = new System.Drawing.Point(15, 64);
+            this.button29.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button29.Name = "button29";
+            this.button29.Size = new System.Drawing.Size(150, 32);
+            this.button29.TabIndex = 6;
+            this.button29.Text = "异形 Simplify Net";
+            this.button29.UseVisualStyleBackColor = true;
+            this.button29.Click += new System.EventHandler(this.button29_Click);
             // 
             // button22
             // 
@@ -367,7 +379,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.ForeColor = System.Drawing.Color.Green;
-            this.label20.Location = new System.Drawing.Point(695, 13);
+            this.label20.Location = new System.Drawing.Point(881, 13);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(108, 17);
             this.label20.TabIndex = 8;
@@ -480,7 +492,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("微软雅黑", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label3.ForeColor = System.Drawing.Color.Gray;
-            this.label3.Location = new System.Drawing.Point(662, 40);
+            this.label3.Location = new System.Drawing.Point(862, 37);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(92, 27);
             this.label3.TabIndex = 13;
@@ -511,6 +523,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.button30);
             this.groupBox8.Controls.Add(this.button28);
             this.groupBox8.Controls.Add(this.button27);
             this.groupBox8.Controls.Add(this.button26);
@@ -527,7 +540,7 @@
             // 
             // button28
             // 
-            this.button28.Location = new System.Drawing.Point(19, 183);
+            this.button28.Location = new System.Drawing.Point(19, 222);
             this.button28.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button28.Name = "button28";
             this.button28.Size = new System.Drawing.Size(150, 32);
@@ -538,7 +551,7 @@
             // 
             // button27
             // 
-            this.button27.Location = new System.Drawing.Point(19, 143);
+            this.button27.Location = new System.Drawing.Point(19, 182);
             this.button27.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button27.Name = "button27";
             this.button27.Size = new System.Drawing.Size(150, 32);
@@ -549,7 +562,7 @@
             // 
             // button26
             // 
-            this.button26.Location = new System.Drawing.Point(19, 104);
+            this.button26.Location = new System.Drawing.Point(19, 143);
             this.button26.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button26.Name = "button26";
             this.button26.Size = new System.Drawing.Size(150, 32);
@@ -560,7 +573,7 @@
             // 
             // button25
             // 
-            this.button25.Location = new System.Drawing.Point(19, 64);
+            this.button25.Location = new System.Drawing.Point(19, 103);
             this.button25.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button25.Name = "button25";
             this.button25.Size = new System.Drawing.Size(150, 32);
@@ -580,16 +593,16 @@
             this.button24.UseVisualStyleBackColor = true;
             this.button24.Click += new System.EventHandler(this.button24_Click);
             // 
-            // button29
+            // button30
             // 
-            this.button29.Location = new System.Drawing.Point(15, 64);
-            this.button29.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button29.Name = "button29";
-            this.button29.Size = new System.Drawing.Size(150, 32);
-            this.button29.TabIndex = 6;
-            this.button29.Text = "异形 Simplify Net";
-            this.button29.UseVisualStyleBackColor = true;
-            this.button29.Click += new System.EventHandler(this.button29_Click);
+            this.button30.Location = new System.Drawing.Point(18, 63);
+            this.button30.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button30.Name = "button30";
+            this.button30.Size = new System.Drawing.Size(150, 32);
+            this.button30.TabIndex = 5;
+            this.button30.Text = "Tcp/Ip 调试助手";
+            this.button30.UseVisualStyleBackColor = true;
+            this.button30.Click += new System.EventHandler(this.button30_Click);
             // 
             // FormLoad
             // 
@@ -677,6 +690,7 @@
         private System.Windows.Forms.Button button26;
         private System.Windows.Forms.Button button28;
         private System.Windows.Forms.Button button29;
+        private System.Windows.Forms.Button button30;
     }
 }
 
