@@ -67,12 +67,13 @@
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.button23 = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.button30 = new System.Windows.Forms.Button();
             this.button28 = new System.Windows.Forms.Button();
             this.button27 = new System.Windows.Forms.Button();
             this.button26 = new System.Windows.Forms.Button();
             this.button25 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
-            this.button30 = new System.Windows.Forms.Button();
+            this.button31 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -523,6 +524,7 @@
             // 
             // groupBox8
             // 
+            this.groupBox8.Controls.Add(this.button31);
             this.groupBox8.Controls.Add(this.button30);
             this.groupBox8.Controls.Add(this.button28);
             this.groupBox8.Controls.Add(this.button27);
@@ -537,6 +539,17 @@
             this.groupBox8.TabIndex = 15;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Others";
+            // 
+            // button30
+            // 
+            this.button30.Location = new System.Drawing.Point(18, 63);
+            this.button30.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button30.Name = "button30";
+            this.button30.Size = new System.Drawing.Size(150, 32);
+            this.button30.TabIndex = 5;
+            this.button30.Text = "Tcp/Ip 调试助手";
+            this.button30.UseVisualStyleBackColor = true;
+            this.button30.Click += new System.EventHandler(this.button30_Click);
             // 
             // button28
             // 
@@ -593,16 +606,16 @@
             this.button24.UseVisualStyleBackColor = true;
             this.button24.Click += new System.EventHandler(this.button24_Click);
             // 
-            // button30
+            // button31
             // 
-            this.button30.Location = new System.Drawing.Point(18, 63);
-            this.button30.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button30.Name = "button30";
-            this.button30.Size = new System.Drawing.Size(150, 32);
-            this.button30.TabIndex = 5;
-            this.button30.Text = "Tcp/Ip 调试助手";
-            this.button30.UseVisualStyleBackColor = true;
-            this.button30.Click += new System.EventHandler(this.button30_Click);
+            this.button31.Location = new System.Drawing.Point(19, 262);
+            this.button31.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button31.Name = "button31";
+            this.button31.Size = new System.Drawing.Size(150, 32);
+            this.button31.TabIndex = 6;
+            this.button31.Text = "字节转换工具";
+            this.button31.UseVisualStyleBackColor = true;
+            this.button31.Click += new System.EventHandler(this.button31_Click);
             // 
             // FormLoad
             // 
@@ -691,6 +704,7 @@
         private System.Windows.Forms.Button button28;
         private System.Windows.Forms.Button button29;
         private System.Windows.Forms.Button button30;
+        private System.Windows.Forms.Button button31;
     }
 }
 

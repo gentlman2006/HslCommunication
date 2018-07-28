@@ -64,6 +64,12 @@
     <Compile Include="Control\FormBasicControl.Designer.cs">
       <DependentUpon>FormBasicControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormByteTransfer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormByteTransfer.Designer.cs">
+      <DependentUpon>FormByteTransfer.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormComplexNet.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -236,6 +242,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Control\FormBasicControl.resx">
       <DependentUpon>FormBasicControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormByteTransfer.resx">
+      <DependentUpon>FormByteTransfer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormComplexNet.resx">
       <DependentUpon>FormComplexNet.cs</DependentUpon>
