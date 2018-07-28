@@ -88,6 +88,11 @@ namespace HslCommunicationDemo
                     buffer = Encoding.UTF32.GetBytes( textBox1.Text );
                     radioButton = radioButton13;
                 }
+                else if (radioButton14.Checked)
+                {
+                    buffer = Encoding.Default.GetBytes( textBox1.Text );
+                    radioButton = radioButton13;
+                }
             }
             catch(Exception ex)
             {
@@ -193,6 +198,11 @@ namespace HslCommunicationDemo
                 else if (radioButton13.Checked)
                 {
                     value = Encoding.UTF32.GetString( HslCommunication.BasicFramework.SoftBasic.HexStringToBytes( textBox1.Text ) ).ToString( );
+                    radioButton = radioButton13;
+                }
+                else if (radioButton14.Checked)
+                {
+                    value = Encoding.Default.GetString( HslCommunication.BasicFramework.SoftBasic.HexStringToBytes( textBox1.Text ) ).ToString( );
                     radioButton = radioButton13;
                 }
             }
