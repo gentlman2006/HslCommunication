@@ -8,6 +8,8 @@ import HslCommunication.Core.Transfer.RegularByteTransform;
 import HslCommunication.Core.Types.OperateResultExOne;
 import HslCommunication.Utilities;
 
+import java.util.UUID;
+
 
 /**
  * 同步访问的网络客户端
@@ -25,6 +27,19 @@ public class NetSimplifyClient extends NetworkDoubleBase<HslMessage,RegularByteT
     {
         this.setIpAddress(ipAddress);
         this.setPort( port);
+    }
+
+    /**
+     * 实例化一个客户端的对象，用于和服务器通信
+     * @param ipAddress Ip地址
+     * @param port 端口号
+     * @param token 令牌
+     */
+    public NetSimplifyClient(String ipAddress, int port, UUID token)
+    {
+        this.setIpAddress(ipAddress);
+        this.setPort( port);
+        this.Token = token;
     }
 
 
@@ -71,14 +86,20 @@ public class NetSimplifyClient extends NetworkDoubleBase<HslMessage,RegularByteT
 
     /**
      * 需要发送的底层数据
-     * @param headcode 数据的指令头
+     * @param headCode 数据的指令头
      * @param customer 需要发送的底层数据
      * @param send 需要发送的底层数据
-     * @return
+     * @return 带结果说明的对象
      */
-    private OperateResultExOne<byte[]> ReadFromServerBase(int headcode, int customer, byte[] send) {
-        OperateResultExOne<byte[]> read = ReadFromCoreServer(HslProtocol.CommandBytes(headcode, customer, Token, send));
+    private OperateResultExOne<byte[]> ReadFromServerBase(int headCode, int customer, byte[] send) {
+        OperateResultExOne<byte[]> read = ReadFromCoreServer(HslProtocol.CommandBytes(headCode, customer, Token, send));
         if (!read.IsSuccess) {
+            return read;
+        }
+
+        if(read.Content.length < HslProtocol.HeadByteLength){
+            read.IsSuccess = false;
+            read.Message = "length is not correct :" +read.Content.length;
             return read;
         }
 
