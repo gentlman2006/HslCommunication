@@ -91,7 +91,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Profinet
             {
                 float temp = siemens.ByteTransform.TransInt16( read.Content, 0 ) / 10f;
                 float press = siemens.ByteTransform.TransInt16( read.Content, 2 ) / 100f;
-                int count = siemens.ByteTransform.TransInt32( read.Content, 2 );
+                int count = siemens.ByteTransform.TransInt32( read.Content, 6 );
 
                 // do something
             }
