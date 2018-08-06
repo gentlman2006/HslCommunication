@@ -415,10 +415,10 @@ namespace HslCommunication.ModBus
             if (resultBytes.IsSuccess)
             {
                 // 二次数据处理
-                if (resultBytes.Content?.Length >= 9)
+                if (resultBytes.Content?.Length >= 3)
                 {
-                    byte[] buffer = new byte[resultBytes.Content.Length - 9];
-                    Array.Copy( resultBytes.Content, 9, buffer, 0, buffer.Length );
+                    byte[] buffer = new byte[resultBytes.Content.Length - 3];
+                    Array.Copy( resultBytes.Content, 3, buffer, 0, buffer.Length );
                     resultBytes.Content = buffer;
                 }
             }
