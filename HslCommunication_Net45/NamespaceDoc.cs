@@ -368,6 +368,12 @@ namespace HslCommunication
     ///             <item>Demo项目提供了tcp/ip的调试工具。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-08-08" version="5.2.1" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>API文档中西门子FW协议示例代码修复。</item>
+    ///             <item>modbus-rtu修复读取线圈和输入线圈的值错误的bug。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc
