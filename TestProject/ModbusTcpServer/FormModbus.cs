@@ -542,5 +542,26 @@ namespace ModbusTcpServer
                 }
             }
         }
+
+
+
+
+        private ushort timerValue = 0;
+        private System.Windows.Forms.Timer timerWrite = null;
+        private void button10_Click( object sender, EventArgs e )
+        {
+            // 定时写
+            timerWrite = new System.Windows.Forms.Timer( );
+            timerWrite.Interval = 1000;
+            timerWrite.Tick += TimerWrite_Tick;
+            timerWrite.Start( );
+            button10.Enabled = false;
+        }
+
+        private void TimerWrite_Tick( object sender, EventArgs e )
+        {
+            busTcpServer.Write( textBox8.Text, timerValue );
+            timerValue++;
+        }
     }
 }

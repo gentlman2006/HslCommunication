@@ -95,6 +95,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.button10 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -362,6 +363,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button10);
             this.groupBox2.Controls.Add(this.button9);
             this.groupBox2.Controls.Add(this.button8);
             this.groupBox2.Controls.Add(this.button7);
@@ -389,7 +391,7 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(17, 130);
+            this.button9.Location = new System.Drawing.Point(6, 130);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(60, 28);
             this.button9.TabIndex = 20;
@@ -399,7 +401,7 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(17, 164);
+            this.button8.Location = new System.Drawing.Point(6, 164);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(60, 28);
             this.button8.TabIndex = 19;
@@ -809,6 +811,16 @@
             this.linkLabel2.Text = "创作不易，感谢打赏";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(72, 130);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(60, 28);
+            this.button10.TabIndex = 21;
+            this.button10.Text = "定时写";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // FormModbus
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -913,5 +925,6 @@
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button10;
     }
 }
