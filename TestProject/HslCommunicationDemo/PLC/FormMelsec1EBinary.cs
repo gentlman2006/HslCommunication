@@ -153,7 +153,7 @@ namespace HslCommunicationDemo
         private void button_read_bool_Click( object sender, EventArgs e )
         {
             // 读取bool变量
-            readResultRender( melsec_net.ReadBool( textBox3.Text ,1), textBox3.Text, textBox4 );
+            readResultRender( melsec_net.ReadBool( textBox3.Text ), textBox3.Text, textBox4 );
         }
 
         private void button_read_short_Click( object sender, EventArgs e )
