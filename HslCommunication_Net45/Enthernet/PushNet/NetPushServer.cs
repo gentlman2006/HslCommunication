@@ -41,7 +41,9 @@ namespace HslCommunication.Enthernet
         public NetPushServer()
         {
             dictPushClients = new Dictionary<string, PushGroupClient>( );
+            dictSendHistory = new Dictionary<string, string>( );
             dicHybirdLock = new SimpleHybirdLock( );
+            dicSendCacheLock = new SimpleHybirdLock( );
             sendAction = new Action<AppSession, string>( SendString );
 
             hybirdLock = new SimpleHybirdLock( );
@@ -106,7 +108,15 @@ namespace HslCommunication.Enthernet
                 {
                     System.Threading.Interlocked.Increment( ref onlineCount );
                     push.AddPushClient( session );
+
+                    dicSendCacheLock.Enter( );
+                    if(dictSendHistory.ContainsKey( receive.Content2 ))
+                    {
+                        SendString( session, dictSendHistory[receive.Content2] );
+                    }
+                    dicSendCacheLock.Leave( );
                 }
+
             }
         }
 
@@ -129,6 +139,18 @@ namespace HslCommunication.Enthernet
         /// <param name="content">数据内容</param>
         public void PushString( string key, string content )
         {
+            dicSendCacheLock.Enter( );
+            if (dictSendHistory.ContainsKey( key ))
+            {
+                dictSendHistory[key] = content;
+            }
+            else
+            {
+                dictSendHistory.Add( key, content );
+            }
+            dicSendCacheLock.Leave( );
+
+
             AddPushKey( key );
             GetPushGroupClient( key )?.PushString( content, sendAction );
         }
@@ -308,8 +330,10 @@ namespace HslCommunication.Enthernet
 
         #region Private Member
 
+        private Dictionary<string, string> dictSendHistory;                  // 词典缓存的数据发送对象
         private Dictionary<string, PushGroupClient> dictPushClients;         // 系统的数据词典
         private SimpleHybirdLock dicHybirdLock;                              // 词典锁
+        private SimpleHybirdLock dicSendCacheLock;                           // 缓存数据的锁
         private Action<AppSession, string> sendAction;                       // 发送数据的委托
         private int onlineCount = 0;                                         // 在线客户端的数量，用于监视显示
         private List<NetPushClient> pushClients;                             // 客户端列表
