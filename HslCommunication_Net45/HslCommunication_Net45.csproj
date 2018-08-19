@@ -253,7 +253,8 @@
     <Compile Include="Robot\EFORT\EfortData.cs" />
     <Compile Include="Robot\EFORT\ER7BC10.cs" />
     <Compile Include="Serial\CRCSupport.cs" />
-    <Compile Include="Serial\SerialCommunicationBase.cs" />
+    <Compile Include="Serial\SerialBase.cs" />
+    <Compile Include="Serial\SerialDeviceBase.cs" />
     <Compile Include="StringResources.cs" />
   </ItemGroup>
   <ItemGroup>
