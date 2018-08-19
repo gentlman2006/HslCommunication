@@ -466,6 +466,9 @@
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecNetMultiAsync.cs">
       <Link>Profinet\Melsec\MelsecNetMultiAsync.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecSerial.cs">
+      <Link>Profinet\Melsec\MelsecSerial.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronFinsDataType.cs">
       <Link>Profinet\Omron\OmronFinsDataType.cs</Link>
     </Compile>

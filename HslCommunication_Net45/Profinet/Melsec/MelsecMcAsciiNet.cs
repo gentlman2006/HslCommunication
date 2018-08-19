@@ -447,7 +447,7 @@ namespace HslCommunication.Profinet.Melsec
                         result.Content = new byte[read.Content.Length - 22];
                         for (int i = 22; i < read.Content.Length; i++)
                         {
-                            if (read.Content[i]== 0x30)
+                            if (read.Content[i] == 0x30)
                             {
                                 result.Content[i - 22] = 0x00;
                             }
@@ -781,7 +781,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>字符串信息</returns>
         public override string ToString( )
         {
-            return "MelsecMcNet";
+            return "MelsecMcAsciiNet";
         }
 
         #endregion

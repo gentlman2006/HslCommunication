@@ -679,7 +679,6 @@ namespace HslCommunication.ModBus
 
         #endregion
         
-
         #region Object Override
 
         /// <summary>
