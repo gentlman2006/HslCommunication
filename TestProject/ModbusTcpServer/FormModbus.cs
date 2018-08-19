@@ -117,7 +117,9 @@ namespace ModbusTcpServer
                 button1.Enabled = false;
                 panel2.Enabled = true;
                 button4.Enabled = true;
+                button11.Enabled = true;
 
+                timerSecond?.Dispose( );
                 timerSecond = new System.Windows.Forms.Timer( );
                 timerSecond.Interval = 1000;
                 timerSecond.Tick += TimerSecond_Tick;
@@ -127,6 +129,15 @@ namespace ModbusTcpServer
             {
                 MessageBox.Show( ex.Message );
             }
+        }
+
+
+        private void button11_Click( object sender, EventArgs e )
+        {
+            // 停止服务
+            busTcpServer?.ServerClose( );
+            button1.Enabled = true;
+            button11.Enabled = false;
         }
 
         private void TimerSecond_Tick( object sender, EventArgs e )
@@ -545,23 +556,25 @@ namespace ModbusTcpServer
 
 
 
-
+        private string timerAddress = string.Empty;
         private ushort timerValue = 0;
         private System.Windows.Forms.Timer timerWrite = null;
         private void button10_Click( object sender, EventArgs e )
         {
             // 定时写
             timerWrite = new System.Windows.Forms.Timer( );
-            timerWrite.Interval = 1000;
+            timerWrite.Interval = 300;
             timerWrite.Tick += TimerWrite_Tick;
             timerWrite.Start( );
+            timerAddress = textBox8.Text;
             button10.Enabled = false;
         }
 
         private void TimerWrite_Tick( object sender, EventArgs e )
         {
-            busTcpServer.Write( textBox8.Text, timerValue );
+            busTcpServer.Write( timerAddress, timerValue );
             timerValue++;
         }
+
     }
 }
