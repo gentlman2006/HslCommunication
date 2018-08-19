@@ -1212,9 +1212,9 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 创建特殊的功能标识，然后返回该信息
         /// </summary>
-        /// <param name="modbusCore"></param>
-        /// <param name="error"></param>
-        /// <returns></returns>
+        /// <param name="modbusCore">modbus核心报文</param>
+        /// <param name="error">错误码</param>
+        /// <returns>携带错误码的modbus报文</returns>
         private byte[] CreateExceptionBack( byte[] modbusCore, byte error )
         {
             byte[] buffer = new byte[3];
@@ -1227,9 +1227,9 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 创建返回消息
         /// </summary>
-        /// <param name="modbusCore"></param>
-        /// <param name="content"></param>
-        /// <returns></returns>
+        /// <param name="modbusCore">modbus核心报文</param>
+        /// <param name="content">返回的实际数据内容</param>
+        /// <returns>携带内容的modbus报文</returns>
         private byte[] CreateReadBack( byte[] modbusCore, byte[] content )
         {
             byte[] buffer = new byte[3 + content.Length];
@@ -1243,8 +1243,8 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 创建写入成功的反馈信号
         /// </summary>
-        /// <param name="modbus"></param>
-        /// <returns></returns>
+        /// <param name="modbus">modbus核心报文</param>
+        /// <returns>携带成功写入的信息</returns>
         private byte[] CreateWriteBack( byte[] modbus )
         {
             byte[] buffer = new byte[6];
