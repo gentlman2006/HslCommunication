@@ -493,8 +493,11 @@
     <Compile Include="..\HslCommunication_Net45\Serial\CRCSupport.cs">
       <Link>Serial\CRCSupport.cs</Link>
     </Compile>
-    <Compile Include="..\HslCommunication_Net45\Serial\SerialCommunicationBase.cs">
-      <Link>Serial\SerialCommunicationBase.cs</Link>
+    <Compile Include="..\HslCommunication_Net45\Serial\SerialBase.cs">
+      <Link>Serial\SerialBase.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Serial\SerialDeviceBase.cs">
+      <Link>Serial\SerialDeviceBase.cs</Link>
     </Compile>
     <Compile Include="..\HslCommunication_Net45\StringResources.cs">
       <Link>StringResources.cs</Link>
