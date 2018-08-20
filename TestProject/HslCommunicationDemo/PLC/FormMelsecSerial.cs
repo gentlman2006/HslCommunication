@@ -18,11 +18,11 @@ namespace HslCommunicationDemo
         public FormMelsecSerial( )
         {
             InitializeComponent( );
-            melsecSerial = new MelsecSerial( );
+            melsecSerial = new MelsecFxSerial( );
         }
 
 
-        private MelsecSerial melsecSerial = null;
+        private MelsecFxSerial melsecSerial = null;
 
         private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
         {
@@ -111,7 +111,7 @@ namespace HslCommunicationDemo
             
 
             melsecSerial?.Close( );
-            melsecSerial = new MelsecSerial( );
+            melsecSerial = new MelsecFxSerial( );
             
             try
             {

@@ -454,6 +454,9 @@
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1ENet.cs">
       <Link>Profinet\Melsec\MelsecA1ENet.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecFxSerial.cs">
+      <Link>Profinet\Melsec\MelsecFxSerial.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecMcAsciiNet.cs">
       <Link>Profinet\Melsec\MelsecMcAsciiNet.cs</Link>
     </Compile>
@@ -465,9 +468,6 @@
     </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecNetMultiAsync.cs">
       <Link>Profinet\Melsec\MelsecNetMultiAsync.cs</Link>
-    </Compile>
-    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecSerial.cs">
-      <Link>Profinet\Melsec\MelsecSerial.cs</Link>
     </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronFinsDataType.cs">
       <Link>Profinet\Omron\OmronFinsDataType.cs</Link>

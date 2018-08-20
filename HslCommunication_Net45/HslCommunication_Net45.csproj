@@ -238,7 +238,7 @@
     <Compile Include="Profinet\Melsec\MelsecMcDataType.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcNet.cs" />
     <Compile Include="Profinet\Melsec\MelsecNetMultiAsync.cs" />
-    <Compile Include="Profinet\Melsec\MelsecSerial.cs" />
+    <Compile Include="Profinet\Melsec\MelsecFxSerial.cs" />
     <Compile Include="Profinet\Omron\OmronFinsDataType.cs" />
     <Compile Include="Profinet\Omron\OmronFinsNet.cs" />
     <Compile Include="Profinet\Omron\OmronInfo.cs" />

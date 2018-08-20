@@ -10,7 +10,7 @@ namespace HslCommunication.Profinet.Melsec
     /// <summary>
     /// 三菱的串口通信的对象，适用于读取FX系列的串口数据
     /// </summary>
-    public class MelsecSerial : SerialDeviceBase<RegularByteTransform>
+    public class MelsecFxSerial : SerialDeviceBase<RegularByteTransform>
     {
 
         #region Constructor
@@ -18,7 +18,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <summary>
         /// 实例化三菱的串口协议的通讯对象
         /// </summary>
-        public MelsecSerial( )
+        public MelsecFxSerial( )
         {
             WordLength = 1;
         }
@@ -808,8 +808,6 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         #endregion
-
-
-
+        
     }
 }
