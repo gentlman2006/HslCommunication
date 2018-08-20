@@ -13,6 +13,18 @@ namespace HslCommunication.Serial
     /// <typeparam name="TTransform">数据解析的规则泛型</typeparam>
     public class SerialDeviceBase<TTransform> : SerialBase, IReadWriteNet where TTransform : IByteTransform, new()
     {
+        #region Constructor
+
+        /// <summary>
+        /// 默认的构造方法实现的设备信息
+        /// </summary>
+        public SerialDeviceBase( )
+        {
+            byteTransform = new TTransform( );                            // 实例化数据转换规则
+        }
+
+        #endregion
+
         #region Virtual Method
 
 

@@ -67,13 +67,16 @@
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.button23 = new System.Windows.Forms.Button();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.button31 = new System.Windows.Forms.Button();
             this.button30 = new System.Windows.Forms.Button();
             this.button28 = new System.Windows.Forms.Button();
             this.button27 = new System.Windows.Forms.Button();
             this.button26 = new System.Windows.Forms.Button();
             this.button25 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
-            this.button31 = new System.Windows.Forms.Button();
+            this.button32 = new System.Windows.Forms.Button();
+            this.linkLabel4 = new System.Windows.Forms.LinkLabel();
+            this.label4 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -204,6 +207,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.button32);
             this.groupBox3.Controls.Add(this.button13);
             this.groupBox3.Controls.Add(this.button7);
             this.groupBox3.Controls.Add(this.button4);
@@ -540,6 +544,17 @@
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Others";
             // 
+            // button31
+            // 
+            this.button31.Location = new System.Drawing.Point(19, 262);
+            this.button31.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button31.Name = "button31";
+            this.button31.Size = new System.Drawing.Size(150, 32);
+            this.button31.TabIndex = 6;
+            this.button31.Text = "字节转换工具";
+            this.button31.UseVisualStyleBackColor = true;
+            this.button31.Click += new System.EventHandler(this.button31_Click);
+            // 
             // button30
             // 
             this.button30.Location = new System.Drawing.Point(18, 63);
@@ -606,16 +621,36 @@
             this.button24.UseVisualStyleBackColor = true;
             this.button24.Click += new System.EventHandler(this.button24_Click);
             // 
-            // button31
+            // button32
             // 
-            this.button31.Location = new System.Drawing.Point(19, 262);
-            this.button31.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button31.Name = "button31";
-            this.button31.Size = new System.Drawing.Size(150, 32);
-            this.button31.TabIndex = 6;
-            this.button31.Text = "字节转换工具";
-            this.button31.UseVisualStyleBackColor = true;
-            this.button31.Click += new System.EventHandler(this.button31_Click);
+            this.button32.Location = new System.Drawing.Point(15, 144);
+            this.button32.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button32.Name = "button32";
+            this.button32.Size = new System.Drawing.Size(150, 32);
+            this.button32.TabIndex = 4;
+            this.button32.Text = "Fx Serial【串口】";
+            this.button32.UseVisualStyleBackColor = true;
+            this.button32.Click += new System.EventHandler(this.button32_Click);
+            // 
+            // linkLabel4
+            // 
+            this.linkLabel4.AutoSize = true;
+            this.linkLabel4.LinkColor = System.Drawing.Color.Green;
+            this.linkLabel4.Location = new System.Drawing.Point(461, 13);
+            this.linkLabel4.Name = "linkLabel4";
+            this.linkLabel4.Size = new System.Drawing.Size(199, 17);
+            this.linkLabel4.TabIndex = 17;
+            this.linkLabel4.TabStop = true;
+            this.linkLabel4.Text = "http://www.hslcommunication.cn/";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(411, 13);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(44, 17);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "官网：";
             // 
             // FormLoad
             // 
@@ -623,6 +658,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(1004, 645);
+            this.Controls.Add(this.linkLabel4);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.label3);
@@ -705,6 +742,9 @@
         private System.Windows.Forms.Button button29;
         private System.Windows.Forms.Button button30;
         private System.Windows.Forms.Button button31;
+        private System.Windows.Forms.Button button32;
+        private System.Windows.Forms.LinkLabel linkLabel4;
+        private System.Windows.Forms.Label label4;
     }
 }
 

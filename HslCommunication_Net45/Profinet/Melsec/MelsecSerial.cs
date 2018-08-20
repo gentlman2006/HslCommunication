@@ -113,36 +113,30 @@ namespace HslCommunication.Profinet.Melsec
         {
             return Encoding.ASCII.GetBytes( value.ToString( "X2" ) );
         }
-
-        private byte[] BuildBytesFromData( short value )
-        {
-            return Encoding.ASCII.GetBytes( value.ToString( "X4" ) );
-        }
+        
 
         private byte[] BuildBytesFromData( ushort value )
         {
             return Encoding.ASCII.GetBytes( value.ToString( "X4" ) );
         }
-
-
-        private byte[] BuildBytesFromAddress( int address, MelsecMcDataType type )
-        {
-            return Encoding.ASCII.GetBytes( address.ToString( type.FromBase == 10 ? "D6" : "X6" ) );
-        }
-
+        
 
         /// <summary>
-        /// 返回读取的地址及长度信息，第一个参数为地址，第二个参数为长度
+        /// 返回读取的地址及长度信息
         /// </summary>
-        /// <param name="dataType"></param>
-        /// <param name="startAddress"></param>
-        /// <param name="length"></param>
+        /// <param name="address">读取的地址信息</param>
         /// <returns></returns>
-        private OperateResult<ushort,ushort> CalculateWordStartAddress( MelsecMcDataType dataType, ushort startAddress ,ushort length)
+        private OperateResult<ushort> CalculateWordStartAddress( string address )
         {
-            if (dataType == MelsecMcDataType.D)
+            // 初步解析，失败就返回
+            var analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<ushort>( analysis );
+
+
+            // 二次解析
+            ushort startAddress = analysis.Content2;
+            if (analysis.Content1 == MelsecMcDataType.D)
             {
-                length = (ushort)(length * 2);
                 if (startAddress >= 8000)
                 {
                     startAddress = (ushort)((startAddress - 8000) * 2 + 0x0E00);
@@ -152,70 +146,16 @@ namespace HslCommunication.Profinet.Melsec
                     startAddress = (ushort)(startAddress * 2 + 0x1000);
                 }
             }
-            else if (dataType == MelsecMcDataType.C)
+            else if (analysis.Content1 == MelsecMcDataType.C)
             {
-                if(startAddress >= 200)
+                if (startAddress >= 200)
                 {
-                    length = (ushort)(length * 2);
                     startAddress = (ushort)((startAddress - 200) * 4 + 0x0C00);
                 }
                 else
                 {
-                    length = (ushort)(length * 2);
                     startAddress = (ushort)(startAddress * 2 + 0x0A00);
                 }
-            }
-            else if (dataType == MelsecMcDataType.T)
-            {
-                length = (ushort)(length * 2);
-                startAddress = (ushort)(startAddress * 2 + 0x0800);
-            }
-            else
-            {
-                return new OperateResult<ushort,ushort>( ) { Message = "当前类型不支持字读取" };
-            }
-
-            return OperateResult.CreateSuccessResult( startAddress ,(ushort)0);
-        }
-
-
-
-        /// <summary>
-        /// 根据类型地址长度确认需要读取的指令头
-        /// </summary>
-        /// <param name="address">起始地址</param>
-        /// <param name="length">长度</param>
-        /// <returns>带有成功标志的指令数据</returns>
-        private OperateResult<byte[]> BuildReadWordCommand( string address, ushort length )
-        {
-            var result = new OperateResult<byte[]>( );
-            var analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
-            
-            byte[] _PLCCommand = new byte[11];
-            _PLCCommand[0] = 0x02;             // STX
-            _PLCCommand[1] = 0x30;             // Read
-
-            length = (ushort)(length * 2);
-            ushort startAddress = analysis.Content2;
-            if (analysis.Content1 == MelsecMcDataType.D)
-            {
-                if (startAddress >= 8000)
-                {
-                    startAddress = (ushort)(startAddress * 2 + 0x0E00);
-                }
-                else
-                {
-                    startAddress = (ushort)(startAddress * 2 + 0x1000);
-                }
-            }
-            else if (analysis.Content1 == MelsecMcDataType.C)
-            {
-                startAddress = (ushort)(startAddress * 2 + 0x0A00);
             }
             else if (analysis.Content1 == MelsecMcDataType.T)
             {
@@ -223,49 +163,24 @@ namespace HslCommunication.Profinet.Melsec
             }
             else
             {
-                return new OperateResult<byte[]>( ) { Message = "当前类型不支持字读取" };
+                return new OperateResult<ushort>( ) { Message = "当前类型不支持字读取" };
             }
 
-            _PLCCommand[2] = BuildBytesFromData( startAddress )[0];      // 偏移地址
-            _PLCCommand[3] = BuildBytesFromData( startAddress )[1];
-            _PLCCommand[4] = BuildBytesFromData( startAddress )[2];
-            _PLCCommand[5] = BuildBytesFromData( startAddress )[3];
-
-            _PLCCommand[6] = BuildBytesFromData( (byte)length )[0];      // 读取长度
-            _PLCCommand[7] = BuildBytesFromData( (byte)length )[1];
-
-            _PLCCommand[8] = 0x03;                                       // ETX
-            CalculateCRC( _PLCCommand ).CopyTo( _PLCCommand, 9 );        // CRC
-            
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( startAddress );
         }
 
 
-
         /// <summary>
-        /// 根据类型地址长度确认需要读取的指令头
-        /// </summary>
-        /// <param name="address">起始地址</param>
-        /// <param name="length">bool数组长度</param>
-        /// <returns>带有成功标志的指令数据</returns>
-        private OperateResult<byte[], int> BuildReadBoolCommand( string address, ushort length )
+        /// 返回读取的地址及长度信息
+        /// </summary><param name="address">地址信息</param>
+        /// <returns></returns>
+        private OperateResult<ushort, ushort> CalculateBoolStartAddress( string address )
         {
-            var result = new OperateResult<byte[], int>( );
+            // 初步解析
             var analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<ushort, ushort>( analysis );
 
-            // 默认信息----注意：高低字节交错
-
-            byte[] _PLCCommand = new byte[11];
-            _PLCCommand[0] = 0x02;             // STX
-            _PLCCommand[1] = 0x30;             // Read
-
+            // 二次解析
             ushort startAddress = analysis.Content2;
             if (analysis.Content1 == MelsecMcDataType.M)
             {
@@ -278,10 +193,6 @@ namespace HslCommunication.Profinet.Melsec
                     startAddress = (ushort)(startAddress / 8 + 0x0100);
                 }
             }
-            else if (analysis.Content1 == MelsecMcDataType.S)
-            {
-                startAddress = (ushort)(startAddress / 8 + 0x0000);
-            }
             else if (analysis.Content1 == MelsecMcDataType.X)
             {
                 startAddress = (ushort)(startAddress / 8 + 0x0080);
@@ -289,6 +200,10 @@ namespace HslCommunication.Profinet.Melsec
             else if (analysis.Content1 == MelsecMcDataType.Y)
             {
                 startAddress = (ushort)(startAddress / 8 + 0x00A0);
+            }
+            else if (analysis.Content1 == MelsecMcDataType.S)
+            {
+                startAddress = (ushort)(startAddress / 8 + 0x0000);
             }
             else if (analysis.Content1 == MelsecMcDataType.C)
             {
@@ -300,25 +215,70 @@ namespace HslCommunication.Profinet.Melsec
             }
             else
             {
-                return new OperateResult<byte[], int>( ) { Message = "当前类型不支持位读取" };
+                return new OperateResult<ushort, ushort>( ) { Message = "当前类型不支持位读取" };
             }
 
+            return OperateResult.CreateSuccessResult( startAddress, (ushort)(analysis.Content2 % 8) );
+        }
 
+
+
+        /// <summary>
+        /// 根据类型地址长度确认需要读取的指令头
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">长度</param>
+        /// <returns>带有成功标志的指令数据</returns>
+        private OperateResult<byte[]> BuildReadWordCommand( string address, ushort length )
+        {
+            var addressResult = CalculateWordStartAddress( address );
+            if (!addressResult.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( addressResult );
+
+            length = (ushort)(length * 2);
+            ushort startAddress = addressResult.Content;
+
+            byte[] _PLCCommand = new byte[11];
+            _PLCCommand[0] = 0x02;                                       // STX
+            _PLCCommand[1] = 0x30;                                       // Read
             _PLCCommand[2] = BuildBytesFromData( startAddress )[0];      // 偏移地址
             _PLCCommand[3] = BuildBytesFromData( startAddress )[1];
             _PLCCommand[4] = BuildBytesFromData( startAddress )[2];
             _PLCCommand[5] = BuildBytesFromData( startAddress )[3];
-
-            _PLCCommand[6] = BuildBytesFromData( (byte)(length / 8 + 1) )[0];      // 读取长度
-            _PLCCommand[7] = BuildBytesFromData( (byte)(length / 8 + 1) )[1];
-
+            _PLCCommand[6] = BuildBytesFromData( (byte)length )[0];      // 读取长度
+            _PLCCommand[7] = BuildBytesFromData( (byte)length )[1];
             _PLCCommand[8] = 0x03;                                       // ETX
             CalculateCRC( _PLCCommand ).CopyTo( _PLCCommand, 9 );        // CRC
 
-            result.Content1 = _PLCCommand;
-            result.Content2 = startAddress % 8;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( _PLCCommand );     // Return
+        }
+
+
+
+        /// <summary>
+        /// 根据类型地址长度确认需要读取的指令头
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">bool数组长度</param>
+        /// <returns>带有成功标志的指令数据</returns>
+        private OperateResult<byte[], int> BuildReadBoolCommand( string address, ushort length )
+        {
+            var addressResult = CalculateBoolStartAddress( address );
+            if (!addressResult.IsSuccess) return OperateResult.CreateFailedResult<byte[], int>( addressResult );
+
+            ushort startAddress = addressResult.Content1;
+            byte[] _PLCCommand = new byte[11];
+            _PLCCommand[0] = 0x02;                                                 // STX
+            _PLCCommand[1] = 0x30;                                                 // Read
+            _PLCCommand[2] = BuildBytesFromData( startAddress )[0];                // 偏移地址
+            _PLCCommand[3] = BuildBytesFromData( startAddress )[1];
+            _PLCCommand[4] = BuildBytesFromData( startAddress )[2];
+            _PLCCommand[5] = BuildBytesFromData( startAddress )[3];
+            _PLCCommand[6] = BuildBytesFromData( (byte)(length / 8 + 1) )[0];      // 读取长度
+            _PLCCommand[7] = BuildBytesFromData( (byte)(length / 8 + 1) )[1];
+            _PLCCommand[8] = 0x03;                                                 // ETX
+            CalculateCRC( _PLCCommand ).CopyTo( _PLCCommand, 9 );                  // CRC
+
+            return OperateResult.CreateSuccessResult( _PLCCommand, (int)addressResult.Content2 );
         }
 
 
@@ -352,11 +312,11 @@ namespace HslCommunication.Profinet.Melsec
         }
 
 
-        private OperateResult CheckPlcResponse(byte[] ack ,byte corrent)
+        private OperateResult CheckPlcReadResponse(byte[] ack )
         {
             if (ack.Length == 0) return new OperateResult( ) { Message = "receive data length : 0" };
             if (ack[0] == 0x15) return new OperateResult( ) { Message = "plc ack nagative" };
-            if (ack[0] == corrent) return new OperateResult( ) { Message = "plc ack wrong : " + ack[0] };
+            if (ack[0] != 0x02) return new OperateResult( ) { Message = "plc ack wrong : " + ack[0] };
 
 
             if (!CheckCRC( ack ))
@@ -369,6 +329,14 @@ namespace HslCommunication.Profinet.Melsec
             }
         }
 
+        private OperateResult CheckPlcWriteResponse( byte[] ack )
+        {
+            if (ack.Length == 0) return new OperateResult( ) { Message = "receive data length : 0" };
+            if (ack[0] == 0x15) return new OperateResult( ) { Message = "plc ack nagative" };
+            if (ack[0] != 0x06) return new OperateResult( ) { Message = "plc ack wrong : " + ack[0] };
+
+            return OperateResult.CreateSuccessResult( );
+        }
 
         /// <summary>
         /// 根据类型地址以及需要写入的数据来生成指令头
@@ -378,58 +346,26 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns></returns>
         private OperateResult<byte[]> BuildWriteWordCommand( string address, byte[] value )
         {
-            var result = new OperateResult<byte[]>( );
-            var analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            var addressResult = CalculateWordStartAddress( address );
+            if (!addressResult.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( addressResult );
 
+
+            ushort startAddress = addressResult.Content;
             byte[] _PLCCommand = new byte[11 + value.Length];
-            _PLCCommand[0] = 0x02;             // STX
-            _PLCCommand[1] = 0x31;             // Read
-
-            ushort startAddress = analysis.Content2;
-            if (analysis.Content1 == MelsecMcDataType.D)
-            {
-                startAddress += (ushort)(startAddress * 2 + 0x1000);
-            }
-            else if (analysis.Content1 == MelsecMcDataType.C)
-            {
-                startAddress += (ushort)(startAddress * 2 + 0x0A00);
-            }
-            else if (analysis.Content1 == MelsecMcDataType.T)
-            {
-                startAddress += (ushort)(startAddress * 2 + 0x0800);
-            }
-            else
-            {
-                return new OperateResult<byte[]>( ) { Message = "当前类型不支持字写入" };
-            }
-            
-
-            _PLCCommand[2] = BuildBytesFromData( startAddress )[0];      // 偏移地址
+            _PLCCommand[0] = 0x02;                                                   // STX
+            _PLCCommand[1] = 0x31;                                                   // Read
+            _PLCCommand[2] = BuildBytesFromData( startAddress )[0];                  // 偏移地址
             _PLCCommand[3] = BuildBytesFromData( startAddress )[1];
             _PLCCommand[4] = BuildBytesFromData( startAddress )[2];
             _PLCCommand[5] = BuildBytesFromData( startAddress )[3];
 
             _PLCCommand[6] = BuildBytesFromData( (byte)(value.Length / 2 ) )[0];      // 读取长度
             _PLCCommand[7] = BuildBytesFromData( (byte)(value.Length / 2 ) )[1];
-
-
             Array.Copy( value, 0, _PLCCommand, 8, value.Length );
-
-
             _PLCCommand[_PLCCommand.Length - 3] = 0x03;                                       // ETX
             CalculateCRC( _PLCCommand ).CopyTo( _PLCCommand, _PLCCommand.Length - 2 );        // CRC
-            
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
 
-            // Console.WriteLine( value.Length );
-            // Console.WriteLine( Encoding.ASCII.GetString(_PLCCommand ));
-            return result;
+            return OperateResult.CreateSuccessResult( _PLCCommand );
         }
 
 
@@ -441,13 +377,8 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns></returns>
         private OperateResult<byte[]> BuildWriteBoolCommand( string address, bool value )
         {
-            var result = new OperateResult<byte[]>( );
             var analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             byte[] _PLCCommand = new byte[9];
             _PLCCommand[0] = 0x02;                            // STX
@@ -458,36 +389,36 @@ namespace HslCommunication.Profinet.Melsec
             {
                 if (startAddress >= 8000)
                 {
-                    startAddress = (ushort)((startAddress - 8000) / 8 + 0x01E0);
+                    startAddress = (ushort)(startAddress - 8000 + 0x0F00);
                 }
                 else
                 {
-                    startAddress = (ushort)(startAddress / 8 + 0x0100);
+                    startAddress = (ushort)(startAddress + 0x0800);
                 }
             }
             else if (analysis.Content1 == MelsecMcDataType.S)
             {
-                startAddress = (ushort)(startAddress / 8 + 0x0000);
+                startAddress = (ushort)(startAddress + 0x0000);
             }
             else if (analysis.Content1 == MelsecMcDataType.X)
             {
-                startAddress = (ushort)(startAddress / 8 + 0x0080);
+                startAddress = (ushort)(startAddress + 0x0400);
             }
             else if (analysis.Content1 == MelsecMcDataType.Y)
             {
-                startAddress = (ushort)(startAddress / 8 + 0x00A0);
+                startAddress = (ushort)(startAddress + 0x0500);
             }
             else if (analysis.Content1 == MelsecMcDataType.C)
             {
-                startAddress += (ushort)(startAddress / 8 + 0x01C0);
+                startAddress += (ushort)(startAddress + 0x0E00);
             }
             else if (analysis.Content1 == MelsecMcDataType.T)
             {
-                startAddress += (ushort)(startAddress / 8 + 0x00C0);
+                startAddress += (ushort)(startAddress + 0x0600);
             }
             else
             {
-                return new OperateResult<byte[]>( ) { Message = "当前类型不支持位读取" };
+                return new OperateResult<byte[]>( ) { Message = "当前类型不支持位写入" };
             }
 
 
@@ -498,9 +429,7 @@ namespace HslCommunication.Profinet.Melsec
             _PLCCommand[6] = 0x03;                                       // ETX
             CalculateCRC( _PLCCommand ).CopyTo( _PLCCommand, 7 );        // CRC
 
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( _PLCCommand );
         }
 
         #endregion
@@ -558,7 +487,7 @@ namespace HslCommunication.Profinet.Melsec
             var read = ReadBase( command.Content );
             if (read.IsSuccess)
             {
-                OperateResult ackResult = CheckPlcResponse( read.Content, 0x02 );
+                OperateResult ackResult = CheckPlcReadResponse( read.Content );
                 if (!ackResult.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( ackResult );
 
                 result.Content = new byte[(read.Content.Length - 4) / 2];
@@ -657,7 +586,7 @@ namespace HslCommunication.Profinet.Melsec
             var read = ReadBase( command.Content1 );
             if (read.IsSuccess)
             {
-                OperateResult ackResult = CheckPlcResponse( read.Content ,0x02);
+                OperateResult ackResult = CheckPlcReadResponse( read.Content );
                 if (!ackResult.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( ackResult );
 
                 // 提取真实的数据
@@ -756,7 +685,7 @@ namespace HslCommunication.Profinet.Melsec
             OperateResult<byte[]> read = ReadBase( command.Content );
             if (read.IsSuccess)
             {
-                OperateResult checkResult = CheckPlcResponse( read.Content, 0x06 );
+                OperateResult checkResult = CheckPlcWriteResponse( read.Content );
                 if (!checkResult.IsSuccess) return checkResult;
 
                 result.IsSuccess = true;
@@ -806,7 +735,7 @@ namespace HslCommunication.Profinet.Melsec
             OperateResult<byte[]> read = ReadBase( command.Content );
             if (read.IsSuccess)
             {
-                OperateResult checkResult = CheckPlcResponse( read.Content, 0x06 );
+                OperateResult checkResult = CheckPlcWriteResponse( read.Content );
                 if (!checkResult.IsSuccess) return checkResult;
 
                 result.IsSuccess = true;
