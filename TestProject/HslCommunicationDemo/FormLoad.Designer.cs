@@ -39,6 +39,7 @@
             this.button19 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button32 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
@@ -74,7 +75,6 @@
             this.button26 = new System.Windows.Forms.Button();
             this.button25 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
-            this.button32 = new System.Windows.Forms.Button();
             this.linkLabel4 = new System.Windows.Forms.LinkLabel();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
@@ -219,6 +219,17 @@
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "三菱PLC";
+            // 
+            // button32
+            // 
+            this.button32.Location = new System.Drawing.Point(15, 144);
+            this.button32.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button32.Name = "button32";
+            this.button32.Size = new System.Drawing.Size(150, 32);
+            this.button32.TabIndex = 4;
+            this.button32.Text = "Fx Serial【串口】";
+            this.button32.UseVisualStyleBackColor = true;
+            this.button32.Click += new System.EventHandler(this.button32_Click);
             // 
             // button13
             // 
@@ -621,17 +632,6 @@
             this.button24.UseVisualStyleBackColor = true;
             this.button24.Click += new System.EventHandler(this.button24_Click);
             // 
-            // button32
-            // 
-            this.button32.Location = new System.Drawing.Point(15, 144);
-            this.button32.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button32.Name = "button32";
-            this.button32.Size = new System.Drawing.Size(150, 32);
-            this.button32.TabIndex = 4;
-            this.button32.Text = "Fx Serial【串口】";
-            this.button32.UseVisualStyleBackColor = true;
-            this.button32.Click += new System.EventHandler(this.button32_Click);
-            // 
             // linkLabel4
             // 
             this.linkLabel4.AutoSize = true;
@@ -642,6 +642,7 @@
             this.linkLabel4.TabIndex = 17;
             this.linkLabel4.TabStop = true;
             this.linkLabel4.Text = "http://www.hslcommunication.cn/";
+            this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
             // 
             // label4
             // 

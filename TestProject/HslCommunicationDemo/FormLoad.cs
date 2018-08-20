@@ -102,6 +102,18 @@ namespace HslCommunicationDemo
             }
         }
 
+        private void linkLabel4_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            try
+            {
+                System.Diagnostics.Process.Start( linkLabel4.Text );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show( ex.Message );
+            }
+        }
+
         private void linkLabel3_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
         {
             try
@@ -436,5 +448,6 @@ namespace HslCommunicationDemo
             System.Threading.Thread.Sleep( 200 );
             Show( );
         }
+
     }
 }
