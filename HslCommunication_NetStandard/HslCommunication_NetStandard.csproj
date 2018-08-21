@@ -117,6 +117,7 @@
     <Compile Include="..\HslCommunication_Net45\NamespaceDoc.cs" Link="NamespaceDoc.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1EDataType.cs" Link="Profinet\Melsec\MelsecA1EDataType.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1ENet.cs" Link="Profinet\Melsec\MelsecA1ENet.cs" />
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecHelper.cs" Link="Profinet\Melsec\MelsecHelper.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecMcAsciiNet.cs" Link="Profinet\Melsec\MelsecMcAsciiNet.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecMcDataType.cs" Link="Profinet\Melsec\MelsecMcDataType.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecMcNet.cs" Link="Profinet\Melsec\MelsecMcNet.cs" />

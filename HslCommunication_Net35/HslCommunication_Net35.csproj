@@ -457,6 +457,9 @@
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecFxSerial.cs">
       <Link>Profinet\Melsec\MelsecFxSerial.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecHelper.cs">
+      <Link>Profinet\Melsec\MelsecHelper.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecMcAsciiNet.cs">
       <Link>Profinet\Melsec\MelsecMcAsciiNet.cs</Link>
     </Compile>

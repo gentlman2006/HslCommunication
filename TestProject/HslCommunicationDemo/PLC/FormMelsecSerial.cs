@@ -40,7 +40,7 @@ namespace HslCommunicationDemo
         {
             panel2.Enabled = false;
             userCurve1.SetLeftCurve( "A", new float[0], Color.Tomato );
-            comboBox1.SelectedIndex = 0;
+            comboBox1.SelectedIndex = 2;
         }
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )

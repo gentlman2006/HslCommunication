@@ -25,7 +25,7 @@ namespace HslCommunication.Core.Address
         /// <summary>
         /// 解析字符串的地址
         /// </summary>
-        /// <param name="address"></param>
+        /// <param name="address">地址信息</param>
         public virtual void AnalysisAddress( string address )
         {
             Address = ushort.Parse( address );
@@ -35,7 +35,7 @@ namespace HslCommunication.Core.Address
         /// <summary>
         /// 返回表示当前对象的字符串
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串数据</returns>
         public override string ToString( )
         {
             return Address.ToString( );

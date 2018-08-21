@@ -234,6 +234,7 @@
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Profinet\Melsec\MelsecA1EDataType.cs" />
     <Compile Include="Profinet\Melsec\MelsecA1ENet.cs" />
+    <Compile Include="Profinet\Melsec\MelsecHelper.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcAsciiNet.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcDataType.cs" />
     <Compile Include="Profinet\Melsec\MelsecMcNet.cs" />

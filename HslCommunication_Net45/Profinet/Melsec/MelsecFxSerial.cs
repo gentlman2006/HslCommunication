@@ -381,7 +381,7 @@ namespace HslCommunication.Profinet.Melsec
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             byte[] _PLCCommand = new byte[9];
-            _PLCCommand[0] = 0x02;                            // STX
+            _PLCCommand[0] = 0x02;                                        // STX
             _PLCCommand[1] = value ? (byte)0x37 : (byte)0x38;             // Read
 
             ushort startAddress = analysis.Content2;
@@ -491,16 +491,13 @@ namespace HslCommunication.Profinet.Melsec
                 if (!ackResult.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( ackResult );
 
                 result.Content = new byte[(read.Content.Length - 4) / 2];
-                for (int i = 0; i < result.Content.Length / 2; i++)
+                for (int i = 0; i < result.Content.Length; i++)
                 {
-                    byte[] buffer = new byte[4];
-                    buffer[0] = read.Content[i * 4 + 1];
-                    buffer[1] = read.Content[i * 4 + 2];
-                    buffer[2] = read.Content[i * 4 + 3];
-                    buffer[3] = read.Content[i * 4 + 4];
+                    byte[] buffer = new byte[2];
+                    buffer[0] = read.Content[i * 2 + 1];
+                    buffer[1] = read.Content[i * 2 + 2];
 
-                    ushort tmp = Convert.ToUInt16( Encoding.ASCII.GetString( buffer ), 16 );
-                    BitConverter.GetBytes( tmp ).CopyTo( result.Content, i * 2 );
+                    result.Content[i] = Convert.ToByte( Encoding.ASCII.GetString( buffer ), 16 );
                 }
 
                 result.IsSuccess = true;
@@ -640,8 +637,7 @@ namespace HslCommunication.Profinet.Melsec
         #endregion
 
         #region Write Base
-
-
+        
         /// <summary>
         /// 向PLC写入数据，数据格式为原始的字节类型
         /// </summary>
@@ -670,9 +666,9 @@ namespace HslCommunication.Profinet.Melsec
 
             // 字写入
             byte[] buffer = new byte[value.Length * 2];
-            for (int i = 0; i < value.Length / 2; i++)
+            for (int i = 0; i < value.Length; i++)
             {
-                BuildBytesFromData( BitConverter.ToUInt16( value, i * 2 ) ).CopyTo( buffer, 4 * i );
+                BuildBytesFromData( value[i] ).CopyTo( buffer, 2 * i );
             }
 
             OperateResult<byte[]> command = BuildWriteWordCommand( address, buffer );
@@ -804,7 +800,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>字符串信息</returns>
         public override string ToString( )
         {
-            return "MelsecSerial";
+            return "MelsecFxSerial";
         }
 
         #endregion
