@@ -180,17 +180,41 @@ namespace HslCommunication.Controls
             if (Width <= 20) return result;
 
             result.IsSuccess = true;
-            result.Content2 = Height - 30;
-            if ((Width - 40) / 2d > result.Content2)
+            if (!IsBigSemiCircle)
             {
-                result.Content3 = Math.Acos( 1 ) * 180 / Math.PI;
+                // 以纵轴为标准创建的图像，特点是小于半圆~半圆变化
+                result.Content2 = Height - 30;
+                if ((Width - 40) / 2d > result.Content2)
+                {
+                    result.Content3 = Math.Acos( 1 ) * 180 / Math.PI;
+                }
+                else
+                {
+                    result.Content3 = Math.Acos( (Width - 40) / 2d / (Height - 30) ) * 180 / Math.PI;
+                }
+                result.Content1 = new Point( Width / 2, Height - 10 );
+                return result;
             }
             else
             {
-                result.Content3 = Math.Acos( (Width - 40) / 2d / (Height - 30) ) * 180 / Math.PI;
+                // 以横轴为标准创建的图像，特点是半圆~整圆变化
+                result.Content2 = (Width - 40) / 2;
+                if ((Height - 30) < result.Content2)
+                {
+                    result.Content2 = Height - 30;
+                    result.Content3 = Math.Acos( 1 ) * 180 / Math.PI;
+                    result.Content1 = new Point( Width / 2, Height - 10 );
+                    return result;
+                }
+                else
+                {
+                    int left = Height - 30 - result.Content2;
+                    if (left > result.Content2) left = result.Content2;
+                    result.Content3 = -Math.Asin( left * 1.0d / result.Content2 ) * 180 / Math.PI;
+                    result.Content1 = new Point( Width / 2, result.Content2 + 20 );
+                    return result;
+                }
             }
-            result.Content1 = new Point( Width / 2, Height - 10 );
-            return result;
         }
 
         private void ThreadPoolUpdateProgress( object obj )
@@ -274,7 +298,8 @@ namespace HslCommunication.Controls
         private int segment_count = 10;                                       // 显示区域的分割片段
         private StringFormat centerFormat = null;                             // 居中显示的格式化文本
         private string value_unit_text = string.Empty;                        // 数值的单位，可以设置并显示
-        private bool text_under_pointer = true;                              // 指示文本是否在指针的下面
+        private bool text_under_pointer = true;                               // 指示文本是否在指针的下面
+        private bool isBigSemiCircle = false;                                 // 是否显示超过半个圆的信息
 
         #endregion
 
@@ -508,6 +533,26 @@ namespace HslCommunication.Controls
             set
             {
                 text_under_pointer = value;
+                Invalidate( );
+            }
+        }
+
+        /// <summary>
+        /// 通常情况，仪表盘不会大于半个圆，除非本属性设置为 True
+        /// </summary>
+        [Browsable( true )]
+        [Category( "外观" )]
+        [Description( "通常情况，仪表盘不会大于半个圆，除非本属性设置为 True" )]
+        [DefaultValue( false )]
+        public bool IsBigSemiCircle
+        {
+            get
+            {
+                return isBigSemiCircle;
+            }
+            set
+            {
+                isBigSemiCircle = value;
                 Invalidate( );
             }
         }

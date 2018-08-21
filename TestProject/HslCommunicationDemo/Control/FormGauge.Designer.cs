@@ -28,20 +28,49 @@
         /// </summary>
         private void InitializeComponent( )
         {
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.label1 = new System.Windows.Forms.Label();
+            this.userGaugeChart5 = new HslCommunication.Controls.UserGaugeChart();
             this.userGaugeChart4 = new HslCommunication.Controls.UserGaugeChart();
             this.userGaugeChart3 = new HslCommunication.Controls.UserGaugeChart();
             this.userGaugeChart2 = new HslCommunication.Controls.UserGaugeChart();
             this.userGaugeChart1 = new HslCommunication.Controls.UserGaugeChart();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
-            this.userGaugeChart5 = new HslCommunication.Controls.UserGaugeChart();
-            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
+            // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.Location = new System.Drawing.Point(673, 1);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(331, 638);
+            this.propertyGrid1.TabIndex = 33;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(386, 196);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(236, 17);
+            this.label1.TabIndex = 35;
+            this.label1.Text = "该控件的基本属性可由右侧的控件界面设置";
+            // 
+            // userGaugeChart5
+            // 
+            this.userGaugeChart5.BackColor = System.Drawing.Color.Transparent;
+            this.userGaugeChart5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart5.IsTextUnderPointer = false;
+            this.userGaugeChart5.Location = new System.Drawing.Point(338, 13);
+            this.userGaugeChart5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userGaugeChart5.Name = "userGaugeChart5";
+            this.userGaugeChart5.Size = new System.Drawing.Size(316, 179);
+            this.userGaugeChart5.TabIndex = 34;
+            this.userGaugeChart5.UnitText = "km/H";
+            this.userGaugeChart5.Value = 50D;
             // 
             // userGaugeChart4
             // 
             this.userGaugeChart4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
             this.userGaugeChart4.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart4.Location = new System.Drawing.Point(338, 406);
+            this.userGaugeChart4.Location = new System.Drawing.Point(353, 435);
             this.userGaugeChart4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart4.Name = "userGaugeChart4";
             this.userGaugeChart4.PointerColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
@@ -53,11 +82,11 @@
             // 
             this.userGaugeChart3.BackColor = System.Drawing.Color.Transparent;
             this.userGaugeChart3.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart3.Location = new System.Drawing.Point(62, 406);
+            this.userGaugeChart3.Location = new System.Drawing.Point(12, 435);
             this.userGaugeChart3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart3.Name = "userGaugeChart3";
             this.userGaugeChart3.PointerColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.userGaugeChart3.Size = new System.Drawing.Size(217, 226);
+            this.userGaugeChart3.Size = new System.Drawing.Size(320, 197);
             this.userGaugeChart3.TabIndex = 31;
             this.userGaugeChart3.Value = 60D;
             // 
@@ -65,12 +94,13 @@
             // 
             this.userGaugeChart2.BackColor = System.Drawing.Color.Transparent;
             this.userGaugeChart2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userGaugeChart2.IsBigSemiCircle = true;
             this.userGaugeChart2.IsTextUnderPointer = false;
-            this.userGaugeChart2.Location = new System.Drawing.Point(0, 204);
+            this.userGaugeChart2.Location = new System.Drawing.Point(12, 196);
             this.userGaugeChart2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart2.Name = "userGaugeChart2";
             this.userGaugeChart2.SegmentCount = 14;
-            this.userGaugeChart2.Size = new System.Drawing.Size(344, 179);
+            this.userGaugeChart2.Size = new System.Drawing.Size(320, 245);
             this.userGaugeChart2.TabIndex = 30;
             this.userGaugeChart2.UnitText = "km/H";
             this.userGaugeChart2.Value = 50D;
@@ -88,35 +118,6 @@
             this.userGaugeChart1.TabIndex = 29;
             this.userGaugeChart1.UnitText = "km/h";
             this.userGaugeChart1.Value = 50D;
-            // 
-            // propertyGrid1
-            // 
-            this.propertyGrid1.Location = new System.Drawing.Point(673, 1);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(331, 638);
-            this.propertyGrid1.TabIndex = 33;
-            // 
-            // userGaugeChart5
-            // 
-            this.userGaugeChart5.BackColor = System.Drawing.Color.Transparent;
-            this.userGaugeChart5.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userGaugeChart5.IsTextUnderPointer = false;
-            this.userGaugeChart5.Location = new System.Drawing.Point(338, 13);
-            this.userGaugeChart5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userGaugeChart5.Name = "userGaugeChart5";
-            this.userGaugeChart5.Size = new System.Drawing.Size(316, 179);
-            this.userGaugeChart5.TabIndex = 34;
-            this.userGaugeChart5.UnitText = "km/H";
-            this.userGaugeChart5.Value = 50D;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(386, 196);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(236, 17);
-            this.label1.TabIndex = 35;
-            this.label1.Text = "该控件的基本属性可由右侧的控件界面设置";
             // 
             // FormGauge
             // 
