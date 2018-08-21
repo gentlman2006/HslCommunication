@@ -422,10 +422,10 @@ namespace HslCommunication.Profinet.Melsec
             }
 
 
-            _PLCCommand[2] = BuildBytesFromData( startAddress )[0];      // 偏移地址
-            _PLCCommand[3] = BuildBytesFromData( startAddress )[1];
-            _PLCCommand[4] = BuildBytesFromData( startAddress )[2];
-            _PLCCommand[5] = BuildBytesFromData( startAddress )[3];
+            _PLCCommand[2] = BuildBytesFromData( startAddress )[2];      // 偏移地址
+            _PLCCommand[3] = BuildBytesFromData( startAddress )[3];
+            _PLCCommand[4] = BuildBytesFromData( startAddress )[0];
+            _PLCCommand[5] = BuildBytesFromData( startAddress )[1];
             _PLCCommand[6] = 0x03;                                       // ETX
             CalculateCRC( _PLCCommand ).CopyTo( _PLCCommand, 7 );        // CRC
 
