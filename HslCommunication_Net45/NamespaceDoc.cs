@@ -12,6 +12,8 @@ namespace HslCommunication
     /// 本组件免费开源，使用之前请认真的阅读本API文档，对于本文档中警告部分的内容务必理解，部署生产之前请详细测试，如果在测试的过程中，
     /// 发现了BUG，或是有问题的地方，欢迎联系作者进行修改，或是直接在github上进行提问。统一声明：对于操作设备造成的任何损失，作者概不负责。
     /// <br /><br />
+    /// 官方网站：<a href="http://www.hslcommunication.cn/">http://www.hslcommunication.cn/</a>
+    /// <br /><br />
     /// <note type="important">
     /// 本组件的目标是集成一个框架，统一所有的设备读写方法，抽象成统一的接口<see cref="IReadWriteNet"/>，对于上层操作只需要关注地址，读取类型即可，另一个目标是使用本框架轻松实现C#后台+C#客户端+web浏览器+android手机的全方位功能实现。
     /// </note>
