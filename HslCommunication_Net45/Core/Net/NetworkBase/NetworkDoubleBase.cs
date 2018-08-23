@@ -434,21 +434,15 @@ namespace HslCommunication.Core.Net
         /// <returns>接收的完整的报文信息</returns>
         public OperateResult<byte[]> ReadFromCoreServer( Socket socket, byte[] send )
         {
-            var result = new OperateResult<byte[]>( );
+            OperateResult<byte[],byte[]> read = ReadFromCoreServerBase( socket, send );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );
 
-            var read = ReadFromCoreServerBase( socket, send );
-            if (read.IsSuccess)
-            {
-                result.IsSuccess = read.IsSuccess;
-                result.Content = new byte[read.Content1.Length + read.Content2.Length];
-                if (read.Content1.Length > 0) read.Content1.CopyTo( result.Content, 0 );
-                if (read.Content2.Length > 0) read.Content2.CopyTo( result.Content, read.Content1.Length );
-            }
-            else
-            {
-                result.CopyErrorFromOther( read );
-            }
-            return result;
+            // 拼接结果数据
+            byte[] Content = new byte[read.Content1.Length + read.Content2.Length];
+            if (read.Content1.Length > 0) read.Content1.CopyTo( Content, 0 );
+            if (read.Content2.Length > 0) read.Content2.CopyTo( Content, read.Content1.Length );
+
+            return OperateResult.CreateSuccessResult( Content );
         }
 
 
@@ -489,8 +483,9 @@ namespace HslCommunication.Core.Net
                 IsSocketError = false;
                 result.IsSuccess = read.IsSuccess;
                 result.Content = read.Content;
+                result.Message = StringResources.SuccessText;
                 //string tmp2 = BasicFramework.SoftBasic.ByteToHexString( result.Content, '-' );
-                
+
             }
             else
             {
@@ -515,7 +510,6 @@ namespace HslCommunication.Core.Net
         /// </remarks>
         protected OperateResult<byte[], byte[]> ReadFromCoreServerBase(Socket socket, byte[] send )
         {
-            var result = new OperateResult<byte[], byte[]>( );
             // LogNet?.WriteDebug( ToString( ), "Command: " + BasicFramework.SoftBasic.ByteToHexString( send ) );
             TNetMessage netMsg = new TNetMessage
             {
@@ -523,12 +517,11 @@ namespace HslCommunication.Core.Net
             };
 
             // 发送数据信息
-            OperateResult resultSend = Send( socket, send );
-            if (!resultSend.IsSuccess)
+            OperateResult sendResult = Send( socket, send );
+            if (!sendResult.IsSuccess)
             {
                 socket?.Close( );
-                result.CopyErrorFromOther( resultSend );
-                return result;
+                return OperateResult.CreateFailedResult<byte[], byte[]>( sendResult );
             }
 
             // 接收超时时间大于0时才允许接收远程的数据
@@ -539,18 +532,14 @@ namespace HslCommunication.Core.Net
                 if (!resultReceive.IsSuccess)
                 {
                     socket?.Close( );
-                    // result.CopyErrorFromOther( resultReceive );
-                    result.Message = "Receive data timeout: " + receiveTimeOut;
-                    return result;
+                    return new OperateResult<byte[], byte[]>( ) { Message = "Receive data timeout: " + receiveTimeOut };
                 }
-
-                // 复制结果
-                result.Content1 = resultReceive.Content.HeadBytes;
-                result.Content2 = resultReceive.Content.ContentBytes;
+                return OperateResult.CreateSuccessResult( resultReceive.Content.HeadBytes, resultReceive.Content.ContentBytes );
             }
-            
-            result.IsSuccess = true;
-            return result;
+            else
+            {
+                return OperateResult.CreateSuccessResult( new byte[0], new byte[0] );
+            }
         }
 
 
