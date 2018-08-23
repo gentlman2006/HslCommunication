@@ -376,6 +376,15 @@ namespace HslCommunication
     ///             <item>modbus-rtu修复读取线圈和输入线圈的值错误的bug。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-08-23" version="5.2.2" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>Demo中三菱A-1E帧，修复bool读取显示失败的BUG。</item>
+    ///             <item>数据订阅类客户端连接上服务器后，服务器立即推送一次。</item>
+    ///             <item>串口设备基类代码提炼，提供了多种数据类型的读写支持。</item>
+    ///             <item>仪表盘新增属性IsBigSemiCircle，设置为true之后，仪表盘可显示大于半圆的视图。</item>
+    ///             <item>提供了一个新的三菱串口类，用于采集FX系列的PLC，MelsecFxSerial</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc
