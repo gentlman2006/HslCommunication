@@ -188,8 +188,6 @@ namespace HslCommunication.Profinet.Melsec
         #region Build Command
         
 
-
-
         private byte[] BuildBytesFromData(byte value)
         {
             return Encoding.ASCII.GetBytes(value.ToString("X2")) ;
