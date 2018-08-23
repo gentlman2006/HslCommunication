@@ -196,6 +196,7 @@ namespace HslCommunication.Profinet.Melsec
             }
 
             result.IsSuccess = true;
+            result.Message = StringResources.SuccessText;
             return result;
         }
 
@@ -211,43 +212,34 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带有成功标志的指令数据</returns>
         private OperateResult<MelsecMcDataType, byte[]> BuildReadCommand( string address, ushort length )
         {
-            var result = new OperateResult<MelsecMcDataType,byte[]>( );
             var analysis = AnalysisAddress( address );
-            if(!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<MelsecMcDataType, byte[]>( analysis );
 
             // 默认信息----注意：高低字节交错
-
             byte[] _PLCCommand = new byte[21];
-            _PLCCommand[0] = 0x50;                         // 副标题
-            _PLCCommand[1] = 0x00;
-            _PLCCommand[2] = NetworkNumber;                // 网络号
-            _PLCCommand[3] = 0xFF;                         // PLC编号
-            _PLCCommand[4] = 0xFF;                         // 目标模块IO编号
-            _PLCCommand[5] = 0x03;
-            _PLCCommand[6] = NetworkStationNumber;         // 目标模块站号
-            _PLCCommand[7] = 0x0C;                         // 请求数据长度
-            _PLCCommand[8] = 0x00;
-            _PLCCommand[9] = 0x0A;                         // CPU监视定时器
+            _PLCCommand[0]  = 0x50;                         // 副标题
+            _PLCCommand[1]  = 0x00;
+            _PLCCommand[2]  = NetworkNumber;                // 网络号
+            _PLCCommand[3]  = 0xFF;                         // PLC编号
+            _PLCCommand[4]  = 0xFF;                         // 目标模块IO编号
+            _PLCCommand[5]  = 0x03;
+            _PLCCommand[6]  = NetworkStationNumber;         // 目标模块站号
+            _PLCCommand[7]  = 0x0C;                         // 请求数据长度
+            _PLCCommand[8]  = 0x00;
+            _PLCCommand[9]  = 0x0A;                         // CPU监视定时器
             _PLCCommand[10] = 0x00;
             _PLCCommand[11] = 0x01;                        // 批量读取数据命令
             _PLCCommand[12] = 0x04;
-            _PLCCommand[13] = analysis.Content1.DataType;               // 以点为单位还是字为单位成批读取
+            _PLCCommand[13] = analysis.Content1.DataType;            // 以点为单位还是字为单位成批读取
             _PLCCommand[14] = 0x00;
             _PLCCommand[15] = (byte)(analysis.Content2 % 256);       // 起始地址的地位
             _PLCCommand[16] = (byte)(analysis.Content2 / 256);
             _PLCCommand[17] = 0x00;
-            _PLCCommand[18] = analysis.Content1.DataCode;               // 指明读取的数据
-            _PLCCommand[19] = (byte)(length % 256);        // 软元件长度的地位
+            _PLCCommand[18] = analysis.Content1.DataCode;            // 指明读取的数据
+            _PLCCommand[19] = (byte)(length % 256);                  // 软元件长度的地位
             _PLCCommand[20] = (byte)(length / 256);
 
-            result.Content1 = analysis.Content1;
-            result.Content2 = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( analysis.Content1, _PLCCommand );
         }
 
         /// <summary>
@@ -259,29 +251,23 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>解析后的指令</returns>
         private OperateResult<MelsecMcDataType, byte[]> BuildWriteCommand( string address, byte[] value, int length = -1 )
         {
-            var result = new OperateResult<MelsecMcDataType, byte[]>( );
             var analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<MelsecMcDataType, byte[]>( analysis );
 
             // 默认信息----注意：高低字节交错
 
             byte[] _PLCCommand = new byte[21 + value.Length];
 
-            _PLCCommand[0] = 0x50;                                          // 副标题
-            _PLCCommand[1] = 0x00;
-            _PLCCommand[2] = NetworkNumber;                                 // 网络号
-            _PLCCommand[3] = 0xFF;                                          // PLC编号
-            _PLCCommand[4] = 0xFF;                                          // 目标模块IO编号
-            _PLCCommand[5] = 0x03;
-            _PLCCommand[6] = NetworkStationNumber;                          // 目标模块站号
-
-            _PLCCommand[7] = (byte)((_PLCCommand.Length - 9) % 256);        // 请求数据长度
-            _PLCCommand[8] = (byte)((_PLCCommand.Length - 9) / 256); ;
-            _PLCCommand[9] = 0x0A;                                          // CPU监视定时器
+            _PLCCommand[0]  = 0x50;                                          // 副标题
+            _PLCCommand[1]  = 0x00;
+            _PLCCommand[2]  = NetworkNumber;                                 // 网络号
+            _PLCCommand[3]  = 0xFF;                                          // PLC编号
+            _PLCCommand[4]  = 0xFF;                                          // 目标模块IO编号
+            _PLCCommand[5]  = 0x03;
+            _PLCCommand[6]  = NetworkStationNumber;                          // 目标模块站号
+            _PLCCommand[7]  = (byte)((_PLCCommand.Length - 9) % 256);        // 请求数据长度
+            _PLCCommand[8]  = (byte)((_PLCCommand.Length - 9) / 256); ;
+            _PLCCommand[9]  = 0x0A;                                          // CPU监视定时器
             _PLCCommand[10] = 0x00;
             _PLCCommand[11] = 0x01;                                         // 批量读取数据命令
             _PLCCommand[12] = 0x14;
@@ -313,10 +299,7 @@ namespace HslCommunication.Profinet.Melsec
             }
             Array.Copy( value, 0, _PLCCommand, 21, value.Length );
 
-            result.Content1 = analysis.Content1;
-            result.Content2 = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( analysis.Content1, _PLCCommand );
         }
 
 
@@ -378,52 +361,46 @@ namespace HslCommunication.Profinet.Melsec
         /// </example>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
-            var result = new OperateResult<byte[]>( );
             //获取指令
             var command = BuildReadCommand( address, length );
             if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
+            // 核心交互
             var read = ReadFromCoreServer( command.Content2 );
-            if (read.IsSuccess)
-            {
-                result.ErrorCode = BitConverter.ToUInt16( read.Content, 9 );
-                if (result.ErrorCode == 0)
-                {
-                    if (command.Content1.DataType == 0x01)
-                    {
-                        result.Content = new byte[(read.Content.Length - 11) * 2];
-                        for (int i = 11; i < read.Content.Length; i++)
-                        {
-                            if ((read.Content[i] & 0x10) == 0x10)
-                            {
-                                result.Content[(i - 11) * 2 + 0] = 0x01;
-                            }
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );
 
-                            if ((read.Content[i] & 0x01) == 0x01)
-                            {
-                                result.Content[(i - 11) * 2 + 1] = 0x01;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        result.Content = new byte[read.Content.Length - 11];
-                        Array.Copy( read.Content, 11, result.Content, 0, result.Content.Length );
-                    }
-                    result.IsSuccess = true;
-                }
-                else
+            // 错误代码验证
+            ushort ErrorCode = BitConverter.ToUInt16( read.Content, 9 );
+            if (ErrorCode != 0) return new OperateResult<byte[]>( ) { ErrorCode = ErrorCode, Message = "请翻查三菱通讯手册来查看具体的信息。" };
+            
+            // 数据解析
+            if (command.Content1.DataType == 0x01)
+            {
+                // 位读取
+                byte[] Content = new byte[(read.Content.Length - 11) * 2];
+                for (int i = 11; i < read.Content.Length; i++)
                 {
-                    result.Message = "请翻查三菱通讯手册来查看具体的信息。";
+                    if ((read.Content[i] & 0x10) == 0x10)
+                    {
+                        Content[(i - 11) * 2 + 0] = 0x01;
+                    }
+
+                    if ((read.Content[i] & 0x01) == 0x01)
+                    {
+                        Content[(i - 11) * 2 + 1] = 0x01;
+                    }
                 }
+
+                return OperateResult.CreateSuccessResult( Content );
             }
             else
             {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
-            }
+                // 字读取
+                byte[] Content = new byte[read.Content.Length - 11];
+                Array.Copy( read.Content, 11, Content, 0, Content.Length );
 
-            return result;
+                return OperateResult.CreateSuccessResult( Content );
+            }
         }
 
 

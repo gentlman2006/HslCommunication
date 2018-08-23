@@ -352,41 +352,32 @@ namespace HslCommunication.Profinet.Siemens
         /// 以下是读取不同类型数据的示例
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\SiemensFetchWriteNet.cs" region="ReadExample1" title="Read示例" />
         /// </example>
-        public override OperateResult<byte[]> Read(string address, ushort length)
+        public override OperateResult<byte[]> Read( string address, ushort length )
         {
-            OperateResult<byte[]> result = new OperateResult<byte[]>( );
+            // 指令解析
             OperateResult<byte[]> command = BuildReadCommand( address, length );
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!command.IsSuccess) return command;
 
+            // 核心交互
             OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
-            if (read.IsSuccess)
-            {
-                if (read.Content[8] == 0x00)
-                {
-                    // 分析结果
-                    byte[] buffer = new byte[read.Content.Length - 16];
-                    Array.Copy( read.Content, 16, buffer, 0, buffer.Length );
+            if (!read.IsSuccess) return read;
 
-                    result.Content = buffer;
-                    result.IsSuccess = true;
-                }
-                else
-                {
-                    result.ErrorCode = read.Content[8];
-                    result.Message = "发生了异常，具体信息查找Fetch/Write协议文档";
-                }
+            // 分析结果
+            if (read.Content[8] == 0x00)
+            {
+                byte[] buffer = new byte[read.Content.Length - 16];
+                Array.Copy( read.Content, 16, buffer, 0, buffer.Length );
+
+                return OperateResult.CreateSuccessResult( buffer );
             }
             else
             {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
+                return new OperateResult<byte[]>( )
+                {
+                    ErrorCode = read.Content[8],
+                    Message = "发生了异常，具体信息查找Fetch/Write协议文档"
+                };
             }
-
-            return result;
         }
 
 
@@ -421,35 +412,22 @@ namespace HslCommunication.Profinet.Siemens
         /// </example>
         public override OperateResult Write(string address, byte[] value)
         {
-            OperateResult result = new OperateResult( );
-
+            // 指令解析
             OperateResult<byte[]> command = BuildWriteByteCommand( address, value );
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!command.IsSuccess) return command;
 
-
+            // 核心交互
             OperateResult<byte[]> write = ReadFromCoreServer( command.Content );
-            if (write.IsSuccess)
+            if (!write.IsSuccess) return write;
+
+            if (write.Content[8] != 0x00)
             {
-                if (write.Content[8] != 0x00)
-                {
-                    // 写入异常
-                    result.Message = "写入数据异常，代号为：" + write.Content[8].ToString( );
-                }
-                else
-                {
-                    result.IsSuccess = true;  // 写入成功
-                }
+                return new OperateResult( ) { Message = "写入数据异常，代号为：" + write.Content[8].ToString( ) };
             }
             else
             {
-                result.ErrorCode = write.ErrorCode;
-                result.Message = write.Message;
+                return OperateResult.CreateSuccessResult( );
             }
-            return result;
         }
 
 

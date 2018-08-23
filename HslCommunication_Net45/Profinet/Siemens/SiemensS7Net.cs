@@ -95,17 +95,11 @@ namespace HslCommunication.Profinet.Siemens
         {
             // 第一层通信的初始化
             OperateResult<byte[], byte[]> read_first = ReadFromCoreServerBase( socket, plcHead1 );
-            if (!read_first.IsSuccess)
-            {
-                return read_first;
-            }
+            if (!read_first.IsSuccess) return read_first;
 
             // 第二层通信的初始化
             OperateResult<byte[], byte[]> read_second = ReadFromCoreServerBase( socket, plcHead2 );
-            if (!read_second.IsSuccess)
-            {
-                return read_second;
-            }
+            if (!read_second.IsSuccess) return read_second;
 
             // 返回成功的信号
             return OperateResult.CreateSuccessResult( );
@@ -226,7 +220,6 @@ namespace HslCommunication.Profinet.Siemens
             int readCount = length.Length;
 
             byte[] _PLCCommand = new byte[19 + readCount * 12];
-
             // ======================================================================================
             // Header
             // 报文头
@@ -541,23 +534,10 @@ namespace HslCommunication.Profinet.Siemens
         /// <returns>CPU的订货号信息</returns>
         public OperateResult<string> ReadOrderNumber( )
         {
-            OperateResult<string> result = new OperateResult<string>( );
             OperateResult<byte[]> read = ReadFromCoreServer( plcOrderNumber );
-            if (read.IsSuccess)
-            {
-                if (read.Content.Length > 100)
-                {
-                    result.IsSuccess = true;
-                    result.Content = Encoding.ASCII.GetString( read.Content, 71, 20 );
-                }
-            }
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            if (!result.IsSuccess)
-            {
-                result.CopyErrorFromOther( read );
-            }
-
-            return result;
+            return OperateResult.CreateSuccessResult( Encoding.ASCII.GetString( read.Content, 71, 20 ) );
         }
 
         #endregion
@@ -621,13 +601,7 @@ namespace HslCommunication.Profinet.Siemens
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
             OperateResult<byte, int, ushort> addressResult = AnalysisAddress( address );
-            if (!addressResult.IsSuccess)
-            {
-                return new OperateResult<byte[]>( )
-                {
-                    Message = addressResult.Message
-                };
-            }
+            if (!addressResult.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( addressResult );
 
             List<byte[]> bytesContent = new List<byte[]>( );
             ushort alreadyFinished = 0;
@@ -666,51 +640,40 @@ namespace HslCommunication.Profinet.Siemens
         /// <returns>结果对象</returns>
         private OperateResult<byte[]> ReadBitFromPLC( string address )
         {
-            OperateResult<byte[]> result = new OperateResult<byte[]>( );
-
+            // 指令生成
             OperateResult<byte[]> command = BuildBitReadCommand( address );
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
+            // 核心交互
             OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
-            if (read.IsSuccess)
+            if (!read.IsSuccess) return read;
+
+
+            // 分析结果
+            int receiveCount = 1;
+            if (read.Content.Length >= 21 && read.Content[20] == 1)
             {
-                int receiveCount = 1;
-
-                if (read.Content.Length >= 21 && read.Content[20] == 1)
+                byte[] buffer = new byte[receiveCount];
+                if (22 < read.Content.Length)
                 {
-                    // 分析结果
-                    byte[] buffer = new byte[receiveCount];
-
-                    if (22 < read.Content.Length)
+                    if (read.Content[21] == 0xFF &&
+                        read.Content[22] == 0x03)
                     {
-                        if (read.Content[21] == 0xFF &&
-                            read.Content[22] == 0x03)
-                        {
-                            // 有数据
-                            buffer[0] = read.Content[25];
-                        }
+                        // 有数据
+                        buffer[0] = read.Content[25];
                     }
+                }
 
-                    result.Content = buffer;
-                    result.IsSuccess = true;
-                }
-                else
-                {
-                    result.ErrorCode = read.ErrorCode;
-                    result.Message = "数据块长度校验失败";
-                }
+                return OperateResult.CreateSuccessResult( buffer );
             }
             else
             {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
+                return new OperateResult<byte[]>( )
+                {
+                    ErrorCode = read.ErrorCode,
+                    Message = "数据块长度校验失败",
+                };
             }
-
-            return result;
         }
 
 
@@ -729,16 +692,11 @@ namespace HslCommunication.Profinet.Siemens
         /// </example>
         public OperateResult<byte[]> Read( string[] address, ushort[] length )
         {
-            OperateResult<byte[]> result = new OperateResult<byte[]>( );
             OperateResult<byte, int, ushort>[] addressResult = new OperateResult<byte, int, ushort>[address.Length];
             for (int i = 0; i < address.Length; i++)
             {
                 OperateResult<byte, int, ushort> tmp = AnalysisAddress( address[i] );
-                if (!tmp.IsSuccess)
-                {
-                    result.CopyErrorFromOther( tmp );
-                    return result;
-                }
+                if (!tmp.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( addressResult[i] );
 
                 addressResult[i] = tmp;
             }
@@ -748,62 +706,51 @@ namespace HslCommunication.Profinet.Siemens
 
         private OperateResult<byte[]> Read( OperateResult<byte, int, ushort>[] address, ushort[] length )
         {
-            OperateResult<byte[]> result = new OperateResult<byte[]>( );
-
             OperateResult<byte[]> command = BuildReadCommand( address, length );
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            if (!command.IsSuccess) return command;
 
             OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
-            if (read.IsSuccess)
-            {
-                int receiveCount = 0;
-                for (int i = 0; i < length.Length; i++)
-                {
-                    receiveCount += length[i];
-                }
+            if (!read.IsSuccess) return read;
 
-                if (read.Content.Length >= 21 && read.Content[20] == length.Length)
+
+            // 分析结果
+            int receiveCount = 0;
+            for (int i = 0; i < length.Length; i++)
+            {
+                receiveCount += length[i];
+            }
+
+            if (read.Content.Length >= 21 && read.Content[20] == length.Length)
+            {
+                byte[] buffer = new byte[receiveCount];
+                int kk = 0;
+                int ll = 0;
+                for (int ii = 21; ii < read.Content.Length; ii++)
                 {
-                    // 分析结果
-                    byte[] buffer = new byte[receiveCount];
-                    int kk = 0;
-                    int ll = 0;
-                    for (int ii = 21; ii < read.Content.Length; ii++)
+                    if ((ii + 1) < read.Content.Length)
                     {
-                        if ((ii + 1) < read.Content.Length)
+                        if (read.Content[ii] == 0xFF &&
+                            read.Content[ii + 1] == 0x04)
                         {
-                            if (read.Content[ii] == 0xFF &&
-                                read.Content[ii + 1] == 0x04)
-                            {
-                                // 有数据
-                                Array.Copy( read.Content, ii + 4, buffer, ll, length[kk] );
-                                ii += length[kk] + 3;
-                                ll += length[kk];
-                                kk++;
-                            }
+                            // 有数据
+                            Array.Copy( read.Content, ii + 4, buffer, ll, length[kk] );
+                            ii += length[kk] + 3;
+                            ll += length[kk];
+                            kk++;
                         }
                     }
+                }
 
-                    result.Content = buffer;
-                    result.IsSuccess = true;
-                }
-                else
-                {
-                    result.ErrorCode = read.ErrorCode;
-                    result.Message = "数据块长度校验失败";
-                }
+                return OperateResult.CreateSuccessResult( buffer );
             }
             else
             {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
+                return new OperateResult<byte[]>( )
+                {
+                    ErrorCode = read.ErrorCode,
+                    Message = "数据块长度校验失败",
+                };
             }
-
-            return result;
         }
 
 

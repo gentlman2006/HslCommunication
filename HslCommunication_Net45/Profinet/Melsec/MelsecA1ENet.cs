@@ -16,6 +16,7 @@ namespace HslCommunication.Profinet.Melsec
     /// <list type="number">
     /// <item>FX3U(C) PLC   测试人sandy_liao</item>
     /// </list>
+    /// <note type="important">本通讯类由CKernal推送，感谢</note>
     /// </remarks>
     public class MelsecA1ENet : NetworkDeviceBase<MelsecA1EBinaryMessage, RegularByteTransform>
     {
@@ -133,26 +134,19 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">起始地址</param>
         /// <param name="length">长度</param>
         /// <returns>带有成功标志的指令数据</returns>
-        private OperateResult<MelsecA1EDataType, byte[]> BuildReadCommand(string address, ushort length)
+        private OperateResult<MelsecA1EDataType, byte[]> BuildReadCommand( string address, ushort length )
         {
-            var result = new OperateResult<MelsecA1EDataType, byte[]>();
-            var analysis = AnalysisAddress(address);
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther(analysis);
-                return result;
-            }
+            var analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<MelsecA1EDataType, byte[]>( analysis );
 
             // 默认信息----注意：高低字节交错
-            byte Subtitle = 0x00;
-            if (analysis.Content1.DataType == 0x01) { Subtitle = 0x00; }
-            else { Subtitle = 0x01; }
+            byte Subtitle = analysis.Content1.DataType == 0x01 ? (byte)0x00 : (byte)0x01;
 
             byte[] _PLCCommand = new byte[12];
-            _PLCCommand[0] = Subtitle;                     // 副标题
-            _PLCCommand[1] = PLCNumber;                    // PLC号
-            _PLCCommand[2] = 0x0A;                         // CPU监视定时器（L）这里设置为0x00,0x0A，等待CPU返回的时间为10*250ms=2.5秒
-            _PLCCommand[3] = 0x00;                         // CPU监视定时器（H）
+            _PLCCommand[0] = Subtitle;                              // 副标题
+            _PLCCommand[1] = PLCNumber;                             // PLC号
+            _PLCCommand[2] = 0x0A;                                  // CPU监视定时器（L）这里设置为0x00,0x0A，等待CPU返回的时间为10*250ms=2.5秒
+            _PLCCommand[3] = 0x00;                                  // CPU监视定时器（H）
             _PLCCommand[4] = (byte)(analysis.Content2 % 256);       // 起始软元件（开始读取的地址）
             _PLCCommand[5] = (byte)(analysis.Content2 / 256);
             _PLCCommand[6] = 0x00;
@@ -162,10 +156,7 @@ namespace HslCommunication.Profinet.Melsec
             _PLCCommand[10] = (byte)(length % 256);                 // 软元件点数
             _PLCCommand[11] = 0x00;
 
-            result.Content1 = analysis.Content1;
-            result.Content2 = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( analysis.Content1, _PLCCommand );
         }
 
         /// <summary>
@@ -177,26 +168,18 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns></returns>
         private OperateResult<MelsecA1EDataType, byte[]> BuildWriteCommand(string address, byte[] value, int length = -1)
         {
-            var result = new OperateResult<MelsecA1EDataType, byte[]>();
             var analysis = AnalysisAddress(address);
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther(analysis);
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<MelsecA1EDataType, byte[]>( analysis );
 
             // 默认信息----注意：高低字节交错
-
-            byte Subtitle = 0x00;
-            if (analysis.Content1.DataType == 0x01) { Subtitle = 0x02; }
-            else { Subtitle = 0x03; }
+            byte Subtitle = analysis.Content1.DataType == 0x01 ? (byte)0x02 : (byte)0x03;
 
             byte[] _PLCCommand = new byte[12 + value.Length];
 
-            _PLCCommand[0] = Subtitle;                     // 副标题
-            _PLCCommand[1] = PLCNumber;                    // PLC号
-            _PLCCommand[2] = 0x0A;                         // CPU监视定时器（L）这里设置为0x00,0x0A，等待CPU返回的时间为10*250ms=2.5秒
-            _PLCCommand[3] = 0x00;                         // CPU监视定时器（H）
+            _PLCCommand[0] = Subtitle;                              // 副标题
+            _PLCCommand[1] = PLCNumber;                             // PLC号
+            _PLCCommand[2] = 0x0A;                                  // CPU监视定时器（L）这里设置为0x00,0x0A，等待CPU返回的时间为10*250ms=2.5秒
+            _PLCCommand[3] = 0x00;                                  // CPU监视定时器（H）
             _PLCCommand[4] = (byte)(analysis.Content2 % 256);       // 起始软元件（开始读取的地址）
             _PLCCommand[5] = (byte)(analysis.Content2 / 256);
             _PLCCommand[6] = 0x00;
@@ -211,11 +194,11 @@ namespace HslCommunication.Profinet.Melsec
             {
                 if (length > 0)
                 {
-                    _PLCCommand[10] = (byte)(length % 256);                 // 软元件点数
+                    _PLCCommand[10] = (byte)(length % 256);                       // 软元件点数
                 }
                 else
                 {
-                    _PLCCommand[10] = (byte)(value.Length * 2 % 256);                 // 软元件点数
+                    _PLCCommand[10] = (byte)(value.Length * 2 % 256);             // 软元件点数
                 }
             }
             else
@@ -223,12 +206,9 @@ namespace HslCommunication.Profinet.Melsec
                 _PLCCommand[10] = (byte)(value.Length / 2 % 256);                 // 软元件点数
             }
 
-            Array.Copy(value, 0, _PLCCommand, 12, value.Length);    // 将具体的要写入的数据附加到写入命令后面
+            Array.Copy(value, 0, _PLCCommand, 12, value.Length);                  // 将具体的要写入的数据附加到写入命令后面
 
-            result.Content1 = analysis.Content1;
-            result.Content2 = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( analysis.Content1, _PLCCommand );
         }
 
 
@@ -242,59 +222,47 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">读取地址，格式为"M100","D100","W1A0"</param>
         /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
         /// <returns>带成功标志的结果数据对象</returns>
-        public override OperateResult<byte[]> Read(string address, ushort length)
+        public override OperateResult<byte[]> Read( string address, ushort length )
         {
-            var result = new OperateResult<byte[]>();
-            //获取指令
-            var command = BuildReadCommand(address, length);
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther(command);
-                return result;
-            }
+            // 获取指令
+            var command = BuildReadCommand( address, length );
+            if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
-            var read = ReadFromCoreServer(command.Content2);
-            if (read.IsSuccess)
-            {
-                result.ErrorCode = read.Content[1]; //这里的结束代码是一个字节
-                if (result.ErrorCode == 0)
-                {
-                    if (command.Content1.DataType == 0x01)
-                    {
-                        result.Content = new byte[(read.Content.Length - 2) * 2];
-                        for (int i = 2; i < read.Content.Length; i++)
-                        {
-                            if ((read.Content[i] & 0x10) == 0x10)
-                            {
-                                result.Content[(i - 2) * 2 + 0] = 0x01;
-                            }
+            // 核心交互
+            var read = ReadFromCoreServer( command.Content2 );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );
 
-                            if ((read.Content[i] & 0x01) == 0x01)
-                            {
-                                result.Content[(i - 2) * 2 + 1] = 0x01;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        result.Content = new byte[read.Content.Length - 2];
-                        Array.Copy(read.Content, 2, result.Content, 0, result.Content.Length);
-                    }
-                    result.IsSuccess = true;
-                }
-                else
+            // 错误代码验证
+            if (read.Content[1] != 0) return new OperateResult<byte[]>( ) { ErrorCode = read.Content[1], Message = "读取过程异常发生, 异常代码为：" + read.Content[1].ToString( ) };
+
+
+            if (command.Content1.DataType == 0x01)
+            {
+                // 位读取的情况
+                byte[] Content = new byte[(read.Content.Length - 2) * 2];
+                for (int i = 2; i < read.Content.Length; i++)
                 {
-                    result.Message = "读取过程异常发生, 异常代码为：" + read.Content[1].ToString();
-                    //在A兼容1E协议中，结束代码后面紧跟的是异常信息的代码
+                    if ((read.Content[i] & 0x10) == 0x10)
+                    {
+                        Content[(i - 2) * 2 + 0] = 0x01;
+                    }
+
+                    if ((read.Content[i] & 0x01) == 0x01)
+                    {
+                        Content[(i - 2) * 2 + 1] = 0x01;
+                    }
                 }
+
+                return OperateResult.CreateSuccessResult( Content );
             }
             else
             {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
-            }
+                // 字读取
+                byte[] Content = new byte[read.Content.Length - 2];
+                Array.Copy( read.Content, 2, Content, 0, Content.Length );
 
-            return result;
+                return OperateResult.CreateSuccessResult( Content );
+            }
         }
 
 
@@ -307,35 +275,27 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<bool[]> ReadBool(string address, ushort length)
         {
-            var result = new OperateResult<bool[]>();
+            // 地址解析
             var analysis = AnalysisAddress(address);
-            if (!analysis.IsSuccess)
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( analysis );
+            
+            // 字读取验证
+            if (analysis.Content1.DataType == 0x00)
             {
-                result.CopyErrorFromOther(analysis);
-                return result;
-            }
-            else
-            {
-                if (analysis.Content1.DataType == 0x00)
-                {
-                    result.Message = "读取位变量数组只能针对位软元件，如果读取字软元件，请自行转化";
-                    return result;
-                }
-            }
-            var read = Read(address, length);
-            if (!read.IsSuccess)
-            {
-                result.CopyErrorFromOther(read);
-                return result;
+                return new OperateResult<bool[]>( ) { Message = "读取位变量数组只能针对位软元件，如果读取字软元件，请自行转化" };
             }
 
-            result.Content = new bool[read.Content.Length];
+            // 核心交互
+            var read = Read(address, length);
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read );
+
+            // 结果提取
+            bool[] Content = new bool[read.Content.Length];
             for (int i = 0; i < read.Content.Length; i++)
             {
-                result.Content[i] = read.Content[i] == 0x01;
+                Content[i] = read.Content[i] == 0x01;
             }
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( Content );
         }
 
 
@@ -352,7 +312,7 @@ namespace HslCommunication.Profinet.Melsec
 
             return OperateResult.CreateSuccessResult<bool>( read.Content[0] );
         }
-        
+
 
         #endregion
 
@@ -364,18 +324,12 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">初始地址</param>
         /// <param name="value">原始的字节数据</param>
-        /// <returns>结果</returns>
+        /// <returns>返回写入结果</returns>
         public override OperateResult Write(string address, byte[] value)
         {
-            OperateResult<byte[]> result = new OperateResult<byte[]>();
-
-            //获取指令
+            // 地址解析
             var analysis = AnalysisAddress(address);
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther(analysis);
-                return result;
-            }
+            if (!analysis.IsSuccess) return analysis;
 
             OperateResult<MelsecA1EDataType, byte[]> command;
             // 预处理指令
@@ -401,34 +355,22 @@ namespace HslCommunication.Profinet.Melsec
                 // 字写入
                 command = BuildWriteCommand(address, value);
             }
+            
+            if (!command.IsSuccess) return command;
 
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther(command);
-                return result;
-            }
 
             OperateResult<byte[]> read = ReadFromCoreServer(command.Content2);
-            if (read.IsSuccess)
+            if (!read.IsSuccess) return read;
+
+            if(read.Content[1] == 0)
             {
-                result.ErrorCode = read.Content[1];
-                if (result.ErrorCode == 0)
-                {
-                    result.IsSuccess = true;
-                }
-                else
-                {
-                    result.Message = "写入过程异常发生, 异常代码为：" + read.Content[1].ToString();
-                    //在A兼容1E协议中，结束代码后面紧跟的是异常信息的代码}
-                }
+                return OperateResult.CreateSuccessResult( );
             }
             else
             {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
+                //在A兼容1E协议中，结束代码后面紧跟的是异常信息的代码}
+                return new OperateResult( read.Content[1], "写入过程异常发生, 异常代码为：" + read.Content[1].ToString( ) );
             }
-
-            return result;
         }
 
 
@@ -444,7 +386,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>返回写入结果</returns>
         public OperateResult Write(string address, string value, int length)
         {
             byte[] temp = Encoding.ASCII.GetBytes(value);
@@ -457,7 +399,7 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>返回写入结果</returns>
         public OperateResult WriteUnicodeString(string address, string value)
         {
             byte[] temp = Encoding.Unicode.GetBytes(value);
@@ -470,7 +412,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">要写入的数据地址</param>
         /// <param name="value">要写入的实际数据</param>
         /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
+        /// <returns>返回写入结果</returns>
         public OperateResult WriteUnicodeString(string address, string value, int length)
         {
             byte[] temp = Encoding.Unicode.GetBytes(value);

@@ -34,13 +34,13 @@ namespace HslCommunication.Profinet.Melsec
 
         private OperateResult CheckPlcReadResponse(byte[] ack )
         {
-            if (ack.Length == 0) return new OperateResult( ) { Message = "receive data length : 0" };
-            if (ack[0] == 0x15) return new OperateResult( ) { Message = "plc ack nagative" };
-            if (ack[0] != 0x02) return new OperateResult( ) { Message = "plc ack wrong : " + ack[0] };
+            if (ack.Length == 0) return new OperateResult( "receive data length : 0" );
+            if (ack[0] == 0x15) return new OperateResult("plc ack nagative" );
+            if (ack[0] != 0x02) return new OperateResult( "plc ack wrong : " + ack[0] );
             
             if (!MelsecHelper.CheckCRC( ack ))
             {
-                return new OperateResult( ) { Message = "Check CRC Failed" };
+                return new OperateResult( "Check CRC Failed" );
             }
             else
             {
@@ -50,9 +50,9 @@ namespace HslCommunication.Profinet.Melsec
 
         private OperateResult CheckPlcWriteResponse( byte[] ack )
         {
-            if (ack.Length == 0) return new OperateResult( ) { Message = "receive data length : 0" };
-            if (ack[0] == 0x15) return new OperateResult( ) { Message = "plc ack nagative" };
-            if (ack[0] != 0x06) return new OperateResult( ) { Message = "plc ack wrong : " + ack[0] };
+            if (ack.Length == 0) return new OperateResult( "receive data length : 0" );
+            if (ack[0] == 0x15) return new OperateResult( "plc ack nagative" );
+            if (ack[0] != 0x06) return new OperateResult( "plc ack wrong : " + ack[0] );
 
             return OperateResult.CreateSuccessResult( );
         }
@@ -82,7 +82,7 @@ namespace HslCommunication.Profinet.Melsec
             catch(Exception ex)
             {
                 return new OperateResult<byte[]>( ) { Message = "Extract Msg：" + ex.Message + 
-                    Environment.NewLine + "Data: " + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( response ) };
+                    Environment.NewLine + "Data: " + BasicFramework.SoftBasic.ByteToHexString( response ) };
             }
         }
 

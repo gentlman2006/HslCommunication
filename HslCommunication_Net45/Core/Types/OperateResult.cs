@@ -36,7 +36,26 @@ namespace HslCommunication
         /// </summary>
         public OperateResult()
         {
+        }
 
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg )
+        {
+            this.Message = msg;
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg )
+        {
+            this.ErrorCode = err;
+            this.Message = msg;
         }
 
         #endregion
