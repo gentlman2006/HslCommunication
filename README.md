@@ -20,13 +20,8 @@
 ## CopyRight
 本组件版权归Richard.Hu所有 [ (C) 2018 Richard.Hu, All Rights Reserved ]
 
-## Version Declaration
-Version 5.X 的计划：
-* 提升组件的稳定性，尤其是在高并发的情况下
-* 扩展其他的PLC和设备通讯支持
-* 文档手册的编写
-* Java版本的支持
-
+## Official Website
+唯一官网：[http://www.hslcommunication.cn/](http://www.hslcommunication.cn/)
 
 ## License
 使用请遵循LGPL-3.0协议说明，除了协议中已经规定的内容外，附加下面三个条款（与原协议如有冲突以附加条款为准）：
@@ -112,7 +107,7 @@ The goal of this project is to develop a .Net and java. Most software systems wi
 
 * **HslCommunicationDemo项目** 基于本组件开发的一个西门子，三菱，欧姆龙，Modbus-Tcp，SimplifyNet，ComplexNet，FileNet等的通讯测试工具，方便的进行读写测试，不需要额外的编写代码。
 
-* **HslSharp项目** 基于本组件深度定制实现的OPC UA网关服务器，实现基于三菱，西门子，欧姆龙，modbus等HslCommunication支持的协议创建可配置的OPC UA服务器。下载地址：[HSLSharp.zip](https://github.com/dathlin/HslCommunication/raw/master/Download/HSLSharp.zip)
+* **SharpNodeSettings项目** 数据网关项目，基于可配置的文件创建的数据中心，支持redis公开和opc ua公开。[https://github.com/dathlin/SharpNodeSettings](https://github.com/dathlin/SharpNodeSettings)
 
 ## Contribution
 热烈欢迎对本项目的代码提出改进意见，可以发起Pull Request，对于代码量贡献较多的小伙伴，会有额外的组件使用权，并在特别感谢里写明。
@@ -132,7 +127,7 @@ If this library really helps you, you can support me by AliPay. Please choose th
 ![打赏](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/support.png)
 
 ## HslCommunicationDemo
-v5.2.0 function, support
+v5.2.3 function, support
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/demo.png)
 
 ## Controls
