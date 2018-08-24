@@ -65,5 +65,21 @@ namespace HslCommunication_Net45.Test.Profinet.Melsec
             
         }
 
+        [TestMethod]
+        public void ExtractActualBoolDataTest( )
+        {
+            OperateResult<bool[]> operate = HslCommunication.Profinet.Melsec.MelsecFxSerial.ExtractActualBoolData(
+                HslCommunication.BasicFramework.SoftBasic.HexStringToBytes( "02 30 32 03 36 35" ), 1, 7 );
+
+            Assert.IsTrue( operate.IsSuccess, "bool数组指定解析失败" );
+            Assert.IsTrue( operate.Content[0] );
+            Assert.IsFalse( operate.Content[1] );
+            Assert.IsFalse( operate.Content[2] );
+            Assert.IsFalse( operate.Content[3] );
+            Assert.IsFalse( operate.Content[4] );
+            Assert.IsFalse( operate.Content[5] );
+            Assert.IsFalse( operate.Content[6] );
+        }
+
     }
 }

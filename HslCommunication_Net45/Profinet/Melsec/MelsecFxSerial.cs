@@ -58,33 +58,7 @@ namespace HslCommunication.Profinet.Melsec
         }
 
 
-        /// <summary>
-        /// 从PLC反馈的数据进行提炼操作
-        /// </summary>
-        /// <param name="response">PLC反馈的真实数据</param>
-        /// <returns>数据提炼后的真实数据</returns>
-        private OperateResult<byte[]> ExtractActualData( byte[] response )
-        {
-            try
-            {
-                byte[] data = new byte[(response.Length - 4) / 2];
-                for (int i = 0; i < data.Length; i++)
-                {
-                    byte[] buffer = new byte[2];
-                    buffer[0] = response[i * 2 + 1];
-                    buffer[1] = response[i * 2 + 2];
 
-                    data[i] = Convert.ToByte( Encoding.ASCII.GetString( buffer ), 16 );
-                }
-
-                return OperateResult.CreateSuccessResult( data );
-            }
-            catch(Exception ex)
-            {
-                return new OperateResult<byte[]>( ) { Message = "Extract Msg：" + ex.Message + 
-                    Environment.NewLine + "Data: " + BasicFramework.SoftBasic.ByteToHexString( response ) };
-            }
-        }
 
 
         #endregion
@@ -223,18 +197,7 @@ namespace HslCommunication.Profinet.Melsec
             if (!ackResult.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( ackResult );
 
             // 提取真实的数据
-            OperateResult<byte[]> extraResult = ExtractActualData( read.Content );
-            if(!extraResult.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( extraResult );
-
-            // 转化bool数组
-            bool[] data = new bool[length];
-            bool[] array = BasicFramework.SoftBasic.ByteToBoolArray( extraResult.Content, extraResult.Content.Length * 8 );
-            for (int i = 0; i < length; i++)
-            {
-                array[i] = array[i + command.Content2];
-            }
-
-            return OperateResult.CreateSuccessResult( data );
+            return ExtractActualBoolData( read.Content, command.Content2, length );
         }
 
 
@@ -531,7 +494,73 @@ namespace HslCommunication.Profinet.Melsec
 
             return OperateResult.CreateSuccessResult( _PLCCommand );
         }
-        
+
+
+        /// <summary>
+        /// 从PLC反馈的数据进行提炼操作
+        /// </summary>
+        /// <param name="response">PLC反馈的真实数据</param>
+        /// <returns>数据提炼后的真实数据</returns>
+        public static OperateResult<byte[]> ExtractActualData( byte[] response )
+        {
+            try
+            {
+                byte[] data = new byte[(response.Length - 4) / 2];
+                for (int i = 0; i < data.Length; i++)
+                {
+                    byte[] buffer = new byte[2];
+                    buffer[0] = response[i * 2 + 1];
+                    buffer[1] = response[i * 2 + 2];
+
+                    data[i] = Convert.ToByte( Encoding.ASCII.GetString( buffer ), 16 );
+                }
+
+                return OperateResult.CreateSuccessResult( data );
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>( )
+                {
+                    Message = "Extract Msg：" + ex.Message + Environment.NewLine +
+                    "Data: " + BasicFramework.SoftBasic.ByteToHexString( response )
+                };
+            }
+        }
+
+
+        /// <summary>
+        /// 从PLC反馈的数据进行提炼bool数组操作
+        /// </summary>
+        /// <param name="response">PLC反馈的真实数据</param>
+        /// <param name="start">起始提取的点信息</param>
+        /// <param name="length">bool数组的长度</param>
+        /// <returns>数据提炼后的真实数据</returns>
+        public static OperateResult<bool[]> ExtractActualBoolData( byte[] response, int start, int length )
+        {
+            OperateResult<byte[]> extraResult = ExtractActualData( response );
+            if (!extraResult.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( extraResult );
+
+            // 转化bool数组
+            try
+            {
+                bool[] data = new bool[length];
+                bool[] array = BasicFramework.SoftBasic.ByteToBoolArray( extraResult.Content, extraResult.Content.Length * 8 );
+                for (int i = 0; i < length; i++)
+                {
+                    data[i] = array[i + start];
+                }
+
+                return OperateResult.CreateSuccessResult( data );
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<bool[]>( )
+                {
+                    Message = "Extract Msg：" + ex.Message + Environment.NewLine +
+                    "Data: " + BasicFramework.SoftBasic.ByteToHexString( response )
+                };
+            }
+        }
 
         /// <summary>
         /// 解析数据地址成不同的三菱地址类型
