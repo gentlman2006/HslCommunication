@@ -385,6 +385,13 @@ namespace HslCommunication
     ///             <item>提供了一个新的三菱串口类，用于采集FX系列的PLC，MelsecFxSerial</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-08-24" version="5.2.3" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>修复双模式基类的一个bug，支持不接受反馈数据。</item>
+    ///             <item>修复三菱串口类的读写bug，包括写入位，和读取字和位。</item>
+    ///             <item>相关代码重构优化。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc

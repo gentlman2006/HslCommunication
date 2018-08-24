@@ -22,7 +22,7 @@
       <DocumentationSource sourceFile="HslCommunication_Net45\bin\Debug\HslCommunication.dll" />
     </DocumentationSources>
     <HelpTitle>HslCommunication Library Document</HelpTitle>
-    <HelpFileVersion>5.1.3.0</HelpFileVersion>
+    <HelpFileVersion>5.2.0</HelpFileVersion>
     <RootNamespaceContainer>False</RootNamespaceContainer>
     <NamespaceGrouping>False</NamespaceGrouping>
     <Preliminary>False</Preliminary>
