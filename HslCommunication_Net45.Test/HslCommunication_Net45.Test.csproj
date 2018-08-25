@@ -88,7 +88,7 @@
     <Compile Include="Documentation\Samples\Profinet\SiemensFetchWriteNet.cs" />
     <Compile Include="Documentation\Samples\Profinet\SiemensS7Net.cs" />
     <Compile Include="Documentation\Samples\Serial\SoftCRC16.cs" />
-    <Compile Include="Modbus\ModbusTest.cs" />
+    <Compile Include="Modbus\ModbusTcpTest.cs" />
     <Compile Include="Profinet\Melsec\MelsecFxSerialTest.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
