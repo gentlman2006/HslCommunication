@@ -26,8 +26,8 @@ namespace HslCommunication.Profinet.Siemens
     /// 与S7协议相比较而言，本协议不支持对单个的点位的读写操作。
     /// </remarks>
     /// <example>
-    ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\SiemensFetchWriteNet.cs" region="Usage" title="简单的短连接使用" />
-    ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\SiemensFetchWriteNet.cs" region="Usage2" title="简单的长连接使用" />
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\SiemensFetchWriteNet.cs" region="Usage" title="简单的短连接使用" />
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\SiemensFetchWriteNet.cs" region="Usage2" title="简单的长连接使用" />
     /// </example>
     public class SiemensFetchWriteNet : NetworkDeviceBase<FetchWriteMessage, ReverseBytesTransform>
     {
@@ -52,248 +52,6 @@ namespace HslCommunication.Profinet.Siemens
             IpAddress = ipAddress;
             Port = port;
         }
-
-        #endregion
-
-        #region Address Analysis
-
-        /// <summary>
-        /// 计算特殊的地址信息
-        /// </summary>
-        /// <param name="address">字符串信息</param>
-        /// <returns>实际值</returns>
-        private int CalculateAddressStarted(string address)
-        {
-            if (address.IndexOf( '.' ) < 0)
-            {
-                return Convert.ToInt32( address );
-            }
-            else
-            {
-                string[] temp = address.Split( '.' );
-                return Convert.ToInt32( temp[0] );
-            }
-        }
-
-        /// <summary>
-        /// 解析数据地址，解析出地址类型，起始地址，DB块的地址
-        /// </summary>
-        /// <param name="address">数据地址</param>
-        /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
-        private OperateResult<byte, int, ushort> AnalysisAddress(string address)
-        {
-            var result = new OperateResult<byte, int, ushort>( );
-            try
-            {
-                result.Content3 = 0;
-                if (address[0] == 'I')
-                {
-                    result.Content1 = 0x03;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'Q')
-                {
-                    result.Content1 = 0x04;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'M')
-                {
-                    result.Content1 = 0x02;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'D' || address.Substring( 0, 2 ) == "DB")
-                {
-                    result.Content1 = 0x01;
-                    string[] adds = address.Split( '.' );
-                    if (address[1] == 'B')
-                    {
-                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 2 ) );
-                    }
-                    else
-                    {
-                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 1 ) );
-                    }
-
-                    if (result.Content3 > 255)
-                    {
-                        result.Message = "DB块数据无法大于255";
-                        return result;
-                    }
-
-                    result.Content2 = CalculateAddressStarted( address.Substring( address.IndexOf( '.' ) + 1 ) );
-                }
-                else if (address[0] == 'T')
-                {
-                    result.Content1 = 0x07;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'C')
-                {
-                    result.Content1 = 0x06;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else
-                {
-                    result.Message = "不支持的数据类型";
-                    result.Content1 = 0;
-                    result.Content2 = 0;
-                    result.Content3 = 0;
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                result.Message = ex.Message;
-                return result;
-            }
-
-            result.IsSuccess = true;
-            return result;
-        }
-
-
-        #endregion
-
-        #region Build Command
-
-        /// <summary>
-        /// 生成一个读取字数据指令头的通用方法
-        /// </summary>
-        /// <param name="address"></param>
-        /// <param name="count"></param>
-        /// <returns>携带有命令字节</returns>
-        private OperateResult<byte[]> BuildReadCommand(string address, ushort count)
-        {
-            var result = new OperateResult<byte[]>( );
-
-            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
-
-            byte[] _PLCCommand = new byte[16];
-            _PLCCommand[0] = 0x53;
-            _PLCCommand[1] = 0x35;
-            _PLCCommand[2] = 0x10;
-            _PLCCommand[3] = 0x01;
-            _PLCCommand[4] = 0x03;
-            _PLCCommand[5] = 0x05;
-            _PLCCommand[6] = 0x03;
-            _PLCCommand[7] = 0x08;
-
-            //指定数据区
-            _PLCCommand[8] = analysis.Content1;
-            _PLCCommand[9] = (byte)analysis.Content3;
-
-            //指定数据地址
-            _PLCCommand[10] = (byte)(analysis.Content2 / 256);
-            _PLCCommand[11] = (byte)(analysis.Content2 % 256);
-
-            if (analysis.Content1 == 0x01 || analysis.Content1 == 0x06 || analysis.Content1 == 0x07)
-            {
-                if (count % 2 != 0)
-                {
-                    result.Message = "读取的数据长度必须为偶数";
-                    return result;
-                }
-                else
-                {
-                    //指定数据长度
-                    _PLCCommand[12] = (byte)(count / 2 / 256);
-                    _PLCCommand[13] = (byte)(count / 2 % 256);
-                }
-            }
-            else
-            {
-                //指定数据长度
-                _PLCCommand[12] = (byte)(count / 256);
-                _PLCCommand[13] = (byte)(count % 256);
-            }
-
-            _PLCCommand[14] = 0xff;
-            _PLCCommand[15] = 0x02;
-
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
-        }
-
-
-
-        /// <summary>
-        /// 生成一个写入字节数据的指令
-        /// </summary>
-        /// <param name="address"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private OperateResult<byte[]> BuildWriteByteCommand(string address, byte[] data)
-        {
-            if (data == null) data = new byte[0];
-            var result = new OperateResult<byte[]>( );
-
-            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
-
-           
-
-            byte[] _PLCCommand = new byte[16 + data.Length];
-            _PLCCommand[0] = 0x53;
-            _PLCCommand[1] = 0x35;
-            _PLCCommand[2] = 0x10;
-            _PLCCommand[3] = 0x01;
-            _PLCCommand[4] = 0x03;
-            _PLCCommand[5] = 0x03;
-            _PLCCommand[6] = 0x03;
-            _PLCCommand[7] = 0x08;
-
-            //指定数据区
-            _PLCCommand[8] = analysis.Content1;
-            _PLCCommand[9] = (byte)analysis.Content3;
-
-            //指定数据地址
-            _PLCCommand[10] = (byte)(analysis.Content2 / 256);
-            _PLCCommand[11] = (byte)(analysis.Content2 % 256);
-
-            if (analysis.Content1 == 0x01 || analysis.Content1 == 0x06 || analysis.Content1 == 0x07)
-            {
-                if (data.Length %2 != 0)
-                {
-                    result.Message = "写入的数据长度必须为偶数";
-                    return result;
-                }
-                else
-                {
-                    //指定数据长度
-                    _PLCCommand[12] = (byte)(data.Length / 2 / 256);
-                    _PLCCommand[13] = (byte)(data.Length / 2 % 256);
-                }
-            }
-            else
-            {
-                //指定数据长度
-                _PLCCommand[12] = (byte)(data.Length / 256);
-                _PLCCommand[13] = (byte)(data.Length % 256);
-            }
-            
-            _PLCCommand[14] = 0xff;
-            _PLCCommand[15] = 0x02;
-
-            //放置数据
-            Array.Copy( data, 0, _PLCCommand, 16, data.Length );
-
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
-        }
-
-
-
 
         #endregion
 
@@ -362,22 +120,13 @@ namespace HslCommunication.Profinet.Siemens
             OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
             if (!read.IsSuccess) return read;
 
-            // 分析结果
-            if (read.Content[8] == 0x00)
-            {
-                byte[] buffer = new byte[read.Content.Length - 16];
-                Array.Copy( read.Content, 16, buffer, 0, buffer.Length );
+            // 错误码验证
+            if (read.Content[8] != 0x00) return new OperateResult<byte[]>( ) { ErrorCode = read.Content[8], Message = "发生了异常，具体信息查找Fetch/Write协议文档" };
 
-                return OperateResult.CreateSuccessResult( buffer );
-            }
-            else
-            {
-                return new OperateResult<byte[]>( )
-                {
-                    ErrorCode = read.Content[8],
-                    Message = "发生了异常，具体信息查找Fetch/Write协议文档"
-                };
-            }
+            // 读取正确
+            byte[] buffer = new byte[read.Content.Length - 16];
+            Array.Copy( read.Content, 16, buffer, 0, buffer.Length );
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
 
@@ -410,7 +159,7 @@ namespace HslCommunication.Profinet.Siemens
         /// 以下是写入不同类型数据的示例
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\SiemensFetchWriteNet.cs" region="WriteExample1" title="Write示例" />
         /// </example>
-        public override OperateResult Write(string address, byte[] value)
+        public override OperateResult Write( string address, byte[] value )
         {
             // 指令解析
             OperateResult<byte[]> command = BuildWriteByteCommand( address, value );
@@ -420,14 +169,12 @@ namespace HslCommunication.Profinet.Siemens
             OperateResult<byte[]> write = ReadFromCoreServer( command.Content );
             if (!write.IsSuccess) return write;
 
-            if (write.Content[8] != 0x00)
-            {
-                return new OperateResult( ) { Message = "写入数据异常，代号为：" + write.Content[8].ToString( ) };
-            }
-            else
-            {
-                return OperateResult.CreateSuccessResult( );
-            }
+            // 错误码验证
+            if (write.Content[8] != 0x00) return new OperateResult( ) { Message = "写入数据异常，代号为：" + write.Content[8].ToString( ) };
+
+            // 写入成功
+            return OperateResult.CreateSuccessResult( );
+
         }
 
 
@@ -527,6 +274,249 @@ namespace HslCommunication.Profinet.Siemens
         }
 
         #endregion
+
+        #region Static Method Helper
+
         
+
+        /// <summary>
+        /// 计算特殊的地址信息
+        /// </summary>
+        /// <param name="address">字符串信息</param>
+        /// <returns>实际值</returns>
+        private static int CalculateAddressStarted( string address )
+        {
+            if (address.IndexOf( '.' ) < 0)
+            {
+                return Convert.ToInt32( address );
+            }
+            else
+            {
+                string[] temp = address.Split( '.' );
+                return Convert.ToInt32( temp[0] );
+            }
+        }
+
+        /// <summary>
+        /// 解析数据地址，解析出地址类型，起始地址，DB块的地址
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
+        private static OperateResult<byte, int, ushort> AnalysisAddress( string address )
+        {
+            var result = new OperateResult<byte, int, ushort>( );
+            try
+            {
+                result.Content3 = 0;
+                if (address[0] == 'I')
+                {
+                    result.Content1 = 0x03;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
+                else if (address[0] == 'Q')
+                {
+                    result.Content1 = 0x04;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
+                else if (address[0] == 'M')
+                {
+                    result.Content1 = 0x02;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
+                else if (address[0] == 'D' || address.Substring( 0, 2 ) == "DB")
+                {
+                    result.Content1 = 0x01;
+                    string[] adds = address.Split( '.' );
+                    if (address[1] == 'B')
+                    {
+                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 2 ) );
+                    }
+                    else
+                    {
+                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 1 ) );
+                    }
+
+                    if (result.Content3 > 255)
+                    {
+                        result.Message = "DB块数据无法大于255";
+                        return result;
+                    }
+
+                    result.Content2 = CalculateAddressStarted( address.Substring( address.IndexOf( '.' ) + 1 ) );
+                }
+                else if (address[0] == 'T')
+                {
+                    result.Content1 = 0x07;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
+                else if (address[0] == 'C')
+                {
+                    result.Content1 = 0x06;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
+                else
+                {
+                    result.Message = "不支持的数据类型";
+                    result.Content1 = 0;
+                    result.Content2 = 0;
+                    result.Content3 = 0;
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                return result;
+            }
+
+            result.IsSuccess = true;
+            return result;
+        }
+
+
+        #endregion
+
+        #region Build Command
+
+        /// <summary>
+        /// 生成一个读取字数据指令头的通用方法
+        /// </summary>
+        /// <param name="address">地址数据</param>
+        /// <param name="count">读取数据个数</param>
+        /// <returns>带结果对象的报文数据</returns>
+        public static OperateResult<byte[]> BuildReadCommand( string address, ushort count )
+        {
+            var result = new OperateResult<byte[]>( );
+
+            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess)
+            {
+                result.CopyErrorFromOther( analysis );
+                return result;
+            }
+
+            byte[] _PLCCommand = new byte[16];
+            _PLCCommand[0] = 0x53;
+            _PLCCommand[1] = 0x35;
+            _PLCCommand[2] = 0x10;
+            _PLCCommand[3] = 0x01;
+            _PLCCommand[4] = 0x03;
+            _PLCCommand[5] = 0x05;
+            _PLCCommand[6] = 0x03;
+            _PLCCommand[7] = 0x08;
+
+            //指定数据区
+            _PLCCommand[8] = analysis.Content1;
+            _PLCCommand[9] = (byte)analysis.Content3;
+
+            //指定数据地址
+            _PLCCommand[10] = (byte)(analysis.Content2 / 256);
+            _PLCCommand[11] = (byte)(analysis.Content2 % 256);
+
+            if (analysis.Content1 == 0x01 || analysis.Content1 == 0x06 || analysis.Content1 == 0x07)
+            {
+                if (count % 2 != 0)
+                {
+                    result.Message = "读取的数据长度必须为偶数";
+                    return result;
+                }
+                else
+                {
+                    //指定数据长度
+                    _PLCCommand[12] = (byte)(count / 2 / 256);
+                    _PLCCommand[13] = (byte)(count / 2 % 256);
+                }
+            }
+            else
+            {
+                //指定数据长度
+                _PLCCommand[12] = (byte)(count / 256);
+                _PLCCommand[13] = (byte)(count % 256);
+            }
+
+            _PLCCommand[14] = 0xff;
+            _PLCCommand[15] = 0x02;
+
+            result.Content = _PLCCommand;
+            result.IsSuccess = true;
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// 生成一个写入字节数据的指令
+        /// </summary>
+        /// <param name="address">地址数据</param>
+        /// <param name="data">实际的写入的内容</param>
+        /// <returns>带结果对象的报文数据</returns>
+        private OperateResult<byte[]> BuildWriteByteCommand( string address, byte[] data )
+        {
+            if (data == null) data = new byte[0];
+            var result = new OperateResult<byte[]>( );
+
+            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess)
+            {
+                result.CopyErrorFromOther( analysis );
+                return result;
+            }
+
+
+
+            byte[] _PLCCommand = new byte[16 + data.Length];
+            _PLCCommand[0] = 0x53;
+            _PLCCommand[1] = 0x35;
+            _PLCCommand[2] = 0x10;
+            _PLCCommand[3] = 0x01;
+            _PLCCommand[4] = 0x03;
+            _PLCCommand[5] = 0x03;
+            _PLCCommand[6] = 0x03;
+            _PLCCommand[7] = 0x08;
+
+            //指定数据区
+            _PLCCommand[8] = analysis.Content1;
+            _PLCCommand[9] = (byte)analysis.Content3;
+
+            //指定数据地址
+            _PLCCommand[10] = (byte)(analysis.Content2 / 256);
+            _PLCCommand[11] = (byte)(analysis.Content2 % 256);
+
+            if (analysis.Content1 == 0x01 || analysis.Content1 == 0x06 || analysis.Content1 == 0x07)
+            {
+                if (data.Length % 2 != 0)
+                {
+                    result.Message = "写入的数据长度必须为偶数";
+                    return result;
+                }
+                else
+                {
+                    //指定数据长度
+                    _PLCCommand[12] = (byte)(data.Length / 2 / 256);
+                    _PLCCommand[13] = (byte)(data.Length / 2 % 256);
+                }
+            }
+            else
+            {
+                //指定数据长度
+                _PLCCommand[12] = (byte)(data.Length / 256);
+                _PLCCommand[13] = (byte)(data.Length % 256);
+            }
+            _PLCCommand[14] = 0xff;
+            _PLCCommand[15] = 0x02;
+
+            //放置数据
+            Array.Copy( data, 0, _PLCCommand, 16, data.Length );
+
+            result.Content = _PLCCommand;
+            result.IsSuccess = true;
+            return result;
+        }
+
+
+        
+
+        #endregion
+
     }
 }

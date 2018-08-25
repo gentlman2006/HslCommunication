@@ -27,8 +27,8 @@ namespace HslCommunication.Profinet.Siemens
     /// 一个西门子的客户端类，使用S7协议来进行数据交互
     /// </summary>
     /// <example>
-    ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\SiemensS7Net.cs" region="Usage" title="简单的短连接使用" />
-    ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\SiemensS7Net.cs" region="Usage2" title="简单的长连接使用" />
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\SiemensS7Net.cs" region="Usage" title="简单的短连接使用" />
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\SiemensS7Net.cs" region="Usage2" title="简单的长连接使用" />
     /// </example>
     public class SiemensS7Net : NetworkDeviceBase<S7Message, ReverseBytesTransform>
     {
@@ -87,17 +87,17 @@ namespace HslCommunication.Profinet.Siemens
         #region NetworkDoubleBase Override
 
         /// <summary>
-        /// 连接上服务器后需要进行的初始化操作
+        /// 连接上服务器后需要进行的二次握手操作
         /// </summary>
         /// <param name="socket">网络套接字</param>
         /// <returns>是否初始化成功，依据具体的协议进行重写</returns>
         protected override OperateResult InitializationOnConnect( Socket socket )
         {
-            // 第一层通信的初始化
+            // 第一次握手
             OperateResult<byte[], byte[]> read_first = ReadFromCoreServerBase( socket, plcHead1 );
             if (!read_first.IsSuccess) return read_first;
 
-            // 第二层通信的初始化
+            // 第二次握手
             OperateResult<byte[], byte[]> read_second = ReadFromCoreServerBase( socket, plcHead2 );
             if (!read_second.IsSuccess) return read_second;
 
@@ -107,425 +107,7 @@ namespace HslCommunication.Profinet.Siemens
 
 
         #endregion
-
-        #region Address Analysis
-
-        /// <summary>
-        /// 计算特殊的地址信息
-        /// </summary>
-        /// <param name="address">字符串信息</param>
-        /// <returns>实际值</returns>
-        private int CalculateAddressStarted( string address )
-        {
-            if (address.IndexOf( '.' ) < 0)
-            {
-                return Convert.ToInt32( address ) * 8;
-            }
-            else
-            {
-                string[] temp = address.Split( '.' );
-                return Convert.ToInt32( temp[0] ) * 8 + Convert.ToInt32( temp[1] );
-            }
-        }
-
-        /// <summary>
-        /// 解析数据地址，解析出地址类型，起始地址，DB块的地址
-        /// </summary>
-        /// <param name="address">数据地址</param>
-        /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
-        private OperateResult<byte, int, ushort> AnalysisAddress( string address )
-        {
-            var result = new OperateResult<byte, int, ushort>( );
-            try
-            {
-                result.Content3 = 0;
-                if (address[0] == 'I')
-                {
-                    result.Content1 = 0x81;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'Q')
-                {
-                    result.Content1 = 0x82;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'M')
-                {
-                    result.Content1 = 0x83;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'D' || address.Substring( 0, 2 ) == "DB")
-                {
-                    result.Content1 = 0x84;
-                    string[] adds = address.Split( '.' );
-                    if (address[1] == 'B')
-                    {
-                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 2 ) );
-                    }
-                    else
-                    {
-                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 1 ) );
-                    }
-
-                    result.Content2 = CalculateAddressStarted( address.Substring( address.IndexOf( '.' ) + 1 ) );
-                }
-                else if (address[0] == 'T')
-                {
-                    result.Content1 = 0x1D;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else if (address[0] == 'C')
-                {
-                    result.Content1 = 0x1C;
-                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
-                }
-                else
-                {
-                    result.Message = "不支持的数据类型";
-                    result.Content1 = 0;
-                    result.Content2 = 0;
-                    result.Content3 = 0;
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                result.Message = ex.Message;
-                return result;
-            }
-
-            result.IsSuccess = true;
-            return result;
-        }
-
-
-        #endregion
-
-        #region Build Command
-
-        /// <summary>
-        /// 生成一个读取字数据指令头的通用方法
-        /// </summary>
-        /// <param name="address">解析后的地址</param>
-        /// <param name="length">每个地址的读取长度</param>
-        /// <returns>携带有命令字节</returns>
-        private OperateResult<byte[]> BuildReadCommand( OperateResult<byte, int, ushort>[] address, ushort[] length )
-        {
-            if (address == null) throw new NullReferenceException( "address" );
-            if (length == null) throw new NullReferenceException( "count" );
-            if (address.Length != length.Length) throw new Exception( "两个参数的个数不统一" );
-            if (length.Length > 19) throw new Exception( "读取的数组数量不允许大于19" );
-
-            var result = new OperateResult<byte[]>( );
-            int readCount = length.Length;
-
-            byte[] _PLCCommand = new byte[19 + readCount * 12];
-            // ======================================================================================
-            // Header
-            // 报文头
-            _PLCCommand[0] = 0x03;
-            _PLCCommand[1] = 0x00;
-            // 长度
-            _PLCCommand[2] = (byte)(_PLCCommand.Length / 256);
-            _PLCCommand[3] = (byte)(_PLCCommand.Length % 256);
-            // 固定
-            _PLCCommand[4] = 0x02;
-            _PLCCommand[5] = 0xF0;
-            _PLCCommand[6] = 0x80;
-            // 协议标识
-            _PLCCommand[7] = 0x32;
-            // 命令：发
-            _PLCCommand[8] = 0x01;
-            // redundancy identification (reserved): 0x0000;
-            _PLCCommand[9] = 0x00;
-            _PLCCommand[10] = 0x00;
-            // protocol data unit reference; it’s increased by request event;
-            _PLCCommand[11] = 0x00;
-            _PLCCommand[12] = 0x01;
-            // 参数命令数据总长度
-            _PLCCommand[13] = (byte)((_PLCCommand.Length - 17) / 256);
-            _PLCCommand[14] = (byte)((_PLCCommand.Length - 17) % 256);
-
-            // 读取内部数据时为00，读取CPU型号为Data数据长度
-            _PLCCommand[15] = 0x00;
-            _PLCCommand[16] = 0x00;
-
-
-            // ======================================================================================
-            // Parameter
-
-            // 读写指令，04读，05写
-            _PLCCommand[17] = 0x04;
-            // 读取数据块个数
-            _PLCCommand[18] = (byte)readCount;
-
-
-            for (int ii = 0; ii < readCount; ii++)
-            {
-                //===========================================================================================
-                // 指定有效值类型
-                _PLCCommand[19 + ii * 12] = 0x12;
-                // 接下来本次地址访问长度
-                _PLCCommand[20 + ii * 12] = 0x0A;
-                // 语法标记，ANY
-                _PLCCommand[21 + ii * 12] = 0x10;
-                // 按字为单位
-                _PLCCommand[22 + ii * 12] = 0x02;
-                // 访问数据的个数
-                _PLCCommand[23 + ii * 12] = (byte)(length[ii] / 256);
-                _PLCCommand[24 + ii * 12] = (byte)(length[ii] % 256);
-                // DB块编号，如果访问的是DB块的话
-                _PLCCommand[25 + ii * 12] = (byte)(address[ii].Content3 / 256);
-                _PLCCommand[26 + ii * 12] = (byte)(address[ii].Content3 % 256);
-                // 访问数据类型
-                _PLCCommand[27 + ii * 12] = address[ii].Content1;
-                // 偏移位置
-                _PLCCommand[28 + ii * 12] = (byte)(address[ii].Content2 / 256 / 256 % 256);
-                _PLCCommand[29 + ii * 12] = (byte)(address[ii].Content2 / 256 % 256);
-                _PLCCommand[30 + ii * 12] = (byte)(address[ii].Content2 % 256);
-            }
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
-        }
-
-        /// <summary>
-        /// 生成一个位读取数据指令头的通用方法
-        /// </summary>
-        /// <param name="address"></param>
-        /// <returns></returns>
-        private OperateResult<byte[]> BuildBitReadCommand( string address )
-        {
-            var result = new OperateResult<byte[]>( );
-
-            byte[] _PLCCommand = new byte[31];
-            // 报文头
-            _PLCCommand[0] = 0x03;
-            _PLCCommand[1] = 0x00;
-            // 长度
-            _PLCCommand[2] = (byte)(_PLCCommand.Length / 256);
-            _PLCCommand[3] = (byte)(_PLCCommand.Length % 256);
-            // 固定
-            _PLCCommand[4] = 0x02;
-            _PLCCommand[5] = 0xF0;
-            _PLCCommand[6] = 0x80;
-            _PLCCommand[7] = 0x32;
-            // 命令：发
-            _PLCCommand[8] = 0x01;
-            // 标识序列号
-            _PLCCommand[9] = 0x00;
-            _PLCCommand[10] = 0x00;
-            _PLCCommand[11] = 0x00;
-            _PLCCommand[12] = 0x01;
-            // 命令数据总长度
-            _PLCCommand[13] = (byte)((_PLCCommand.Length - 17) / 256);
-            _PLCCommand[14] = (byte)((_PLCCommand.Length - 17) % 256);
-
-            _PLCCommand[15] = 0x00;
-            _PLCCommand[16] = 0x00;
-
-            // 命令起始符
-            _PLCCommand[17] = 0x04;
-            // 读取数据块个数
-            _PLCCommand[18] = 0x01;
-
-
-            // 填充数据
-            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
-
-            //===========================================================================================
-            // 读取地址的前缀
-            _PLCCommand[19] = 0x12;
-            _PLCCommand[20] = 0x0A;
-            _PLCCommand[21] = 0x10;
-            // 读取的数据时位
-            _PLCCommand[22] = 0x01;
-            // 访问数据的个数
-            _PLCCommand[23] = 0x00;
-            _PLCCommand[24] = 0x01;
-            // DB块编号，如果访问的是DB块的话
-            _PLCCommand[25] = (byte)(analysis.Content3 / 256);
-            _PLCCommand[26] = (byte)(analysis.Content3 % 256);
-            // 访问数据类型
-            _PLCCommand[27] = analysis.Content1;
-            // 偏移位置
-            _PLCCommand[28] = (byte)(analysis.Content2 / 256 / 256 % 256);
-            _PLCCommand[29] = (byte)(analysis.Content2 / 256 % 256);
-            _PLCCommand[30] = (byte)(analysis.Content2 % 256);
-
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
-        }
-
-
-        /// <summary>
-        /// 生成一个写入字节数据的指令
-        /// </summary>
-        /// <param name="address"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private OperateResult<byte[]> BuildWriteByteCommand( string address, byte[] data )
-        {
-            if (data == null) data = new byte[0];
-            var result = new OperateResult<byte[]>( );
-
-            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
-
-            byte[] _PLCCommand = new byte[35 + data.Length];
-            _PLCCommand[0] = 0x03;
-            _PLCCommand[1] = 0x00;
-            // 长度
-            _PLCCommand[2] = (byte)((35 + data.Length) / 256);
-            _PLCCommand[3] = (byte)((35 + data.Length) % 256);
-            // 固定
-            _PLCCommand[4] = 0x02;
-            _PLCCommand[5] = 0xF0;
-            _PLCCommand[6] = 0x80;
-            _PLCCommand[7] = 0x32;
-            // 命令 发
-            _PLCCommand[8] = 0x01;
-            // 标识序列号
-            _PLCCommand[9] = 0x00;
-            _PLCCommand[10] = 0x00;
-            _PLCCommand[11] = 0x00;
-            _PLCCommand[12] = 0x01;
-            // 固定
-            _PLCCommand[13] = 0x00;
-            _PLCCommand[14] = 0x0E;
-            // 写入长度+4
-            _PLCCommand[15] = (byte)((4 + data.Length) / 256);
-            _PLCCommand[16] = (byte)((4 + data.Length) % 256);
-            // 读写指令
-            _PLCCommand[17] = 0x05;
-            // 写入数据块个数
-            _PLCCommand[18] = 0x01;
-            // 固定，返回数据长度
-            _PLCCommand[19] = 0x12;
-            _PLCCommand[20] = 0x0A;
-            _PLCCommand[21] = 0x10;
-            // 写入方式，1是按位，2是按字
-            _PLCCommand[22] = 0x02;
-            // 写入数据的个数
-            _PLCCommand[23] = (byte)(data.Length / 256);
-            _PLCCommand[24] = (byte)(data.Length % 256);
-            // DB块编号，如果访问的是DB块的话
-            _PLCCommand[25] = (byte)(analysis.Content3 / 256);
-            _PLCCommand[26] = (byte)(analysis.Content3 % 256);
-            // 写入数据的类型
-            _PLCCommand[27] = analysis.Content1;
-            // 偏移位置
-            _PLCCommand[28] = (byte)(analysis.Content2 / 256 / 256 % 256); ;
-            _PLCCommand[29] = (byte)(analysis.Content2 / 256 % 256);
-            _PLCCommand[30] = (byte)(analysis.Content2 % 256);
-            // 按字写入
-            _PLCCommand[31] = 0x00;
-            _PLCCommand[32] = 0x04;
-            // 按位计算的长度
-            _PLCCommand[33] = (byte)(data.Length * 8 / 256);
-            _PLCCommand[34] = (byte)(data.Length * 8 % 256);
-
-            data.CopyTo( _PLCCommand, 35 );
-
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
-        }
-
-        /// <summary>
-        /// 生成一个写入位数据的指令
-        /// </summary>
-        /// <param name="address"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private OperateResult<byte[]> BuildWriteBitCommand( string address, bool data )
-        {
-            var result = new OperateResult<byte[]>( );
-
-            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
-
-
-            byte[] buffer = new byte[1];
-            buffer[0] = data ? (byte)0x01 : (byte)0x00;
-
-            byte[] _PLCCommand = new byte[35 + buffer.Length];
-            _PLCCommand[0] = 0x03;
-            _PLCCommand[1] = 0x00;
-            // 长度
-            _PLCCommand[2] = (byte)((35 + buffer.Length) / 256);
-            _PLCCommand[3] = (byte)((35 + buffer.Length) % 256);
-            // 固定
-            _PLCCommand[4] = 0x02;
-            _PLCCommand[5] = 0xF0;
-            _PLCCommand[6] = 0x80;
-            _PLCCommand[7] = 0x32;
-            // 命令 发
-            _PLCCommand[8] = 0x01;
-            // 标识序列号
-            _PLCCommand[9] = 0x00;
-            _PLCCommand[10] = 0x00;
-            _PLCCommand[11] = 0x00;
-            _PLCCommand[12] = 0x01;
-            // 固定
-            _PLCCommand[13] = 0x00;
-            _PLCCommand[14] = 0x0E;
-            // 写入长度+4
-            _PLCCommand[15] = (byte)((4 + buffer.Length) / 256);
-            _PLCCommand[16] = (byte)((4 + buffer.Length) % 256);
-            // 命令起始符
-            _PLCCommand[17] = 0x05;
-            // 写入数据块个数
-            _PLCCommand[18] = 0x01;
-            _PLCCommand[19] = 0x12;
-            _PLCCommand[20] = 0x0A;
-            _PLCCommand[21] = 0x10;
-            // 写入方式，1是按位，2是按字
-            _PLCCommand[22] = 0x01;
-            // 写入数据的个数
-            _PLCCommand[23] = (byte)(buffer.Length / 256);
-            _PLCCommand[24] = (byte)(buffer.Length % 256);
-            // DB块编号，如果访问的是DB块的话
-            _PLCCommand[25] = (byte)(analysis.Content3 / 256);
-            _PLCCommand[26] = (byte)(analysis.Content3 % 256);
-            // 写入数据的类型
-            _PLCCommand[27] = analysis.Content1;
-            // 偏移位置
-            _PLCCommand[28] = (byte)(analysis.Content2 / 256 / 256);
-            _PLCCommand[29] = (byte)(analysis.Content2 / 256);
-            _PLCCommand[30] = (byte)(analysis.Content2 % 256);
-            // 按位写入
-            _PLCCommand[31] = 0x00;
-            _PLCCommand[32] = 0x03;
-            // 按位计算的长度
-            _PLCCommand[33] = (byte)(buffer.Length / 256);
-            _PLCCommand[34] = (byte)(buffer.Length % 256);
-
-            buffer.CopyTo( _PLCCommand, 35 );
-
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
-        }
-
-
-
-        #endregion
-
+        
         #region Read OrderNumber
 
         /// <summary>
@@ -1131,6 +713,409 @@ namespace HslCommunication.Profinet.Siemens
         {
             return "SiemensS7Net";
         }
+
+        #endregion
+
+        #region Static Method Helper
+        
+
+        /// <summary>
+        /// 计算特殊的地址信息
+        /// </summary>
+        /// <param name="address">字符串信息</param>
+        /// <returns>实际值</returns>
+        private static int CalculateAddressStarted( string address )
+        {
+            if (address.IndexOf( '.' ) < 0)
+            {
+                return Convert.ToInt32( address ) * 8;
+            }
+            else
+            {
+                string[] temp = address.Split( '.' );
+                return Convert.ToInt32( temp[0] ) * 8 + Convert.ToInt32( temp[1] );
+            }
+        }
+
+        /// <summary>
+        /// 解析数据地址，解析出地址类型，起始地址，DB块的地址
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <returns>解析出地址类型，起始地址，DB块的地址</returns>
+        private static OperateResult<byte, int, ushort> AnalysisAddress( string address )
+        {
+            var result = new OperateResult<byte, int, ushort>( );
+            try
+            {
+                result.Content3 = 0;
+                if (address[0] == 'I')
+                {
+                    result.Content1 = 0x81;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
+                else if (address[0] == 'Q')
+                {
+                    result.Content1 = 0x82;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
+                else if (address[0] == 'M')
+                {
+                    result.Content1 = 0x83;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
+                else if (address[0] == 'D' || address.Substring( 0, 2 ) == "DB")
+                {
+                    result.Content1 = 0x84;
+                    string[] adds = address.Split( '.' );
+                    if (address[1] == 'B')
+                    {
+                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 2 ) );
+                    }
+                    else
+                    {
+                        result.Content3 = Convert.ToUInt16( adds[0].Substring( 1 ) );
+                    }
+
+                    result.Content2 = CalculateAddressStarted( address.Substring( address.IndexOf( '.' ) + 1 ) );
+                }
+                else if (address[0] == 'T')
+                {
+                    result.Content1 = 0x1D;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
+                else if (address[0] == 'C')
+                {
+                    result.Content1 = 0x1C;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
+                else
+                {
+                    result.Message = "不支持的数据类型";
+                    result.Content1 = 0;
+                    result.Content2 = 0;
+                    result.Content3 = 0;
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                return result;
+            }
+
+            result.IsSuccess = true;
+            return result;
+        }
+
+
+        #endregion
+
+        #region Build Command
+
+
+        /// <summary>
+        /// 生成一个读取字数据指令头的通用方法
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">读取数据长度</param>
+        /// <returns></returns>
+        public static OperateResult<byte[]> BuildReadCommand( string address, ushort length )
+        {
+            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
+
+            return BuildReadCommand( new OperateResult<byte, int, ushort>[] { analysis }, new ushort[] { length } );
+        }
+
+        /// <summary>
+        /// 生成一个读取字数据指令头的通用方法
+        /// </summary>
+        /// <param name="address">解析后的地址</param>
+        /// <param name="length">每个地址的读取长度</param>
+        /// <returns>包含结果对象的报文</returns>
+        public static OperateResult<byte[]> BuildReadCommand( OperateResult<byte, int, ushort>[] address, ushort[] length )
+        {
+            if (address == null) throw new NullReferenceException( "address" );
+            if (length == null) throw new NullReferenceException( "count" );
+            if (address.Length != length.Length) throw new Exception( "两个参数的个数不统一" );
+            if (length.Length > 19) throw new Exception( "读取的数组数量不允许大于19" );
+
+            int readCount = length.Length;
+            byte[] _PLCCommand = new byte[19 + readCount * 12];
+            // ======================================================================================
+            _PLCCommand[0] = 0x03;                                                // 报文头
+            _PLCCommand[1] = 0x00;
+            _PLCCommand[2] = (byte)(_PLCCommand.Length / 256);                    // 长度
+            _PLCCommand[3] = (byte)(_PLCCommand.Length % 256);
+            _PLCCommand[4] = 0x02;                                                // 固定
+            _PLCCommand[5] = 0xF0;
+            _PLCCommand[6] = 0x80;
+            _PLCCommand[7] = 0x32;                                                // 协议标识
+            _PLCCommand[8] = 0x01;                                                // 命令：发
+            _PLCCommand[9] = 0x00;                                                // redundancy identification (reserved): 0x0000;
+            _PLCCommand[10] = 0x00;                                               // protocol data unit reference; it’s increased by request event;
+            _PLCCommand[11] = 0x00;
+            _PLCCommand[12] = 0x01;                                               // 参数命令数据总长度
+            _PLCCommand[13] = (byte)((_PLCCommand.Length - 17) / 256);
+            _PLCCommand[14] = (byte)((_PLCCommand.Length - 17) % 256);
+            _PLCCommand[15] = 0x00;                                               // 读取内部数据时为00，读取CPU型号为Data数据长度
+            _PLCCommand[16] = 0x00;
+            // =====================================================================================
+            _PLCCommand[17] = 0x04;                                               // 读写指令，04读，05写
+            _PLCCommand[18] = (byte)readCount;                                    // 读取数据块个数
+
+            for (int ii = 0; ii < readCount; ii++)
+            {
+                //===========================================================================================
+                // 指定有效值类型
+                _PLCCommand[19 + ii * 12] = 0x12;
+                // 接下来本次地址访问长度
+                _PLCCommand[20 + ii * 12] = 0x0A;
+                // 语法标记，ANY
+                _PLCCommand[21 + ii * 12] = 0x10;
+                // 按字为单位
+                _PLCCommand[22 + ii * 12] = 0x02;
+                // 访问数据的个数
+                _PLCCommand[23 + ii * 12] = (byte)(length[ii] / 256);
+                _PLCCommand[24 + ii * 12] = (byte)(length[ii] % 256);
+                // DB块编号，如果访问的是DB块的话
+                _PLCCommand[25 + ii * 12] = (byte)(address[ii].Content3 / 256);
+                _PLCCommand[26 + ii * 12] = (byte)(address[ii].Content3 % 256);
+                // 访问数据类型
+                _PLCCommand[27 + ii * 12] = address[ii].Content1;
+                // 偏移位置
+                _PLCCommand[28 + ii * 12] = (byte)(address[ii].Content2 / 256 / 256 % 256);
+                _PLCCommand[29 + ii * 12] = (byte)(address[ii].Content2 / 256 % 256);
+                _PLCCommand[30 + ii * 12] = (byte)(address[ii].Content2 % 256);
+            }
+
+            return OperateResult.CreateSuccessResult( _PLCCommand );
+        }
+
+        /// <summary>
+        /// 生成一个位读取数据指令头的通用方法
+        /// </summary>
+        /// <param name="address">指定格式的地址</param>
+        /// <returns>包含结果对象的报文</returns>
+        private OperateResult<byte[]> BuildBitReadCommand( string address )
+        {
+            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
+
+
+            byte[] _PLCCommand = new byte[31];
+            // 报文头
+            _PLCCommand[0] = 0x03;
+            _PLCCommand[1] = 0x00;
+            // 长度
+            _PLCCommand[2] = (byte)(_PLCCommand.Length / 256);
+            _PLCCommand[3] = (byte)(_PLCCommand.Length % 256);
+            // 固定
+            _PLCCommand[4] = 0x02;
+            _PLCCommand[5] = 0xF0;
+            _PLCCommand[6] = 0x80;
+            _PLCCommand[7] = 0x32;
+            // 命令：发
+            _PLCCommand[8] = 0x01;
+            // 标识序列号
+            _PLCCommand[9] = 0x00;
+            _PLCCommand[10] = 0x00;
+            _PLCCommand[11] = 0x00;
+            _PLCCommand[12] = 0x01;
+            // 命令数据总长度
+            _PLCCommand[13] = (byte)((_PLCCommand.Length - 17) / 256);
+            _PLCCommand[14] = (byte)((_PLCCommand.Length - 17) % 256);
+
+            _PLCCommand[15] = 0x00;
+            _PLCCommand[16] = 0x00;
+
+            // 命令起始符
+            _PLCCommand[17] = 0x04;
+            // 读取数据块个数
+            _PLCCommand[18] = 0x01;
+
+            //===========================================================================================
+            // 读取地址的前缀
+            _PLCCommand[19] = 0x12;
+            _PLCCommand[20] = 0x0A;
+            _PLCCommand[21] = 0x10;
+            // 读取的数据时位
+            _PLCCommand[22] = 0x01;
+            // 访问数据的个数
+            _PLCCommand[23] = 0x00;
+            _PLCCommand[24] = 0x01;
+            // DB块编号，如果访问的是DB块的话
+            _PLCCommand[25] = (byte)(analysis.Content3 / 256);
+            _PLCCommand[26] = (byte)(analysis.Content3 % 256);
+            // 访问数据类型
+            _PLCCommand[27] = analysis.Content1;
+            // 偏移位置
+            _PLCCommand[28] = (byte)(analysis.Content2 / 256 / 256 % 256);
+            _PLCCommand[29] = (byte)(analysis.Content2 / 256 % 256);
+            _PLCCommand[30] = (byte)(analysis.Content2 % 256);
+
+            return OperateResult.CreateSuccessResult( _PLCCommand );
+        }
+
+
+        /// <summary>
+        /// 生成一个写入字节数据的指令
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">字节信息</param>
+        /// <returns>包含结果对象的报文</returns>
+        public static OperateResult<byte[]> BuildWriteByteCommand( string address, byte[] data )
+        {
+            if (data == null) data = new byte[0];
+            var result = new OperateResult<byte[]>( );
+
+            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess)
+            {
+                result.CopyErrorFromOther( analysis );
+                return result;
+            }
+
+            byte[] _PLCCommand = new byte[35 + data.Length];
+            _PLCCommand[0] = 0x03;
+            _PLCCommand[1] = 0x00;
+            // 长度
+            _PLCCommand[2] = (byte)((35 + data.Length) / 256);
+            _PLCCommand[3] = (byte)((35 + data.Length) % 256);
+            // 固定
+            _PLCCommand[4] = 0x02;
+            _PLCCommand[5] = 0xF0;
+            _PLCCommand[6] = 0x80;
+            _PLCCommand[7] = 0x32;
+            // 命令 发
+            _PLCCommand[8] = 0x01;
+            // 标识序列号
+            _PLCCommand[9] = 0x00;
+            _PLCCommand[10] = 0x00;
+            _PLCCommand[11] = 0x00;
+            _PLCCommand[12] = 0x01;
+            // 固定
+            _PLCCommand[13] = 0x00;
+            _PLCCommand[14] = 0x0E;
+            // 写入长度+4
+            _PLCCommand[15] = (byte)((4 + data.Length) / 256);
+            _PLCCommand[16] = (byte)((4 + data.Length) % 256);
+            // 读写指令
+            _PLCCommand[17] = 0x05;
+            // 写入数据块个数
+            _PLCCommand[18] = 0x01;
+            // 固定，返回数据长度
+            _PLCCommand[19] = 0x12;
+            _PLCCommand[20] = 0x0A;
+            _PLCCommand[21] = 0x10;
+            // 写入方式，1是按位，2是按字
+            _PLCCommand[22] = 0x02;
+            // 写入数据的个数
+            _PLCCommand[23] = (byte)(data.Length / 256);
+            _PLCCommand[24] = (byte)(data.Length % 256);
+            // DB块编号，如果访问的是DB块的话
+            _PLCCommand[25] = (byte)(analysis.Content3 / 256);
+            _PLCCommand[26] = (byte)(analysis.Content3 % 256);
+            // 写入数据的类型
+            _PLCCommand[27] = analysis.Content1;
+            // 偏移位置
+            _PLCCommand[28] = (byte)(analysis.Content2 / 256 / 256 % 256); ;
+            _PLCCommand[29] = (byte)(analysis.Content2 / 256 % 256);
+            _PLCCommand[30] = (byte)(analysis.Content2 % 256);
+            // 按字写入
+            _PLCCommand[31] = 0x00;
+            _PLCCommand[32] = 0x04;
+            // 按位计算的长度
+            _PLCCommand[33] = (byte)(data.Length * 8 / 256);
+            _PLCCommand[34] = (byte)(data.Length * 8 % 256);
+
+            data.CopyTo( _PLCCommand, 35 );
+
+            result.Content = _PLCCommand;
+            result.IsSuccess = true;
+            return result;
+        }
+
+        /// <summary>
+        /// 生成一个写入位数据的指令
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="data">是否通断</param>
+        /// <returns>包含结果对象的报文</returns>
+        private OperateResult<byte[]> BuildWriteBitCommand( string address, bool data )
+        {
+            var result = new OperateResult<byte[]>( );
+
+            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess)
+            {
+                result.CopyErrorFromOther( analysis );
+                return result;
+            }
+
+
+            byte[] buffer = new byte[1];
+            buffer[0] = data ? (byte)0x01 : (byte)0x00;
+
+            byte[] _PLCCommand = new byte[35 + buffer.Length];
+            _PLCCommand[0] = 0x03;
+            _PLCCommand[1] = 0x00;
+            // 长度
+            _PLCCommand[2] = (byte)((35 + buffer.Length) / 256);
+            _PLCCommand[3] = (byte)((35 + buffer.Length) % 256);
+            // 固定
+            _PLCCommand[4] = 0x02;
+            _PLCCommand[5] = 0xF0;
+            _PLCCommand[6] = 0x80;
+            _PLCCommand[7] = 0x32;
+            // 命令 发
+            _PLCCommand[8] = 0x01;
+            // 标识序列号
+            _PLCCommand[9] = 0x00;
+            _PLCCommand[10] = 0x00;
+            _PLCCommand[11] = 0x00;
+            _PLCCommand[12] = 0x01;
+            // 固定
+            _PLCCommand[13] = 0x00;
+            _PLCCommand[14] = 0x0E;
+            // 写入长度+4
+            _PLCCommand[15] = (byte)((4 + buffer.Length) / 256);
+            _PLCCommand[16] = (byte)((4 + buffer.Length) % 256);
+            // 命令起始符
+            _PLCCommand[17] = 0x05;
+            // 写入数据块个数
+            _PLCCommand[18] = 0x01;
+            _PLCCommand[19] = 0x12;
+            _PLCCommand[20] = 0x0A;
+            _PLCCommand[21] = 0x10;
+            // 写入方式，1是按位，2是按字
+            _PLCCommand[22] = 0x01;
+            // 写入数据的个数
+            _PLCCommand[23] = (byte)(buffer.Length / 256);
+            _PLCCommand[24] = (byte)(buffer.Length % 256);
+            // DB块编号，如果访问的是DB块的话
+            _PLCCommand[25] = (byte)(analysis.Content3 / 256);
+            _PLCCommand[26] = (byte)(analysis.Content3 % 256);
+            // 写入数据的类型
+            _PLCCommand[27] = analysis.Content1;
+            // 偏移位置
+            _PLCCommand[28] = (byte)(analysis.Content2 / 256 / 256);
+            _PLCCommand[29] = (byte)(analysis.Content2 / 256);
+            _PLCCommand[30] = (byte)(analysis.Content2 % 256);
+            // 按位写入
+            _PLCCommand[31] = 0x00;
+            _PLCCommand[32] = 0x03;
+            // 按位计算的长度
+            _PLCCommand[33] = (byte)(buffer.Length / 256);
+            _PLCCommand[34] = (byte)(buffer.Length % 256);
+
+            buffer.CopyTo( _PLCCommand, 35 );
+
+            result.Content = _PLCCommand;
+            result.IsSuccess = true;
+            return result;
+        }
+        
 
         #endregion
 

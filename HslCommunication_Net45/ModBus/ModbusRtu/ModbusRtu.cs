@@ -146,7 +146,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">地址</param>
         /// <param name="count">长度</param>
         /// <returns>携带有命令字节</returns>
-        private OperateResult<byte[]> BuildReadCoilCommand( string address, ushort count )
+        public OperateResult<byte[]> BuildReadCoilCommand( string address, ushort count )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
@@ -162,7 +162,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">地址</param>
         /// <param name="length">长度</param>
         /// <returns>携带有命令字节</returns>
-        private OperateResult<byte[]> BuildReadDiscreteCommand( string address, ushort length )
+        public OperateResult<byte[]> BuildReadDiscreteCommand( string address, ushort length )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
@@ -181,12 +181,12 @@ namespace HslCommunication.ModBus
         /// <param name="address">地址</param>
         /// <param name="length">长度</param>
         /// <returns>携带有命令字节</returns>
-        private OperateResult<byte[]> BuildReadRegisterCommand( string address, ushort length )
+        public OperateResult<byte[]> BuildReadRegisterCommand( string address, ushort length )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
             
-            // 生成最终tcp指令
+            // 生成最终rtu指令
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateReadRegister( station, length ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
@@ -201,19 +201,24 @@ namespace HslCommunication.ModBus
         /// <returns>携带有命令字节</returns>
         private OperateResult<byte[]> BuildReadRegisterCommand( ModbusAddress address, ushort length )
         {
-            // 生成最终tcp指令
+            // 生成最终rtu指令
             byte[] buffer = ModbusInfo.PackCommandToRtu( address.CreateReadRegister( station, length ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
 
 
-
-        private OperateResult<byte[]> BuildWriteOneCoilCommand( string address, bool value )
+        /// <summary>
+        /// 生成一个写入单线圈的指令头
+        /// </summary>
+        /// <param name="address">地址</param>
+        /// <param name="value">长度</param>
+        /// <returns>包含结果对象的报文</returns>
+        public OperateResult<byte[]> BuildWriteOneCoilCommand( string address, bool value )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
             
-            // 生成最终tcp指令
+            // 生成最终rtu指令
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteOneCoil( station, value ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
@@ -221,36 +226,52 @@ namespace HslCommunication.ModBus
 
 
 
-
-        private OperateResult<byte[]> BuildWriteOneRegisterCommand( string address, byte[] data )
+        /// <summary>
+        /// 生成一个写入单个寄存器的报文
+        /// </summary>
+        /// <param name="address">地址</param>
+        /// <param name="data">长度</param>
+        /// <returns>包含结果对象的报文</returns>
+        public OperateResult<byte[]> BuildWriteOneRegisterCommand( string address, byte[] data )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
             
-            // 生成最终tcp指令
+            // 生成最终rtu指令
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteOneRegister( station, data ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
 
 
-
-        private OperateResult<byte[]> BuildWriteCoilCommand( string address, bool[] values )
+        /// <summary>
+        /// 生成批量写入单个线圈的报文信息
+        /// </summary>
+        /// <param name="address">地址</param>
+        /// <param name="values">实际数据值</param>
+        /// <returns>包含结果对象的报文</returns>
+        public OperateResult<byte[]> BuildWriteCoilCommand( string address, bool[] values )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
             
-            // 生成最终tcp指令
+            // 生成最终rtu指令
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteCoil( station, values ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
 
 
-        private OperateResult<byte[]> BuildWriteRegisterCommand( string address, byte[] values )
+        /// <summary>
+        /// 生成批量写入寄存器的报文信息
+        /// </summary>
+        /// <param name="address">地址</param>
+        /// <param name="values">实际值</param>
+        /// <returns>包含结果对象的报文</returns>
+        public OperateResult<byte[]> BuildWriteRegisterCommand( string address, byte[] values )
         {
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
             
-            // 生成最终tcp指令
+            // 生成最终rtu指令
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteRegister( station, values ) );
             return OperateResult.CreateSuccessResult( buffer );
         }

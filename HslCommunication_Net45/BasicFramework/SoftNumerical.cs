@@ -94,7 +94,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 获取流水号的值
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串信息</returns>
         public override string ToSaveString( )
         {
             return CurrentIndex.ToString( );
@@ -104,7 +104,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 加载流水号
         /// </summary>
-        /// <param name="content"></param>
+        /// <param name="content">源字符串信息</param>
         public override void LoadByString( string content )
         {
             CurrentIndex = Convert.ToInt64( content );
@@ -122,7 +122,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 获取流水号数据
         /// </summary>
-        /// <returns></returns>
+        /// <returns>新增计数后的信息</returns>
         public string GetNumericalOrder( )
         {
             long number = Interlocked.Increment( ref CurrentIndex );
@@ -141,7 +141,7 @@ namespace HslCommunication.BasicFramework
         /// 获取流水号数据
         /// </summary>
         /// <param name="textHead">指定一个新的文本头</param>
-        /// <returns></returns>
+        /// <returns>带头信息的计数后的信息</returns>
         public string GetNumericalOrder( string textHead )
         {
             long number = Interlocked.Increment( ref CurrentIndex );
@@ -159,7 +159,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 单纯的获取数字形式的流水号
         /// </summary>
-        /// <returns></returns>
+        /// <returns>新增计数后的信息</returns>
         public long GetLongOrder( )
         {
             long number = Interlocked.Increment( ref CurrentIndex );
@@ -220,7 +220,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 获取自增信息
         /// </summary>
-        /// <returns></returns>
+        /// <returns>计数自增后的值</returns>
         public long GetCurrentValue( )
         {
             long value = 0;

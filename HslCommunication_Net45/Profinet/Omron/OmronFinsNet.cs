@@ -123,162 +123,7 @@ namespace HslCommunication.Profinet.Omron
 
 
         #endregion
-
-        #region Address Analysis
         
-        /// <summary>
-        /// 解析数据地址，Omron手册第188页
-        /// </summary>
-        /// <param name="address">数据地址</param>
-        /// <param name="isBit">是否是位地址</param>
-        /// <returns></returns>
-        private OperateResult<OmronFinsDataType,byte[]> AnalysisAddress( string address ,bool isBit)
-        {
-            var result = new OperateResult<OmronFinsDataType, byte[]>( );
-            try
-            {
-                switch (address[0])
-                {
-                    case 'D':
-                    case 'd':
-                        {
-                            // DM区数据
-                            result.Content1 = OmronFinsDataType.DM;
-                            break;
-                        }
-                    case 'C':
-                    case 'c':
-                        {
-                            // CIO区数据
-                            result.Content1 = OmronFinsDataType.CIO;
-                            break;
-                        }
-                    case 'W':
-                    case 'w':
-                        {
-                            // WR区
-                            result.Content1 = OmronFinsDataType.WR;
-                            break;
-                        }
-                    case 'H':
-                    case 'h':
-                        {
-                            // HR区
-                            result.Content1 = OmronFinsDataType.HR;
-                            break;
-                        }
-                    case 'A':
-                    case 'a':
-                        {
-                            // AR区
-                            result.Content1 = OmronFinsDataType.AR;
-                            break;
-                        }
-                    default: throw new Exception( "输入的类型不支持，请重新输入" );
-                }
-
-                if(isBit)
-                {
-                    // 位操作
-                    string[] splits = address.Substring( 1 ).Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries );
-                    ushort addr = ushort.Parse( splits[0] );
-                    result.Content2 = new byte[3];
-                    result.Content2[0] = BitConverter.GetBytes( addr )[1];
-                    result.Content2[1] = BitConverter.GetBytes( addr )[0];
-
-                    if (splits.Length > 1)
-                    {
-                        result.Content2[2] = byte.Parse( splits[1] );
-                        if (result.Content2[2] > 15)
-                        {
-                            throw new Exception( "输入的位地址只能在0-15之间。" );
-                        }
-                    }
-                }
-                else
-                {
-                    // 字操作
-                    ushort addr = ushort.Parse( address.Substring( 1 ) );
-                    result.Content2 = new byte[3];
-                    result.Content2[0] = BitConverter.GetBytes( addr )[1];
-                    result.Content2[1] = BitConverter.GetBytes( addr )[0];
-                }
-            }
-            catch (Exception ex)
-            {
-                result.Message = "地址格式填写错误：" + ex.Message;
-                return result;
-            }
-
-            result.IsSuccess = true;
-            return result;
-        }
-
-
-
-        private OperateResult<byte[]> ResponseValidAnalysis(byte[] response,bool isRead)
-        {
-            // 数据有效性分析
-            if (response.Length >= 16)
-            {
-                // 提取错误码
-                byte[] buffer = new byte[4];
-                buffer[0] = response[15];
-                buffer[1] = response[14];
-                buffer[2] = response[13];
-                buffer[3] = response[12];
-                int err = BitConverter.ToInt32( buffer, 0 );
-                if (err > 0)
-                {
-                    return new OperateResult<byte[]>( )
-                    {
-                        ErrorCode = err,
-                        Message = OmronInfo.GetStatusDescription( err ),
-                    };
-                }
-
-                if (response.Length >= 30)
-                {
-                    err = response[28] * 256 + response[29];
-                    if (err > 0)
-                    {
-                        return new OperateResult<byte[]>( )
-                        {
-                            ErrorCode = err,
-                            Message = "结束码错误，为：" + err,
-                        };
-                    }
-
-                    if (!isRead)
-                    {
-                        // 写入操作
-                        return OperateResult.CreateSuccessResult( new byte[0] );
-                    }
-                    else
-                    {
-                        // 读取操作
-                        byte[] content = new byte[response.Length - 30];
-                        if (content.Length > 0)
-                        {
-                            Array.Copy( response, 30, content, 0, content.Length );
-                        }
-                        return OperateResult.CreateSuccessResult( content );
-                    }
-                }
-            }
-
-            return new OperateResult<byte[]>( )
-            {
-                Message = "数据长度接收错误",
-            };
-        }
-        
-
-
-
-
-        #endregion
-
         #region Build Command
 
 
@@ -320,7 +165,7 @@ namespace HslCommunication.Profinet.Omron
         /// <param name="length">长度</param>
         /// <param name="isBit">是否是位读取</param>
         /// <returns>带有成功标志的指令数据</returns>
-        private OperateResult<byte[]> BuildReadCommand( string address, ushort length ,bool isBit)
+        public OperateResult<byte[]> BuildReadCommand( string address, ushort length ,bool isBit)
         {
             var result = new OperateResult<byte[]>( );
             var analysis = AnalysisAddress( address, isBit );
@@ -363,7 +208,7 @@ namespace HslCommunication.Profinet.Omron
         /// <param name="value"></param>
         /// <param name="isBit">是否是位操作</param>
         /// <returns></returns>
-        private OperateResult<byte[]> BuildWriteCommand( string address, byte[] value, bool isBit )
+        public OperateResult<byte[]> BuildWriteCommand( string address, byte[] value, bool isBit )
         {
             var result = new OperateResult<byte[]>( );
             var analysis = AnalysisAddress( address, isBit );
@@ -807,5 +652,156 @@ namespace HslCommunication.Profinet.Omron
 
         #endregion
 
+        #region Static Method Helper
+        
+
+        /// <summary>
+        /// 解析数据地址，Omron手册第188页
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <param name="isBit">是否是位地址</param>
+        /// <returns>解析后的结果地址对象</returns>
+        private static OperateResult<OmronFinsDataType, byte[]> AnalysisAddress( string address, bool isBit )
+        {
+            var result = new OperateResult<OmronFinsDataType, byte[]>( );
+            try
+            {
+                switch (address[0])
+                {
+                    case 'D':
+                    case 'd':
+                        {
+                            // DM区数据
+                            result.Content1 = OmronFinsDataType.DM;
+                            break;
+                        }
+                    case 'C':
+                    case 'c':
+                        {
+                            // CIO区数据
+                            result.Content1 = OmronFinsDataType.CIO;
+                            break;
+                        }
+                    case 'W':
+                    case 'w':
+                        {
+                            // WR区
+                            result.Content1 = OmronFinsDataType.WR;
+                            break;
+                        }
+                    case 'H':
+                    case 'h':
+                        {
+                            // HR区
+                            result.Content1 = OmronFinsDataType.HR;
+                            break;
+                        }
+                    case 'A':
+                    case 'a':
+                        {
+                            // AR区
+                            result.Content1 = OmronFinsDataType.AR;
+                            break;
+                        }
+                    default: throw new Exception( "输入的类型不支持，请重新输入" );
+                }
+
+                if (isBit)
+                {
+                    // 位操作
+                    string[] splits = address.Substring( 1 ).Split( new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries );
+                    ushort addr = ushort.Parse( splits[0] );
+                    result.Content2 = new byte[3];
+                    result.Content2[0] = BitConverter.GetBytes( addr )[1];
+                    result.Content2[1] = BitConverter.GetBytes( addr )[0];
+
+                    if (splits.Length > 1)
+                    {
+                        result.Content2[2] = byte.Parse( splits[1] );
+                        if (result.Content2[2] > 15)
+                        {
+                            throw new Exception( "输入的位地址只能在0-15之间。" );
+                        }
+                    }
+                }
+                else
+                {
+                    // 字操作
+                    ushort addr = ushort.Parse( address.Substring( 1 ) );
+                    result.Content2 = new byte[3];
+                    result.Content2[0] = BitConverter.GetBytes( addr )[1];
+                    result.Content2[1] = BitConverter.GetBytes( addr )[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = "地址格式填写错误：" + ex.Message;
+                return result;
+            }
+
+            result.IsSuccess = true;
+            return result;
+        }
+
+        private static OperateResult<byte[]> ResponseValidAnalysis( byte[] response, bool isRead )
+        {
+            // 数据有效性分析
+            if (response.Length >= 16)
+            {
+                // 提取错误码
+                byte[] buffer = new byte[4];
+                buffer[0] = response[15];
+                buffer[1] = response[14];
+                buffer[2] = response[13];
+                buffer[3] = response[12];
+                int err = BitConverter.ToInt32( buffer, 0 );
+                if (err > 0)
+                {
+                    return new OperateResult<byte[]>( )
+                    {
+                        ErrorCode = err,
+                        Message = OmronInfo.GetStatusDescription( err ),
+                    };
+                }
+
+                if (response.Length >= 30)
+                {
+                    err = response[28] * 256 + response[29];
+                    if (err > 0)
+                    {
+                        return new OperateResult<byte[]>( )
+                        {
+                            ErrorCode = err,
+                            Message = "结束码错误，为：" + err,
+                        };
+                    }
+
+                    if (!isRead)
+                    {
+                        // 写入操作
+                        return OperateResult.CreateSuccessResult( new byte[0] );
+                    }
+                    else
+                    {
+                        // 读取操作
+                        byte[] content = new byte[response.Length - 30];
+                        if (content.Length > 0)
+                        {
+                            Array.Copy( response, 30, content, 0, content.Length );
+                        }
+                        return OperateResult.CreateSuccessResult( content );
+                    }
+                }
+            }
+
+            return new OperateResult<byte[]>( )
+            {
+                Message = "数据长度接收错误",
+            };
+        }
+
+
+
+        #endregion
     }
 }

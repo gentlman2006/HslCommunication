@@ -12,8 +12,8 @@ namespace HslCommunication.Profinet.Melsec
     /// 三菱PLC通讯类，采用Qna兼容3E帧协议实现，需要在PLC侧先的以太网模块先进行配置，必须为ASCII通讯格式
     /// </summary>
     /// <example>
-    ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="Usage" title="简单的短连接使用" />
-    ///   <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="Usage2" title="简单的长连接使用" />
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="Usage" title="简单的短连接使用" />
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Profinet\MelsecAscii.cs" region="Usage2" title="简单的长连接使用" />
     /// </example>
     public class MelsecMcAsciiNet : NetworkDeviceBase<MelsecQnA3EAsciiMessage, RegularByteTransform>
     {
@@ -55,315 +55,7 @@ namespace HslCommunication.Profinet.Melsec
 
 
         #endregion
-
-        #region Address Analysis
-
-        /// <summary>
-        /// 解析数据地址
-        /// </summary>
-        /// <param name="address">数据地址</param>
-        /// <returns></returns>
-        private OperateResult<MelsecMcDataType, ushort> AnalysisAddress( string address )
-        {
-            var result = new OperateResult<MelsecMcDataType, ushort>( );
-            try
-            {
-                switch (address[0])
-                {
-                    case 'M':
-                    case 'm':
-                        {
-                            result.Content1 = MelsecMcDataType.M;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.M.FromBase );
-                            break;
-                        }
-                    case 'X':
-                    case 'x':
-                        {
-                            result.Content1 = MelsecMcDataType.X;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.X.FromBase );
-                            break;
-                        }
-                    case 'Y':
-                    case 'y':
-                        {
-                            result.Content1 = MelsecMcDataType.Y;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.Y.FromBase );
-                            break;
-                        }
-                    case 'D':
-                    case 'd':
-                        {
-                            result.Content1 = MelsecMcDataType.D;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.D.FromBase );
-                            break;
-                        }
-                    case 'W':
-                    case 'w':
-                        {
-                            result.Content1 = MelsecMcDataType.W;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.W.FromBase );
-                            break;
-                        }
-                    case 'L':
-                    case 'l':
-                        {
-                            result.Content1 = MelsecMcDataType.L;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.L.FromBase );
-                            break;
-                        }
-                    case 'F':
-                    case 'f':
-                        {
-                            result.Content1 = MelsecMcDataType.F;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.F.FromBase );
-                            break;
-                        }
-                    case 'V':
-                    case 'v':
-                        {
-                            result.Content1 = MelsecMcDataType.V;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.V.FromBase );
-                            break;
-                        }
-                    case 'B':
-                    case 'b':
-                        {
-                            result.Content1 = MelsecMcDataType.B;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.B.FromBase );
-                            break;
-                        }
-                    case 'R':
-                    case 'r':
-                        {
-                            result.Content1 = MelsecMcDataType.R;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.R.FromBase );
-                            break;
-                        }
-                    case 'S':
-                    case 's':
-                        {
-                            result.Content1 = MelsecMcDataType.S;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.S.FromBase );
-                            break;
-                        }
-                    case 'Z':
-                    case 'z':
-                        {
-                            result.Content1 = MelsecMcDataType.Z;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.Z.FromBase );
-                            break;
-                        }
-
-                    case 'T':
-                    case 't':
-                        {
-                            result.Content1 = MelsecMcDataType.T;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.T.FromBase );
-                            break;
-                        }
-                    case 'C':
-                    case 'c':
-                        {
-                            result.Content1 = MelsecMcDataType.C;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.C.FromBase );
-                            break;
-                        }
-                    default: throw new Exception( "输入的类型不支持，请重新输入" );
-                }
-            }
-            catch (Exception ex)
-            {
-                result.Message = "地址格式填写错误：" + ex.Message;
-                return result;
-            }
-
-            result.IsSuccess = true;
-            return result;
-        }
-
-
-        #endregion
-
-        #region Build Command
         
-
-        private byte[] BuildBytesFromData(byte value)
-        {
-            return Encoding.ASCII.GetBytes(value.ToString("X2")) ;
-        }
-
-        private byte[] BuildBytesFromData( short value )
-        {
-            return Encoding.ASCII.GetBytes( value.ToString( "X4" ) );
-        }
-
-        private byte[] BuildBytesFromData( ushort value )
-        {
-            return Encoding.ASCII.GetBytes( value.ToString( "X4" ) );
-        }
-
-
-        private byte[] BuildBytesFromAddress( int address, MelsecMcDataType type )
-        {
-            return Encoding.ASCII.GetBytes( address.ToString( type.FromBase == 10 ? "D6" : "X6" ) );
-        }
-
-        /// <summary>
-        /// 根据类型地址长度确认需要读取的指令头
-        /// </summary>
-        /// <param name="address">起始地址</param>
-        /// <param name="length">长度</param>
-        /// <returns>带有成功标志的指令数据</returns>
-        private OperateResult<MelsecMcDataType, byte[]> BuildReadCommand( string address, ushort length )
-        {
-            var result = new OperateResult<MelsecMcDataType, byte[]>( );
-            var analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
-
-            // 默认信息----注意：高低字节交错
-
-            byte[] _PLCCommand = new byte[42];
-            _PLCCommand[0] = 0x35;                                      // 副标题
-            _PLCCommand[1] = 0x30;
-            _PLCCommand[2] = 0x30;
-            _PLCCommand[3] = 0x30;
-            _PLCCommand[4] = BuildBytesFromData( NetworkNumber )[0];                // 网络号
-            _PLCCommand[5] = BuildBytesFromData( NetworkNumber )[1];
-            _PLCCommand[6] = 0x46;                         // PLC编号
-            _PLCCommand[7] = 0x46;
-            _PLCCommand[8] = 0x30;                         // 目标模块IO编号
-            _PLCCommand[9] = 0x33;
-            _PLCCommand[10] = 0x46;
-            _PLCCommand[11] = 0x46;
-            _PLCCommand[12] = BuildBytesFromData( NetworkStationNumber )[0];         // 目标模块站号
-            _PLCCommand[13] = BuildBytesFromData( NetworkStationNumber )[1];
-            _PLCCommand[14] = 0x30;                         // 请求数据长度
-            _PLCCommand[15] = 0x30;
-            _PLCCommand[16] = 0x31;
-            _PLCCommand[17] = 0x38;
-            _PLCCommand[18] = 0x30;                         // CPU监视定时器
-            _PLCCommand[19] = 0x30;
-            _PLCCommand[20] = 0x31;
-            _PLCCommand[21] = 0x30;
-            _PLCCommand[22] = 0x30;                        // 批量读取数据命令
-            _PLCCommand[23] = 0x34;
-            _PLCCommand[24] = 0x30;
-            _PLCCommand[25] = 0x31;
-            _PLCCommand[26] = 0x30;                         // 以点为单位还是字为单位成批读取
-            _PLCCommand[27] = 0x30;
-            _PLCCommand[28] = 0x30;
-            _PLCCommand[29] = analysis.Content1.DataType == 0 ? (byte)0x30 : (byte)0x31;
-            _PLCCommand[30] = Encoding.ASCII.GetBytes( analysis.Content1.AsciiCode )[0];                          // 软元件类型
-            _PLCCommand[31] = Encoding.ASCII.GetBytes( analysis.Content1.AsciiCode )[1];
-            _PLCCommand[32] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[0];                   // 起始地址的地位
-            _PLCCommand[33] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[1];
-            _PLCCommand[34] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[2];
-            _PLCCommand[35] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[3];
-            _PLCCommand[36] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[4];
-            _PLCCommand[37] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[5];
-            _PLCCommand[38] = BuildBytesFromData(length)[0];                                                      // 软元件点数
-            _PLCCommand[39] = BuildBytesFromData( length )[1];
-            _PLCCommand[40] = BuildBytesFromData( length )[2];
-            _PLCCommand[41] = BuildBytesFromData( length )[3];
-            result.Content1 = analysis.Content1;
-            result.Content2 = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
-        }
-
-        /// <summary>
-        /// 根据类型地址以及需要写入的数据来生成指令头
-        /// </summary>
-        /// <param name="address">起始地址</param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private OperateResult<MelsecMcDataType, byte[]> BuildWriteCommand( string address, byte[] value )
-        {
-            var result = new OperateResult<MelsecMcDataType, byte[]>( );
-            var analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
-
-            // 默认信息----注意：高低字节交错
-
-            byte[] _PLCCommand = new byte[42 + value.Length];
-
-            _PLCCommand[0] = 0x35;                                      // 副标题
-            _PLCCommand[1] = 0x30;
-            _PLCCommand[2] = 0x30;
-            _PLCCommand[3] = 0x30;
-            _PLCCommand[4] = BuildBytesFromData( NetworkNumber )[0];                // 网络号
-            _PLCCommand[5] = BuildBytesFromData( NetworkNumber )[1];
-            _PLCCommand[6] = 0x46;                         // PLC编号
-            _PLCCommand[7] = 0x46;
-            _PLCCommand[8] = 0x30;                         // 目标模块IO编号
-            _PLCCommand[9] = 0x33;
-            _PLCCommand[10] = 0x46;
-            _PLCCommand[11] = 0x46;
-            _PLCCommand[12] = BuildBytesFromData( NetworkStationNumber )[0];         // 目标模块站号
-            _PLCCommand[13] = BuildBytesFromData( NetworkStationNumber )[1];
-            _PLCCommand[14] = BuildBytesFromData( (ushort)(_PLCCommand.Length - 18) )[0]; // 请求数据长度
-            _PLCCommand[15] = BuildBytesFromData( (ushort)(_PLCCommand.Length - 18) )[1];
-            _PLCCommand[16] = BuildBytesFromData( (ushort)(_PLCCommand.Length - 18) )[2];
-            _PLCCommand[17] = BuildBytesFromData( (ushort)(_PLCCommand.Length - 18) )[3];
-            _PLCCommand[18] = 0x30; // CPU监视定时器
-            _PLCCommand[19] = 0x30;
-            _PLCCommand[20] = 0x31;
-            _PLCCommand[21] = 0x30;
-            _PLCCommand[22] = 0x31; // 批量写入的命令
-            _PLCCommand[23] = 0x34;
-            _PLCCommand[24] = 0x30;
-            _PLCCommand[25] = 0x31;
-            _PLCCommand[26] = 0x30; // 子命令
-            _PLCCommand[27] = 0x30;
-            _PLCCommand[28] = 0x30;
-            _PLCCommand[29] = analysis.Content1.DataType == 0 ? (byte)0x30 : (byte)0x31;
-            _PLCCommand[30] = Encoding.ASCII.GetBytes( analysis.Content1.AsciiCode )[0];                          // 软元件类型
-            _PLCCommand[31] = Encoding.ASCII.GetBytes( analysis.Content1.AsciiCode )[1];
-            _PLCCommand[32] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[0];                   // 起始地址的地位
-            _PLCCommand[33] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[1];
-            _PLCCommand[34] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[2];
-            _PLCCommand[35] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[3];
-            _PLCCommand[36] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[4];
-            _PLCCommand[37] = BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[5];
-
-            // 判断是否进行位操作
-            if (analysis.Content1.DataType == 1)
-            {
-                _PLCCommand[38] = BuildBytesFromData( (ushort)value.Length )[0];                                                      // 软元件点数
-                _PLCCommand[39] = BuildBytesFromData( (ushort)value.Length )[1];
-                _PLCCommand[40] = BuildBytesFromData( (ushort)value.Length )[2];
-                _PLCCommand[41] = BuildBytesFromData( (ushort)value.Length )[3];
-            }
-            else
-            {
-                _PLCCommand[38] = BuildBytesFromData( (ushort)(value.Length / 4) )[0];                                                      // 软元件点数
-                _PLCCommand[39] = BuildBytesFromData( (ushort)(value.Length / 4) )[1];
-                _PLCCommand[40] = BuildBytesFromData( (ushort)(value.Length / 4) )[2];
-                _PLCCommand[41] = BuildBytesFromData( (ushort)(value.Length / 4) )[3];
-            }
-            Array.Copy( value, 0, _PLCCommand, 42, value.Length );
-
-            result.Content1 = analysis.Content1;
-            result.Content2 = _PLCCommand;
-            result.IsSuccess = true;
-
-            // Console.WriteLine( value.Length );
-            // Console.WriteLine( Encoding.ASCII.GetString(_PLCCommand ));
-            return result;
-        }
-
-
-        #endregion
-
         #region Read Support
 
         /// <summary>
@@ -420,70 +112,20 @@ namespace HslCommunication.Profinet.Melsec
         /// </example>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
-            var result = new OperateResult<byte[]>( );
             //获取指令
-            var command = BuildReadCommand( address, length );
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
+            var command = BuildReadCommand( address, length, NetworkNumber, NetworkStationNumber );
+            if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
-            var read = ReadFromCoreServer( command.Content2 );
-            if (read.IsSuccess)
-            {
-                byte[] buffer = new byte[4];
-                buffer[0] = read.Content[18];
-                buffer[1] = read.Content[19];
-                buffer[2] = read.Content[20];
-                buffer[3] = read.Content[21];
-                result.ErrorCode = Convert.ToUInt16( Encoding.ASCII.GetString( buffer ), 16 );
-                if (result.ErrorCode == 0)
-                {
-                    if (command.Content1.DataType == 0x01)
-                    {
-                        result.Content = new byte[read.Content.Length - 22];
-                        for (int i = 22; i < read.Content.Length; i++)
-                        {
-                            if (read.Content[i] == 0x30)
-                            {
-                                result.Content[i - 22] = 0x00;
-                            }
-                            else
-                            {
-                                result.Content[i - 22] = 0x01;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        result.Content = new byte[(read.Content.Length - 22) / 2];
-                        for (int i = 0; i < result.Content.Length / 2; i++)
-                        {
-                            buffer = new byte[4];
-                            buffer[0] = read.Content[i * 4 + 22];
-                            buffer[1] = read.Content[i * 4 + 23];
-                            buffer[2] = read.Content[i * 4 + 24];
-                            buffer[3] = read.Content[i * 4 + 25];
+            // 核心交互
+            var read = ReadFromCoreServer( command.Content );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );
 
-                            ushort tmp = Convert.ToUInt16( Encoding.ASCII.GetString( buffer ), 16 );
-                            BitConverter.GetBytes( tmp ).CopyTo( result.Content, i * 2 );
-                        }
-                    }
-                    result.IsSuccess = true;
-                }
-                else
-                {
-                    result.Message = "请翻查三菱通讯手册来查看具体的信息。";
-                }
-            }
-            else
-            {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
-            }
+            // 错误代码验证
+            ushort errorCode = Convert.ToUInt16( Encoding.ASCII.GetString( read.Content, 18, 4 ), 16 );
+            if (errorCode != 0) return new OperateResult<byte[]>( ) { ErrorCode = errorCode, Message = "请翻查三菱通讯手册来查看具体的信息。" };
 
-            return result;
+            // 数据解析，需要传入是否使用位的参数
+            return ExtractActualData( read.Content, command.Content[29] == 0x31 );
         }
 
 
@@ -549,35 +191,19 @@ namespace HslCommunication.Profinet.Melsec
         /// </example>
         public OperateResult<bool[]> ReadBool( string address, ushort length )
         {
-            var result = new OperateResult<bool[]>( );
-            var analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
-            else
-            {
-                if (analysis.Content1.DataType == 0x00)
-                {
-                    result.Message = "读取位变量数组只能针对位软元件，如果读取字软元件，请自行转化";
-                    return result;
-                }
-            }
-            var read = Read( address, length );
-            if (!read.IsSuccess)
-            {
-                result.CopyErrorFromOther( read );
-                return result;
-            }
+            // 解析地址
+            OperateResult<MelsecMcDataType, ushort> analysis = MelsecHelper.McAnalysisAddress( address );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( analysis );
 
-            result.Content = new bool[read.Content.Length];
-            for (int i = 0; i < read.Content.Length; i++)
-            {
-                result.Content[i] = read.Content[i] == 0x01;
-            }
-            result.IsSuccess = true;
-            return result;
+            // 位读取校验
+            if (analysis.Content1.DataType == 0x00) return new OperateResult<bool[]>( ) { Message = "读取位变量数组只能针对位软元件，如果读取字软元件，请调用Read方法" };
+            
+            // 核心交互
+            var read = Read( address, length );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read );
+            
+            // 转化bool数组
+            return OperateResult.CreateSuccessResult( read.Content.Select( m => m == 0x01 ).ToArray( ) );
         }
 
 
@@ -615,78 +241,20 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>结果</returns>
         public override OperateResult Write( string address, byte[] value )
         {
-            // Console.WriteLine( BasicFramework.SoftBasic.ByteToHexString( value ) );
+            // 解析指令
+            OperateResult<byte[]> command = BuildWriteCommand( address, value, NetworkNumber, NetworkStationNumber );
+            if (!command.IsSuccess) return command;
 
-            OperateResult<byte[]> result = new OperateResult<byte[]>( );
+            // 核心交互
+            OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
+            if (!read.IsSuccess) return read;
 
-            //获取指令
-            var analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            // 错误码验证
+            ushort errorCode = Convert.ToUInt16( Encoding.ASCII.GetString( read.Content, 18, 4 ), 16 );
+            if(errorCode != 0) return new OperateResult<byte[]>( ) { ErrorCode = errorCode, Message = "请翻查三菱通讯手册来查看具体的信息。" };
 
-            OperateResult<MelsecMcDataType, byte[]> command;
-            // 预处理指令
-            if (analysis.Content1.DataType == 0x01)
-            {
-                byte[] buffer = new byte[value.Length];
-
-                for (int i = 0; i < buffer.Length; i++)
-                {
-                    if (value[i] == 0x00)
-                    {
-                        buffer[i] = 0x30;
-                    }
-                    else
-                    {
-                        buffer[i] = 0x31;
-                    }
-                }
-
-                // 位写入
-                command = BuildWriteCommand( address, buffer );
-            }
-            else
-            {
-                // 字写入
-                byte[] buffer = new byte[value.Length * 2];
-                for (int i = 0; i < value.Length / 2; i++)
-                {
-                    BuildBytesFromData( BitConverter.ToUInt16( value, i * 2 ) ).CopyTo( buffer, 4 * i );
-                }
-
-                command = BuildWriteCommand( address, buffer );
-            }
-
-            if (!command.IsSuccess)
-            {
-                result.CopyErrorFromOther( command );
-                return result;
-            }
-
-            OperateResult<byte[]> read = ReadFromCoreServer( command.Content2 );
-            if (read.IsSuccess)
-            {
-                byte[] buffer = new byte[4];
-                buffer[0] = read.Content[18];
-                buffer[1] = read.Content[19];
-                buffer[2] = read.Content[20];
-                buffer[3] = read.Content[21];
-                result.ErrorCode = Convert.ToInt16( Encoding.ASCII.GetString( buffer ), 16 );
-                if (result.ErrorCode == 0)
-                {
-                    result.IsSuccess = true;
-                }
-            }
-            else
-            {
-                result.ErrorCode = read.ErrorCode;
-                result.Message = read.Message;
-            }
-
-            return result;
+            // 写入成功
+            return OperateResult.CreateSuccessResult( );
         }
 
 
@@ -783,6 +351,207 @@ namespace HslCommunication.Profinet.Melsec
         }
 
         #endregion
-        
+
+        #region Static Method Helper
+
+
+        /// <summary>
+        /// 根据类型地址长度确认需要读取的报文
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">长度</param>
+        /// <param name="networkNumber">网络号信息</param>
+        /// <param name="networkStationNumber">网络站号信息</param>
+        /// <returns>带有成功标志的指令数据</returns>
+        public static OperateResult<byte[]> BuildReadCommand( string address, ushort length, byte networkNumber = 0, byte networkStationNumber = 0 )
+        {
+            OperateResult<MelsecMcDataType,ushort> analysis = MelsecHelper.McAnalysisAddress( address );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
+
+
+            // 默认信息----注意：高低字节交错
+            byte[] _PLCCommand = new byte[42];
+            _PLCCommand[ 0] = 0x35;                                                               // 副标题
+            _PLCCommand[ 1] = 0x30;
+            _PLCCommand[ 2] = 0x30;
+            _PLCCommand[ 3] = 0x30;
+            _PLCCommand[ 4] = MelsecHelper.BuildBytesFromData( networkNumber )[0];                // 网络号
+            _PLCCommand[ 5] = MelsecHelper.BuildBytesFromData( networkNumber )[1];
+            _PLCCommand[ 6] = 0x46;                                                               // PLC编号
+            _PLCCommand[ 7] = 0x46;
+            _PLCCommand[ 8] = 0x30;                                                               // 目标模块IO编号
+            _PLCCommand[ 9] = 0x33;
+            _PLCCommand[10] = 0x46;
+            _PLCCommand[11] = 0x46;
+            _PLCCommand[12] = MelsecHelper.BuildBytesFromData( networkStationNumber )[0];         // 目标模块站号
+            _PLCCommand[13] = MelsecHelper.BuildBytesFromData( networkStationNumber )[1];
+            _PLCCommand[14] = 0x30;                                                               // 请求数据长度
+            _PLCCommand[15] = 0x30;
+            _PLCCommand[16] = 0x31;
+            _PLCCommand[17] = 0x38;
+            _PLCCommand[18] = 0x30;                                                               // CPU监视定时器
+            _PLCCommand[19] = 0x30;
+            _PLCCommand[20] = 0x31;
+            _PLCCommand[21] = 0x30;
+            _PLCCommand[22] = 0x30;                                                               // 批量读取数据命令
+            _PLCCommand[23] = 0x34;
+            _PLCCommand[24] = 0x30;
+            _PLCCommand[25] = 0x31;
+            _PLCCommand[26] = 0x30;                                                               // 以点为单位还是字为单位成批读取
+            _PLCCommand[27] = 0x30;
+            _PLCCommand[28] = 0x30;
+            _PLCCommand[29] = analysis.Content1.DataType == 0 ? (byte)0x30 : (byte)0x31;
+            _PLCCommand[30] = Encoding.ASCII.GetBytes( analysis.Content1.AsciiCode )[0];          // 软元件类型
+            _PLCCommand[31] = Encoding.ASCII.GetBytes( analysis.Content1.AsciiCode )[1];
+            _PLCCommand[32] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[0];            // 起始地址的地位
+            _PLCCommand[33] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[1];
+            _PLCCommand[34] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[2];
+            _PLCCommand[35] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[3];
+            _PLCCommand[36] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[4];
+            _PLCCommand[37] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[5];
+            _PLCCommand[38] = MelsecHelper.BuildBytesFromData( length )[0];                                             // 软元件点数
+            _PLCCommand[39] = MelsecHelper.BuildBytesFromData( length )[1];
+            _PLCCommand[40] = MelsecHelper.BuildBytesFromData( length )[2];
+            _PLCCommand[41] = MelsecHelper.BuildBytesFromData( length )[3];
+
+            return OperateResult.CreateSuccessResult( _PLCCommand );
+        }
+
+        /// <summary>
+        /// 根据类型地址以及需要写入的数据来生成报文
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="value">写入数据的实际值</param>
+        /// <param name="networkNumber">网络号</param>
+        /// <param name="networkStationNumber">网络站号</param>
+        /// <returns>带有成功标志的指令数据</returns>
+        public static OperateResult<byte[]> BuildWriteCommand( string address, byte[] value, byte networkNumber = 0, byte networkStationNumber = 0 )
+        {
+            OperateResult<MelsecMcDataType, ushort> analysis = MelsecHelper.McAnalysisAddress( address );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
+
+
+            // 预处理指令
+            if (analysis.Content1.DataType == 0x01)
+            {
+                // 位写入
+                value = value.Select( m => m == 0x00 ? (byte)0x30 : (byte)0x31 ).ToArray( );
+            }
+            else
+            {
+                // 字写入
+                byte[] buffer = new byte[value.Length * 2];
+                for (int i = 0; i < value.Length / 2; i++)
+                {
+                    MelsecHelper.BuildBytesFromData( BitConverter.ToUInt16( value, i * 2 ) ).CopyTo( buffer, 4 * i );
+                }
+                value = buffer;
+            }
+
+
+            // 默认信息----注意：高低字节交错
+
+            byte[] _PLCCommand = new byte[42 + value.Length];
+
+            _PLCCommand[ 0] = 0x35;                                                                              // 副标题
+            _PLCCommand[ 1] = 0x30;
+            _PLCCommand[ 2] = 0x30;
+            _PLCCommand[ 3] = 0x30;
+            _PLCCommand[ 4] = MelsecHelper.BuildBytesFromData( networkNumber )[0];                               // 网络号
+            _PLCCommand[ 5] = MelsecHelper.BuildBytesFromData( networkNumber )[1];
+            _PLCCommand[ 6] = 0x46;                                                                              // PLC编号
+            _PLCCommand[ 7] = 0x46;
+            _PLCCommand[ 8] = 0x30;                                                                              // 目标模块IO编号
+            _PLCCommand[ 9] = 0x33;
+            _PLCCommand[10] = 0x46;
+            _PLCCommand[11] = 0x46;
+            _PLCCommand[12] = MelsecHelper.BuildBytesFromData( networkStationNumber )[0];                        // 目标模块站号
+            _PLCCommand[13] = MelsecHelper.BuildBytesFromData( networkStationNumber )[1];
+            _PLCCommand[14] = MelsecHelper.BuildBytesFromData( (ushort)(_PLCCommand.Length - 18) )[0];           // 请求数据长度
+            _PLCCommand[15] = MelsecHelper.BuildBytesFromData( (ushort)(_PLCCommand.Length - 18) )[1];
+            _PLCCommand[16] = MelsecHelper.BuildBytesFromData( (ushort)(_PLCCommand.Length - 18) )[2];
+            _PLCCommand[17] = MelsecHelper.BuildBytesFromData( (ushort)(_PLCCommand.Length - 18) )[3];
+            _PLCCommand[18] = 0x30;                                                                              // CPU监视定时器
+            _PLCCommand[19] = 0x30;
+            _PLCCommand[20] = 0x31;
+            _PLCCommand[21] = 0x30;
+            _PLCCommand[22] = 0x31;                                                                              // 批量写入的命令
+            _PLCCommand[23] = 0x34;
+            _PLCCommand[24] = 0x30;
+            _PLCCommand[25] = 0x31;
+            _PLCCommand[26] = 0x30;                                                                              // 子命令
+            _PLCCommand[27] = 0x30;
+            _PLCCommand[28] = 0x30;
+            _PLCCommand[29] = analysis.Content1.DataType == 0 ? (byte)0x30 : (byte)0x31;
+            _PLCCommand[30] = Encoding.ASCII.GetBytes( analysis.Content1.AsciiCode )[0];                         // 软元件类型
+            _PLCCommand[31] = Encoding.ASCII.GetBytes( analysis.Content1.AsciiCode )[1];
+            _PLCCommand[32] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[0];     // 起始地址的地位
+            _PLCCommand[33] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[1];
+            _PLCCommand[34] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[2];
+            _PLCCommand[35] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[3];
+            _PLCCommand[36] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[4];
+            _PLCCommand[37] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[5];
+
+            // 判断是否进行位操作
+            if (analysis.Content1.DataType == 1)
+            {
+                _PLCCommand[38] = MelsecHelper.BuildBytesFromData( (ushort)value.Length )[0];                    // 软元件点数
+                _PLCCommand[39] = MelsecHelper.BuildBytesFromData( (ushort)value.Length )[1];
+                _PLCCommand[40] = MelsecHelper.BuildBytesFromData( (ushort)value.Length )[2];
+                _PLCCommand[41] = MelsecHelper.BuildBytesFromData( (ushort)value.Length )[3];
+            }
+            else
+            {
+                _PLCCommand[38] = MelsecHelper.BuildBytesFromData( (ushort)(value.Length / 4) )[0];              // 软元件点数
+                _PLCCommand[39] = MelsecHelper.BuildBytesFromData( (ushort)(value.Length / 4) )[1];
+                _PLCCommand[40] = MelsecHelper.BuildBytesFromData( (ushort)(value.Length / 4) )[2];
+                _PLCCommand[41] = MelsecHelper.BuildBytesFromData( (ushort)(value.Length / 4) )[3];
+            }
+            Array.Copy( value, 0, _PLCCommand, 42, value.Length );
+
+            return OperateResult.CreateSuccessResult( _PLCCommand );
+        }
+
+        /// <summary>
+        /// 从PLC反馈的数据中提取出实际的数据内容，需要传入反馈数据，是否位读取
+        /// </summary>
+        /// <param name="response">反馈的数据内容</param>
+        /// <param name="isBit">是否位读取</param>
+        /// <returns>解析后的结果对象</returns>
+        public static OperateResult<byte[]> ExtractActualData( byte[] response, bool isBit )
+        {
+            if (isBit)
+            {
+                // 位读取
+                byte[] Content = new byte[response.Length - 22];
+                for (int i = 22; i < response.Length; i++)
+                {
+                    if (response[i] == 0x30)
+                    {
+                        Content[i - 22] = 0x00;
+                    }
+                    else
+                    {
+                        Content[i - 22] = 0x01;
+                    }
+                }
+
+                return OperateResult.CreateSuccessResult( Content );
+            }
+            else
+            {
+                // 字读取
+                byte[] Content = new byte[(response.Length - 22) / 2];
+                for (int i = 0; i < response.Length / 2; i++)
+                {
+                    ushort tmp = Convert.ToUInt16( Encoding.ASCII.GetString( response, i * 4 + 22, 4 ), 16 );
+                    BitConverter.GetBytes( tmp ).CopyTo( Content, i * 2 );
+                }
+
+                return OperateResult.CreateSuccessResult( Content );
+            }
+        }
+
+        #endregion
     }
 }
