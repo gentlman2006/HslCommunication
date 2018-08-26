@@ -207,6 +207,9 @@
     <Compile Include="..\HslCommunication_Net45\Core\IMessage\AlienMessage.cs">
       <Link>Core\IMessage\AlienMessage.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\AllenBradleyMessage.cs">
+      <Link>Core\IMessage\AllenBradleyMessage.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Core\IMessage\EFORTMessage.cs">
       <Link>Core\IMessage\EFORTMessage.cs</Link>
     </Compile>
@@ -447,6 +450,9 @@
     </Compile>
     <Compile Include="..\HslCommunication_Net45\NamespaceDoc.cs">
       <Link>NamespaceDoc.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\AllenBradley\AllenBradleyNet.cs">
+      <Link>Profinet\AllenBradley\AllenBradleyNet.cs</Link>
     </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1EDataType.cs">
       <Link>Profinet\Melsec\MelsecA1EDataType.cs</Link>
@@ -702,8 +708,6 @@
       <Link>Doc.txt</Link>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Profinet\AllenBradley\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

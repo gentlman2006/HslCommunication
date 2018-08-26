@@ -27,14 +27,14 @@ namespace HslCommunication.Core.IMessage
         /// 检查头子节的合法性
         /// </summary>
         /// <param name="token">特殊的令牌，有些特殊消息的验证</param>
-        /// <returns></returns>
+        /// <returns>是否成功的结果</returns>
         bool CheckHeadBytesLegal(byte[] token);
 
 
         /// <summary>
         /// 获取头子节里的消息标识
         /// </summary>
-        /// <returns></returns>
+        /// <returns>消息标识</returns>
         int GetHeadBytesIdentity();
 
 

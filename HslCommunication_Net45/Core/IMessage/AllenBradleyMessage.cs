@@ -5,22 +5,17 @@ using System.Text;
 
 namespace HslCommunication.Core.IMessage
 {
-    
     /// <summary>
-    /// 三菱的Qna兼容3E帧协议解析规则
+    /// 用于和 AllenBradley PLC 交互的消息协议类
     /// </summary>
-    public class MelsecQnA3EBinaryMessage : INetMessage
+    public class AllenBradleyMessage : INetMessage
     {
-
         /// <summary>
         /// 消息头的指令长度
         /// </summary>
         public int ProtocolHeadBytesLength
         {
-            get
-            {
-                return 9;
-            }
+            get { return 24; }
         }
 
 
@@ -28,9 +23,12 @@ namespace HslCommunication.Core.IMessage
         /// 从当前的头子节文件中提取出接下来需要接收的数据长度
         /// </summary>
         /// <returns>返回接下来的数据内容长度</returns>
-        public int GetContentLengthByHeadBytes()
+        public int GetContentLengthByHeadBytes( )
         {
-            return BitConverter.ToUInt16( HeadBytes, 7 );
+            byte[] buffer = new byte[2];
+            buffer[0] = HeadBytes[3];
+            buffer[1] = HeadBytes[2];
+            return BitConverter.ToUInt16( buffer, 0 );
         }
 
 
@@ -41,24 +39,15 @@ namespace HslCommunication.Core.IMessage
         /// <returns>是否成功的结果</returns>
         public bool CheckHeadBytesLegal( byte[] token )
         {
-            if (HeadBytes == null) return false;
-
-            if (HeadBytes[0] == 0xD0 && HeadBytes[1] == 0x00)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
 
 
         /// <summary>
         /// 获取头子节里的消息标识
         /// </summary>
-        /// <returns>消息标识</returns>
-        public int GetHeadBytesIdentity()
+        /// <returns>消息id</returns>
+        public int GetHeadBytesIdentity( )
         {
             return 0;
         }
@@ -80,8 +69,5 @@ namespace HslCommunication.Core.IMessage
         /// 发送的字节信息
         /// </summary>
         public byte[] SendBytes { get; set; }
-
-
     }
-
 }

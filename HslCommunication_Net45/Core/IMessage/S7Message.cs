@@ -55,7 +55,7 @@ namespace HslCommunication.Core.IMessage
         /// <summary>
         /// 获取剩余的内容长度
         /// </summary>
-        /// <returns></returns>
+        /// <returns>数据内容长度</returns>
         public int GetContentLengthByHeadBytes()
         {
             if (HeadBytes?.Length >= 4)
@@ -71,7 +71,7 @@ namespace HslCommunication.Core.IMessage
         /// <summary>
         /// 获取消息号，此处无效
         /// </summary>
-        /// <returns></returns>
+        /// <returns>消息标识</returns>
         public int GetHeadBytesIdentity()
         {
             return 0;

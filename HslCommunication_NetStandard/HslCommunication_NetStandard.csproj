@@ -41,6 +41,7 @@
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftZipped.cs" Link="BasicFramework\SoftZipped.cs" />
     <Compile Include="..\HslCommunication_Net45\Core\Address\DeviceAddressBase.cs" Link="Core\Address\DeviceAddressBase.cs" />
     <Compile Include="..\HslCommunication_Net45\Core\IMessage\AlienMessage.cs" Link="Core\IMessage\AlienMessage.cs" />
+    <Compile Include="..\HslCommunication_Net45\Core\IMessage\AllenBradleyMessage.cs" Link="Core\IMessage\AllenBradleyMessage.cs" />
     <Compile Include="..\HslCommunication_Net45\Core\IMessage\EFORTMessage.cs" Link="Core\IMessage\EFORTMessage.cs" />
     <Compile Include="..\HslCommunication_Net45\Core\IMessage\FetchWriteMessage.cs" Link="Core\IMessage\FetchWriteMessage.cs" />
     <Compile Include="..\HslCommunication_Net45\Core\IMessage\FinsMessage.cs" Link="Core\IMessage\FinsMessage.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="..\HslCommunication_Net45\ModBus\ModbusTcp\ModbusTcpServer.cs" Link="ModBus\ModbusTcp\ModbusTcpServer.cs" />
     <Compile Include="..\HslCommunication_Net45\ModBus\MonitorAddress.cs" Link="ModBus\MonitorAddress.cs" />
     <Compile Include="..\HslCommunication_Net45\NamespaceDoc.cs" Link="NamespaceDoc.cs" />
+    <Compile Include="..\HslCommunication_Net45\Profinet\AllenBradley\AllenBradleyNet.cs" Link="Profinet\AllenBradley\AllenBradleyNet.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1EDataType.cs" Link="Profinet\Melsec\MelsecA1EDataType.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1ENet.cs" Link="Profinet\Melsec\MelsecA1ENet.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecHelper.cs" Link="Profinet\Melsec\MelsecHelper.cs" />

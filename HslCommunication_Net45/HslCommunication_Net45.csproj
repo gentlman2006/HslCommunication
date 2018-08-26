@@ -145,6 +145,7 @@
     </Compile>
     <Compile Include="Core\Address\DeviceAddressBase.cs" />
     <Compile Include="Core\IMessage\AlienMessage.cs" />
+    <Compile Include="Core\IMessage\AllenBradleyMessage.cs" />
     <Compile Include="Core\IMessage\EFORTMessage.cs" />
     <Compile Include="Core\IMessage\FetchWriteMessage.cs" />
     <Compile Include="Core\IMessage\FinsMessage.cs" />
@@ -232,6 +233,7 @@
     <Compile Include="ModBus\ModbusTcp\ModbusTcpServer.cs" />
     <Compile Include="ModBus\MonitorAddress.cs" />
     <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="Profinet\AllenBradley\AllenBradleyNet.cs" />
     <Compile Include="Profinet\Melsec\MelsecA1EDataType.cs" />
     <Compile Include="Profinet\Melsec\MelsecA1ENet.cs" />
     <Compile Include="Profinet\Melsec\MelsecHelper.cs" />
@@ -353,8 +355,6 @@
     <None Include="imgaes\abstr1.png" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Profinet\AllenBradley\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -50,7 +50,7 @@ namespace HslCommunication.Core.IMessage
         /// 检查头子节的合法性
         /// </summary>
         /// <param name="token">特殊的令牌，有些特殊消息的验证</param>
-        /// <returns></returns>
+        /// <returns>是否合法</returns>
         public bool CheckHeadBytesLegal( byte[] token )
         {
             if (HeadBytes == null) return false;
@@ -69,7 +69,7 @@ namespace HslCommunication.Core.IMessage
         /// <summary>
         /// 获取头子节里的消息标识
         /// </summary>
-        /// <returns></returns>
+        /// <returns>消息标识</returns>
         public int GetHeadBytesIdentity( )
         {
             return HeadBytes[3];
