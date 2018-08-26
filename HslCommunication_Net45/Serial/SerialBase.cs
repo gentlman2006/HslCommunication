@@ -206,10 +206,10 @@ namespace HslCommunication.Serial
             while (true)
             {
                 Thread.Sleep( 20 );
-                int countRece = SP_ReadData.Read( buffer, receiveCount, SP_ReadData.BytesToRead );
-                receiveCount += countRece;
+                if (SP_ReadData.BytesToRead < 1) break;
 
-                if (countRece == 0) break;
+                // 继续接收数据
+                receiveCount += SP_ReadData.Read( buffer, receiveCount, SP_ReadData.BytesToRead );
             }
             resetEvent.Set( );
         }

@@ -86,15 +86,14 @@ namespace HslCommunicationDemo
             while (true)
             {
                 System.Threading.Thread.Sleep( 20 );
-                int count = SP_ReadData.Read( data, receiveCount, SP_ReadData.BytesToRead );
-                receiveCount += count;
-
-                if(count == 0)
+                if(SP_ReadData.BytesToRead < 1)
                 {
                     buffer = new byte[receiveCount];
                     Array.Copy( data, 0, buffer, 0, receiveCount );
                     break;
                 }
+
+                receiveCount += SP_ReadData.Read( data, receiveCount, SP_ReadData.BytesToRead );
             }
 
             if (receiveCount == 0) return;
