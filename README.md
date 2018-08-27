@@ -43,8 +43,10 @@ Install-Package HslCommunication
 * java环境下：**Intellij Idea 2018.1**
 
 ## Contact
-* 技术支持QQ群：[592132877](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8)
+* 工业软件交流QQ群：[592132877](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8)
 * 邮箱地址(Email)：hsl200909@163.com
+
+* 技术支持VIP群（打赏超过100RMB可加入）：[838185568](http://shang.qq.com/wpa/qunwpa?idkey=eee02ce1acde63c6316cbb380a80e033a14170ab7ca981f1cac83e0b657c8860)
 
 ## Project Target
 本项目的目标在于开发一个.Net及java下大多数软件系统都会包含了基础类库功能，实现一些常用的数据通信，日志记录等等类，以及版本类，网络通讯类，PLC数据访问类。并且实现C#和java无缝通信集成。
