@@ -161,6 +161,14 @@
       <Link>Controls\UserCurve.designer.cs</Link>
       <DependentUpon>UserCurve.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserDrum.cs">
+      <Link>Controls\UserDrum.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserDrum.designer.cs">
+      <Link>Controls\UserDrum.designer.cs</Link>
+      <DependentUpon>UserDrum.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Controls\UserGaugeChart.cs">
       <Link>Controls\UserGaugeChart.cs</Link>
       <SubType>UserControl</SubType>
@@ -553,6 +561,10 @@
     <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserCurve.resx">
       <Link>Controls\UserCurve.resx</Link>
       <DependentUpon>UserCurve.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserDrum.resx">
+      <Link>Controls\UserDrum.resx</Link>
+      <DependentUpon>UserDrum.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserGaugeChart.resx">
       <Link>Controls\UserGaugeChart.resx</Link>
