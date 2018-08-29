@@ -71,7 +71,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 获取本机的机器码
         /// </summary>
-        /// <returns></returns>
+        /// <returns>机器码字符串</returns>
         public string GetMachineCodeString()
         {
             return machine_code;
@@ -80,7 +80,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 获取需要保存的数据内容
         /// </summary>
-        /// <returns></returns>
+        /// <returns>实际保存的内容</returns>
         public override string ToSaveString()
         {
             JObject json = new JObject
@@ -92,7 +92,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 从字符串加载数据
         /// </summary>
-        /// <param name="content"></param>
+        /// <param name="content">文件存储的数据</param>
         public override void LoadByString(string content)
         {
             JObject json = JObject.Parse(content);
@@ -119,7 +119,7 @@ namespace HslCommunication.BasicFramework
         /// <summary>
         /// 检查该注册码是否是正确的注册码
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="code">注册码信息</param>
         /// <param name="encrypt">数据加密的方法，必须用户指定</param>
         /// <returns>是否注册成功</returns>
         public bool CheckAuthorize(string code, Func<string, string> encrypt)

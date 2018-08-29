@@ -63,6 +63,18 @@ namespace HslCommunication.BasicFramework
     /// <summary>
     /// 文件存储功能的基类，包含了文件存储路径，存储方法等
     /// </summary>
+    /// <remarks>
+    /// 需要继承才能实现你想存储的数据，比较经典的例子就是存储你的应用程序的配置信息，通常的格式就是xml文件或是json文件。具体请看例子：
+    /// </remarks>
+    /// <example>
+    /// 下面举例实现两个字段的普通数据存储
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftFileSaveBaseExample.cs" region="SoftFileSaveBase1" title="简单示例" />
+    /// 然后怎么调用呢？
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftFileSaveBaseExample.cs" region="Example" title="调用示例" />
+    /// 如果你想实现加密存储，这样就不用关心被用户看到了。
+    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftFileSaveBaseExample.cs" region="SoftFileSaveBase2" title="加密示例" />
+    /// 如果还是担心被反编译获取数据，那么这个密钥就要来自服务器的数据，本地不做存储。
+    /// </example>
     public class SoftFileSaveBase
     {
         #region Constructor

@@ -54,6 +54,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicFramework\SoftBasicTest.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="BasicFramework\SoftZippedTest.cs" />
     <Compile Include="Documentation\Samples\Algorithms\ConnectPool.cs" />
     <Compile Include="Documentation\Samples\BasicFramework\SoftAnimation.cs" />
+    <Compile Include="Documentation\Samples\BasicFramework\SoftFileSaveBaseExample.cs" />
     <Compile Include="Documentation\Samples\Core\IReadWriteNet.cs" />
     <Compile Include="Core\Net\HslProtocolTest.cs" />
     <Compile Include="Core\Net\NetHandleTest.cs" />
