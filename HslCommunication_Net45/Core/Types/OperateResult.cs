@@ -322,6 +322,7 @@ namespace HslCommunication
             return new OperateResult()
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
             };
         }
@@ -337,6 +338,7 @@ namespace HslCommunication
             return new OperateResult<T>()
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
                 Content = value
             };
@@ -356,6 +358,7 @@ namespace HslCommunication
             return new OperateResult<T1, T2>()
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
@@ -378,6 +381,7 @@ namespace HslCommunication
             return new OperateResult<T1, T2, T3>()
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
@@ -402,6 +406,7 @@ namespace HslCommunication
             return new OperateResult<T1, T2, T3, T4>( )
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
@@ -430,6 +435,7 @@ namespace HslCommunication
             return new OperateResult<T1, T2, T3, T4, T5>( )
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
@@ -460,6 +466,7 @@ namespace HslCommunication
             return new OperateResult<T1, T2, T3, T4, T5, T6>( )
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
@@ -493,6 +500,7 @@ namespace HslCommunication
             return new OperateResult<T1, T2, T3, T4, T5, T6, T7>( )
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
@@ -530,6 +538,7 @@ namespace HslCommunication
             return new OperateResult<T1, T2, T3, T4, T5, T6, T7, T8>( )
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
@@ -570,6 +579,7 @@ namespace HslCommunication
             return new OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9>( )
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
@@ -612,6 +622,7 @@ namespace HslCommunication
             return new OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>( )
             {
                 IsSuccess = true,
+                ErrorCode = 0,
                 Message = StringResources.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
