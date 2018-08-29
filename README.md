@@ -8,7 +8,7 @@
        //\/       //\/                     \//\           //\/
       //\/       //\/           ///\      //\\/          //\/       //\   
      ///\      ///\/            \/////////\\/           /////////////\/
-     \\\/      \\\/              \\\\\\\\\/             \\\\\\\\\\\\\/         Present by Richard.Hu
+     \\\/      \\\/              \\\\\\\\\/             \\\\\\\\\\\\\/             Present by Richard.Hu
 </pre>
 
 # HslCommunication.dll
@@ -45,7 +45,6 @@ Install-Package HslCommunication
 ## Contact
 * 工业软件交流QQ群：[592132877](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8)
 * 邮箱地址(Email)：hsl200909@163.com
-
 * 技术支持VIP群（打赏超过100RMB可加入）：[838185568](http://shang.qq.com/wpa/qunwpa?idkey=eee02ce1acde63c6316cbb380a80e033a14170ab7ca981f1cac83e0b657c8860)
 
 ## Project Target
@@ -60,7 +59,8 @@ The goal of this project is to develop a .Net and java. Most software systems wi
 * [同步网络通讯功能 **NetSimplify**](http://www.cnblogs.com/dathlin/p/7697782.html)
 * [文件管理引擎](http://www.cnblogs.com/dathlin/p/7746113.html)
 * [异步网络通讯功能 **NetComplex**](http://www.cnblogs.com/dathlin/p/8097897.html)
-* [三菱及西门子PLC访问](http://www.cnblogs.com/dathlin/p/7469679.html)
+* [三菱PLC以太网访问](http://www.cnblogs.com/dathlin/p/7469679.html)
+* [三菱PLC串口访问](https://www.cnblogs.com/dathlin/p/9536467.html)
 * [西门子PLC访问](http://www.cnblogs.com/dathlin/p/8685855.html)
 * [欧姆龙PLC访问](http://www.cnblogs.com/dathlin/p/8723961.html)
 * [邮件功能使用](http://www.cnblogs.com/dathlin/p/8463613.html)
@@ -98,17 +98,11 @@ The goal of this project is to develop a .Net and java. Most software systems wi
 
 ## Second Extensions Project (内含几个Demo)
 * 基于本组件开发的一个CS架构的项目模版，该模版采用本组件进行开发，完成了账户管理，角色管理，个人文件管理，头像机制，自动升级，完善的日志等等功能。项目地址为：[https://github.com/dathlin/ClientServerProject](https://github.com/dathlin/ClientServerProject)
-
 * 基于本组件开发的一个局域网多人聊天的程序，支持在线客户端信息查看，服务器强制关闭客户端。[https://github.com/dathlin/NetChatRoom](https://github.com/dathlin/NetChatRoom)
-
 * 基于本组件开发的一个西门子PLC后台读取显示数据，并推送给在线客户端（包括window程序，asp.net网站，Android程序）显示实时曲线的示例项目。并实现远程操作。[https://github.com/dathlin/RemoteMonitor](https://github.com/dathlin/RemoteMonitor)
-
 * **ModbusTcpServer项目** 基于本组件开发的一个Modbus Tcp服务器工具，可以方便的快速搭建一个性能可靠稳定的服务器。
-
 * **FileNetServer项目** 基于本组件开发的一个文件管理引擎，实现服务器端文件存储，支持客户端进行文件上传，下载，删除，查看文件信息等等。
-
 * **HslCommunicationDemo项目** 基于本组件开发的一个西门子，三菱，欧姆龙，Modbus-Tcp，SimplifyNet，ComplexNet，FileNet等的通讯测试工具，方便的进行读写测试，不需要额外的编写代码。
-
 * **SharpNodeSettings项目** 数据网关项目，基于可配置的文件创建的数据中心，支持redis公开和opc ua公开。[https://github.com/dathlin/SharpNodeSettings](https://github.com/dathlin/SharpNodeSettings)
 
 ## Contribution
