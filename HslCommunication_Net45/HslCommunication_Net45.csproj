@@ -113,6 +113,12 @@
     <Compile Include="Controls\UserCurve.Designer.cs">
       <DependentUpon>UserCurve.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UserDrum.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UserDrum.Designer.cs">
+      <DependentUpon>UserDrum.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UserGaugeChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -285,6 +291,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserCurve.resx">
       <DependentUpon>UserCurve.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserDrum.resx">
+      <DependentUpon>UserDrum.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserGaugeChart.resx">
       <DependentUpon>UserGaugeChart.cs</DependentUpon>
