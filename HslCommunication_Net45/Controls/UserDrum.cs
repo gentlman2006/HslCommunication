@@ -22,6 +22,8 @@ namespace HslCommunication.Controls
         public UserDrum( )
         {
             DoubleBuffered = true;
+            stringFormat.Alignment = StringAlignment.Center;
+            stringFormat.LineAlignment = StringAlignment.Center;
             InitializeComponent( );
         }
 
@@ -71,6 +73,60 @@ namespace HslCommunication.Controls
             }
         }
 
+        /// <summary>
+        /// 获取或设置显示的文本信息
+        /// </summary>
+        [Browsable( true )]
+        [DefaultValue( "" )]
+        [Category( "外观" )]
+        public override string Text
+        {
+            get { return text; }
+            set
+            {
+                this.text = value;
+                Invalidate( );
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置文本的颜色
+        /// </summary>
+        [Browsable(true)]
+        [Category( "外观" )]
+        [DefaultValue( typeof( Color ), "White" )]
+        public override Color ForeColor
+        {
+            get => textColor;
+            set
+            {
+                textColor = value;
+                textBrush.Dispose( );
+                textBrush = new SolidBrush( value );
+                Invalidate( );
+            }
+        }
+
+
+        /// <summary>
+        /// 获取或设置文本的背景色
+        /// </summary>
+        [Browsable( true )]
+        [Category( "外观" )]
+        [DefaultValue( typeof( Color ), "DarkGreen" )]
+        public Color TextBackColor
+        {
+            get => textBackColor;
+            set
+            {
+                textBackColor = value;
+                textBackBrush.Dispose( );
+                textBackBrush = new SolidBrush( value );
+                Invalidate( );
+            }
+        }
+
+
 
         #endregion
 
@@ -81,6 +137,15 @@ namespace HslCommunication.Controls
 
         private Color borderColor = Color.DimGray;
         private Pen borderPen = new Pen( Color.DimGray );
+
+        private Color textColor = Color.White;
+        private Brush textBrush = new SolidBrush( Color.White );
+
+        private Color textBackColor = Color.DarkGreen;
+        private Brush textBackBrush = new SolidBrush( Color.DarkGreen );
+
+        private string text = string.Empty;
+        private StringFormat stringFormat = new StringFormat( );
 
         #endregion
 
@@ -113,6 +178,18 @@ namespace HslCommunication.Controls
             g.DrawLines( borderPen, points );
             g.DrawCurve( borderPen, new Point[] { new Point( 10, Height * 3 / 10 ), new Point( Width / 2, Height * 3 / 10 + Height / 25 ), new Point( Width - 10, Height * 3 / 10 ) } );
             g.DrawCurve( borderPen, new Point[] { new Point( 10, Height * 7 / 10 ), new Point( Width / 2, Height * 7 / 10 + Height / 25 ), new Point( Width - 10, Height * 7 / 10 ) } );
+
+            if (!string.IsNullOrEmpty( text ))
+            {
+                SizeF sizeF = g.MeasureString( text, Font, (Width - 20) * 3 / 5 );
+                if (sizeF.Width < (Width - 20) * 4 / 5) sizeF.Width = (Width - 20) * 3 / 5;
+                sizeF.Width += 10;
+                sizeF.Height += 5;
+
+                Rectangle textRectangle = new Rectangle( Width / 2 - (int)(sizeF.Width / 2), Height / 2 - (int)(sizeF.Height / 2), (int)sizeF.Width, (int)sizeF.Height );
+                g.FillRectangle( Brushes.DarkGreen, textRectangle );
+                g.DrawString( text, Font, textBrush, textRectangle, stringFormat );
+            }
         }
     }
 }

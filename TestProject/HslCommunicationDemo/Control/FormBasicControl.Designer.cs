@@ -44,6 +44,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.userVerticalProgress8 = new HslCommunication.Controls.UserVerticalProgress();
             this.userVerticalProgress7 = new HslCommunication.Controls.UserVerticalProgress();
             this.userVerticalProgress1 = new HslCommunication.Controls.UserVerticalProgress();
@@ -54,7 +55,6 @@
             this.userVerticalProgress4 = new HslCommunication.Controls.UserVerticalProgress();
             this.userSwitch1 = new HslCommunication.Controls.UserSwitch();
             this.userSwitch2 = new HslCommunication.Controls.UserSwitch();
-            this.userDrum1 = new HslCommunication.Controls.UserDrum();
             this.userClock1 = new HslCommunication.Controls.UserClock();
             this.userLantern3 = new HslCommunication.Controls.UserLantern();
             this.userLantern1 = new HslCommunication.Controls.UserLantern();
@@ -62,6 +62,7 @@
             this.userButton1 = new HslCommunication.Controls.UserButton();
             this.userButton2 = new HslCommunication.Controls.UserButton();
             this.userButton3 = new HslCommunication.Controls.UserButton();
+            this.userDrum1 = new HslCommunication.Controls.UserDrum();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -154,6 +155,7 @@
             // 
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3.Controls.Add(this.userDrum1);
+            this.panel3.Controls.Add(this.label10);
             this.panel3.Controls.Add(this.button1);
             this.panel3.Controls.Add(this.userClock1);
             this.panel3.Controls.Add(this.label5);
@@ -227,6 +229,15 @@
             this.label7.Size = new System.Drawing.Size(32, 17);
             this.label7.TabIndex = 45;
             this.label7.Text = "随机";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(69, 297);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(56, 17);
+            this.label10.TabIndex = 34;
+            this.label10.Text = "罐子控件";
             // 
             // userVerticalProgress8
             // 
@@ -355,16 +366,6 @@
         "On"};
             this.userSwitch2.TabIndex = 34;
             // 
-            // userDrum1
-            // 
-            this.userDrum1.BackColor = System.Drawing.Color.Transparent;
-            this.userDrum1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userDrum1.Location = new System.Drawing.Point(17, 34);
-            this.userDrum1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userDrum1.Name = "userDrum1";
-            this.userDrum1.Size = new System.Drawing.Size(164, 239);
-            this.userDrum1.TabIndex = 33;
-            // 
             // userClock1
             // 
             this.userClock1.BackColor = System.Drawing.Color.Transparent;
@@ -442,6 +443,16 @@
             this.userButton3.Size = new System.Drawing.Size(131, 39);
             this.userButton3.TabIndex = 8;
             // 
+            // userDrum1
+            // 
+            this.userDrum1.BackColor = System.Drawing.Color.Transparent;
+            this.userDrum1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userDrum1.Location = new System.Drawing.Point(26, 22);
+            this.userDrum1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userDrum1.Name = "userDrum1";
+            this.userDrum1.Size = new System.Drawing.Size(149, 223);
+            this.userDrum1.TabIndex = 35;
+            // 
             // FormBasicControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -506,6 +517,7 @@
         private HslCommunication.Controls.UserLantern userLantern3;
         private HslCommunication.Controls.UserVerticalProgress userVerticalProgress8;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label10;
         private HslCommunication.Controls.UserDrum userDrum1;
     }
 }

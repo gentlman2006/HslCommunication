@@ -23,6 +23,9 @@ namespace HslCommunicationDemo
             timerTick.Interval = 1000;
             timerTick.Tick += TimerTick_Tick;
             timerTick.Start( );
+
+
+            userDrum1.Text = "锅炉1#\r\n123.45 ℃";
         }
 
         private void TimerTick_Tick( object sender, EventArgs e )
