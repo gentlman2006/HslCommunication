@@ -164,7 +164,7 @@ namespace HslCommunication.Profinet.Omron
         /// <param name="address">起始地址</param>
         /// <param name="length">长度</param>
         /// <param name="isBit">是否是位读取</param>
-        /// <returns>带有成功标志的指令数据</returns>
+        /// <returns>带有成功标志的报文数据</returns>
         public OperateResult<byte[]> BuildReadCommand( string address, ushort length ,bool isBit)
         {
             var result = new OperateResult<byte[]>( );
@@ -207,7 +207,7 @@ namespace HslCommunication.Profinet.Omron
         /// <param name="address">起始地址</param>
         /// <param name="value"></param>
         /// <param name="isBit">是否是位操作</param>
-        /// <returns></returns>
+        /// <returns>带有成功标志的报文数据</returns>
         public OperateResult<byte[]> BuildWriteCommand( string address, byte[] value, bool isBit )
         {
             var result = new OperateResult<byte[]>( );
