@@ -542,7 +542,7 @@ namespace HslCommunication.Profinet.Melsec
             {
                 // 字读取
                 byte[] Content = new byte[(response.Length - 22) / 2];
-                for (int i = 0; i < response.Length / 2; i++)
+                for (int i = 0; i < Content.Length / 2; i++)
                 {
                     ushort tmp = Convert.ToUInt16( Encoding.ASCII.GetString( response, i * 4 + 22, 4 ), 16 );
                     BitConverter.GetBytes( tmp ).CopyTo( Content, i * 2 );
