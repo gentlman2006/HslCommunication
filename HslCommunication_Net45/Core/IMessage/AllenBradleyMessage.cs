@@ -25,10 +25,7 @@ namespace HslCommunication.Core.IMessage
         /// <returns>返回接下来的数据内容长度</returns>
         public int GetContentLengthByHeadBytes( )
         {
-            byte[] buffer = new byte[2];
-            buffer[0] = HeadBytes[3];
-            buffer[1] = HeadBytes[2];
-            return BitConverter.ToUInt16( buffer, 0 );
+            return BitConverter.ToUInt16( HeadBytes, 2 );
         }
 
 

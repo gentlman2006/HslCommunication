@@ -459,6 +459,9 @@
     <Compile Include="..\HslCommunication_Net45\NamespaceDoc.cs">
       <Link>NamespaceDoc.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\AllenBradley\AllenBradleyHelper.cs">
+      <Link>Profinet\AllenBradley\AllenBradleyHelper.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\AllenBradley\AllenBradleyNet.cs">
       <Link>Profinet\AllenBradley\AllenBradleyNet.cs</Link>
     </Compile>

@@ -184,6 +184,12 @@
     <Compile Include="FormPushNet.Designer.cs">
       <DependentUpon>FormPushNet.cs</DependentUpon>
     </Compile>
+    <Compile Include="PLC\FormAllenBrandly.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PLC\FormAllenBrandly.Designer.cs">
+      <DependentUpon>FormAllenBrandly.cs</DependentUpon>
+    </Compile>
     <Compile Include="PLC\FormSiemensFW.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -308,6 +314,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormPushNet.resx">
       <DependentUpon>FormPushNet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PLC\FormAllenBrandly.resx">
+      <DependentUpon>FormAllenBrandly.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PLC\FormSiemensFW.resx">
       <DependentUpon>FormSiemensFW.cs</DependentUpon>

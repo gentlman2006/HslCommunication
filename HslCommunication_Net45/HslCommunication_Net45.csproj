@@ -239,6 +239,7 @@
     <Compile Include="ModBus\ModbusTcp\ModbusTcpServer.cs" />
     <Compile Include="ModBus\MonitorAddress.cs" />
     <Compile Include="NamespaceDoc.cs" />
+    <Compile Include="Profinet\AllenBradley\AllenBradleyHelper.cs" />
     <Compile Include="Profinet\AllenBradley\AllenBradleyNet.cs" />
     <Compile Include="Profinet\Melsec\MelsecA1EDataType.cs" />
     <Compile Include="Profinet\Melsec\MelsecA1ENet.cs" />

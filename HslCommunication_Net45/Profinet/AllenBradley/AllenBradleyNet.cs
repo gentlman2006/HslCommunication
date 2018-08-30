@@ -12,8 +12,8 @@ namespace HslCommunication.Profinet.AllenBradley
     /// <summary>
     /// AB PLC的数据通讯类
     /// </summary>
-    [Obsolete("还未完成了类库，由于报文资料不足，暂时无法实现")]
-    public class AllenBradleyNet : NetworkDeviceBase<AllenBradleyMessage, ReverseBytesTransform>
+    // [Obsolete("还未完成了类库，由于报文资料不足，暂时无法实现")]
+    public class AllenBradleyNet : NetworkDeviceBase<AllenBradleyMessage, RegularByteTransform>
     {
         #region Constructor
 
@@ -81,7 +81,7 @@ namespace HslCommunication.Profinet.AllenBradley
             if (!check2.IsSuccess) return check2;
 
             // 提取连接标识
-            NetWorkConnectionID = ByteTransform.TransUInt32( read1.Content2, 20 );
+            NetWorkConnectionID = ByteTransform.TransUInt32( read2.Content2, 20 );
 
             // 校验成功
             return OperateResult.CreateSuccessResult( );
@@ -94,30 +94,22 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <summary>
         /// 创建一个读取的报文指令
         /// </summary>
-        /// <param name="address">起始地址</param>
-        /// <param name="length">长度</param>
+        /// <param name="address">tag名的地址</param>
         /// <returns>包含结果对象的报文信息</returns>
-        public OperateResult<byte[]> BuildReadCommand( string address, ushort length )
+        public OperateResult<byte[]> BuildReadCommand( string address )
         {
-            byte tmp = (byte)((length + 1) / 2 + 1);
+            byte tmp = (byte)((address.Length + 1) / 2 + 1);
             // UCMM 请求
             byte[] buff = new byte[]
             {
-                0x00, 0x70,                                         // 打开请求
-                0x00, 0x40,                                         // 数据长度                                                          ======= [需要修改]
-                0x00, 0x00, 0x00, 0x00,                             // 会话句柄初始值
-                0x00, 0x00, 0x00, 0x00,                             // 状态信息
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,     // 发送方上下文描述
-                0x00, 0x00, 0x00, 0x00,                             // 选项
-
                 0x00, 0x00, 0x00, 0x00,                             // 接口句柄，默认CIP
-                0x00, 0x01,                                         // 超时
-                0x00, 0x02,                                         // 项目数量
-                0x00, 0xA1,                                         // 基于连接的地址项（用户连接的消息）
-                0x00, 0x04,                                         // 接下来的连接标识符的数据长度
+                0x01, 0x00,                                         // 超时
+                0x02, 0x00,                                         // 项目数量
+                0xA1, 0x00,                                         // 基于连接的地址项（用户连接的消息）
+                0x04, 0x00,                                         // 接下来的连接标识符的数据长度
                 0x00, 0x00, 0x00, 0x00,                             // 和打开应答帧中的O-T网络连接号相同，偏移量36
-                0x00, 0xB1,                                         // 封装连接的传输数据包的数据项
-                0x00, 0x30,                                         // 后面数据包的长度，48个字节                                      ======= [需要修改]
+                0xB1, 0x00,                                         // 封装连接的传输数据包的数据项
+                0x31, 0x01,                                         // 后面数据包的长度，48个字节                                      ======= [需要修改]
 
                 0x00, 0x01,                                         // 序号，从1开始
                 0x0A,                                               // 服务
@@ -130,12 +122,11 @@ namespace HslCommunication.Profinet.AllenBradley
                 tmp,                                                // 请求路径大小
                 0x91,                                               // 扩展符号
                 0x01,                                               // 数据大小，该服务所对应的PLC中的测点名大小
-                0x1,0x2,                                            // 数据内容，该服务所对应的PLC中的测点名
+                0x01, 0x02,                                         // 数据内容，该服务所对应的PLC中的测点名
                 0x00, 0x01,                                         // 服务命令指定数据
             };
-
-            ByteTransform.TransByte( SessionHandle ).CopyTo( buff, 4 );
-            return OperateResult.CreateSuccessResult( buff );
+            
+            return OperateResult.CreateSuccessResult( AllenBradleyHelper.PackRequestHeader( 0x65, SessionHandle, buff ) );
         }
 
         /// <summary>
@@ -146,7 +137,7 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <returns>包含结果对象的报文信息</returns>
         public OperateResult<byte[]> BuildWriteCommand( string address, byte[] data )
         {
-            return null;
+            return new OperateResult<byte[]>();
         }
 
         #endregion
@@ -154,89 +145,65 @@ namespace HslCommunication.Profinet.AllenBradley
         #region Handle Single
 
         /// <summary>
-        /// 00 65 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00
+        /// 65 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 [发送]
+        /// 65 00 04 00 01 00 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 [返回]
         /// </summary>
         /// <returns></returns>
         private byte[] RegisterSessionHandle( )
         {
-            return new byte[]
-            {
-                0x00, 0x65,                                             // 注册请求
-                0x00, 0x04,                                             // 数据长度
-                0x00, 0x00, 0x00, 0x00,                                 // 会话句柄初始值
-                0x00, 0x00, 0x00, 0x00,                                 // 状态信息
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,         // 发送方上下文描述
-                0x00, 0x00, 0x00, 0x00,                                 // 选项
-
-                0x00, 0x01,                                             // 协议版本
-                0x00, 0x00,                                             // 选项版本
-            };
+            byte[] commandSpecificData = new byte[] { 0x01, 0x00, 0x00, 0x00, };
+            return AllenBradleyHelper.PackRequestHeader( 0x65, 0, commandSpecificData );
         }
 
         /// <summary>
-        /// 00 66 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+        /// 66 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
         /// </summary>
         /// <returns></returns>
         private byte[] UnRegisterSessionHandle( )
         {
-            byte[] buff = new byte[]
-            {
-                0x00, 0x66,                                                  // 注册请求
-                0x00, 0x00,                                                  // 数据长度
-                0x00, 0x00, 0x00, 0x00,                                      // 会话句柄初始值
-                0x00, 0x00, 0x00, 0x00,                                      // 状态信息
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,              // 发送方上下文描述
-                0x00, 0x00, 0x00, 0x00,                                      // 选项
-            };
-
-            ByteTransform.TransByte( SessionHandle ).CopyTo( buff, 4 );
-            return buff;
+            return AllenBradleyHelper.PackRequestHeader( 0x65, SessionHandle, new byte[0] );
         }
 
-        private byte[] SendRRData( )
+        /// <summary>
+        /// 6F 00 3E 00 00 00 00 00
+        /// </summary>
+        /// <returns></returns>
+        public byte[] SendRRData( )
         {
             // UCMM 请求
             byte[] buff = new byte[]
             {
-                0x00, 0x6F,                                                 // 打开请求
-                0x00, 0x40,                                                 // 数据长度
-                0x00, 0x00, 0x00, 0x00,                                     // 会话句柄初始值
-                0x00, 0x00, 0x00, 0x00,                                     // 状态信息
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,             // 发送方上下文描述
-                0x00, 0x00, 0x00, 0x00,                                     // 选项
-
                 0x00, 0x00, 0x00, 0x00,                                     // 接口句柄，默认CIP
-                0x00, 0x01,                                                 // 超时
-                0x00, 0x02,                                                 // 项目数量，由于使用了一个地址项目和一个数据项目
+                0x20, 0x00,                                                 // 超时
+                0x02, 0x00,                                                 // 项目数量，由于使用了一个地址项目和一个数据项目
                 0x00, 0x00,                                                 // 地址类型ID，该字段应为0，表示一个UCMM消息
                 0x00, 0x00,                                                 // 长度，由于UCMM消息使用NULL地址项，所以该字段应为0
-                0x00, 0xB2,                                                 // 数据类型ID，该字段应该是0x00B2来封装UCMM
-                0x00, 0x30,                                                 // 后面数据包的长度，48个字节
+                0xB2, 0x00,                                                 // 数据类型ID，该字段应该是0x00B2来封装UCMM
+                0x2E, 0x00,                                                 // 后面数据包的长度，46个字节
 
                                                                             // MR数据请求包
                 0x54,                                                       // 服务
                 0x02,                                                       // 请求路径大小
-                0x01, 0x24, 0x06, 0x20,                                     // 请求路径，有可能会改变
-                0x0A,                                                       // Priority/time_tick
-                0x05,                                                       // Time-out_ticks
+                0x20, 0x06, 0x24, 0x01,                                     // 请求路径，有可能会改变
+                0x07,                                                       // Priority/time_tick
+                0xF9,                                                       // Time-out_ticks
                 0x00, 0x00, 0x00, 0x00,                                     // O-T Network Connection ID
-                0x00, 0x00, 0x00, 0x00,                                     // T-O Network Connection ID  由驱动产生？？？
-                0x00, 0x00,                                                 // Connection Serial Number
-                0x01, 0x01,                                                 // Verder ID
-                0x00, 0x00, 0x00, 0x00,                                     // Originator Serial Number 和T-O Network Connection ID相同
+                0x08, 0x00, 0xFE, 0x80,                                     // T-O Network Connection ID  由驱动产生？？？
+                0x09, 0x00,                                                 // Connection Serial Number
+                0x4D, 0x00,                                                 // Verder ID
+                0x8B, 0x50, 0xD4, 0x0F,                                     // Originator Serial Number 和T-O Network Connection ID相同
                 0x01,                                                       // 连接超时倍数
                 0x00, 0x00, 0x00,                                           // 保留数据
-                0x00, 0x4C, 0X4B, 0X40,                                     // O-T RPI
-                0x43, 0xF8,                                                 // O-T 网络连接参数
-                0x00, 0x4C, 0X4B, 0X40,                                     // T-O RPI
-                0x43, 0xF8,                                                 // T-O 网络连接参数
+                0x00, 0x12, 0X7A, 0X00,                                     // O-T RPI
+                0xF4, 0x43,                                                 // O-T 网络连接参数
+                0x00, 0x12, 0X7A, 0X00,                                     // T-O RPI
+                0xF4, 0x43,                                                 // T-O 网络连接参数
                 0xA3,                                                       // 传输类型
-                0x03,                                                       // 传输路径大小
-                0x01, 0x24, 0x02, 0x20, 0x00, 0x01,                         // 连接路径
+                0x02,                                                       // 传输路径大小，以字为单位
+                0x20, 0x02, 0x24, 0x01,                                     // 连接路径，消息路由，实例
             };
 
-            ByteTransform.TransByte( SessionHandle ).CopyTo( buff, 4 );
-            return buff;
+            return AllenBradleyHelper.PackRequestHeader( 0x6F, SessionHandle, buff );
         }
 
 
@@ -269,5 +236,6 @@ namespace HslCommunication.Profinet.AllenBradley
         }
 
         #endregion
+
     }
 }

@@ -20,12 +20,37 @@ namespace HslCommunicationDemo
         private void FormTcpDebug_Load( object sender, EventArgs e )
         {
             panel2.Enabled = false;
+            timer = new Timer( );
+            timer.Interval = 200;
+            timer.Tick += Timer_Tick;
+            timer.Start( );
         }
 
+        private void Timer_Tick( object sender, EventArgs e )
+        {
+            if (!string.IsNullOrEmpty( textBox6.Text ))
+            {
+                string select = textBox6.SelectedText;
+                if(!string.IsNullOrEmpty(select))
+                {
+                    if (checkBox1.Checked)
+                    {
+                        // 二进制
+                        byte[] bytes = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes( select );
+                        label8.Text = "已选择数据字节数：" + bytes.Length;
+                    }
+                    else
+                    {
+                        label8.Text = "已选择数据字节数：" + select.Length;
+                    }
+                }
+            }
+        }
 
         private Socket socketCore = null;
         private bool connectSuccess = false;
         private byte[] buffer = new byte[2048];
+        private Timer timer;
 
         private void button1_Click( object sender, EventArgs e )
         {
@@ -91,11 +116,11 @@ namespace HslCommunicationDemo
 
                     if (checkBox4.Checked)
                     {
-                        textBox6.AppendText( "[" + DateTime.Now.ToString( "yyyy-MM-dd HH:mm:ss.fff" ) + "]   " + msg + Environment.NewLine );
+                        textBox6.AppendText( "[" + DateTime.Now.ToString( "yyyy-MM-dd HH:mm:ss.fff" ) + "][收]   " + msg + Environment.NewLine );
                     }
                     else
                     {
-                        textBox6.AppendText( msg + Environment.NewLine );
+                        textBox6.AppendText( "[收]   " + msg + Environment.NewLine );
                     }
 
                 } ) );
@@ -135,11 +160,11 @@ namespace HslCommunicationDemo
                 // 显示发送信息
                 if (checkBox4.Checked)
                 {
-                    textBox6.AppendText( "[" + DateTime.Now.ToString( "yyyy-MM-dd HH:mm:ss.fff" ) + "]   " + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( send, ' ' ) + Environment.NewLine );
+                    textBox6.AppendText( "[" + DateTime.Now.ToString( "yyyy-MM-dd HH:mm:ss.fff" ) + "][发]   " + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( send, ' ' ) + Environment.NewLine );
                 }
                 else
                 {
-                    textBox6.AppendText( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( send, ' ' ) + Environment.NewLine );
+                    textBox6.AppendText("[发]   " + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( send, ' ' ) + Environment.NewLine );
                 }
             }
             try

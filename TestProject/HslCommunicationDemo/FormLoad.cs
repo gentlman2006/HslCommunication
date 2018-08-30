@@ -449,5 +449,16 @@ namespace HslCommunicationDemo
             Show( );
         }
 
+        private void button33_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            System.Threading.Thread.Sleep( 200 );
+            using (FormAllenBrandly form = new FormAllenBrandly( ))
+            {
+                form.ShowDialog( );
+            }
+            System.Threading.Thread.Sleep( 200 );
+            Show( );
+        }
     }
 }
