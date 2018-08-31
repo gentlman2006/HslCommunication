@@ -126,5 +126,23 @@ namespace HslCommunication
         internal const string ModbusTcpWriteCoilException = "写入线圈异常";
         internal const string ModbusTcpReadRegisterException = "读取寄存器异常";
         internal const string ModbusTcpWriteRegisterException = "写入寄存器异常";
+
+
+
+        /***********************************************************************************
+         * 
+         *    AB PLC 相关
+         * 
+         ************************************************************************************/
+
+            
+        internal const string AllenBradley04 = "它没有正确生成或匹配标记不存在。"; // The IOI could not be deciphered. Either it was not formed correctly or the match tag does not exist
+        internal const string AllenBradley05 = "引用的特定项（通常是实例）无法找到。"; // The particular item referenced (usually instance) could not be found.
+        internal const string AllenBradley06 = "请求的数据量不适合响应缓冲区。 发生了部分数据传输。"; // The amount of data requested would not fit into the response buffer. Partial data transfer has occurred.
+        internal const string AllenBradley0A = "尝试处理其中一个属性时发生错误。";                     // An error has occurred trying to process one of the attributes.
+        internal const string AllenBradley13 = "命令中没有提供足够的命令数据/参数来执行所请求的服务。"; // Not enough command data / parameters were supplied in the command to execute the service requested.
+        internal const string AllenBradley1C = "与属性计数相比，提供的属性数量不足。"; // An insufficient number of attributes were provided compared to the attribute count.
+        internal const string AllenBradley1E = "此服务中的服务请求出错。"; // A service request in this service went wrong.
+        internal const string AllenBradley26 = "IOI字长与处理的IOI数量不匹配。"; // The IOI word length did not match the amount of IOI which was processed.
     }
 }

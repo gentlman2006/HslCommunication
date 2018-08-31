@@ -2,6 +2,7 @@
 using HslCommunication.Profinet.Melsec;
 using HslCommunication.ModBus;
 using HslCommunication;
+using HslCommunication.Profinet.AllenBradley;
 
 namespace HslCommunicationCoreDemo
 {
@@ -11,16 +12,7 @@ namespace HslCommunicationCoreDemo
         {
             Console.WriteLine("Hello World!");
 
-            //MelsecTest( );
-
-            ModbusTcpNet modbusTcp = new ModbusTcpNet( "127.0.0.1" );
-            //modbusTcp.ConnectServer( );
-
-            Console.WriteLine( modbusTcp.ReadInt16( "100" ).Content );
             
-            Console.WriteLine( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( modbusTcp.Read( "100", 200 ).Content, ' ' ) );
-
-            //modbusTcp.ConnectClose( );
             Console.ReadLine( );
         }
 

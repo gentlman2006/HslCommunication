@@ -152,9 +152,13 @@ namespace HslCommunicationDemo
         {
             // 读取bool变量
             // readResultRender( allenBradleyNet.ReadBool( textBox3.Text ), textBox3.Text, textBox4 );
+            OperateResult<byte[]> read = allenBradleyNet.Read( "Start_out", 0 );
+            if (!read.IsSuccess) MessageBox.Show( "失败" );
+            else MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( read.Content, ' ' ) );
         }
         private void button_read_byte_Click( object sender, EventArgs e )
         {
+            MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( "Start_out" ).Content, ' ' ) );
             // 读取byte变量
             // readResultRender( allenBradleyNet.ReadByte( textBox3.Text ), textBox3.Text, textBox4 );
         }

@@ -50,6 +50,30 @@ namespace HslCommunication.Profinet.AllenBradley
         /// </summary>
         public uint NetWorkConnectionID { get; private set; }
 
+        public ushort GetCipNumber( )
+        {
+            ushort result = 0;
+            SimpleHybird.Enter( );
+            result = CIPNumber;
+            SimpleHybird.Leave( );
+            return result;
+        }
+
+        private ushort GetIncreseCipNumber( )
+        {
+            ushort result = 0;
+            SimpleHybird.Enter( );
+            result = CIPNumber;
+            CIPNumber++;
+            SimpleHybird.Leave( );
+            return result;
+        }
+
+        private ushort CIPNumber = 0;
+        private HslCommunication.Core.SimpleHybirdLock SimpleHybird = new SimpleHybirdLock( );
+
+
+
         #endregion
 
         #region Double Mode Override
@@ -73,17 +97,31 @@ namespace HslCommunication.Profinet.AllenBradley
             SessionHandle = ByteTransform.TransUInt32( read1.Content1, 4 );
 
             // 打开注册
-            OperateResult<byte[], byte[]> read2 = ReadFromCoreServerBase( socket, SendRRData( ) );
-            if (!read2.IsSuccess) return read2;
+            //OperateResult<byte[], byte[]> read2 = ReadFromCoreServerBase( socket, SendRRData( ) );
+            //if (!read2.IsSuccess) return read2;
 
-            // 检查返回的状态
-            OperateResult check2 = CheckResponse( read2.Content1 );
-            if (!check2.IsSuccess) return check2;
+            //// 检查返回的状态
+            //OperateResult check2 = CheckResponse( read2.Content1 );
+            //if (!check2.IsSuccess) return check2;
 
             // 提取连接标识
-            NetWorkConnectionID = ByteTransform.TransUInt32( read2.Content2, 20 );
+            //NetWorkConnectionID = ByteTransform.TransUInt32( read2.Content2, 20 );
 
             // 校验成功
+            return OperateResult.CreateSuccessResult( );
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <returns></returns>
+        protected override OperateResult ExtraOnDisconnect( Socket socket )
+        {
+            // 注册会话信息
+            OperateResult<byte[], byte[]> read1 = ReadFromCoreServerBase( socket, UnRegisterSessionHandle( ) );
+            if (!read1.IsSuccess) return read1;
+
             return OperateResult.CreateSuccessResult( );
         }
 
@@ -98,35 +136,8 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <returns>包含结果对象的报文信息</returns>
         public OperateResult<byte[]> BuildReadCommand( string address )
         {
-            byte tmp = (byte)((address.Length + 1) / 2 + 1);
-            // UCMM 请求
-            byte[] buff = new byte[]
-            {
-                0x00, 0x00, 0x00, 0x00,                             // 接口句柄，默认CIP
-                0x01, 0x00,                                         // 超时
-                0x02, 0x00,                                         // 项目数量
-                0xA1, 0x00,                                         // 基于连接的地址项（用户连接的消息）
-                0x04, 0x00,                                         // 接下来的连接标识符的数据长度
-                0x00, 0x00, 0x00, 0x00,                             // 和打开应答帧中的O-T网络连接号相同，偏移量36
-                0xB1, 0x00,                                         // 封装连接的传输数据包的数据项
-                0x31, 0x01,                                         // 后面数据包的长度，48个字节                                      ======= [需要修改]
-
-                0x00, 0x01,                                         // 序号，从1开始
-                0x0A,                                               // 服务
-                0x02,                                               // 请求路径大小
-                0x01, 0x24, 0x02, 0x20,                             // 请求路径，有可能会改变
-                0x00, 0x01,                                         // 请求数据点的个数
-                0x00, 0x01,                                         // 从服务数第一个字节算起，每个服务的偏移量
-
-                0x4C,                                               // 服务标识
-                tmp,                                                // 请求路径大小
-                0x91,                                               // 扩展符号
-                0x01,                                               // 数据大小，该服务所对应的PLC中的测点名大小
-                0x01, 0x02,                                         // 数据内容，该服务所对应的PLC中的测点名
-                0x00, 0x01,                                         // 服务命令指定数据
-            };
-            
-            return OperateResult.CreateSuccessResult( AllenBradleyHelper.PackRequestHeader( 0x65, SessionHandle, buff ) );
+            byte[] cip = AllenBradleyHelper.PackRequsetRead( address );
+            return OperateResult.CreateSuccessResult( AllenBradleyHelper.PackRequestHeader( 0x6F, SessionHandle, AllenBradleyHelper.PackCommandSpecificData2( NetWorkConnectionID, cip ) ) );
         }
 
         /// <summary>
@@ -142,6 +153,35 @@ namespace HslCommunication.Profinet.AllenBradley
 
         #endregion
 
+        #region Override Read
+
+        /// <summary>
+        /// 读取数据信息
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public override OperateResult<byte[]> Read( string address, ushort length )
+        {
+            // 指令生成
+            OperateResult<byte[]> command = BuildReadCommand( address );
+            if (!command.IsSuccess) return command;
+
+            // 核心交互
+            OperateResult<byte[]> read = ReadFromCoreServer( command.Content );
+            if(!read.IsSuccess) return read;
+
+            // 检查反馈
+            OperateResult check = CheckResponse( read.Content );
+            if (!check.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( check );
+
+            // 提取数据
+            return ExtractActualData( read.Content );
+        }
+
+        
+        #endregion
+
         #region Handle Single
 
         /// <summary>
@@ -149,7 +189,7 @@ namespace HslCommunication.Profinet.AllenBradley
         /// 65 00 04 00 01 00 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 [返回]
         /// </summary>
         /// <returns></returns>
-        private byte[] RegisterSessionHandle( )
+        public byte[] RegisterSessionHandle( )
         {
             byte[] commandSpecificData = new byte[] { 0x01, 0x00, 0x00, 0x00, };
             return AllenBradleyHelper.PackRequestHeader( 0x65, 0, commandSpecificData );
@@ -161,52 +201,53 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <returns></returns>
         private byte[] UnRegisterSessionHandle( )
         {
-            return AllenBradleyHelper.PackRequestHeader( 0x65, SessionHandle, new byte[0] );
-        }
-
-        /// <summary>
-        /// 6F 00 3E 00 00 00 00 00
-        /// </summary>
-        /// <returns></returns>
-        public byte[] SendRRData( )
-        {
-            // UCMM 请求
-            byte[] buff = new byte[]
-            {
-                0x00, 0x00, 0x00, 0x00,                                     // 接口句柄，默认CIP
-                0x20, 0x00,                                                 // 超时
-                0x02, 0x00,                                                 // 项目数量，由于使用了一个地址项目和一个数据项目
-                0x00, 0x00,                                                 // 地址类型ID，该字段应为0，表示一个UCMM消息
-                0x00, 0x00,                                                 // 长度，由于UCMM消息使用NULL地址项，所以该字段应为0
-                0xB2, 0x00,                                                 // 数据类型ID，该字段应该是0x00B2来封装UCMM
-                0x2E, 0x00,                                                 // 后面数据包的长度，46个字节
-
-                                                                            // MR数据请求包
-                0x54,                                                       // 服务
-                0x02,                                                       // 请求路径大小
-                0x20, 0x06, 0x24, 0x01,                                     // 请求路径，有可能会改变
-                0x07,                                                       // Priority/time_tick
-                0xF9,                                                       // Time-out_ticks
-                0x00, 0x00, 0x00, 0x00,                                     // O-T Network Connection ID
-                0x08, 0x00, 0xFE, 0x80,                                     // T-O Network Connection ID  由驱动产生？？？
-                0x09, 0x00,                                                 // Connection Serial Number
-                0x4D, 0x00,                                                 // Verder ID
-                0x8B, 0x50, 0xD4, 0x0F,                                     // Originator Serial Number 和T-O Network Connection ID相同
-                0x01,                                                       // 连接超时倍数
-                0x00, 0x00, 0x00,                                           // 保留数据
-                0x00, 0x12, 0X7A, 0X00,                                     // O-T RPI
-                0xF4, 0x43,                                                 // O-T 网络连接参数
-                0x00, 0x12, 0X7A, 0X00,                                     // T-O RPI
-                0xF4, 0x43,                                                 // T-O 网络连接参数
-                0xA3,                                                       // 传输类型
-                0x02,                                                       // 传输路径大小，以字为单位
-                0x20, 0x02, 0x24, 0x01,                                     // 连接路径，消息路由，实例
-            };
-
-            return AllenBradleyHelper.PackRequestHeader( 0x6F, SessionHandle, buff );
+            return AllenBradleyHelper.PackRequestHeader( 0x66, SessionHandle, new byte[0] );
         }
 
 
+
+        ///// <summary>
+        ///// 6F 00 3E 00 00 00 00 00
+        ///// </summary>
+        ///// <returns></returns>
+        //public byte[] SendRRData( )
+        //{
+        //    // UCMM 请求
+        //    byte[] buff = new byte[]
+        //    {
+        //        0x00, 0x00, 0x00, 0x00,                                     // 接口句柄，默认CIP
+        //        0x20, 0x00,                                                 // 超时
+        //        0x02, 0x00,                                                 // 项目数量，由于使用了一个地址项目和一个数据项目
+        //        0x00, 0x00,                                                 // 地址类型ID，该字段应为0，表示一个UCMM消息
+        //        0x00, 0x00,                                                 // 长度，由于UCMM消息使用NULL地址项，所以该字段应为0
+        //        0xB2, 0x00,                                                 // 数据类型ID，该字段应该是0x00B2来封装UCMM
+        //        0x2E, 0x00,                                                 // 后面数据包的长度，46个字节
+
+        //                                                                    // MR数据请求包
+        //        0x54,                                                       // 服务
+        //        0x02,                                                       // 请求路径大小
+        //        0x20, 0x06, 0x24, 0x01,                                     // 请求路径，有可能会改变
+        //        0x07,                                                       // Priority/time_tick
+        //        0xF9,                                                       // Time-out_ticks
+        //        0x00, 0x00, 0x00, 0x00,                                     // O-T Network Connection ID
+        //        0x08, 0x00, 0xFE, 0x80,                                     // T-O Network Connection ID  由驱动产生？？？
+        //        0x09, 0x00,                                                 // Connection Serial Number
+        //        0x4D, 0x00,                                                 // Verder ID
+        //        0x8B, 0x50, 0xD4, 0x0F,                                     // Originator Serial Number 和T-O Network Connection ID相同
+        //        0x01,                                                       // 连接超时倍数
+        //        0x00, 0x00, 0x00,                                           // 保留数据
+        //        0x00, 0x12, 0X7A, 0X00,                                     // O-T RPI
+        //        0xF4, 0x43,                                                 // O-T 网络连接参数
+        //        0x00, 0x12, 0X7A, 0X00,                                     // T-O RPI
+        //        0xF4, 0x43,                                                 // T-O 网络连接参数
+        //        0xA3,                                                       // 传输类型
+        //        0x02,                                                       // 传输路径大小，以字为单位
+        //        0x20, 0x02, 0x24, 0x01,                                     // 连接路径，消息路由，实例
+        //    };
+
+        //    return AllenBradleyHelper.PackRequestHeader( 0x6F, SessionHandle, buff );
+        //}
+        
 
         private OperateResult CheckResponse( byte[] response )
         {
@@ -237,5 +278,52 @@ namespace HslCommunication.Profinet.AllenBradley
 
         #endregion
 
+        #region Static Member
+
+        /// <summary>
+        /// 从PLC反馈的数据解析
+        /// </summary>
+        /// <param name="response">PLC的反馈数据</param>
+        /// <returns>带有结果标识的最终数据</returns>
+        public static OperateResult<byte[]> ExtractActualData(byte[] response )
+        {
+
+            List<byte> data = new List<byte>( );
+
+            int offect = 38;
+            while ( offect < response.Length)
+            {
+                ushort count = BitConverter.ToUInt16( response, offect );
+                byte err = response[offect + 4];
+                switch (err)
+                {
+                    case 0x04: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley04 };
+                    case 0x05: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley05 };
+                    case 0x06:
+                        {
+                            if (response[offect + 2] != 0xD2 && response[offect + 2] != 0xCC)
+                                return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley06 };
+                            break;
+                        }
+                    case 0x0A: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley0A };
+                    case 0x13: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley13 };
+                    case 0x1C: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley1C };
+                    case 0x1E: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley1E };
+                    case 0x26: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley26 };
+                    case 0x00: break;
+                    default: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.UnknownError };
+                }
+
+                for (int i = offect + 8; i < offect + 2+ count; i++)
+                {
+                    data.Add( response[offect] );
+                }
+
+                offect += count + 2;
+            }
+            return OperateResult.CreateSuccessResult( data.ToArray( ) );
+        }
+
+        #endregion
     }
 }
