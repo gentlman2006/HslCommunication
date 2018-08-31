@@ -421,9 +421,10 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的bool对象</returns>
         public OperateResult<bool> ReadCoil( string address )
         {
-            var read = ReadModBusBase( ModbusInfo.ReadCoil, address, 1 );
+            var read = ReadCoil( address, 1 );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool>( read );
-            return GetBoolResultFromBytes( read );
+
+            return OperateResult.CreateSuccessResult( read.Content[0] );
         }
         
 
@@ -451,10 +452,10 @@ namespace HslCommunication.ModBus
         /// <returns>带有成功标志的bool对象</returns>
         public OperateResult<bool> ReadDiscrete( string address )
         {
-            var read = ReadModBusBase( ModbusInfo.ReadDiscrete, address, 1 );
+            var read = ReadDiscrete( address, 1 );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool>( read );
 
-            return GetBoolResultFromBytes( read );
+            return OperateResult.CreateSuccessResult( read.Content[0] );
         }
 
 
