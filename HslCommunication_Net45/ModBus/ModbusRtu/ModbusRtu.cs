@@ -337,8 +337,8 @@ namespace HslCommunication.ModBus
         /// <summary>
         /// 检查当前接收的字节数据是否正确的
         /// </summary>
-        /// <param name="rBytes"></param>
-        /// <returns></returns>
+        /// <param name="rBytes">从设备反馈回来的数据</param>
+        /// <returns>是否校验成功</returns>
         protected override bool CheckReceiveBytes( byte[] rBytes )
         {
             return SoftCRC16.CheckCRC16( rBytes );
@@ -354,7 +354,7 @@ namespace HslCommunication.ModBus
         /// <param name="code">指令</param>
         /// <param name="address">地址</param>
         /// <param name="length">长度</param>
-        /// <returns></returns>
+        /// <returns>带结果信息的字节返回数据</returns>
         private OperateResult<byte[]> ReadModBusBase( byte code, string address, ushort length )
         {
             OperateResult<byte[]> command = null;
@@ -398,7 +398,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="address">地址</param>
         /// <param name="length">长度</param>
-        /// <returns></returns>
+        /// <returns>带结果信息的字节返回数据</returns>
         private OperateResult<byte[]> ReadModBusBase( ModbusAddress address, ushort length )
         {
             OperateResult<byte[]> command = BuildReadRegisterCommand( address, length );
@@ -621,7 +621,7 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
-        /// 
+        /// 批量写入线圈信息，指定是否通断
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="values">写入值</param>

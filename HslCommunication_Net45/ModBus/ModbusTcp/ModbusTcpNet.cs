@@ -106,7 +106,7 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
-        /// 获取或者重新修改服务器的默认站号信息
+        /// 获取或者重新修改服务器的默认站号信息，当然，你可以再读写的时候动态指定，参见备注
         /// </summary>
         /// <remarks>
         /// 当你调用 ReadCoil("100") 时，对应的站号就是本属性的值，当你调用 ReadCoil("s=2;100") 时，就忽略本属性的值，读写寄存器的时候同理
@@ -118,7 +118,7 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
-        /// 多字节的数据是否高低位反转，常用于Int32,UInt32,float,double,Int64,UInt64类型读写
+        /// 多字节的数据是否高低位反转，该设置的改变会影响Int32,UInt32,float,double,Int64,UInt64类型的读写
         /// </summary>
         /// <remarks>
         /// 对于Int32,UInt32,float,double,Int64,UInt64类型来说，存在多地址的电脑情况，需要和服务器进行匹配
@@ -605,7 +605,7 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
-        /// 
+        /// 批量写线圈信息，指定是否通断
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="values">写入值</param>
