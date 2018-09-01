@@ -247,102 +247,211 @@ class ByteTransform:
 		return data.decode(encoding)
 
 	def BoolArrayTransByte(self, values):
+		'''bool数组变量转化缓存数据，需要传入bool数组'''
 		if (values == None): return None
 		return SoftBasic.BoolArrayToByte( values )
 	def BoolTransByte(self, value):
+		'''bool变量转化缓存数据，需要传入bool值'''
 		return self.BoolArrayTransByte([value])
 
 	def ByteTransByte(self, value ):
+		'''byte变量转化缓存数据，需要传入byte值'''
 		buffer = bytearray(1)
 		buffer[0] = value
 		return buffer
 
 	def Int16ArrayTransByte(self, values ):
+		'''short数组变量转化缓存数据，需要传入short数组'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 2)
 		for i in range(len(values)):
 			buffer[(i*2): (i*2+2)] = struct.pack('<h',values[i])
 		return buffer
 	def Int16TransByte(self, value ):
+		'''short数组变量转化缓存数据，需要传入short值'''
 		return self.Int16ArrayTransByte([value])
 
 	def UInt16ArrayTransByte(self, values ):
+		'''ushort数组变量转化缓存数据，需要传入ushort数组'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 2)
 		for i in range(len(values)):
 			buffer[(i*2): (i*2+2)] = struct.pack('<H',values[i])
 		return buffer
 	def UInt16TransByte(self, value ):
+		'''ushort变量转化缓存数据，需要传入ushort值'''
 		return self.UInt16ArrayTransByte([value])
 
 	def Int32ArrayTransByte(self, values ):
+		'''int数组变量转化缓存数据，需要传入int数组'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 4)
 		for i in range(len(values)):
 			buffer[(i*4): (i*4+4)] = struct.pack('<i',values[i])
 		return buffer
 	def Int32TransByte(self, value ):
+		'''int变量转化缓存数据，需要传入int值'''
 		return self.Int32ArrayTransByte([value])
 
 	def UInt32ArrayTransByte(self, values ):
+		'''uint数组变量转化缓存数据，需要传入uint数组'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 4)
 		for i in range(len(values)):
 			buffer[(i*4): (i*4+4)] = struct.pack('<I',values[i])
 		return buffer
 	def UInt32TransByte(self, value ):
+		'''uint变量转化缓存数据，需要传入uint值'''
 		return self.UInt32ArrayTransByte([value])
 
 	def Int64ArrayTransByte(self, values ):
+		'''long数组变量转化缓存数据，需要传入long数组'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 8)
 		for i in range(len(values)):
 			buffer[(i*8): (i*8+8)] = struct.pack('<q',values[i])
 		return buffer
 	def Int64TransByte(self, value ):
+		'''long变量转化缓存数据，需要传入long值'''
 		return self.Int64ArrayTransByte([value])
 
 	def UInt64ArrayTransByte(self, values ):
+		'''ulong数组变量转化缓存数据，需要传入ulong数组'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 8)
 		for i in range(len(values)):
 			buffer[(i*8): (i*8+8)] = struct.pack('<Q',values[i])
 		return buffer
 	def UInt64TransByte(self, value ):
+		'''ulong变量转化缓存数据，需要传入ulong值'''
 		return self.UInt64ArrayTransByte([value])
 
 	def FloatArrayTransByte(self, values ):
+		'''float数组变量转化缓存数据，需要传入float数组'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 4)
 		for i in range(len(values)):
 			buffer[(i*4): (i*4+4)] = struct.pack('<f',values[i])
 		return buffer
 	def FloatTransByte(self, value ):
+		'''float变量转化缓存数据，需要传入float值'''
 		return self.FloatArrayTransByte([value])
 
 	def DoubleArrayTransByte(self, values ):
+		'''double数组变量转化缓存数据，需要传入double数组'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 8)
 		for i in range(len(values)):
 			buffer[(i*8): (i*8+8)] = struct.pack('<d',values[i])
 		return buffer
 	def DoubleTransByte(self, value ):
+		'''double变量转化缓存数据，需要传入double值'''
 		return self.DoubleArrayTransByte([value])
 
 	def StringTransByte(self, value, encoding ):
+		'''使用指定的编码字符串转化缓存数据，需要传入string值及编码信息'''
 		return value.encode(encoding)
 
 class RegularByteTransform(ByteTransform):
+	'''常规的字节转换类'''
 	def __init__(self):
 		return
 
 class ReverseBytesTransform(ByteTransform):
+	'''字节倒序的转换类'''
 	def TransInt16(self, buffer, index ):
+		'''从缓存中提取short结果'''
 		data = self.TransByteArray(buffer,index,2)
 		return struct.unpack('>h',data)[0]
+	def TransUInt16(self, buffer, index ):
+		'''从缓存中提取ushort结果'''
+		data = self.TransByteArray(buffer,index,2)
+		return struct.unpack('>H',data)[0]
+	def TransInt32(self, buffer, index ):
+		'''从缓存中提取int结果'''
+		data = self.TransByteArray(buffer,index,4)
+		return struct.unpack('>i',data)[0]
+	def TransUInt32(self, buffer, index ):
+		'''从缓存中提取uint结果'''
+		data = self.TransByteArray(buffer,index,4)
+		return struct.unpack('>I',data)[0]
+	def TransInt64(self, buffer, index ):
+		'''从缓存中提取long结果'''
+		data = self.TransByteArray(buffer,index,8)
+		return struct.unpack('>q',data)[0]
+	def TransUInt64(self, buffer, index ):
+		'''从缓存中提取ulong结果'''
+		data = self.TransByteArray(buffer,index,8)
+		return struct.unpack('>Q',data)[0]
+	def TransSingle(self, buffer, index ):
+		'''从缓存中提取float结果'''
+		data = self.TransByteArray(buffer,index,4)
+		return struct.unpack('>f',data)[0]
+	def TransDouble(self, buffer, index ):
+		'''从缓存中提取double结果'''
+		data = self.TransByteArray(buffer,index,8)
+		return struct.unpack('>d',data)[0]
+	
+	def Int16ArrayTransByte(self, values ):
+		'''short数组变量转化缓存数据，需要传入short数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 2)
+		for i in range(len(values)):
+			buffer[(i*2): (i*2+2)] = struct.pack('>h',values[i])
+		return buffer
+	def UInt16ArrayTransByte(self, values ):
+		'''ushort数组变量转化缓存数据，需要传入ushort数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 2)
+		for i in range(len(values)):
+			buffer[(i*2): (i*2+2)] = struct.pack('>H',values[i])
+		return buffer
+	def Int32ArrayTransByte(self, values ):
+		'''int数组变量转化缓存数据，需要传入int数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 4)
+		for i in range(len(values)):
+			buffer[(i*4): (i*4+4)] = struct.pack('>i',values[i])
+		return buffer
+	def UInt32ArrayTransByte(self, values ):
+		'''uint数组变量转化缓存数据，需要传入uint数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 4)
+		for i in range(len(values)):
+			buffer[(i*4): (i*4+4)] = struct.pack('>I',values[i])
+		return buffer
+	def Int64ArrayTransByte(self, values ):
+		'''long数组变量转化缓存数据，需要传入long数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 8)
+		for i in range(len(values)):
+			buffer[(i*8): (i*8+8)] = struct.pack('>q',values[i])
+		return buffer
+	def UInt64ArrayTransByte(self, values ):
+		'''ulong数组变量转化缓存数据，需要传入ulong数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 8)
+		for i in range(len(values)):
+			buffer[(i*8): (i*8+8)] = struct.pack('>Q',values[i])
+		return buffer
+	def FloatArrayTransByte(self, values ):
+		'''float数组变量转化缓存数据，需要传入float数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 4)
+		for i in range(len(values)):
+			buffer[(i*4): (i*4+4)] = struct.pack('>f',values[i])
+		return buffer
+	def DoubleArrayTransByte(self, values ):
+		'''double数组变量转化缓存数据，需要传入double数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 8)
+		for i in range(len(values)):
+			buffer[(i*8): (i*8+8)] = struct.pack('>d',values[i])
+		return buffer
 
-
-
+class ReverseWordTransform(ByteTransform):
+	'''按照字节错位的数据转换类'''
+	
 
 class SoftBasic:
 	'''系统运行的基础方法，提供了一些基本的辅助方法'''
