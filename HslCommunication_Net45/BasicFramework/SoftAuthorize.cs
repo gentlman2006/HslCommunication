@@ -38,7 +38,13 @@ namespace HslCommunication.BasicFramework
 
         #region Private Members
 
-        private string FinalCode { get; set; } = "";
+        /// <summary>
+        /// 最终的注册秘钥信息，注意是只读的。
+        /// </summary>
+        /// <remarks>
+        /// 时间：2018年9月1日 23:01:54，来自 洛阳-LYG 的建议，公开了本属性信息，只读。
+        /// </remarks>
+        public string FinalCode { get; private set; } = "";
         /// <summary>
         /// 是否正式发行版，是的话就取消授权
         /// </summary>
