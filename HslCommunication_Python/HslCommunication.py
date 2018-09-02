@@ -2,6 +2,7 @@ import string
 import uuid
 import socket
 import struct
+import threading
 
 class StringResources:
 	'''系统的资源类'''
@@ -30,6 +31,9 @@ class StringResources:
 	def ExceprionCustomer():
 		return "用户自定义方法出错："
 	@staticmethod
+	def TokenCheckFailed():
+		return "令牌检查错误。"
+	@staticmethod
 	def SuccessText():
 		return "Success"
 
@@ -44,7 +48,13 @@ class OperateResult:
 	ErrorCode = 0
 	# 返回显示的文本
 	def ToMessageShowString(self):
+		'''获取错误代号及文本描述'''
 		return StringResources.ErrorCode() + ":" + str(self.ErrorCode) + "\r\n" + StringResources.TextDescription() + ":" + self.Message
+	def CopyErrorFromOther(self, result):
+		'''从另一个结果类中拷贝错误信息'''
+		if result != None:
+			self.ErrorCode = result.ErrorCode
+			self.Message = result.Message
 	@staticmethod
 	def CreateFailedResult(msg):
 		'''创建一个失败的结果对象'''
@@ -52,12 +62,19 @@ class OperateResult:
 		failed.Message = msg
 		return failed
 	@staticmethod
+	def CreateFromFailedResult(result):
+		'''创建一个失败的结果对象'''
+		failed = OperateResult()
+		failed.ErrorCode = result.ErrorCode
+		failed.Message = result.Message
+		return failed
+	@staticmethod
 	def CreateSuccessResult(Content1=None,Content2=None,Content3=None,Content4=None,Content5=None,Content6=None,Content7=None,Content8=None,Content9=None,Content10=None):
 		'''创建一个成功的对象'''
 		success = OperateResult()
 		success.IsSuccess = True
 		success.Message = StringResources.SuccessText()
-		if(Content2 == None & Content3 == None & Content4 == None & Content5 == None & Content6 == None & Content7 == None & Content8 == None & Content9 == None & Content10 == None) :
+		if(Content2 == None and Content3 == None and Content4 == None and Content5 == None and Content6 == None and Content7 == None and Content8 == None and Content9 == None and Content10 == None) :
 			success.Content = Content1
 		else:
 			success.Content1 = Content1
@@ -87,6 +104,7 @@ class INetMessage:
 	def GetHeadBytesIdentity(self):
 		'''获取头子节里的消息标识'''
 		return 0
+
 	HeadBytes = bytes(0)
 	ContentBytes = bytes(0)
 	SendBytes = bytes(0)
@@ -105,7 +123,7 @@ class S7Message (INetMessage):
 	def CheckHeadBytesLegal(self,token):
 		'''令牌检查是否成功'''
 		if super().HeadBytes != None:
-			if( super().HeadBytes[0] == 0x03 & super().HeadBytes[1] == 0x00 ):
+			if( super().HeadBytes[0] == 0x03 and super().HeadBytes[1] == 0x00 ):
 				return True
 			else:
 				return False
@@ -135,7 +153,7 @@ class ByteTransform:
 	'''数据转换类的基础，提供了一些基础的方法实现.'''
 	def TransBool(self, buffer, index ):
 		'''将buffer数组转化成bool对象'''
-		return buffer[index] != 0x00
+		return ((buffer[index] & 0x01) == 0x01)
 	def TransBoolArray(self, buffer, index, length ):
 		'''将buffer数组转化成bool数组对象，需要转入索引，长度'''
 		data = bytearray(length)
@@ -393,56 +411,56 @@ class ReverseBytesTransform(ByteTransform):
 		return struct.unpack('>d',data)[0]
 	
 	def Int16ArrayTransByte(self, values ):
-		'''short数组变量转化缓存数据，需要传入short数组'''
+		'''short数组变量转化缓存数据，需要传入short数组 -> bytearray'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 2)
 		for i in range(len(values)):
 			buffer[(i*2): (i*2+2)] = struct.pack('>h',values[i])
 		return buffer
 	def UInt16ArrayTransByte(self, values ):
-		'''ushort数组变量转化缓存数据，需要传入ushort数组'''
+		'''ushort数组变量转化缓存数据，需要传入ushort数组 -> bytearray'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 2)
 		for i in range(len(values)):
 			buffer[(i*2): (i*2+2)] = struct.pack('>H',values[i])
 		return buffer
 	def Int32ArrayTransByte(self, values ):
-		'''int数组变量转化缓存数据，需要传入int数组'''
+		'''int数组变量转化缓存数据，需要传入int数组 -> bytearray'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 4)
 		for i in range(len(values)):
 			buffer[(i*4): (i*4+4)] = struct.pack('>i',values[i])
 		return buffer
 	def UInt32ArrayTransByte(self, values ):
-		'''uint数组变量转化缓存数据，需要传入uint数组'''
+		'''uint数组变量转化缓存数据，需要传入uint数组 -> bytearray'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 4)
 		for i in range(len(values)):
 			buffer[(i*4): (i*4+4)] = struct.pack('>I',values[i])
 		return buffer
 	def Int64ArrayTransByte(self, values ):
-		'''long数组变量转化缓存数据，需要传入long数组'''
+		'''long数组变量转化缓存数据，需要传入long数组 -> bytearray'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 8)
 		for i in range(len(values)):
 			buffer[(i*8): (i*8+8)] = struct.pack('>q',values[i])
 		return buffer
 	def UInt64ArrayTransByte(self, values ):
-		'''ulong数组变量转化缓存数据，需要传入ulong数组'''
+		'''ulong数组变量转化缓存数据，需要传入ulong数组 -> bytearray'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 8)
 		for i in range(len(values)):
 			buffer[(i*8): (i*8+8)] = struct.pack('>Q',values[i])
 		return buffer
 	def FloatArrayTransByte(self, values ):
-		'''float数组变量转化缓存数据，需要传入float数组'''
+		'''float数组变量转化缓存数据，需要传入float数组 -> bytearray'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 4)
 		for i in range(len(values)):
 			buffer[(i*4): (i*4+4)] = struct.pack('>f',values[i])
 		return buffer
 	def DoubleArrayTransByte(self, values ):
-		'''double数组变量转化缓存数据，需要传入double数组'''
+		'''double数组变量转化缓存数据，需要传入double数组 -> bytearray'''
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 8)
 		for i in range(len(values)):
@@ -451,7 +469,235 @@ class ReverseBytesTransform(ByteTransform):
 
 class ReverseWordTransform(ByteTransform):
 	'''按照字节错位的数据转换类'''
+	def ReverseBytesByWord( self,buffer, index, length, isReverse = False):
+		'''按照字节错位的方法 -> bytearray'''
+		if buffer == None: return None
+		data = super().TransByteArray(buffer,index,length)
+		for i in range(len(data)//2):
+			data[i*2+0],data[i*2+1]= data[i*2+1],data[i*2+0]
+		if isReverse:
+			if len(data)==4:
+				data[0],data[1],data[2],data[3] = data[2],data[3],data[0],data[1]
+			elif len(data) == 8:
+				data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7] = data[6],data[7],data[4],data[5],data[2],data[3],data[0],data[1]
+		return data
+	def ReverseAllBytesByWord( self, buffer , isReverse = False ):
+		'''按照字节错位的方法 -> bytearray'''
+		return self.ReverseBytesByWord(buffer,0,len(buffer),isReverse)
+	IsMultiWordReverse = False
+	IsStringReverse = False
+	def TransInt16( self, buffer, index ):
+		'''从缓存中提取short结果'''
+		data = self.ReverseBytesByWord(buffer,index,2)
+		return struct.unpack('<h',data)[0]
+	def TransUInt16(self, buffer, index ):
+		'''从缓存中提取ushort结果'''
+		data = self.ReverseBytesByWord(buffer,index,2)
+		return struct.unpack('<H',data)[0]
+	def TransInt32(self, buffer, index ):
+		'''从缓存中提取int结果'''
+		data = self.ReverseBytesByWord(buffer,index,4,self.IsMultiWordReverse)
+		return struct.unpack('<i',data)[0]
+	def TransUInt32(self, buffer, index ):
+		'''从缓存中提取uint结果'''
+		data = self.ReverseBytesByWord(buffer,index,4,self.IsMultiWordReverse)
+		return struct.unpack('<I',data)[0]
+	def TransInt64(self, buffer, index ):
+		'''从缓存中提取long结果'''
+		data = self.ReverseBytesByWord(buffer,index,8,self.IsMultiWordReverse)
+		return struct.unpack('<q',data)[0]
+	def TransUInt64(self, buffer, index ):
+		'''从缓存中提取ulong结果'''
+		data = self.ReverseBytesByWord(buffer,index,8,self.IsMultiWordReverse)
+		return struct.unpack('<Q',data)[0]
+	def TransSingle(self, buffer, index ):
+		'''从缓存中提取float结果'''
+		data = self.ReverseBytesByWord(buffer,index,4,self.IsMultiWordReverse)
+		return struct.unpack('<f',data)[0]
+	def TransDouble(self, buffer, index ):
+		'''从缓存中提取double结果'''
+		data = self.ReverseBytesByWord(buffer,index,8,self.IsMultiWordReverse)
+		return struct.unpack('<d',data)[0]
+	def TransString( self, buffer, index, length, encoding ):
+		'''从缓存中提取string结果，使用指定的编码'''
+		data = self.TransByteArray(buffer,index,length)
+		if self.IsStringReverse:
+			return self.ReverseAllBytesByWord(data,False).decode(encoding)
+		else:
+			return data.decode(encoding)
 	
+	def Int16ArrayTransByte(self, values ):
+		'''short数组变量转化缓存数据，需要传入short数组'''
+		buffer = super().Int16ArrayTransByte(values)
+		return self.ReverseAllBytesByWord(buffer,False)
+	def UInt16ArrayTransByte(self, values ):
+		'''ushort数组变量转化缓存数据，需要传入ushort数组'''
+		buffer = super().UInt16ArrayTransByte(values)
+		return self.ReverseAllBytesByWord(buffer,False)
+	def Int32ArrayTransByte(self, values ):
+		'''int数组变量转化缓存数据，需要传入int数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 4)
+		for i in range(len(values)):
+			buffer[(i*4): (i*4+4)] = self.ReverseAllBytesByWord(struct.pack('<i',values[i]),self.IsMultiWordReverse)
+		return buffer
+	def UInt32ArrayTransByte(self, values ):
+		'''uint数组变量转化缓存数据，需要传入uint数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 4)
+		for i in range(len(values)):
+			buffer[(i*4): (i*4+4)] = self.ReverseAllBytesByWord(struct.pack('<I',values[i]),self.IsMultiWordReverse)
+		return buffer
+	def Int64ArrayTransByte(self, values ):
+		'''long数组变量转化缓存数据，需要传入long数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 8)
+		for i in range(len(values)):
+			buffer[(i*8): (i*8+8)] = self.ReverseAllBytesByWord(struct.pack('<q',values[i]),self.IsMultiWordReverse)
+		return buffer
+	def UInt64ArrayTransByte(self, values ):
+		'''ulong数组变量转化缓存数据，需要传入ulong数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 8)
+		for i in range(len(values)):
+			buffer[(i*8): (i*8+8)] = self.ReverseAllBytesByWord(struct.pack('<Q',values[i]),self.IsMultiWordReverse)
+		return buffer
+	def FloatArrayTransByte(self, values ):
+		'''float数组变量转化缓存数据，需要传入float数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 4)
+		for i in range(len(values)):
+			buffer[(i*4): (i*4+4)] = self.ReverseAllBytesByWord(struct.pack('<f',values[i]),self.IsMultiWordReverse)
+		return buffer
+	def DoubleArrayTransByte(self, values ):
+		'''double数组变量转化缓存数据，需要传入double数组'''
+		if (values == None) : return None
+		buffer = bytearray(len(values) * 8)
+		for i in range(len(values)):
+			buffer[(i*8): (i*8+8)] = self.ReverseAllBytesByWord(struct.pack('<d',values[i]),self.IsMultiWordReverse)
+		return buffer
+	def StringTransByte(self, value, encoding ):
+		'''使用指定的编码字符串转化缓存数据，需要传入string值及编码信息'''
+		buffer = value.encode(encoding)
+		buffer = SoftBasic.BytesArrayExpandToLengthEven(buffer)
+		if self.IsStringReverse:
+			return self.ReverseAllBytesByWord( buffer, False )
+		else:
+			return buffer
+
+class ByteTransformHelper:
+	'''所有数据转换类的静态辅助方法'''
+	@staticmethod
+	def GetBoolResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransBool(result.Content , 0 ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+	@staticmethod
+	def GetByteResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransByte(result.Content , 0 ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+	@staticmethod
+	def GetInt16ResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransInt16(result.Content , 0 ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+	@staticmethod
+	def GetUInt16ResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransUInt16(result.Content , 0 ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+	@staticmethod
+	def GetInt32ResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransInt32(result.Content , 0 ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+	@staticmethod
+	def GetUInt32ResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransUInt32(result.Content , 0 ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+	@staticmethod
+	def GetInt64ResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransInt64(result.Content , 0 ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+	@staticmethod
+	def GetUInt64ResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransUInt64(result.Content , 0 ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+	@staticmethod
+	def GetSingleResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransSingle(result.Content , 0 ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+	@staticmethod
+	def GetDoubleResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransDouble(result.Content , 0 ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+	@staticmethod
+	def GetStringResultFromBytes( result, byteTransform ):
+		'''将指定的OperateResult类型转化'''
+		try:
+			if result.IsSuccess:
+				return OperateResult.CreateSuccessResult(byteTransform.TransString(result.Content , 0, len(result.Content), 'ascii' ))
+			else:
+				return OperateResult.CreateFromFailedResult(result)
+		except Exception as ex:
+			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+
 
 class SoftBasic:
 	'''系统运行的基础方法，提供了一些基本的辅助方法'''
@@ -485,7 +731,7 @@ class SoftBasic:
 			length = len(InBytes) * 8
 		buffer = []
 		for  i in range(length):
-			index = int(i / 8)
+			index = i // 8
 			offect = i % 8
 
 			temp = 0
@@ -515,7 +761,7 @@ class SoftBasic:
 		buffer = bytearray(length)
 
 		for i in range(len(array)):
-			index = int(i / 8)
+			index = i // 8
 			offect = i % 8
 
 			temp = 0
@@ -534,44 +780,241 @@ class SoftBasic:
 	def HexStringToBytes( hex ):
 		'''将hex字符串转化为byte数组'''
 		return bytes.fromhex(hex)
+	@staticmethod
+	def BytesArrayExpandToLengthEven(array):
+		'''扩充一个整型的数据长度为偶数个'''
+		if len(array) % 2 == 1:
+			array.append(0)
+		return array
 
 class NetworkBase:
 	'''网络基础类的核心'''
 	Token = uuid.UUID('{00000000-0000-0000-0000-000000000000}')
-	CoreSocket = None
+	CoreSocket = socket.socket()
 	def Receive(self,socket,length):
+		'''接收固定长度的字节数组'''
 		totle = 0
-		data = ""
+		data = bytearray()
 		try:
 			while totle < length:
-				data += socket.Receive(length-totle)
-				totle += data.length
+				data.extend(socket.Receive(length-totle))
+				totle += len(data)
 			return OperateResult.CreateSuccessResult(data)
 		except Exception as e:
 			result = OperateResult()
 			result.Message = str(e)
 			return result
 	def Send(self,socket,data):
+		'''发送消息给套接字，直到完成的时候返回'''
 		try:
 			socket.send(data)
 			return OperateResult.CreateSuccessResult()
 		except Exception as e:
 			return OperateResult.CreateFailedResult(str(e))
 
+	def CreateSocketAndConnect(self,ipAddress,port,timeout = 10000):
+		'''创建一个新的socket对象并连接到远程的地址，默认超时时间为10秒钟'''
+		try:
+			socketTmp = socket.socket()
+			socketTmp.connect((ipAddress,port))
+			return OperateResult.CreateSuccessResult(socketTmp)
+		except Exception as e:
+			return OperateResult.CreateFailedResult(str(e))
+	def ReceiveMessage( self, socket, timeOut, netMsg ):
+		'''接收一条完整的数据，使用异步接收完成，包含了指令头信息'''
+		result = OperateResult()
+		headResult = self.Receive( socket, netMsg.ProtocolHeadBytesLength() )
+		if headResult.IsSuccess == False:
+			result.CopyErrorFromOther(headResult)
+			return result
+		netMsg.HeadBytes = headResult.Content
+		if netMsg.CheckHeadBytesLegal( self.Token.bytes ) == False:
+			# 令牌校验失败
+			if socket != None: socket.close()
+			result.Message = StringResources.TokenCheckFailed()
+			return result
+
+		contentLength = netMsg.GetContentLengthByHeadBytes( )
+		if contentLength == 0:
+			netMsg.ContentBytes = bytearray(0)
+		else:
+			contentResult = self.Receive( socket, contentLength )
+			if contentResult.IsSuccess == False:
+				result.CopyErrorFromOther( contentResult )
+				return result
+			netMsg.ContentBytes = contentResult.Content
+		
+		if netMsg.ContentBytes == None: netMsg.ContentBytes = bytearray(0)
+		result.Content = netMsg
+		result.IsSuccess = True
+		return result
+
+class NetworkDoubleBase(NetworkBase):
+	'''支持长连接，短连接两个模式的通用客户端基类'''
+	byteTransform = ByteTransform()
+	ipAddress = "127.0.0.1"
+	port = 10000
+	isPersistentConn = False
+	isSocketError = False
+	receiveTimeOut = 10000
+	isUseSpecifiedSocket = False
+	interactiveLock = threading.Lock()
+	iNetMessage = INetMessage()
+	
+	def SetPersistentConnection( self ):
+		'''在读取数据之前可以调用本方法将客户端设置为长连接模式，相当于跳过了ConnectServer的结果验证，对异形客户端无效'''
+		self.isPersistentConn = True
+	def ConnectServer( self ):
+		'''切换短连接模式到长连接模式，后面的每次请求都共享一个通道'''
+		self.isPersistentConn = True
+		result = OperateResult( )
+		# 重新连接之前，先将旧的数据进行清空
+		if super().CoreSocket != None: 
+			super().CoreSocket.close()
+
+		rSocket = self.CreateSocketAndInitialication( )
+		if rSocket.IsSuccess == False:
+			self.isSocketError = True
+			rSocket.Content = None
+			result.Message = rSocket.Message
+		else:
+			super().CoreSocket = rSocket.Content
+			result.IsSuccess = True
+		return result
+	def ConnectClose( self ):
+		'''在长连接模式下，断开服务器的连接，并切换到短连接模式'''
+		result = OperateResult( )
+		self.isPersistentConn = False
+
+		self.interactiveLock.acquire()
+		# 额外操作
+		result = self.ExtraOnDisconnect( super().CoreSocket )
+		# 关闭信息
+		if super().CoreSocket != None : super().CoreSocket.close()
+		super().CoreSocket = None
+		self.interactiveLock.release( )
+		return result
+	
+
+	# 初始化的信息方法和连接结束的信息方法，需要在继承类里面进行重新实现
+	def InitializationOnConnect( self, socket ):
+		'''连接上服务器后需要进行的初始化操作'''
+		return OperateResult.CreateSuccessResult()
+	def ExtraOnDisconnect( self, socket ):
+		'''在将要和服务器进行断开的情况下额外的操作，需要根据对应协议进行重写'''
+		return OperateResult.CreateSuccessResult()
+	
+	def GetAvailableSocket( self ):
+		'''获取本次操作的可用的网络套接字'''
+		if self.isPersistentConn :
+			# 如果是异形模式
+			if self.isUseSpecifiedSocket :
+				if self.isSocketError:
+					return OperateResult.CreateFailedResult( '连接不可用' )
+				else:
+					return OperateResult.CreateSuccessResult( self.CoreSocket )
+			else:
+				# 长连接模式
+				if self.isSocketError or self.CoreSocket == None :
+					connect = self.ConnectServer( )
+					if connect.IsSuccess == False:
+						self.isSocketError = True
+						return OperateResult.CreateFailedResult( connect.Message )
+					else:
+						self.isSocketError = False
+						return OperateResult.CreateSuccessResult( self.CoreSocket )
+				else:
+					return OperateResult.CreateSuccessResult( self.CoreSocket )
+		else:
+			# 短连接模式
+			return self.CreateSocketAndInitialication( )
+
+	def CreateSocketAndInitialication( self ):
+		'''连接并初始化网络套接字'''
+		result = super().CreateSocketAndConnect( self.ipAddress, self.port, 10000 )
+		if result.IsSuccess:
+			# 初始化
+			initi = self.InitializationOnConnect( result.Content )
+			if initi.IsSuccess == False:
+				if result.Content !=None : result.Content.Close( )
+				result.IsSuccess = initi.IsSuccess
+				result.CopyErrorFromOther( initi )
+		return result
+
+	def ReadFromCoreSocketServer( self, socket, send ):
+		'''在其他指定的套接字上，使用报文来通讯，传入需要发送的消息，返回一条完整的数据指令'''
+		read = self.ReadFromCoreServerBase( socket, send )
+		if read.IsSuccess == False: return OperateResult.CreateFromFailedResult( read )
+
+		# 拼接结果数据
+		Content = bytearray(len(read.Content1) + len(read.Content2))
+		if len(read.Content1) > 0 : 
+			Content[0:len(read.Content1)] = read.Content1
+		if len(read.Content2) > 0 : 
+			Content[len(read.Content1):len(Content)] = read.Content2
+		return OperateResult.CreateSuccessResult( Content )
+
+	def ReadFromCoreServer( self, send ):
+		'''使用底层的数据报文来通讯，传入需要发送的消息，返回一条完整的数据指令'''
+		result = OperateResult( )
+		self.interactiveLock.acquire()
+		# 获取有用的网络通道，如果没有，就建立新的连接
+		resultSocket = self.GetAvailableSocket( )
+		if resultSocket.IsSuccess == False:
+			self.isSocketError = True
+			self.interactiveLock.release()
+			result.CopyErrorFromOther( resultSocket )
+			return result
+
+		read = self.ReadFromCoreSocketServer( resultSocket.Content, send )
+		if read.IsSuccess :
+			self.isSocketError = False
+			result.IsSuccess = read.IsSuccess
+			result.Content = read.Content
+			result.Message = StringResources.SuccessText
+			# string tmp2 = BasicFramework.SoftBasic.ByteToHexString( result.Content, '-' )
+		else:
+			self.isSocketError = True
+			result.CopyErrorFromOther( read )
+
+		self.interactiveLock.release()
+		if self.isPersistentConn==False:
+			if resultSocket.Content != None:
+				resultSocket.Content.close()
+		return result
+		
+	def ReadFromCoreServerBase( self, socket, send ):
+		'''使用底层的数据报文来通讯，传入需要发送的消息，返回最终的数据结果，被拆分成了头子节和内容字节信息'''
+		self.iNetMessage.SendBytes = send
+		sendResult = super().Send( socket, send )
+		if sendResult.IsSuccess == False:
+			if socket!= None : socket.close( )
+			return OperateResult.CreateFromFailedResult( sendResult )
+
+		# 接收超时时间大于0时才允许接收远程的数据
+		if (self.receiveTimeOut >= 0):
+			# 接收数据信息
+			resultReceive = self.ReceiveMessage(socket, 10000, self.iNetMessage)
+			if resultReceive.IsSuccess == False:
+				socket.Close( )
+				return OperateResult.CreateFailedResult( "Receive data timeout: " + self.receiveTimeOut )
+			return OperateResult.CreateSuccessResult( resultReceive.Content.HeadBytes, resultReceive.Content.ContentBytes )
+		else:
+			return OperateResult.CreateSuccessResult( bytearray(0), bytearray(0) )
 
 
+modbus = socket.socket()
+ip_port = ('127.0.0.1',502)
+modbus.connect(ip_port)
 
+send = b'\x00\x00\x00\x00\x00\x06\x01\x03\x00\x00\x00\x01'
+modbus.send(send)
+recive = modbus.recv(1024)
+aaa = bytearray()
+aaa.extend(recive)
+print(aaa)
 
-#modbus = socket.socket()
-#ip_port = ('127.0.0.1',502)
-#modbus.connect(ip_port)
-
-#send = b'\x00\x00\x00\x00\x00\x06\x01\x03\x00\x00\x00\x01'
-#modbus.send(send)
-#recive = modbus.recv(1024)
-#print(recive)
-
-#modbus.close()
+modbus.close()
 
 data = b'\xA2'
 print(SoftBasic.ByteToBoolArray(data,8))
@@ -583,10 +1026,11 @@ print(struct.unpack('<h',data)[0])
 print(SoftBasic.ByteToHexString(SoftBasic.BoolArrayToByte([True,False,False,True,False,False,False,False,True])))
 
 bytesMy = bytearray(4)
-bytesMy[0] = 1
-bytesMy[1] = 2
-bytesMy[2] = 3
-bytesMy[3] = 4
-print(SoftBasic.ByteToHexString(bytesMy[2:4]))
-bytesMy[0:2] = struct.pack('<h',123)
-print(SoftBasic.ByteToHexString(bytesMy))
+bytesMy[0] = 0x31
+bytesMy[1] = 0x32
+bytesMy[2] = 0x33
+bytesMy[3] = 0x34
+print(bytesMy.decode('ascii'))
+
+u = uuid.UUID('{12345678-1234-5678-1234-567812345678}')
+print(SoftBasic.ByteToHexString(u.bytes))
