@@ -20,11 +20,12 @@ namespace HslCommunication.Core
         /// <param name="index">起始字节位置</param>
         /// <param name="length">数据长度</param>
         /// <param name="isReverse">是否按照字来反转</param>
-        /// <returns></returns>
+        /// <returns>处理过的数据信息</returns>
         private byte[] ReverseBytesByWord( byte[] buffer, int index, int length, bool isReverse = false )
         {
-            byte[] tmp = new byte[length];
+            if (buffer == null) return null;
 
+            byte[] tmp = new byte[length];
             for (int i = 0; i < length; i++)
             {
                 tmp[i] = buffer[index + i];
@@ -251,15 +252,7 @@ namespace HslCommunication.Core
         /// <returns>buffer数据</returns>
         public override byte[] TransByte( short[] values )
         {
-            if (values == null) return null;
-
-            byte[] buffer = new byte[values.Length * 2];
-            for (int i = 0; i < values.Length; i++)
-            {
-                byte[] tmp = BitConverter.GetBytes( values[i] );
-                tmp.CopyTo( buffer, 2 * i );
-            }
-
+            byte[] buffer = base.TransByte( values );
             return ReverseBytesByWord( buffer );
         }
 
@@ -271,15 +264,7 @@ namespace HslCommunication.Core
         /// <returns>buffer数据</returns>
         public override byte[] TransByte( ushort[] values )
         {
-            if (values == null) return null;
-
-            byte[] buffer = new byte[values.Length * 2];
-            for (int i = 0; i < values.Length; i++)
-            {
-                byte[] tmp = BitConverter.GetBytes( values[i] );
-                tmp.CopyTo( buffer, 2 * i );
-            }
-
+            byte[] buffer = base.TransByte( values );
             return ReverseBytesByWord( buffer );
         }
 

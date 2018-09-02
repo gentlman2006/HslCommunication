@@ -21,7 +21,7 @@ namespace HslCommunication.Core
         /// <returns>bool对象</returns>
         public virtual bool TransBool( byte[] buffer, int index )
         {
-            return buffer[index] != 0x00;
+            return ((buffer[index] & 0x01) == 0x01);
         }
 
 
@@ -56,7 +56,7 @@ namespace HslCommunication.Core
         /// <param name="buffer">缓存数据</param>
         /// <param name="index">索引位置</param>
         /// <param name="length">读取的数组长度</param>
-        /// <returns></returns>
+        /// <returns>byte数组对象</returns>
         public virtual byte[] TransByte( byte[] buffer, int index, int length )
         {
             byte[] tmp = new byte[length];
@@ -256,7 +256,7 @@ namespace HslCommunication.Core
         /// <param name="buffer">缓存数据</param>
         /// <param name="index">索引位置</param>
         /// <param name="length">读取的数组长度</param>
-        /// <returns></returns>
+        /// <returns>float数组对象</returns>
         public virtual float[] TransSingle( byte[] buffer, int index, int length )
         {
             float[] tmp = new float[length];
@@ -285,7 +285,7 @@ namespace HslCommunication.Core
         /// <param name="buffer">缓存对象</param>
         /// <param name="index">索引位置</param>
         /// <param name="length">读取的数组长度</param>
-        /// <returns></returns>
+        /// <returns>double数组对象</returns>
         public virtual double[] TransDouble( byte[] buffer, int index, int length )
         {
             double[] tmp = new double[length];

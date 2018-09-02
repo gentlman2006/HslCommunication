@@ -21,22 +21,21 @@ namespace HslCommunication.Core
         /// <returns>转换结果</returns>
         public static OperateResult<TResult> GetResultFromBytes<TResult>( OperateResult<byte[]> result, Func<byte[], TResult> translator )
         {
-            var tmp = new OperateResult<TResult>( );
             try
             {
                 if (result.IsSuccess)
                 {
-                    tmp.Content = translator( result.Content );
-                    tmp.IsSuccess = result.IsSuccess;
+                    return OperateResult.CreateSuccessResult(translator( result.Content ));
                 }
-                tmp.CopyErrorFromOther( result );
+                else
+                {
+                    return OperateResult.CreateFailedResult<TResult>( result );
+                }
             }
             catch (Exception ex)
             {
-                tmp.Message = "数据转化失败，源数据：" + BasicFramework.SoftBasic.ByteToHexString( result.Content ) + " 消息：" + ex.Message;
+                return new OperateResult<TResult>( ) { Message = "数据转化失败，源数据：" + BasicFramework.SoftBasic.ByteToHexString( result.Content ) + " 消息：" + ex.Message };
             }
-
-            return tmp;
         }
 
 
