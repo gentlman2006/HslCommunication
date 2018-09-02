@@ -172,6 +172,7 @@
     <Folder Include="Profinet\Omron\" />
     <Folder Include="Profinet\Siemens\" />
     <Folder Include="Profinet\AllenBradley\" />
+    <Folder Include="Profinet\Panasonic\" />
     <Folder Include="Robot\EFORT\" />
   </ItemGroup>
 

@@ -264,6 +264,9 @@
     <Compile Include="Robot\EFORT\EfortData.cs" />
     <Compile Include="Robot\EFORT\ER7BC10.cs" />
     <Compile Include="Serial\CRCSupport.cs" />
+    <None Include="Serial\FP1_C72.cs">
+      <SubType>UserControl</SubType>
+    </None>
     <Compile Include="Serial\SerialBase.cs" />
     <Compile Include="Serial\SerialDeviceBase.cs" />
     <Compile Include="StringResources.cs" />
@@ -365,6 +368,8 @@
     <None Include="imgaes\abstr1.png" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Profinet\Panasonic\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
