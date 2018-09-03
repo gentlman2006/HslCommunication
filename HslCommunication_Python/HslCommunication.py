@@ -89,6 +89,27 @@ class OperateResult:
 			success.Content10 = Content10
 		return success
 
+class SoftIncrementCount:
+	'''一个简单的不持久化的序号自增类，采用线程安全实现，并允许指定最大数字，到达后清空从指定数开始'''
+	start = 0
+	current = 0
+	maxValue = 100000000000000000000000000
+	hybirdLock = threading.Lock()
+	def __init__(self, maxValue, start):
+		'''实例化一个自增信息的对象，包括最大值'''
+		self.maxValue = maxValue
+		self.start = start
+	def GetCurrentValue( self ):
+		'''获取自增信息'''
+		value = 0
+		self.hybirdLock.acquire()
+		value = self.current
+		self.current = self.current + 1
+		if self.current > self.maxValue:
+			self.current = 0
+		self.hybirdLock.release()
+		return value
+	
 
 class INetMessage:
 	'''数据消息的基本基类'''
@@ -1002,19 +1023,208 @@ class NetworkDoubleBase(NetworkBase):
 		else:
 			return OperateResult.CreateSuccessResult( bytearray(0), bytearray(0) )
 
+	def GetBoolResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetBoolResultFromBytes( result, self.byteTransform)
+	def GetByteResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetByteResultFromBytes( result, self.byteTransform)
+	def GetInt16ResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetInt16ResultFromBytes( result, self.byteTransform)
+	def GetUInt16ResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetUInt16ResultFromBytes( result, self.byteTransform)
+	def GetInt32ResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetInt32ResultFromBytes( result, self.byteTransform )
+	def GetUInt32ResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetUInt32ResultFromBytes( result, self.byteTransform )
+	def GetInt64ResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetInt64ResultFromBytes( result, self.byteTransform )
+	def GetUInt64ResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetUInt64ResultFromBytes( result, self.byteTransform )
+	def GetSingleResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetSingleResultFromBytes( result, self.byteTransform )
+	def GetDoubleResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetDoubleResultFromBytes( result, self.byteTransform )
+	def GetStringResultFromBytes( self, result ):
+		'''将指定的OperateResult类型转化'''
+		return ByteTransformHelper.GetStringResultFromBytes( result, self.byteTransform )
 
-modbus = socket.socket()
-ip_port = ('127.0.0.1',502)
-modbus.connect(ip_port)
+class NetworkDeviceBase(NetworkDoubleBase):
+	'''设备类的基类，提供了基础的字节读写方法'''
+	# 单个数据字节的长度，西门子为2，三菱，欧姆龙，modbusTcp就为1
+	WordLength = 1
+	def Read( self, address, length ):
+		'''从设备读取原始数据'''
+		return OperateResult( )
+	def Write( self, address, value ):
+		'''将原始数据写入设备'''
+		return OperateResult()
+	def ReadInt16( self, address, length = None ):
+		'''读取设备的short类型的数据'''
+		if(length == None):
+			return self.GetInt16ResultFromBytes( self.Read( address, self.WordLength ) )
+		else:
+			read = self.Read(address,length*self.WordLength)
+			if read.IsSuccess == False:
+				return OperateResult.CreateFromFailedResult(read)
+			return OperateResult.CreateSuccessResult(self.byteTransform.TransInt16Array(read.Content,0,length))
+	def ReadUInt16( self, address, length = None ):
+		'''读取设备的ushort数据类型的数据'''
+		if length == None:
+			return self.GetUInt16ResultFromBytes(self.Read(address,self.WordLength))
+		else:
+			read = self.Read(address,length*self.WordLength)
+			if read.IsSuccess == False:
+				return OperateResult.CreateFromFailedResult(read)
+			return OperateResult.CreateSuccessResult(self.byteTransform.TransUInt16Array(read.Content,0,length))
+	def ReadInt32( self, address, length = None ):
+		'''读取设备的int类型的数据'''
+		if length == None:
+			return self.GetInt32ResultFromBytes( self.Read( address, 2 * self.WordLength ) )
+		else:
+			read = self.Read(address,2*length*self.WordLength)
+			if read.IsSuccess == False:
+				return OperateResult.CreateFromFailedResult(read)
+			return OperateResult.CreateSuccessResult(self.byteTransform.TransInt32Array(read.Content,0,length))
+	def ReadUInt32( self, address, length = None ):
+		'''读取设备的uint数据类型的数据'''
+		if length == None:
+			return self.GetUInt32ResultFromBytes(self.Read(address,2 * self.WordLength))
+		else:
+			read = self.Read(address,2*length*self.WordLength)
+			if read.IsSuccess == False:
+				return OperateResult.CreateFromFailedResult(read)
+			return OperateResult.CreateSuccessResult(self.byteTransform.TransUInt32Array(read.Content,0,length))
+	def ReadFloat( self, address, length = None ):
+		'''读取设备的float类型的数据'''
+		if length == None:
+			return self.GetSingleResultFromBytes( self.Read( address, 2 * self.WordLength ) )
+		else:
+			read = self.Read(address,2*length*self.WordLength)
+			if read.IsSuccess == False:
+				return OperateResult.CreateFromFailedResult(read)
+			return OperateResult.CreateSuccessResult(self.byteTransform.TransSingleArray(read.Content,0,length))
+	def ReadInt64( self, address, length = None ):
+		'''读取设备的long类型的数组'''
+		if length == None:
+			return self.GetInt64ResultFromBytes( self.Read( address, 4 * self.WordLength) )
+		else:
+			read = self.Read(address,4*length*self.WordLength)
+			if read.IsSuccess == False:
+				return OperateResult.CreateFromFailedResult(read)
+			return OperateResult.CreateSuccessResult(self.byteTransform.TransInt64Array(read.Content,0,length))
+	def ReadUInt64( self, address, length = None ):
+		'''读取设备的long类型的数组'''
+		if length == None:
+			return self.GetUInt64ResultFromBytes( self.Read( address, 4 * self.WordLength) )
+		else:
+			read = self.Read(address,4*length*self.WordLength)
+			if read.IsSuccess == False:
+				return OperateResult.CreateFromFailedResult(read)
+			return OperateResult.CreateSuccessResult(self.byteTransform.TransUInt64Array(read.Content,0,length))
+	def ReadDouble( self, address, length = None ):
+		'''读取设备的long类型的数组'''
+		if length == None:
+			return self.GetDoubleResultFromBytes( self.Read( address, 4 * self.WordLength) )
+		else:
+			read = self.Read(address,4*length*self.WordLength)
+			if read.IsSuccess == False:
+				return OperateResult.CreateFromFailedResult(read)
+			return OperateResult.CreateSuccessResult(self.byteTransform.TransDoubleArray(read.Content,0,length))
+	def ReadString( self, address, length ):
+		return self.GetStringResultFromBytes( self.Read( address, length ) )
+	
+	def WriteInt16( self, address, value ):
+		'''向设备中写入short数据或是数组，返回是否写入成功'''
+		if type(value) == list:
+			return self.Write( address, self.byteTransform.Int16ArrayTransByte( value ) )
+		else:
+			return self.WriteInt16( address, [value] )
+	def WriteUInt16( self, address, value ):
+		'''向设备中写入short数据或是数组，返回是否写入成功'''
+		if type(value) == list:
+			return self.Write( address, self.byteTransform.UInt16ArrayTransByte( value ) )
+		else:
+			return self.WriteUInt16( address, [value] )
+	def WriteInt32( self, address, value ):
+		'''向设备中写入int数据，返回是否写入成功'''
+		if type(value) == list:
+			return self.Write( address, self.byteTransform.Int32ArrayTransByte(value) )
+		else:
+			return self.WriteInt32( address, [value])
+	def WriteUInt32( self, address, value):
+		'''向设备中写入uint数据，返回是否写入成功'''
+		if type(value) == list:
+			return self.Write( address, self.byteTransform.UInt32ArrayTransByte(value) )
+		else:
+			return self.WriteUInt32( address, [value] )
+	def WriteFloat( self, address, value ):
+		'''向设备中写入float数据，返回是否写入成功'''
+		if type(value) == list:
+			return self.Write( address, self.byteTransform.FloatArrayTransByte(value) )
+		else:
+			return self.WriteFloat(address, [value])
+	def WriteInt64( self, address, value ):
+		'''向设备中写入long数据，返回是否写入成功'''
+		if type(value) == list:
+			return self.Write( address,  self.byteTransform.Int64ArrayTransByte(value))
+		else:
+			return self.WriteInt64( address, [value] )
+	def WriteUInt64( self, address, value ):
+		'''向设备中写入ulong数据，返回是否写入成功'''
+		if type(value) == list:
+			return self.Write( address,  self.byteTransform.UInt64ArrayTransByte(value))
+		else:
+			return self.WriteUInt64( address, [value] )
+	def WriteDouble( self, address, value ):
+		'''向设备中写入double数据，返回是否写入成功'''
+		if type(value) == list:
+			return self.Write( address, self.byteTransform.DoubleArrayTransByte(value) )
+		else:
+			return self.WriteDouble( address, [value] )
+	def WriteString( self, address, value ):
+		'''向设备中写入string数据，编码为ascii，返回是否写入成功'''
+		return self.Write( address, self.byteTransform.StringTransByte( value, 'ascii' ) )
 
-send = b'\x00\x00\x00\x00\x00\x06\x01\x03\x00\x00\x00\x01'
-modbus.send(send)
-recive = modbus.recv(1024)
-aaa = bytearray()
-aaa.extend(recive)
-print(aaa)
+class ModbusTcpNet(NetworkDeviceBase):
+	'''Modbus-Tcp协议的客户端通讯类，方便的和服务器进行数据交互'''
+	station = 1
+	softIncrementCount = None
+	isAddressStartWithZero = True
+	def __init__(self, ipAddress = '127.0.0.1', port = 502, station = 1):
+		self.WordLength = 1
+		self.softIncrementCount = SoftIncrementCount( 65536, 0 )
+		self.station = station
+		self.ipAddress = ipAddress
+		self.port = port
+		self.byteTransform = ReverseWordTransform()
+	def SetIsMultiWordReverse( self, value ):
+		self.byteTransform.IsMultiWordReverse = value
+	def GetIsMultiWordReverse( self ):
+		return self.byteTransform.IsMultiWordReverse
+	
 
-modbus.close()
+
+# modbus = socket.socket()
+# ip_port = ('127.0.0.1',502)
+# modbus.connect(ip_port)
+
+# send = b'\x00\x00\x00\x00\x00\x06\x01\x03\x00\x00\x00\x01'
+# modbus.send(send)
+# recive = modbus.recv(1024)
+# aaa = bytearray()
+# aaa.extend(recive)
+# print(aaa)
+
+# modbus.close()
 
 data = b'\xA2'
 print(SoftBasic.ByteToBoolArray(data,8))
@@ -1031,6 +1241,5 @@ bytesMy[1] = 0x32
 bytesMy[2] = 0x33
 bytesMy[3] = 0x34
 print(bytesMy.decode('ascii'))
-
-u = uuid.UUID('{12345678-1234-5678-1234-567812345678}')
-print(SoftBasic.ByteToHexString(u.bytes))
+byteTransform = ByteTransform()
+print(byteTransform.TransInt16(data,0))
