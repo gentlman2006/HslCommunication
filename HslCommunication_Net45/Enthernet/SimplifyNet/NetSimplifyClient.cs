@@ -54,18 +54,10 @@ namespace HslCommunication.Enthernet
         /// <returns>带返回消息的结果对象</returns>
         public OperateResult<string> ReadFromServer(NetHandle customer,string send = null)
         {
-            var result = new OperateResult<string>( );
-            var data = string.IsNullOrEmpty( send ) ? new byte[0] : Encoding.Unicode.GetBytes( send );
-            var temp = ReadFromServerBase( HslProtocol.ProtocolUserString, customer, data);
-            result.IsSuccess = temp.IsSuccess;
-            result.ErrorCode = temp.ErrorCode;
-            result.Message = temp.Message;
-            if (temp.IsSuccess)
-            {
-                result.Content = Encoding.Unicode.GetString( temp.Content );
-            }
-            temp = null;
-            return result;
+            var read = ReadFromServerBase( HslProtocol.CommandBytes( customer, Token, send ) );
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
+
+            return OperateResult.CreateSuccessResult( Encoding.Unicode.GetString( read.Content ) );
         }
 
 
@@ -77,32 +69,26 @@ namespace HslCommunication.Enthernet
         /// <returns>带返回消息的结果对象</returns>
         public OperateResult<byte[]> ReadFromServer(NetHandle customer,byte[] send)
         {
-            return ReadFromServerBase( HslProtocol.ProtocolUserBytes, customer, send);
+            return ReadFromServerBase( HslProtocol.CommandBytes( customer, Token, send ));
         }
 
         /// <summary>
         /// 需要发送的底层数据
         /// </summary>
-        /// <param name="headcode">数据的指令头</param>
-        /// <param name="customer">用户的指令头</param>
         /// <param name="send">需要发送的底层数据</param>
         /// <returns>带返回消息的结果对象</returns>
-        private OperateResult<byte[]> ReadFromServerBase(int headcode,int customer,byte[] send)
+        private OperateResult<byte[]> ReadFromServerBase( byte[] send )
         {
-            var read = ReadFromCoreServer( HslProtocol.CommandBytes( headcode, customer, Token, send ) );
-            if(!read.IsSuccess)
-            {
-                return read;
-            }
+            // 核心数据交互
+            var read = ReadFromCoreServer( send );
+            if (!read.IsSuccess) return read;
 
+            // 提炼数据信息
             byte[] headBytes = new byte[HslProtocol.HeadByteLength];
             byte[] contentBytes = new byte[read.Content.Length - HslProtocol.HeadByteLength];
 
             Array.Copy( read.Content, 0, headBytes, 0, HslProtocol.HeadByteLength );
-            if(contentBytes.Length>0)
-            {
-                Array.Copy( read.Content, HslProtocol.HeadByteLength, contentBytes, 0, read.Content.Length - HslProtocol.HeadByteLength );
-            }
+            if (contentBytes.Length > 0) Array.Copy( read.Content, HslProtocol.HeadByteLength, contentBytes, 0, read.Content.Length - HslProtocol.HeadByteLength );
 
             contentBytes = HslProtocol.CommandAnalysis( headBytes, contentBytes );
             return OperateResult.CreateSuccessResult( contentBytes );
