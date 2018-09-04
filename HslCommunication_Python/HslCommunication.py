@@ -3,6 +3,7 @@ import uuid
 import socket
 import struct
 import threading
+import gzip
 
 class StringResources:
 	'''系统的资源类'''
@@ -137,14 +138,14 @@ class S7Message (INetMessage):
 		return 4
 	def GetContentLengthByHeadBytes(self):
 		'''二次接收的数据长度'''
-		if super().HeadBytes != None:
-			return super().HeadBytes[2]*256 + super().HeadBytes[3]-4
+		if self.HeadBytes != None:
+			return self.HeadBytes[2]*256 + self.HeadBytes[3]-4
 		else:
 			return 0
 	def CheckHeadBytesLegal(self,token):
 		'''令牌检查是否成功'''
-		if super().HeadBytes != None:
-			if( super().HeadBytes[0] == 0x03 and super().HeadBytes[1] == 0x00 ):
+		if self.HeadBytes != None:
+			if( self.HeadBytes[0] == 0x03 and self.HeadBytes[1] == 0x00 ):
 				return True
 			else:
 				return False
@@ -158,8 +159,8 @@ class ModbusTcpMessage (INetMessage):
 		return 6
 	def GetContentLengthByHeadBytes(self):
 		'''二次接收的数据长度'''
-		if super().HeadBytes != None:
-			return super().HeadBytes[4] * 256 + super().HeadBytes[5]
+		if self.HeadBytes != None:
+			return self.HeadBytes[4] * 256 + self.HeadBytes[5]
 		else:
 			return 0
 	def CheckHeadBytesLegal(self,token):
@@ -167,8 +168,35 @@ class ModbusTcpMessage (INetMessage):
 		return True
 	def GetHeadBytesIdentity(self):
 		'''获取头子节里的消息标识'''
-		return super().HeadBytes[0] * 256 + super().HeadBytes[1]
+		return self.HeadBytes[0] * 256 + self.HeadBytes[1]
 
+class HslMessage (INetMessage):
+	'''本组件系统使用的默认的消息规则，说明解析和反解析规则的'''
+	def ProtocolHeadBytesLength(self):
+		'''协议头数据长度，也即是第一次接收的数据长度'''
+		return 32
+	def GetContentLengthByHeadBytes(self):
+		'''二次接收的数据长度'''
+		if self.HeadBytes != None:
+			buffer = bytearray(4)
+			buffer[0:4] = self.HeadBytes[28:32]
+			return struct.pack('<i',buffer)[0]
+		else:
+			return 0
+	def GetHeadBytesIdentity(self):
+		'''获取头子节里的消息标识'''
+		if self.HeadBytes != None:
+			buffer = bytearray(4)
+			buffer[0:4] = self.HeadBytes[4:8]
+			return struct.pack('<i',buffer)[0]
+		else:
+			return 0
+	def CheckHeadBytesLegal(self,token):
+		'''令牌检查是否成功'''
+		if self.HeadBytes == None:
+			return False
+		else:
+			return SoftBasic.IsTwoBytesEquel(self.HeadBytes,12,token,0,16)
 
 class ByteTransform:
 	'''数据转换类的基础，提供了一些基础的方法实现.'''
@@ -807,6 +835,173 @@ class SoftBasic:
 		if len(array) % 2 == 1:
 			array.append(0)
 		return array
+	@staticmethod
+	def IsTwoBytesEquel( b1, start1, b2, start2, length ):
+		'''判断两个字节的指定部分是否相同'''
+		if b1 == None or b2 == None: return False
+		if len(b1) != len(b2): return False
+		for ii in range(len(b1)):
+			if b1[ii] != b2[ii]: return False
+		return True
+
+class HslSecurity:
+	@staticmethod
+	def ByteEncrypt( enBytes ):
+		'''加密方法，只对当前的程序集开放'''
+		if (enBytes == None) : return None
+		result = bytearray(len(enBytes))
+		for i in range(len(enBytes)):
+			result[i] = enBytes[i] ^ 0xB5
+		return result
+	@staticmethod
+	def ByteDecrypt( deBytes ):
+		'''解密方法，只对当前的程序集开放'''
+		return HslSecurity.ByteEncrypt(deBytes)
+
+class SoftZipped:
+	'''一个负责压缩解压数据字节的类'''
+	@staticmethod
+	def CompressBytes( inBytes ):
+		'''压缩字节数据'''
+		if inBytes == None : return None
+		return gzip.compress( inBytes )
+	@staticmethod
+	def Decompress( inBytes ):
+		'''解压字节数据'''
+		if inBytes == None : return None
+		return gzip.decompress( inBytes )
+
+class HslProtocol:
+	'''用于本程序集访问通信的暗号说明'''
+	@staticmethod
+	def HeadByteLength():
+		'''规定所有的网络传输指令头都为32字节'''
+		return 32
+	@staticmethod
+	def ProtocolBufferSize():
+		'''所有网络通信中的缓冲池数据信息'''
+		return 1024
+	@staticmethod
+	def ProtocolCheckSecends():
+		'''用于心跳程序的暗号信息'''
+		return 1
+	@staticmethod
+	def ProtocolClientQuit():
+		'''客户端退出消息'''
+		return 2
+	@staticmethod
+	def ProtocolClientRefuseLogin():
+		'''因为客户端达到上限而拒绝登录'''
+		return 3
+	@staticmethod
+	def ProtocolClientAllowLogin():
+		return 4
+	@staticmethod
+	def ProtocolUserString():
+		'''说明发送的只是文本信息'''
+		return 1001
+	@staticmethod
+	def ProtocolUserBytes():
+		'''发送的数据就是普通的字节数组'''
+		return 1002
+	@staticmethod
+	def ProtocolUserBitmap():
+		'''发送的数据就是普通的图片数据'''
+		return 1003
+	@staticmethod
+	def ProtocolUserException():
+		'''发送的数据是一条异常的数据，字符串为异常消息'''
+		return 1004
+	@staticmethod
+	def ProtocolFileDownload():
+		'''请求文件下载的暗号'''
+		return 2001
+	@staticmethod
+	def ProtocolFileUpload():
+		'''请求文件上传的暗号'''
+		return 2002
+	@staticmethod
+	def ProtocolFileDelete():
+		'''请求删除文件的暗号'''
+		return 2003
+	@staticmethod
+	def ProtocolFileCheckRight():
+		'''文件校验成功'''
+		return 2004
+	@staticmethod
+	def ProtocolFileCheckError():
+		'''文件校验失败'''
+		return 2005
+	@staticmethod
+	def ProtocolFileSaveError():
+		'''文件保存失败'''
+		return 2006
+	@staticmethod
+	def ProtocolFileDirectoryFiles():
+		'''请求文件列表的暗号'''
+		return 2007
+	@staticmethod
+	def ProtocolFileDirectories():
+		'''请求子文件的列表暗号'''
+		return 2008
+	@staticmethod
+	def ProtocolProgressReport():
+		'''进度返回暗号'''
+		return 2009
+	@staticmethod
+	def ProtocolNoZipped():
+		'''不压缩数据字节'''
+		return 3001
+	@staticmethod
+	def ProtocolZipped():
+		'''压缩数据字节'''
+		return 3002
+	@staticmethod
+	def CommandBytesBase( command, customer, token, data ):
+		'''生成终极传送指令的方法，所有的数据均通过该方法出来'''
+		_zipped = HslProtocol.ProtocolNoZipped()
+		buffer = None
+		_sendLength = 0
+		if data == None:
+			buffer = bytearray(HslProtocol.HeadByteLength())
+		else:
+			data = HslSecurity.ByteEncrypt( data )
+			if len(data) > 102400:
+				data = SoftZipped.CompressBytes( data )
+				_zipped = HslProtocol.ProtocolZipped()
+			buffer = bytearray( HslProtocol.HeadByteLength() + len(data) )
+			_sendLength = len(data)
+		
+		buffer[0,4] = struct.pack( '<i', command )
+		buffer[4,8] = struct.pack( '<i', customer )
+		buffer[8,12] = struct.pack( '<i', _zipped)
+		buffer[12,28] = token.bytes()
+		buffer[28,32] = struct.pack( '<i', _sendLength)
+		if _sendLength>0:
+			buffer[32,_sendLength+32]=data
+		return buffer
+	@staticmethod
+	def CommandAnalysis( head, content ):
+		'''解析接收到数据，先解压缩后进行解密'''
+		if content == None:
+			_zipped = struct.unpack('<i', head[8,12])[0]
+			if _zipped == HslProtocol.ProtocolZipped():
+				content = SoftZipped.Decompress( content )
+			return HslSecurity.ByteEncrypt(content)
+		return None
+	@staticmethod
+	def CommandBytes( customer, token, data ):
+		'''获取发送字节数据的实际数据，带指令头'''
+		return HslProtocol.CommandBytesBase( HslProtocol.ProtocolUserBytes(), customer, token, data )
+	@staticmethod
+	def CommandString( customer, token, data ):
+		'''获取发送字节数据的实际数据，带指令头'''
+		if data == None: 
+			return HslProtocol.CommandBytesBase( HslProtocol.ProtocolUserString, customer, token, None )
+		else:
+			return HslProtocol.CommandBytesBase( HslProtocol.ProtocolUserString, customer, token, data.encode('ascii') )
+
+
 
 class NetworkBase:
 	'''网络基础类的核心'''
@@ -1210,7 +1405,43 @@ class ModbusTcpNet(NetworkDeviceBase):
 		self.byteTransform.IsMultiWordReverse = value
 	def GetIsMultiWordReverse( self ):
 		return self.byteTransform.IsMultiWordReverse
-	
+
+class NetSimplifyClient(NetworkDoubleBase):
+	'''异步访问数据的客户端类，用于向服务器请求一些确定的数据信息'''
+	def __init__(self, ipAddress, port):
+		'''实例化一个客户端的对象，用于和服务器通信'''
+		self.iNetMessage = HslMessage()
+		self.byteTransform = RegularByteTransform()
+		self.ipAddress = ipAddress
+		self.port = port
+	def ReadBytesFromServer( self, customer, send = None):
+		'''客户端向服务器进行请求，请求字节数据'''
+		return self.__ReadFromServerBase( HslProtocol.CommandBytes( customer, self.Token, send))
+
+	def ReadStringFromServer( self, customer, send = None):
+		'''客户端向服务器进行请求，请求字符串数据'''
+		read = self.__ReadFromServerBase(  HslProtocol.CommandString( customer, self.Token, send))
+		if read.IsSuccess == False:
+			return OperateResult.CreateFromFailedResult( read )
+		
+		return OperateResult.CreateSuccessResult( read.Content.decode('unicode') )
+
+	def __ReadFromServerBase( self, send):
+		'''需要发送的底层数据'''
+		read = self.ReadFromCoreServer( send )
+		if read.IsSuccess == False:
+			return read
+
+		headBytes = bytearray(HslProtocol.HeadByteLength())
+		contentBytes = bytearray(len(read.Content) - HslProtocol.HeadByteLength())
+
+		headBytes[0:HslProtocol.HeadByteLength()] = read.Content[0:HslProtocol.HeadByteLength()]
+		if len(contentBytes) > 0:
+			contentBytes[0:len(contentBytes)] = read.Content[HslProtocol.HeadByteLength():len(read.Content)]
+
+		contentBytes = HslProtocol.CommandAnalysis( headBytes, contentBytes )
+		return OperateResult.CreateSuccessResult( contentBytes )
+		
 
 
 # modbus = socket.socket()
