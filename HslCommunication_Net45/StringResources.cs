@@ -126,7 +126,7 @@ namespace HslCommunication
         internal const string ModbusTcpWriteCoilException = "写入线圈异常";
         internal const string ModbusTcpReadRegisterException = "读取寄存器异常";
         internal const string ModbusTcpWriteRegisterException = "写入寄存器异常";
-
+        internal const string ModbusAddressMustMoreThanOne = "地址值在起始地址为1的情况下，必须大于1";
 
 
         /***********************************************************************************
@@ -135,7 +135,7 @@ namespace HslCommunication
          * 
          ************************************************************************************/
 
-            
+
         internal const string AllenBradley04 = "它没有正确生成或匹配标记不存在。"; // The IOI could not be deciphered. Either it was not formed correctly or the match tag does not exist
         internal const string AllenBradley05 = "引用的特定项（通常是实例）无法找到。"; // The particular item referenced (usually instance) could not be found.
         internal const string AllenBradley06 = "请求的数据量不适合响应缓冲区。 发生了部分数据传输。"; // The amount of data requested would not fit into the response buffer. Partial data transfer has occurred.
