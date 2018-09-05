@@ -150,9 +150,9 @@ namespace HslCommunication.ModBus
         /// 生成一个读取线圈的指令头
         /// </summary>
         /// <param name="address">地址</param>
-        /// <param name="count">长度</param>
+        /// <param name="length">长度</param>
         /// <returns>包含结果对象的报文</returns>
-        public OperateResult<byte[]> BuildReadCoilCommand( string address, ushort count )
+        public OperateResult<byte[]> BuildReadCoilCommand( string address, ushort length )
         {
             // 解析富地址
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
@@ -162,7 +162,7 @@ namespace HslCommunication.ModBus
             ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
 
             // 生成最终tcp指令
-            byte[] buffer = ModbusInfo.PackCommandToTcp( analysis.Content.CreateReadCoils( station, count ), messageId );
+            byte[] buffer = ModbusInfo.PackCommandToTcp( analysis.Content.CreateReadCoils( station, length ), messageId );
             return OperateResult.CreateSuccessResult( buffer );
         }
 

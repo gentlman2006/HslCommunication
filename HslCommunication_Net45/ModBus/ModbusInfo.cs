@@ -145,7 +145,7 @@ namespace HslCommunication.ModBus
                 ModbusAddress mAddress = new ModbusAddress( address );
                 if (!isStartWithZero)
                 {
-                    if (mAddress.Address < 1) throw new Exception( "地址值在起始地址为1的情况下，必须大于1" );
+                    if (mAddress.Address < 1) throw new Exception( StringResources.ModbusAddressMustMoreThanOne );
                     mAddress.Address = (ushort)(mAddress.Address - 1);
                 }
                 return OperateResult.CreateSuccessResult( mAddress );

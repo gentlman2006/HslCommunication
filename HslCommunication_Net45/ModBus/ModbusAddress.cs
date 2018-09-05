@@ -55,13 +55,11 @@ namespace HslCommunication.ModBus
         #endregion
 
         #region Analysis Address
-
-
-
+        
         /// <summary>
         /// 解析Modbus的地址码
         /// </summary>
-        /// <param name="address"></param>
+        /// <param name="address">地址数据信息</param>
         public override void AnalysisAddress( string address )
         {
             if (address.IndexOf( ';' ) < 0)
@@ -176,17 +174,17 @@ namespace HslCommunication.ModBus
         /// 创建一个写入单个寄存器的指令
         /// </summary>
         /// <param name="station">站号</param>
-        /// <param name="data">值</param>
+        /// <param name="values">值</param>
         /// <returns>原始的modbus指令</returns>
-        public byte[] CreateWriteOneRegister( byte station, byte[] data )
+        public byte[] CreateWriteOneRegister( byte station, byte[] values )
         {
             byte[] buffer = new byte[6];
             buffer[0] = this.Station < 0 ? station : (byte)this.Station;
             buffer[1] = ModbusInfo.WriteOneRegister;
             buffer[2] = BitConverter.GetBytes( this.Address )[1];
             buffer[3] = BitConverter.GetBytes( this.Address )[0];
-            buffer[4] = data[0];
-            buffer[5] = data[1];
+            buffer[4] = values[0];
+            buffer[5] = values[1];
             return buffer;
         }
 
