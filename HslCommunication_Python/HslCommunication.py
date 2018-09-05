@@ -180,7 +180,7 @@ class HslMessage (INetMessage):
 		if self.HeadBytes != None:
 			buffer = bytearray(4)
 			buffer[0:4] = self.HeadBytes[28:32]
-			return struct.pack('<i',buffer)[0]
+			return struct.unpack('<i',buffer)[0]
 		else:
 			return 0
 	def GetHeadBytesIdentity(self):
@@ -188,7 +188,7 @@ class HslMessage (INetMessage):
 		if self.HeadBytes != None:
 			buffer = bytearray(4)
 			buffer[0:4] = self.HeadBytes[4:8]
-			return struct.pack('<i',buffer)[0]
+			return struct.unpack('<i',buffer)[0]
 		else:
 			return 0
 	def CheckHeadBytesLegal(self,token):
@@ -521,7 +521,7 @@ class ReverseWordTransform(ByteTransform):
 	def ReverseBytesByWord( self,buffer, index, length, isReverse = False):
 		'''按照字节错位的方法 -> bytearray'''
 		if buffer == None: return None
-		data = super().TransByteArray(buffer,index,length)
+		data = self.TransByteArray(buffer,index,length)
 		for i in range(len(data)//2):
 			data[i*2+0],data[i*2+1]= data[i*2+1],data[i*2+0]
 		if isReverse:
@@ -839,10 +839,17 @@ class SoftBasic:
 	def IsTwoBytesEquel( b1, start1, b2, start2, length ):
 		'''判断两个字节的指定部分是否相同'''
 		if b1 == None or b2 == None: return False
-		if len(b1) != len(b2): return False
-		for ii in range(len(b1)):
-			if b1[ii] != b2[ii]: return False
+		for ii in range(length):
+			if b1[ii+start1] != b2[ii+start2]: return False
 		return True
+	@staticmethod
+	def TokenToBytes( token ):
+		'''将uuid的token值转化成统一的bytes数组，方便和java，C#通讯'''
+		buffer = bytearray(token.bytes)
+		buffer[0],buffer[1],buffer[2],buffer[3] = buffer[3],buffer[2],buffer[1],buffer[0]
+		buffer[4],buffer[5] = buffer[5],buffer[4]
+		buffer[6],buffer[7] = buffer[7],buffer[6]
+		return buffer
 
 class HslSecurity:
 	@staticmethod
@@ -972,23 +979,23 @@ class HslProtocol:
 			buffer = bytearray( HslProtocol.HeadByteLength() + len(data) )
 			_sendLength = len(data)
 		
-		buffer[0,4] = struct.pack( '<i', command )
-		buffer[4,8] = struct.pack( '<i', customer )
-		buffer[8,12] = struct.pack( '<i', _zipped)
-		buffer[12,28] = token.bytes()
-		buffer[28,32] = struct.pack( '<i', _sendLength)
+		buffer[0:4] = struct.pack( '<i', command )
+		buffer[4:8] = struct.pack( '<i', customer )
+		buffer[8:12] = struct.pack( '<i', _zipped)
+		buffer[12:28] = SoftBasic.TokenToBytes(token)
+		buffer[28:32] = struct.pack( '<i', _sendLength)
 		if _sendLength>0:
-			buffer[32,_sendLength+32]=data
+			buffer[32:_sendLength+32]=data
 		return buffer
 	@staticmethod
 	def CommandAnalysis( head, content ):
 		'''解析接收到数据，先解压缩后进行解密'''
-		if content == None:
-			_zipped = struct.unpack('<i', head[8,12])[0]
+		if content != None:
+			_zipped = struct.unpack('<i', head[8:12])[0]
 			if _zipped == HslProtocol.ProtocolZipped():
 				content = SoftZipped.Decompress( content )
 			return HslSecurity.ByteEncrypt(content)
-		return None
+		return bytearray(0)
 	@staticmethod
 	def CommandBytes( customer, token, data ):
 		'''获取发送字节数据的实际数据，带指令头'''
@@ -997,9 +1004,12 @@ class HslProtocol:
 	def CommandString( customer, token, data ):
 		'''获取发送字节数据的实际数据，带指令头'''
 		if data == None: 
-			return HslProtocol.CommandBytesBase( HslProtocol.ProtocolUserString, customer, token, None )
+			return HslProtocol.CommandBytesBase( HslProtocol.ProtocolUserString(), customer, token, None )
 		else:
-			return HslProtocol.CommandBytesBase( HslProtocol.ProtocolUserString, customer, token, data.encode('ascii') )
+			buffer = data.encode('utf-16')
+			if buffer[0] == 255 and buffer[1] == 254:
+				buffer = buffer[2:len(buffer)]
+			return HslProtocol.CommandBytesBase( HslProtocol.ProtocolUserString(), customer, token, buffer )
 
 
 
@@ -1013,7 +1023,7 @@ class NetworkBase:
 		data = bytearray()
 		try:
 			while totle < length:
-				data.extend(socket.Receive(length-totle))
+				data.extend(socket.recv(length-totle))
 				totle += len(data)
 			return OperateResult.CreateSuccessResult(data)
 		except Exception as e:
@@ -1044,7 +1054,7 @@ class NetworkBase:
 			result.CopyErrorFromOther(headResult)
 			return result
 		netMsg.HeadBytes = headResult.Content
-		if netMsg.CheckHeadBytesLegal( self.Token.bytes ) == False:
+		if netMsg.CheckHeadBytesLegal( SoftBasic.TokenToBytes(self.Token) ) == False:
 			# 令牌校验失败
 			if socket != None: socket.close()
 			result.Message = StringResources.TokenCheckFailed()
@@ -1085,8 +1095,8 @@ class NetworkDoubleBase(NetworkBase):
 		self.isPersistentConn = True
 		result = OperateResult( )
 		# 重新连接之前，先将旧的数据进行清空
-		if super().CoreSocket != None: 
-			super().CoreSocket.close()
+		if self.CoreSocket != None: 
+			self.CoreSocket.close()
 
 		rSocket = self.CreateSocketAndInitialication( )
 		if rSocket.IsSuccess == False:
@@ -1094,7 +1104,7 @@ class NetworkDoubleBase(NetworkBase):
 			rSocket.Content = None
 			result.Message = rSocket.Message
 		else:
-			super().CoreSocket = rSocket.Content
+			self.CoreSocket = rSocket.Content
 			result.IsSuccess = True
 		return result
 	def ConnectClose( self ):
@@ -1104,10 +1114,10 @@ class NetworkDoubleBase(NetworkBase):
 
 		self.interactiveLock.acquire()
 		# 额外操作
-		result = self.ExtraOnDisconnect( super().CoreSocket )
+		result = self.ExtraOnDisconnect( self.CoreSocket )
 		# 关闭信息
-		if super().CoreSocket != None : super().CoreSocket.close()
-		super().CoreSocket = None
+		if self.CoreSocket != None : self.CoreSocket.close()
+		self.CoreSocket = None
 		self.interactiveLock.release( )
 		return result
 	
@@ -1147,7 +1157,7 @@ class NetworkDoubleBase(NetworkBase):
 
 	def CreateSocketAndInitialication( self ):
 		'''连接并初始化网络套接字'''
-		result = super().CreateSocketAndConnect( self.ipAddress, self.port, 10000 )
+		result = self.CreateSocketAndConnect( self.ipAddress, self.port, 10000 )
 		if result.IsSuccess:
 			# 初始化
 			initi = self.InitializationOnConnect( result.Content )
@@ -1202,7 +1212,7 @@ class NetworkDoubleBase(NetworkBase):
 	def ReadFromCoreServerBase( self, socket, send ):
 		'''使用底层的数据报文来通讯，传入需要发送的消息，返回最终的数据结果，被拆分成了头子节和内容字节信息'''
 		self.iNetMessage.SendBytes = send
-		sendResult = super().Send( socket, send )
+		sendResult = self.Send( socket, send )
 		if sendResult.IsSuccess == False:
 			if socket!= None : socket.close( )
 			return OperateResult.CreateFromFailedResult( sendResult )
@@ -1212,8 +1222,8 @@ class NetworkDoubleBase(NetworkBase):
 			# 接收数据信息
 			resultReceive = self.ReceiveMessage(socket, 10000, self.iNetMessage)
 			if resultReceive.IsSuccess == False:
-				socket.Close( )
-				return OperateResult.CreateFailedResult( "Receive data timeout: " + self.receiveTimeOut )
+				socket.close( )
+				return OperateResult.CreateFailedResult( "Receive data timeout: " + str(self.receiveTimeOut ) + " Msg:"+resultReceive.Message)
 			return OperateResult.CreateSuccessResult( resultReceive.Content.HeadBytes, resultReceive.Content.ContentBytes )
 		else:
 			return OperateResult.CreateSuccessResult( bytearray(0), bytearray(0) )
@@ -1424,7 +1434,7 @@ class NetSimplifyClient(NetworkDoubleBase):
 		if read.IsSuccess == False:
 			return OperateResult.CreateFromFailedResult( read )
 		
-		return OperateResult.CreateSuccessResult( read.Content.decode('unicode') )
+		return OperateResult.CreateSuccessResult( read.Content.decode('utf-16') )
 
 	def __ReadFromServerBase( self, send):
 		'''需要发送的底层数据'''
@@ -1458,19 +1468,20 @@ class NetSimplifyClient(NetworkDoubleBase):
 # modbus.close()
 
 data = b'\xA2'
-print(SoftBasic.ByteToBoolArray(data,8))
-
 ii = 100
 data = b'\x64\x00'
 # print(SoftBasic.ByteToHexString(struct.pack('<h',ii)))
 print(struct.unpack('<h',data)[0])
-print(SoftBasic.ByteToHexString(SoftBasic.BoolArrayToByte([True,False,False,True,False,False,False,False,True])))
 
-bytesMy = bytearray(4)
-bytesMy[0] = 0x31
-bytesMy[1] = 0x32
-bytesMy[2] = 0x33
-bytesMy[3] = 0x34
-print(bytesMy.decode('ascii'))
-byteTransform = ByteTransform()
-print(byteTransform.TransInt16(data,0))
+netSimplifyClient = NetSimplifyClient("127.0.0.1",12345)
+netSimplifyClient.Token = uuid.UUID('66a469ad-a595-48ed-abe1-912f7085dbcd')
+netSimplifyClient.ConnectServer()
+read = netSimplifyClient.ReadStringFromServer(1,'123')
+if read.IsSuccess:
+	print(read.Content)
+else:
+	print(read.Message)
+
+read = netSimplifyClient.ReadStringFromServer(1,'测试信号')
+
+netSimplifyClient.ConnectClose()
