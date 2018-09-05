@@ -437,7 +437,7 @@ namespace HslCommunication.Core.Net
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt16" title="Int16类型示例" />
         /// </example>
-        public OperateResult Write( string address, short value )
+        public virtual OperateResult Write( string address, short value )
         {
             return Write( address, new short[] { value } );
         }
@@ -473,7 +473,7 @@ namespace HslCommunication.Core.Net
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt16" title="UInt16类型示例" />
         /// </example>
-        public OperateResult Write( string address, ushort value )
+        public virtual OperateResult Write( string address, ushort value )
         {
             return Write( address, new ushort[] { value } );
         }
@@ -508,7 +508,7 @@ namespace HslCommunication.Core.Net
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt32" title="Int32类型示例" />
         /// </example>
-        public OperateResult Write( string address, int value )
+        public virtual OperateResult Write( string address, int value )
         {
             return Write( address, new int[] { value } );
         }
@@ -542,7 +542,7 @@ namespace HslCommunication.Core.Net
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt32Array" title="UInt32类型示例" />
         /// </example>
-        public OperateResult Write( string address, uint value )
+        public virtual OperateResult Write( string address, uint value )
         {
             return Write( address, new uint[] { value } );
         }
@@ -576,7 +576,7 @@ namespace HslCommunication.Core.Net
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteFloat" title="Float类型示例" />
         /// </example>
-        public OperateResult Write( string address, float value )
+        public virtual OperateResult Write( string address, float value )
         {
             return Write( address, new float[] { value } );
         }
@@ -611,7 +611,7 @@ namespace HslCommunication.Core.Net
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt64" title="Int64类型示例" />
         /// </example>
-        public OperateResult Write( string address, long value )
+        public virtual OperateResult Write( string address, long value )
         {
             return Write( address, new long[] { value } );
         }
@@ -645,7 +645,7 @@ namespace HslCommunication.Core.Net
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt64" title="UInt64类型示例" />
         /// </example>
-        public OperateResult Write( string address, ulong value )
+        public virtual OperateResult Write( string address, ulong value )
         {
             return Write( address, new ulong[] { value } );
         }
@@ -679,7 +679,7 @@ namespace HslCommunication.Core.Net
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteDouble" title="Double类型示例" />
         /// </example>
-        public OperateResult Write( string address, double value )
+        public virtual OperateResult Write( string address, double value )
         {
             return Write( address, new double[] { value } );
         }
@@ -698,7 +698,7 @@ namespace HslCommunication.Core.Net
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteString" title="String类型示例" />
         /// </example>
-        public OperateResult Write( string address, string value )
+        public virtual OperateResult Write( string address, string value )
         {
             byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
             if(WordLength == 1) temp = SoftBasic.ArrayExpandToLengthEven( temp );
