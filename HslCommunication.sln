@@ -7,11 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunication_Net35", "H
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "软件自动更新", "软件自动更新\软件自动更新.csproj", "{4FADD98F-9C73-4D2F-9AC1-CF8993265D8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestTool", "TestTool\TestTool.csproj", "{D68DEDE9-1610-4872-9AED-0E4F90D191EC}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D3710B78-1B32-4D53-9604-0451A795A2F5} = {D3710B78-1B32-4D53-9604-0451A795A2F5}
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HslCommunication_NetStandard", "HslCommunication_NetStandard\HslCommunication_NetStandard.csproj", "{309E5DDB-AC43-4C6E-824F-D66AA8027324}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProject", "TestProject", "{C21F81D5-E4E2-470C-8208-518ADF28F364}"
@@ -67,10 +62,6 @@ Global
 		{4FADD98F-9C73-4D2F-9AC1-CF8993265D8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FADD98F-9C73-4D2F-9AC1-CF8993265D8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FADD98F-9C73-4D2F-9AC1-CF8993265D8E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D68DEDE9-1610-4872-9AED-0E4F90D191EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D68DEDE9-1610-4872-9AED-0E4F90D191EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D68DEDE9-1610-4872-9AED-0E4F90D191EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D68DEDE9-1610-4872-9AED-0E4F90D191EC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{309E5DDB-AC43-4C6E-824F-D66AA8027324}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{309E5DDB-AC43-4C6E-824F-D66AA8027324}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{309E5DDB-AC43-4C6E-824F-D66AA8027324}.Release|Any CPU.ActiveCfg = Release|Any CPU
