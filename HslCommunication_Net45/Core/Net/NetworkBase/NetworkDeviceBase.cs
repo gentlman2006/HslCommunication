@@ -59,7 +59,7 @@ namespace HslCommunication.Core.Net
         #region Protect Member
 
         /// <summary>
-        /// 单个数据字节的长度，西门子为2，三菱，欧姆龙，modbusTcp就为1
+        /// 单个数据字节的长度，西门子为2，三菱，欧姆龙，modbusTcp就为1，AB PLC无效
         /// </summary>
         /// <remarks>对设备来说，一个地址的数据对应的字节数，或是1个字节或是2个字节</remarks>
         protected ushort WordLength { get; set; } = 1;

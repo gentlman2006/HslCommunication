@@ -35,6 +35,41 @@ namespace HslCommunication.Profinet.AllenBradley
 
         #endregion
 
+        #region DataType Code
+
+        /// <summary>
+        /// bool型数据，一个字节长度
+        /// </summary>
+        public const ushort CIP_Type_Bool = 0xC1;
+
+        /// <summary>
+        /// byte型数据，一个字节长度
+        /// </summary>
+        public const ushort CIP_Type_Byte = 0xC2;
+
+        /// <summary>
+        /// 整型，两个字节长度
+        /// </summary>
+        public const ushort CIP_Type_Word = 0xC3;
+
+        /// <summary>
+        /// 长整型，四个字节长度
+        /// </summary>
+        public const ushort CIP_Type_DWord = 0xC4;
+
+        /// <summary>
+        /// 实数数据，四个字节长度
+        /// </summary>
+        public const ushort CIP_Type_Real = 0xCA;
+
+        /// <summary>
+        /// 二进制数据内容
+        /// </summary>
+        public const ushort CIP_Type_BitArray = 0xD3;
+
+        #endregion
+
+
         /// <summary>
         /// 将CommandSpecificData的命令，打包成可发送的数据指令
         /// </summary>
@@ -85,60 +120,53 @@ namespace HslCommunication.Profinet.AllenBradley
         }
 
         /// <summary>
-        /// 打包生成一个请求读取数据的节点信息，CommandSpecificData指令信息
+        /// 根据指定的数据和类型，生成对应的数据
         /// </summary>
-        /// <param name="cipNumber"></param>
-        /// <param name="connectionId"></param>
-        /// <param name="cips"></param>
-        /// <returns></returns>
-        public static byte[] PackCommandSpecificData(ushort cipNumber, uint connectionId, params byte[][] cips )
+        /// <param name="address">地址信息</param>
+        /// <param name="typeCode">数据类型</param>
+        /// <param name="value">字节值</param>
+        /// <returns>CIP的指令信息</returns>
+        public static byte[] PackRequestWrite( string address, ushort typeCode, byte[] value )
         {
-            System.IO.MemoryStream ms = new System.IO.MemoryStream( );
-            ms.WriteByte( 0x00 );
-            ms.WriteByte( 0x00 );
-            ms.WriteByte( 0x00 );
-            ms.WriteByte( 0x00 );
-            ms.WriteByte( 0x01 );     // 超时
-            ms.WriteByte( 0x00 );
-            ms.WriteByte( 0x02 );     // 项数
-            ms.WriteByte( 0x00 );
-            ms.WriteByte( 0xA1 );     // 连接的地址项
-            ms.WriteByte( 0x00 );
-            ms.WriteByte( 0x04 );     // 长度
-            ms.WriteByte( 0x00 );
-            ms.Write( BitConverter.GetBytes( connectionId ), 0, 4 );  // 连接标识
-            ms.WriteByte( 0xB1 );     // 连接的项数
-            ms.WriteByte( 0x00 );
-            ms.WriteByte( 0x00 );     // 后面数据包的长度，等全部生成后在赋值
-            ms.WriteByte( 0x00 );
-            ms.Write( BitConverter.GetBytes( cipNumber ), 0, 2 );  // cip序号
-            // 以下是CIP内容
-            ms.WriteByte( 0x0A );     // 服务
-            ms.WriteByte( 0x02 );     // 请求路径大小
-            ms.WriteByte( 0x20 );     // 请求路径
-            ms.WriteByte( 0x06 );
-            ms.WriteByte( 0x24 );
-            ms.WriteByte( 0x01 );
-            ms.Write( BitConverter.GetBytes( (ushort)cips.Length ), 0, 2 );     // 后面服务数
-            // 计算偏移位置
-            int offect = 2 + cips.Length * 2;
-            foreach (var item in cips)
+            byte[] buffer = new byte[1024];
+            int offect = 0;
+            string[] tagNames = address.Split( new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries );
+            buffer[offect++] = CIP_WRITE_DATA;
+            offect++;
+
+            for (int i = 0; i < tagNames.Length; i++)
             {
-                ms.Write( BitConverter.GetBytes( (ushort)offect ), 0, 2 );
-                offect += item.Length;
+                buffer[offect++] = 0x91;                                 // 固定
+                buffer[offect++] = (byte)tagNames[i].Length;             // 节点的长度值
+                byte[] nameBytes = Encoding.ASCII.GetBytes( tagNames[i] );
+                nameBytes.CopyTo( buffer, offect );
+                offect += nameBytes.Length;
+                if (nameBytes.Length % 2 == 1) offect++;
             }
-            // 写入cip指令
-            foreach (var item in cips)
-            {
-                ms.Write( item, 0, item.Length );
-            }
-            byte[] data = ms.ToArray( );
-            data[18] = BitConverter.GetBytes( (short)(data.Length - 20) )[0];
-            data[19] = BitConverter.GetBytes( (short)(data.Length - 20) )[1];
+
+            buffer[1] = (byte)((offect - 2) / 2);
+
+            buffer[offect++] = BitConverter.GetBytes( typeCode )[0];     // 数据类型
+            buffer[offect++] = BitConverter.GetBytes( typeCode )[1];
+
+            buffer[offect++] = 0x01;                                     // 固定
+            buffer[offect++] = 0x00;
+
+            value.CopyTo( buffer, offect );                              // 数值
+            offect += value.Length;
+
+            byte[] data = new byte[offect];
+            Array.Copy( buffer, 0, data, 0, offect );
             return data;
         }
+        
 
-        public static byte[] PackCommandSpecificData2( uint connectionId, params byte[][] cips )
+        /// <summary>
+        /// 生成读取直接节点数据信息的内容
+        /// </summary>
+        /// <param name="cips">cip指令内容</param>
+        /// <returns>最终的指令值</returns>
+        public static byte[] PackCommandSpecificData( params byte[][] cips )
         {
             System.IO.MemoryStream ms = new System.IO.MemoryStream( );
             ms.WriteByte( 0x00 );
@@ -166,11 +194,40 @@ namespace HslCommunication.Profinet.AllenBradley
             ms.WriteByte( 0x01 );
             ms.WriteByte( 0x0A );     // 超时时间
             ms.WriteByte( 0xF0 );
+            ms.WriteByte( 0x00 );     // CIP指令长度
+            ms.WriteByte( 0x00 );
 
-            for (int i = 0; i < cips.Length; i++)
+            int count = 0;
+            if (cips.Length == 1)
             {
-                ms.Write( BitConverter.GetBytes( (ushort)cips[i].Length ), 0, 2 );  // cip长度
-                ms.Write( cips[i], 0, cips[i].Length );
+                ms.Write( cips[0], 0, cips[0].Length );
+                count += cips[0].Length;
+            }
+            else
+            {
+                ms.WriteByte( 0x0A );   // 固定
+                ms.WriteByte( 0x02 );
+                ms.WriteByte( 0x20 );
+                ms.WriteByte( 0x02 );
+                ms.WriteByte( 0x24 );
+                ms.WriteByte( 0x01 );
+                count += 8;
+
+                ms.Write( BitConverter.GetBytes( (ushort)cips.Length ), 0, 2 );  // 写入项数
+                ushort offect = (ushort)(0x02 + 2 * cips.Length);
+                count += 2 * cips.Length;
+
+                for (int i = 0; i < cips.Length; i++)
+                {
+                    ms.Write( BitConverter.GetBytes( offect ), 0, 2 );
+                    offect = (ushort)(offect + cips[i].Length);
+                }
+
+                for (int i = 0; i < cips.Length; i++)
+                {
+                    ms.Write( cips[i], 0, cips[i].Length );
+                    count += cips[i].Length;
+                }
             }
             ms.WriteByte( 0x01 );     // Path Size
             ms.WriteByte( 0x00 );
@@ -178,9 +235,97 @@ namespace HslCommunication.Profinet.AllenBradley
             ms.WriteByte( 0x00 );
 
             byte[] data = ms.ToArray( );
+
+            BitConverter.GetBytes( (short)count ).CopyTo( data, 24 );
             data[14] = BitConverter.GetBytes( (short)(data.Length - 16) )[0];
             data[15] = BitConverter.GetBytes( (short)(data.Length - 16) )[1];
             return data;
         }
+
+        /// <summary>
+        /// 从PLC反馈的数据解析
+        /// </summary>
+        /// <param name="response">PLC的反馈数据</param>
+        /// <param name="isRead">是否是返回的操作</param>
+        /// <returns>带有结果标识的最终数据</returns>
+        public static OperateResult<byte[]> ExtractActualData( byte[] response, bool isRead )
+        {
+
+            List<byte> data = new List<byte>( );
+
+            int offect = 38;
+            ushort count = BitConverter.ToUInt16( response, 38 );    // 剩余总字节长度，在剩余的字节里，有可能是一项数据，也有可能是多项
+            if (BitConverter.ToInt32( response, 40 ) == 0x8A)
+            {
+                // 多项数据
+                offect = 44;
+                int dataCount = BitConverter.ToUInt16( response, offect );
+                for (int i = 0; i < dataCount; i++)
+                {
+                    int offectStart = BitConverter.ToUInt16( response, offect + 2 + i * 2 ) + offect;
+                    int offectEnd = (i == dataCount - 1) ? response.Length : (BitConverter.ToUInt16( response, (offect + 4 + i * 2) ) + offect);
+                    ushort err = BitConverter.ToUInt16( response, offectStart + 2 );
+                    switch (err)
+                    {
+                        case 0x04: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley04 };
+                        case 0x05: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley05 };
+                        case 0x06:
+                            {
+                                if (response[offect + 2] != 0xD2 && response[offect + 2] != 0xCC)
+                                    return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley06 };
+                                break;
+                            }
+                        case 0x0A: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley0A };
+                        case 0x13: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley13 };
+                        case 0x1C: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley1C };
+                        case 0x1E: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley1E };
+                        case 0x26: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley26 };
+                        case 0x00: break;
+                        default: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.UnknownError };
+                    }
+                    if (isRead)
+                    {
+                        for (int j = offectStart + 6; j < offectEnd; j++)
+                        {
+                            data.Add( response[j] );
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // 单项数据
+                byte err = response[offect + 4];
+                switch (err)
+                {
+                    case 0x04: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley04 };
+                    case 0x05: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley05 };
+                    case 0x06:
+                        {
+                            if (response[offect + 2] != 0xD2 && response[offect + 2] != 0xCC)
+                                return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley06 };
+                            break;
+                        }
+                    case 0x0A: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley0A };
+                    case 0x13: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley13 };
+                    case 0x1C: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley1C };
+                    case 0x1E: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley1E };
+                    case 0x26: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley26 };
+                    case 0x00: break;
+                    default: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.UnknownError };
+                }
+
+                if (isRead)
+                {
+                    for (int i = offect + 8; i < offect + 2 + count; i++)
+                    {
+                        data.Add( response[i] );
+                    }
+                }
+            }
+
+            return OperateResult.CreateSuccessResult( data.ToArray( ) );
+        }
+
     }
 }

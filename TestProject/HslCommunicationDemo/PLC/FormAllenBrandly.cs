@@ -151,16 +151,13 @@ namespace HslCommunicationDemo
         private void button_read_bool_Click( object sender, EventArgs e )
         {
             // 读取bool变量
-            // readResultRender( allenBradleyNet.ReadBool( textBox3.Text ), textBox3.Text, textBox4 );
-            OperateResult<byte[]> read = allenBradleyNet.Read( "Start_out", 0 );
-            if (!read.IsSuccess) MessageBox.Show( "失败" );
-            else MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( read.Content, ' ' ) );
+            readResultRender( allenBradleyNet.ReadBool( textBox3.Text ), textBox3.Text, textBox4 );
         }
         private void button_read_byte_Click( object sender, EventArgs e )
         {
-            MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( "Start_out" ).Content, ' ' ) );
+            // MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( textBox3.Text ).Content, ' ' ) );
             // 读取byte变量
-            // readResultRender( allenBradleyNet.ReadByte( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( allenBradleyNet.ReadByte( textBox3.Text ), textBox3.Text, textBox4 );
         }
         private void button_read_short_Click( object sender, EventArgs e )
         {
@@ -225,7 +222,9 @@ namespace HslCommunicationDemo
             // bool写入
             try
             {
-                // writeResultRender( allenBradleyNet.Write( textBox8.Text, bool.Parse( textBox7.Text ) ), textBox8.Text );
+                 //MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildWriteCommand( textBox8.Text, AllenBradleyHelper.CIP_Type_Bool, (bool.Parse( textBox7.Text ) ?
+                 //   new byte[] { 0xFF } : new byte[] { 0x00 }) ).Content , ' ') );
+                writeResultRender( allenBradleyNet.Write( textBox8.Text, bool.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -376,7 +375,18 @@ namespace HslCommunicationDemo
         {
             try
             {
-                OperateResult<byte[]> read = allenBradleyNet.Read( textBox6.Text, ushort.Parse( textBox9.Text ) );
+                OperateResult<byte[]> read = null;
+                if (!textBox6.Text.Contains( ";" ))
+                {
+                    MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( new string[] { textBox6.Text } ).Content , ' ') );
+                    read = allenBradleyNet.Read( textBox6.Text, 0 );
+                }
+                else
+                {
+                    MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( textBox6.Text.Split( ';' ) ).Content, ' ' ) );
+                    read = allenBradleyNet.Read( textBox6.Text.Split(';' ));
+                }
+
                 if (read.IsSuccess)
                 {
                     textBox10.Text = "结果：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( read.Content );

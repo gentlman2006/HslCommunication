@@ -136,7 +136,7 @@ namespace HslCommunication
          ************************************************************************************/
 
 
-        internal const string AllenBradley04 = "它没有正确生成或匹配标记不存在。"; // The IOI could not be deciphered. Either it was not formed correctly or the match tag does not exist
+        internal const string AllenBradley04 = "它没有正确生成或匹配标记不存在。"; // The IOI could not be deciphered. Either it was not formed correctly or the match tag does not exist.
         internal const string AllenBradley05 = "引用的特定项（通常是实例）无法找到。"; // The particular item referenced (usually instance) could not be found.
         internal const string AllenBradley06 = "请求的数据量不适合响应缓冲区。 发生了部分数据传输。"; // The amount of data requested would not fit into the response buffer. Partial data transfer has occurred.
         internal const string AllenBradley0A = "尝试处理其中一个属性时发生错误。";                     // An error has occurred trying to process one of the attributes.
@@ -144,5 +144,14 @@ namespace HslCommunication
         internal const string AllenBradley1C = "与属性计数相比，提供的属性数量不足。"; // An insufficient number of attributes were provided compared to the attribute count.
         internal const string AllenBradley1E = "此服务中的服务请求出错。"; // A service request in this service went wrong.
         internal const string AllenBradley26 = "IOI字长与处理的IOI数量不匹配。"; // The IOI word length did not match the amount of IOI which was processed.
+
+        internal const string AllenBradleySessionStatus00 = "成功"; // success
+        internal const string AllenBradleySessionStatus01 = "发件人发出无效或不受支持的封装命令。"; // The sender issued an invalid or unsupported encapsulation command.
+        // Insufficient memory resources in the receiver to handle the command. This is not an application error. Instead, it only results if the encapsulation layer cannot obtain memory resources that it need.
+        internal const string AllenBradleySessionStatus02 = "接收器中的内存资源不足以处理命令。 这不是一个应用程序错误。 相反，只有在封装层无法获得所需内存资源的情况下才会导致此问题。";
+        internal const string AllenBradleySessionStatus03 = "封装消息的数据部分中的数据形成不良或不正确。"; // Poorly formed or incorrect data in the data portion of the encapsulation message.
+        internal const string AllenBradleySessionStatus64 = "向目标发送封装消息时，始发者使用了无效的会话句柄。"; // An originator used an invalid session handle when sending an encapsulation message.
+        internal const string AllenBradleySessionStatus65 = "目标收到一个无效长度的信息。"; // The target received a message of invalid length.
+        internal const string AllenBradleySessionStatus69 = "不支持的封装协议修订。"; // Unsupported encapsulation protocol revision.
     }
 }
