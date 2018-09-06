@@ -254,9 +254,9 @@ namespace HslCommunication.ModBus
         /// 生成一个写入单个寄存器的报文
         /// </summary>
         /// <param name="address">地址</param>
-        /// <param name="data">长度</param>
+        /// <param name="values">长度</param>
         /// <returns>包含结果对象的报文</returns>
-        public OperateResult<byte[]> BuildWriteOneRegisterCommand( string address, byte[] data )
+        public OperateResult<byte[]> BuildWriteOneRegisterCommand( string address, byte[] values )
         {
             // 解析富地址
             OperateResult<ModbusAddress> analysis = ModbusInfo.AnalysisReadAddress( address, isAddressStartWithZero );
@@ -266,7 +266,7 @@ namespace HslCommunication.ModBus
             ushort messageId = (ushort)softIncrementCount.GetCurrentValue( );
 
             // 生成最终tcp指令
-            byte[] buffer = ModbusInfo.PackCommandToTcp( analysis.Content.CreateWriteOneRegister( station, data ), messageId );
+            byte[] buffer = ModbusInfo.PackCommandToTcp( analysis.Content.CreateWriteOneRegister( station, values ), messageId );
             return OperateResult.CreateSuccessResult( buffer );
         }
 
