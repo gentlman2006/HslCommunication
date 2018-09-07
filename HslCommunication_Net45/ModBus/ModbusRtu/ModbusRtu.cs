@@ -55,7 +55,7 @@ namespace HslCommunication.ModBus
         #region Constructor
 
         /// <summary>
-        /// 实例化一个MOdbus-Tcp协议的客户端对象
+        /// 实例化一个Modbus-Rtu协议的客户端对象
         /// </summary>
         public ModbusRtu( )
         {
@@ -284,50 +284,30 @@ namespace HslCommunication.ModBus
         
 
         /// <summary>
-        /// 检查当前的Modbus-Tcp响应是否是正确的
+        /// 检查当前的Modbus-Rtu响应是否是正确的
         /// </summary>
         /// <param name="send">发送的数据信息</param>
         /// <returns>带是否成功的结果数据</returns>
         protected virtual OperateResult<byte[]> CheckModbusTcpResponse( byte[] send )
         {
+            // 核心交互
             OperateResult<byte[]> result = ReadBase( send );
             if (!result.IsSuccess) return result;
 
-            if(result.Content.Length < 5)
-            {
-                return new OperateResult<byte[]>( )
-                {
-                    IsSuccess = false,
-                    Message = "接收数据长度不能小于5",
-                };
-            }
+            // 长度校验
+            if(result.Content.Length < 5) return new OperateResult<byte[]>( ) { IsSuccess = false, Message = "接收数据长度不能小于5" };
+            
+            // 检查crc
+            if(!SoftCRC16.CheckCRC16(result.Content)) return new OperateResult<byte[]>( ) { Message = "CRC校验失败" };
 
-            if(!SoftCRC16.CheckCRC16(result.Content))
-            {
-                return new OperateResult<byte[]>( )
-                {
-                    IsSuccess = false,
-                    Message = "CRC校验失败",
-                };
-            }
+            // 发生了错误
+            if ((send[1] + 0x80) == result.Content[1]) return new OperateResult<byte[]>( ) { ErrorCode = result.Content[2], Message = ModbusInfo.GetDescriptionByErrorCode( result.Content[2] ) };
 
-            if ((send[1] + 0x80) == result.Content[1])
-            {
-                // 发生了错误
-                return new OperateResult<byte[]>( )
-                {
-                    IsSuccess = false,
-                    Message = ModbusInfo.GetDescriptionByErrorCode( result.Content[2] ),
-                    ErrorCode = result.Content[2],
-                };
-            }
-            else
-            {
-                // 移除CRC校验
-                byte[] buffer = new byte[result.Content.Length - 2];
-                Array.Copy( result.Content, 0, buffer, 0, buffer.Length );
-                return OperateResult.CreateSuccessResult( buffer );
-            }
+            // 移除CRC校验
+            byte[] buffer = new byte[result.Content.Length - 2];
+            Array.Copy( result.Content, 0, buffer, 0, buffer.Length );
+            return OperateResult.CreateSuccessResult( buffer );
+            
         }
 
         #endregion
@@ -535,10 +515,7 @@ namespace HslCommunication.ModBus
         public OperateResult WriteOneRegister( string address, byte high, byte low )
         {
             OperateResult<byte[]> command = BuildWriteOneRegisterCommand( address, new byte[] { high, low } );
-            if (!command.IsSuccess)
-            {
-                return command;
-            }
+            if (!command.IsSuccess) return command;
 
             return CheckModbusTcpResponse( command.Content );
         }

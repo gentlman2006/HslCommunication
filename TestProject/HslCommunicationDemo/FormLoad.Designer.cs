@@ -79,6 +79,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.button33 = new System.Windows.Forms.Button();
+            this.button34 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -135,7 +136,7 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(150, 32);
             this.button3.TabIndex = 2;
-            this.button3.Text = "300系列";
+            this.button3.Text = "s7-300";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -146,7 +147,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(150, 32);
             this.button2.TabIndex = 1;
-            this.button2.Text = "1500系列";
+            this.button2.Text = "s7-1500";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -157,12 +158,13 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(150, 32);
             this.button1.TabIndex = 0;
-            this.button1.Text = "1200系列";
+            this.button1.Text = "s7-1200";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button34);
             this.groupBox2.Controls.Add(this.button21);
             this.groupBox2.Controls.Add(this.button19);
             this.groupBox2.Controls.Add(this.button6);
@@ -679,6 +681,17 @@
             this.button33.UseVisualStyleBackColor = true;
             this.button33.Click += new System.EventHandler(this.button33_Click);
             // 
+            // button34
+            // 
+            this.button34.Location = new System.Drawing.Point(19, 144);
+            this.button34.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button34.Name = "button34";
+            this.button34.Size = new System.Drawing.Size(150, 32);
+            this.button34.TabIndex = 3;
+            this.button34.Text = "Modbus Ascii";
+            this.button34.UseVisualStyleBackColor = true;
+            this.button34.Click += new System.EventHandler(this.button34_Click);
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -776,6 +789,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.Button button33;
+        private System.Windows.Forms.Button button34;
     }
 }
 

@@ -127,6 +127,9 @@ namespace HslCommunication
         internal const string ModbusTcpReadRegisterException = "读取寄存器异常";
         internal const string ModbusTcpWriteRegisterException = "写入寄存器异常";
         internal const string ModbusAddressMustMoreThanOne = "地址值在起始地址为1的情况下，必须大于1";
+        internal const string ModbusAsciiFormatCheckFailed = "Modbus的ascii指令检查失败，不是modbus-ascii报文";
+        internal const string ModbusCRCCheckFailed = "Modbus的CRC校验检查失败";
+        internal const string ModbusLRCCheckFailed = "Modbus的LRC校验检查失败";
 
 
         /***********************************************************************************

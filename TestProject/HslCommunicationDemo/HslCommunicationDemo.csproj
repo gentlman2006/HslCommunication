@@ -142,6 +142,12 @@
     <Compile Include="FormTcpDebug.Designer.cs">
       <DependentUpon>FormTcpDebug.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modbus\FormModbusAscii.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modbus\FormModbusAscii.Designer.cs">
+      <DependentUpon>FormModbusAscii.cs</DependentUpon>
+    </Compile>
     <Compile Include="PLC\FormMelsec1EBinary.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -293,6 +299,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormTcpDebug.resx">
       <DependentUpon>FormTcpDebug.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modbus\FormModbusAscii.resx">
+      <DependentUpon>FormModbusAscii.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PLC\FormMelsec1EBinary.resx">
       <DependentUpon>FormMelsec1EBinary.cs</DependentUpon>

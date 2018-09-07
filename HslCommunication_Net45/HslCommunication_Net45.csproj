@@ -270,6 +270,7 @@
     </None>
     <Compile Include="Serial\SerialBase.cs" />
     <Compile Include="Serial\SerialDeviceBase.cs" />
+    <Compile Include="Serial\SoftLRC.cs" />
     <Compile Include="StringResources.cs" />
   </ItemGroup>
   <ItemGroup>
