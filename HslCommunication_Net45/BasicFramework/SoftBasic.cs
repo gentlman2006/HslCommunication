@@ -656,6 +656,39 @@ namespace HslCommunication.BasicFramework
             return buffer;
         }
 
+        /// <summary>
+        /// 将一个byte数组的前面指定位数移除，返回新的一个数组
+        /// </summary>
+        /// <param name="value">字节数组</param>
+        /// <param name="length">等待移除的长度</param>
+        /// <returns>新的数据</returns>
+        public static byte[] BytesArrayRemoveBegin( byte[] value, int length )
+        {
+            if (value == null) return null;
+            if (value.Length <= length) return new byte[0];
+
+            byte[] buffer = new byte[value.Length - length];
+            Array.Copy( value, value.Length - length - 1, buffer, 0, buffer.Length );
+            return buffer;
+        }
+
+        /// <summary>
+        /// 将一个byte数组的后面指定位数移除，返回新的一个数组
+        /// </summary>
+        /// <param name="value">字节数组</param>
+        /// <param name="length">等待移除的长度</param>
+        /// <returns>新的数据</returns>
+        public static byte[] BytesArrayRemoveLast( byte[] value, int length )
+        {
+            if (value == null) return null;
+            if (value.Length <= length) return new byte[0];
+
+            byte[] buffer = new byte[value.Length - length];
+            Array.Copy( value, 0, buffer, 0, buffer.Length );
+            return buffer;
+        }
+        
+
         #endregion
 
         #region Basic Framework
