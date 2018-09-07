@@ -356,6 +356,47 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.BasicFramework
             #endregion
         }
 
+        public void BytesArrayRemoveBeginExample( )
+        {
+            #region BytesArrayRemoveBegin
+
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05, 0x12 };
+
+            byte[] buffer = SoftBasic.BytesArrayRemoveBegin( b1, 3 );
+
+
+            // buffer 的值就是b1移除了前三个字节 new byte[] { 0x85, 0x5B, 0x05, 0x12 };
+
+            #endregion
+        }
+
+        public void BytesArrayRemoveLastExample( )
+        {
+            #region BytesArrayRemoveLast
+
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05, 0x12 };
+
+            byte[] buffer = SoftBasic.BytesArrayRemoveLast( b1, 4 );
+
+            // buffer 的值就是b1移除了后四个字节 new byte[] { 0x13, 0xA6, 0x15 };
+
+            #endregion
+        }
+
+
+        public void BytesArrayRemoveDoubleExample( )
+        {
+            #region BytesArrayRemoveDouble
+
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05, 0x12 };
+
+            byte[] buffer = SoftBasic.BytesArrayRemoveDouble( b1, 1, 3 );
+
+            // buffer的值就是移除了第一个字节数据和最后两个字节数据的新值 new byte[] { 0xA6, 0x15, 0x85 };
+
+            #endregion
+        }
+
         public void DeepCloneExample( )
         {
             #region DeepClone
@@ -368,7 +409,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.BasicFramework
 
             #endregion
         }
-
+        
         public void GetUniqueStringByGuidAndRandomExample( )
         {
 

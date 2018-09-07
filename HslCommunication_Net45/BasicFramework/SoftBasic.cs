@@ -543,6 +543,31 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
+        #region Byte[] and AsciiByte[] transform
+
+        /// <summary>
+        /// 将原始的byte数组转换成ascii格式的byte数组
+        /// </summary>
+        /// <param name="inBytes">等待转换的byte数组</param>
+        /// <returns>转换后的数组</returns>
+        public static byte[] BytesToAsciiBytes( byte[] inBytes )
+        {
+            return Encoding.ASCII.GetBytes( ByteToHexString( inBytes ) );
+        }
+
+        /// <summary>
+        /// 将ascii格式的byte数组转换成原始的byte数组
+        /// </summary>
+        /// <param name="inBytes">等待转换的byte数组</param>
+        /// <returns>转换后的数组</returns>
+        public static byte[] AsciiBytesToBytes( byte[] inBytes )
+        {
+            return HexStringToBytes( Encoding.ASCII.GetString( inBytes ) );
+        }
+
+
+        #endregion
+
         #region Bool[]  and byte[] transform
 
 
@@ -662,14 +687,12 @@ namespace HslCommunication.BasicFramework
         /// <param name="value">字节数组</param>
         /// <param name="length">等待移除的长度</param>
         /// <returns>新的数据</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="BytesArrayRemoveBegin" title="BytesArrayRemoveBegin示例" />
+        /// </example> 
         public static byte[] BytesArrayRemoveBegin( byte[] value, int length )
         {
-            if (value == null) return null;
-            if (value.Length <= length) return new byte[0];
-
-            byte[] buffer = new byte[value.Length - length];
-            Array.Copy( value, value.Length - length - 1, buffer, 0, buffer.Length );
-            return buffer;
+            return BytesArrayRemoveDouble( value, length, 0 );
         }
 
         /// <summary>
@@ -678,16 +701,34 @@ namespace HslCommunication.BasicFramework
         /// <param name="value">字节数组</param>
         /// <param name="length">等待移除的长度</param>
         /// <returns>新的数据</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="BytesArrayRemoveLast" title="BytesArrayRemoveLast示例" />
+        /// </example> 
         public static byte[] BytesArrayRemoveLast( byte[] value, int length )
         {
-            if (value == null) return null;
-            if (value.Length <= length) return new byte[0];
+            return BytesArrayRemoveDouble( value, 0, length );
+        }
 
-            byte[] buffer = new byte[value.Length - length];
-            Array.Copy( value, 0, buffer, 0, buffer.Length );
+        /// <summary>
+        /// 将一个byte数组的前后移除指定位数，返回新的一个数组
+        /// </summary>
+        /// <param name="value">字节数组</param>
+        /// <param name="leftLength">前面的位数</param>
+        /// <param name="rightLength">后面的位数</param>
+        /// <returns>新的数据</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="BytesArrayRemoveDouble" title="BytesArrayRemoveDouble示例" />
+        /// </example> 
+        public static byte[] BytesArrayRemoveDouble( byte[] value, int leftLength, int rightLength )
+        {
+            if (value == null) return null;
+            if (value.Length <= (leftLength + rightLength)) return new byte[0];
+
+            byte[] buffer = new byte[value.Length - leftLength - rightLength];
+            Array.Copy( value, leftLength, buffer, 0, buffer.Length );
+
             return buffer;
         }
-        
 
         #endregion
 

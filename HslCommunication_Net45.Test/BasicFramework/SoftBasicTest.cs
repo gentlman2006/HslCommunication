@@ -224,6 +224,16 @@ namespace HslCommunication_Net45.Test.BasicFramework
         }
 
         [TestMethod]
+        public void BytesArrayRemoveDoubleTest( )
+        {
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05, 0x12 };
+            byte[] b2 = new byte[] { 0xA6, 0x15, 0x85 };
+
+            byte[] buffer = SoftBasic.BytesArrayRemoveDouble( b1, 1, 3 );
+            Assert.IsTrue( SoftBasic.IsTwoBytesEquel( b2, buffer ) );
+        }
+
+        [TestMethod]
         public void DeepCloneTest( )
         {
             SystemVersion version1 = new SystemVersion( "1.2.3" );
@@ -234,6 +244,7 @@ namespace HslCommunication_Net45.Test.BasicFramework
             if (version1.EditVersion != version2.EditVersion) Assert.Fail( "修订版不一致" );
             if (version1.InnerVersion != version2.InnerVersion) Assert.Fail( "内部版不一致" );
         }
+
     }
 
 
