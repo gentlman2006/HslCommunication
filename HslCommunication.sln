@@ -39,12 +39,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexNetServer", "TestPro
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PushNetServer", "TestProject\PushNetServer\PushNetServer.csproj", "{5DC89157-35FC-4A71-96B1-19FFF54DEDA8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3710B78-1B32-4D53-9604-0451A795A2F5} = {D3710B78-1B32-4D53-9604-0451A795A2F5}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HslCommunicationCoreDemo", "TestProject\HslCommunicationCoreDemo\HslCommunicationCoreDemo.csproj", "{BE120537-35F6-43E1-92F6-CCD37CA5B4F1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{309E5DDB-AC43-4C6E-824F-D66AA8027324} = {309E5DDB-AC43-4C6E-824F-D66AA8027324}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunication_Net45", "HslCommunication_Net45\HslCommunication_Net45.csproj", "{7F8029DA-1B94-4B1D-B91F-5B21DBF2F3A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunication_Net45.Test", "HslCommunication_Net45.Test\HslCommunication_Net45.Test.csproj", "{0C8C2401-5643-43E8-9725-29A5DD33EBCF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7F8029DA-1B94-4B1D-B91F-5B21DBF2F3A2} = {7F8029DA-1B94-4B1D-B91F-5B21DBF2F3A2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
