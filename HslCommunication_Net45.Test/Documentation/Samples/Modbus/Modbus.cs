@@ -183,7 +183,7 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.Modbus
         }
     }
 
-    public class ModbusTcpNetExample2
+    public class ModbusRtuExample
     {
 
         #region Example2

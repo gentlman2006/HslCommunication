@@ -82,6 +82,7 @@
     <Compile Include="Documentation\Samples\Enthernet\NetComplexClient.cs" />
     <Compile Include="Documentation\Samples\Enthernet\NetSimplifyClient.cs" />
     <Compile Include="Documentation\Samples\Modbus\Modbus.cs" />
+    <Compile Include="Documentation\Samples\Modbus\ModbusAsciiExample.cs" />
     <Compile Include="Documentation\Samples\Modbus\ModbusTcpServer.cs" />
     <Compile Include="Documentation\Samples\Profinet\MelsecAscii.cs" />
     <Compile Include="Documentation\Samples\Profinet\MelsecFxSerial.cs" />

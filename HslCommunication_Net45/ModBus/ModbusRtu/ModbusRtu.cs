@@ -17,31 +17,31 @@ namespace HslCommunication.ModBus
     /// 地址共可以携带3个信息，最完整的表示方式"s=2;x=3;100"，对应的modbus报文是 02 03 00 64 00 01 的前四个字节，站号，功能码，起始地址，下面举例
     /// <list type="definition">
     /// <item>
-    ///     <term>读取线圈</term>
-    ///     <description>ReadCoil("100")表示读取线圈100的值，ReadCoil("s=2;100")表示读取站号为2，线圈地址为100的值</description>
+    /// <term>读取线圈</term>
+    /// <description>ReadCoil("100")表示读取线圈100的值，ReadCoil("s=2;100")表示读取站号为2，线圈地址为100的值</description>
     /// </item>
     /// <item>
-    ///     <term>读取离散输入</term>
-    ///     <description>ReadDiscrete("100")表示读取离散输入100的值，ReadDiscrete("s=2;100")表示读取站号为2，离散地址为100的值</description>
+    /// <term>读取离散输入</term>
+    /// <description>ReadDiscrete("100")表示读取离散输入100的值，ReadDiscrete("s=2;100")表示读取站号为2，离散地址为100的值</description>
     /// </item>
     /// <item>
-    ///     <term>读取寄存器</term>
-    ///     <description>ReadInt16("100")表示读取寄存器100的值，ReadInt16("s=2;100")表示读取站号为2，寄存器100的值</description>
+    /// <term>读取寄存器</term>
+    /// <description>ReadInt16("100")表示读取寄存器100的值，ReadInt16("s=2;100")表示读取站号为2，寄存器100的值</description>
     /// </item>
     /// <item>
-    ///     <term>读取输入寄存器</term>
-    ///     <description>ReadInt16("x=4;100")表示读取输入寄存器100的值，ReadInt16("s=2;x=4;100")表示读取站号为2，输入寄存器100的值</description>
+    /// <term>读取输入寄存器</term>
+    /// <description>ReadInt16("x=4;100")表示读取输入寄存器100的值，ReadInt16("s=2;x=4;100")表示读取站号为2，输入寄存器100的值</description>
     /// </item>
     /// </list>
     /// 对于写入来说也是一致的
     /// <list type="definition">
     /// <item>
-    ///     <term>写入线圈</term>
-    ///     <description>WriteCoil("100",true)表示读取线圈100的值，WriteCoil("s=2;100",true)表示读取站号为2，线圈地址为100的值</description>
+    /// <term>写入线圈</term>
+    /// <description>WriteCoil("100",true)表示读取线圈100的值，WriteCoil("s=2;100",true)表示读取站号为2，线圈地址为100的值</description>
     /// </item>
     /// <item>
-    ///     <term>写入寄存器</term>
-    ///     <description>Write("100",(short)123)表示写寄存器100的值123，Write("s=2;100",(short)123)表示写入站号为2，寄存器100的值123</description>
+    /// <term>写入寄存器</term>
+    /// <description>Write("100",(short)123)表示写寄存器100的值123，Write("s=2;100",(short)123)表示写入站号为2，寄存器100的值123</description>
     /// </item>
     /// </list>
     /// </note>
@@ -677,7 +677,7 @@ namespace HslCommunication.ModBus
         #region Object Override
 
         /// <summary>
-        /// 获取当前对象的字符串标识形式
+        /// 返回表示当前对象的字符串
         /// </summary>
         /// <returns>字符串信息</returns>
         public override string ToString( )

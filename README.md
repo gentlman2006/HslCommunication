@@ -1,4 +1,4 @@
-[中文](https://github.com/dathlin/HslCommunication)|[English](https://github.com/dathlin/HslCommunication/blob/master/docs/English.md)
+[中文](https://github.com/dathlin/HslCommunication) | [English](https://github.com/dathlin/HslCommunication/blob/master/docs/English.md)
 <pre>
              ///\      ///\             /////////\              ///\
             //\\/      //\/           //\\\\\\\\//\            //\\/
