@@ -435,6 +435,9 @@
     <Compile Include="..\HslCommunication_Net45\ModBus\ModbusAddress.cs">
       <Link>ModBus\ModbusAddress.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\ModBus\ModbusAscii\ModbusAscii.cs">
+      <Link>ModBus\ModbusAscii\ModbusAscii.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\ModBus\ModbusInfo.cs">
       <Link>ModBus\ModbusInfo.cs</Link>
     </Compile>

@@ -231,6 +231,7 @@
       <DependentUpon>LogNetAnalysisControl.cs</DependentUpon>
     </Compile>
     <Compile Include="ModBus\ModbusAddress.cs" />
+    <Compile Include="ModBus\ModbusAscii\ModbusAscii.cs" />
     <Compile Include="ModBus\ModbusInfo.cs" />
     <Compile Include="ModBus\ModBusMonitorAddress.cs" />
     <Compile Include="ModBus\ModbusRtu\ModbusRtu.cs" />

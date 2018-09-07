@@ -168,6 +168,7 @@
     <Folder Include="LogNet\View\" />
     <Folder Include="ModBus\ModbusRtu\" />
     <Folder Include="ModBus\ModbusTcp\" />
+    <Folder Include="ModBus\ModbusAscii\" />
     <Folder Include="Profinet\Melsec\" />
     <Folder Include="Profinet\Omron\" />
     <Folder Include="Profinet\Siemens\" />

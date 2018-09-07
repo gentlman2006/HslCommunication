@@ -288,7 +288,7 @@ namespace HslCommunication.ModBus
         /// </summary>
         /// <param name="send">发送的数据信息</param>
         /// <returns>带是否成功的结果数据</returns>
-        private OperateResult<byte[]> CheckModbusTcpResponse( byte[] send )
+        protected virtual OperateResult<byte[]> CheckModbusTcpResponse( byte[] send )
         {
             OperateResult<byte[]> result = ReadBase( send );
             if (!result.IsSuccess) return result;
@@ -589,12 +589,11 @@ namespace HslCommunication.ModBus
         /// </example>
         public override OperateResult Write( string address, byte[] value )
         {
+            // 解析指令
             OperateResult<byte[]> command = BuildWriteRegisterCommand( address, value );
-            if (!command.IsSuccess)
-            {
-                return command;
-            }
+            if (!command.IsSuccess) return command;
 
+            // 核心交互
             return CheckModbusTcpResponse( command.Content );
         }
 
@@ -611,12 +610,11 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult WriteCoil( string address, bool value )
         {
+            // 解析指令
             OperateResult<byte[]> command = BuildWriteOneCoilCommand( address, value );
-            if (!command.IsSuccess)
-            {
-                return command;
-            }
+            if (!command.IsSuccess) return command;
 
+            // 核心交互
             return CheckModbusTcpResponse( command.Content );
         }
 
@@ -628,12 +626,11 @@ namespace HslCommunication.ModBus
         /// <returns>返回写入结果</returns>
         public OperateResult WriteCoil( string address, bool[] values )
         {
+            // 解析指令
             OperateResult<byte[]> command = BuildWriteCoilCommand( address, values );
-            if (!command.IsSuccess)
-            {
-                return command;
-            }
+            if (!command.IsSuccess)  return command;
 
+            // 核心交互
             return CheckModbusTcpResponse( command.Content );
         }
 
