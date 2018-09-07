@@ -788,6 +788,12 @@ namespace HslCommunication.Profinet.Siemens
                     result.Content1 = 0x1C;
                     result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
                 }
+                else if (address[0] == 'V')
+                {
+                    result.Content1 = 0x84;
+                    result.Content3 = 1;
+                    result.Content2 = CalculateAddressStarted( address.Substring( 1 ) );
+                }
                 else
                 {
                     result.Message = "不支持的数据类型";
