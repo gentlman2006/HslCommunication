@@ -1,3 +1,4 @@
+[中文](https://github.com/dathlin/HslCommunication)|[English](https://github.com/dathlin/HslCommunication/blob/master/docs/English.md)
 <pre>
              ///\      ///\             /////////\              ///\
             //\\/      //\/           //\\\\\\\\//\            //\\/
@@ -18,7 +19,7 @@
 ![Build status](https://img.shields.io/badge/Build-Success-green.svg) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![NetFramework](https://img.shields.io/badge/Language-java-orange.svg) ![JDK status](https://img.shields.io/badge/JDK-1.8.0-green.svg) ![IDE status](https://img.shields.io/badge/Intellij%20Idea-2018.1-red.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
 
 ## CopyRight
-本组件版权归Richard.Hu所有 [ (C) 2018 Richard.Hu, All Rights Reserved ]
+本组件版权归Richard.Hu所有
 
 ## Official Website
 唯一官网：[http://www.hslcommunication.cn/](http://www.hslcommunication.cn/)
@@ -41,6 +42,7 @@ Install-Package HslCommunication
 * .Net Framework环境下：支持.Net 3.5及以上环境，功能最完善。
 * .Net Standard环境下：.Net 2.0以上，目前仅仅实现PLC读写，modbus tcp读写，日志记录。
 * java环境下：**Intellij Idea 2018.1**
+* python: **Visual Studio Code**
 
 ## Contact
 * 工业软件交流QQ群：[592132877](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8)
@@ -77,13 +79,6 @@ The goal of this project is to develop a .Net and java. Most software systems wi
 * [连接池使用](https://www.cnblogs.com/dathlin/p/9191211.html)
 
 
-**Detail Introduction**
-
-* [How to communicate with melsec plc](https://github.com/dathlin/HslCommunication/blob/master/docs/Melsec.md)
-* [How to communicate with siemens plc](https://github.com/dathlin/HslCommunication/blob/master/docs/Siemens.md)
-* [How to communicate with omron plc](https://github.com/dathlin/HslCommunication/blob/master/docs/Omron.md)
-* [How to communicate with modbus-tcp device](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusTcp.md)
-* [How to build you own modbus server, include tcp and rtu mode](https://github.com/dathlin/HslCommunication/blob/master/docs/ModbusServer.md)
 
 ## HslCommunication.jar Summary 
 本组件提供java版本，为.net版本的阉割版，除去了所有的服务器功能代码，保留了绝大多数的客户端功能代码，方便的和PLC，设备进行数据交互，和C#程序进行数据交互，本jar组件适用用安卓开发，方便搭建一个.net 服务器 + windows 客户端 + asp.net 客户端 + j2ee 客户端 + java 客户端 + android 客户端，未来可能支持python，目前的java功能代码如下：
