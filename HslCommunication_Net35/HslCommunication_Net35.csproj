@@ -525,6 +525,9 @@
     <Compile Include="..\HslCommunication_Net45\Serial\SerialDeviceBase.cs">
       <Link>Serial\SerialDeviceBase.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Serial\SoftLRC.cs">
+      <Link>Serial\SoftLRC.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\StringResources.cs">
       <Link>StringResources.cs</Link>
     </Compile>
