@@ -1260,7 +1260,7 @@ class NetworkDoubleBase(NetworkBase):
 			resultReceive = self.ReceiveMessage(socket, 10000, self.iNetMessage)
 			if resultReceive.IsSuccess == False:
 				socket.close( )
-				return OperateResult.CreateFailedResult( "Receive data timeout: " + str(self.receiveTimeOut ) + " Msg:"+resultReceive.Message)
+				return OperateResult.CreateFailedResult( "Receive data timeout: " + str(self.receiveTimeOut ) + " Msg:"+ resultReceive.Message)
 			return OperateResult.CreateSuccessResult( resultReceive.Content.HeadBytes, resultReceive.Content.ContentBytes )
 		else:
 			return OperateResult.CreateSuccessResult( bytearray(0), bytearray(0) )
@@ -1525,6 +1525,7 @@ class ModbusAddress(DeviceAddressBase):
 		self.Station = -1
 		self.Function = ModbusInfo.ReadRegister()
 		self.Address = 0
+		self.AnalysisAddress(address)
 
 	def AnalysisAddress( self, address = "0" ):
 		'''解析Modbus的地址码'''
@@ -1570,6 +1571,17 @@ class ModbusAddress(DeviceAddressBase):
 		else:
 			buffer[0] = self.Station
 		buffer[1] = ModbusInfo.ReadRegister()
+		buffer[2:4] = struct.pack('>H', self.Address)
+		buffer[4:6] = struct.pack('>H', length)
+		return buffer
+	def CreateReadInputRegister( self, station, length ):
+		'''创建一个读取寄存器的字节对象'''
+		buffer = bytearray(6)
+		if self.Station < 0 :
+			buffer[0] = station
+		else:
+			buffer[0] = self.Station
+		buffer[1] = ModbusInfo.ReadInputRegister()
 		buffer[2:4] = struct.pack('>H', self.Address)
 		buffer[4:6] = struct.pack('>H', length)
 		return buffer
@@ -1619,7 +1631,7 @@ class ModbusAddress(DeviceAddressBase):
 		buffer[1] = ModbusInfo.ReadRegister()
 		buffer[2:4] = struct.pack('>H', self.Address)
 		buffer[4:6] = struct.pack('>H', len(values))
-		buffer[6] = len(data)
+		buffer[6] = len(values)
 		buffer[7:len(buffer)] = values
 	def AddressAdd(self, value):
 		'''地址新增指定的数'''
@@ -1645,6 +1657,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 		self.ipAddress = ipAddress
 		self.port = port
 		self.byteTransform = ReverseWordTransform()
+		self.iNetMessage = ModbusTcpMessage()
 	def SetIsMultiWordReverse( self, value ):
 		'''多字节的数据是否高低位反转，该设置的改变会影响Int32,UInt32,float,double,Int64,UInt64类型的读写'''
 		self.byteTransform.IsMultiWordReverse = value
@@ -1668,8 +1681,150 @@ class ModbusTcpNet(NetworkDeviceBase):
 		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateReadCoils( self.station, length ), messageId)
 		return OperateResult.CreateSuccessResult(buffer)
 	def BuildReadDiscreteCommand(self, address, length):
+		'''生成一个读取离散信息的指令头'''
 		# 分析地址
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
+		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		# 获取消息号
+		messageId = self.softIncrementCount.GetCurrentValue()
+		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateReadDiscrete(self.station,length), messageId)
+		return OperateResult.CreateSuccessResult(buffer)
+	def BuildReadRegisterCommand(self, address, length):
+		'''创建一个读取寄存器的字节对象'''
+		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
+		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		# 获取消息号
+		messageId = self.softIncrementCount.GetCurrentValue()
+		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateReadRegister(self.station,length), messageId)
+		return OperateResult.CreateSuccessResult(buffer)
+	def BuildReadInputRegisterCommand(self, address, length):
+		'''创建一个读取寄存器的字节对象'''
+		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
+		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		# 获取消息号
+		messageId = self.softIncrementCount.GetCurrentValue()
+		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateReadInputRegister(self.station,length), messageId)
+		return OperateResult.CreateSuccessResult(buffer)
+	def BuildWriteOneCoilCommand(self, address,value):
+		'''生成一个写入单线圈的指令头'''
+		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
+		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		# 获取消息号
+		messageId = self.softIncrementCount.GetCurrentValue()
+		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteOneCoil(self.station,value), messageId)
+		return OperateResult.CreateSuccessResult(buffer)
+	def BuildWriteOneRegisterCommand(self, address, values):
+		'''生成一个写入单个寄存器的报文'''
+		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
+		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		# 获取消息号
+		messageId = self.softIncrementCount.GetCurrentValue()
+		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteOneRegister(self.station,values), messageId)
+		return OperateResult.CreateSuccessResult(buffer)
+	def BuildWriteCoilCommand(self, address, values):
+		'''生成批量写入单个线圈的报文信息，需要传入bool数组信息'''
+		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
+		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		# 获取消息号
+		messageId = self.softIncrementCount.GetCurrentValue()
+		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteCoil(self.station,values), messageId)
+		return OperateResult.CreateSuccessResult(buffer)
+	def BuildWriteRegisterCommand(self, address, values):
+		'''生成批量写入寄存器的报文信息，需要传入byte数组'''
+		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
+		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		# 获取消息号
+		messageId = self.softIncrementCount.GetCurrentValue()
+		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteRegister(self.station,values), messageId)
+		return OperateResult.CreateSuccessResult(buffer)
+	def CheckModbusTcpResponse( self, send ):
+		'''检查当前的Modbus-Tcp响应是否是正确的'''
+		resultBytes = self.ReadFromCoreServer( send )
+		if resultBytes.IsSuccess == False:
+			if ((send[7] + 0x80) == resultBytes.Content[7]):
+				# 发生了错误
+				resultBytes.IsSuccess = False
+				resultBytes.Message = ModbusInfo.GetDescriptionByErrorCode( resultBytes.Content[8] )
+				resultBytes.ErrorCode = resultBytes.Content[8]
+		return resultBytes
+	def ReadModBusBase( self, code, address, length ):
+		'''检查当前的Modbus-Tcp响应是否是正确的'''
+		command = None
+		if code == ModbusInfo.ReadCoil():
+			command = self.BuildReadCoilCommand( address, length )
+		elif code == ModbusInfo.ReadDiscrete():
+			command = self.BuildReadDiscreteCommand( address, length )
+		elif code == ModbusInfo.ReadRegister():
+			command = self.BuildReadRegisterCommand( address, length )
+		elif code == ModbusInfo.ReadInputRegister():
+			command = self.BuildReadInputRegisterCommand( address, length )
+		else:
+			command = OperateResult.CreateFailedResult( StringResources.ModbusTcpFunctionCodeNotSupport() )
+		
+		if command.IsSuccess == False : return OperateResult.CreateFromFailedResult( command )
+
+		resultBytes = self.CheckModbusTcpResponse( command.Content )
+		if resultBytes.IsSuccess == True:
+			# 二次数据处理
+			if len(resultBytes.Content) >= 9:
+				buffer = bytearray(len(resultBytes.Content) - 9)
+				buffer[0:len(buffer)] = resultBytes.Content[9:]
+				resultBytes.Content = buffer
+		return resultBytes
+	def ReadCoil( self, address, length = None):
+		'''批量的读取线圈，需要指定起始地址，读取长度可选'''
+		if length == None:
+			read = self.ReadCoil( address, 1 )
+			if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
+			return OperateResult.CreateSuccessResult( read.Content[0] )
+		else:
+			read = self.ReadModBusBase( ModbusInfo.ReadCoil(), address, length )
+			if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
+
+			return OperateResult.CreateSuccessResult( SoftBasic.ByteToBoolArray( read.Content, length ) )
+	def ReadDiscrete( self, address, length = None):
+		'''批量的读取输入点，需要指定起始地址，可选读取长度'''
+		if length == None:
+			read = self.ReadDiscrete( address, 1 )
+			if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
+			return OperateResult.CreateSuccessResult( read.Content[0] )
+		else:
+			read = self.ReadModBusBase( ModbusInfo.ReadDiscrete(), address, length )
+			if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
+	def Read( self, address, length ):
+		'''从Modbus服务器批量读取寄存器的信息，需要指定起始地址，读取长度'''
+		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
+		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult( analysis )
+		return self.ReadModBusBase( analysis.Content.Function, address, length )
+	def WriteOneRegister( self, address, value ):
+		'''写一个寄存器数据'''
+		if type(value) == list:
+			command = self.BuildWriteOneRegisterCommand( address, value )
+			if command.IsSuccess == False : return command
+			return self.CheckModbusTcpResponse( command.Content )
+		else:
+			return self.WriteOneRegister(address, struct.pack('>H', value))
+	def Write( self, address, value ):
+		'''将数据写入到Modbus的寄存器上去，需要指定起始地址和数据内容'''
+		command = self.BuildWriteRegisterCommand( address, value )
+		if command.IsSuccess == False:
+			return command
+
+		return self.CheckModbusTcpResponse( command.Content )
+	def WriteCoil( self, address, value ):
+		'''批量写线圈信息，指定是否通断'''
+		if type(value) == list:
+			command = self.BuildWriteCoilCommand( address, value )
+			if command.IsSuccess == False : return command
+			return self.CheckModbusTcpResponse( command.Content )
+		else:
+			command = self.BuildWriteOneCoilCommand( address, value )
+			if command.IsSuccess == False : return command
+			return self.CheckModbusTcpResponse( command.Content )
+	def WriteBool( self, address, values ):
+		'''批量写寄存器的数据内容'''
+		return self.Write( address, SoftBasic.BoolArrayToByte( values ) )
+	
 
 class NetSimplifyClient(NetworkDoubleBase):
 	'''异步访问数据的客户端类，用于向服务器请求一些确定的数据信息'''
@@ -1708,36 +1863,4 @@ class NetSimplifyClient(NetworkDoubleBase):
 		return OperateResult.CreateSuccessResult( contentBytes )
 		
 
-
-# modbus = socket.socket()
-# ip_port = ('127.0.0.1',502)
-# modbus.connect(ip_port)
-
-# send = b'\x00\x00\x00\x00\x00\x06\x01\x03\x00\x00\x00\x01'
-# modbus.send(send)
-# recive = modbus.recv(1024)
-# aaa = bytearray()
-# aaa.extend(recive)
-# print(aaa)
-
-# modbus.close()
-
-data = b'\xA2'
-ii = 100
-data = b'\x64\x00'
-# print(SoftBasic.ByteToHexString(struct.pack('<h',ii)))
-print(struct.unpack('<h',data)[0])
-
-# NetSimplifyClient测试
-
-netSimplifyClient = NetSimplifyClient("127.0.0.1",12345)
-# netSimplifyClient.Token = uuid.UUID('66a469ad-a595-48ed-abe1-912f7085dbcd')
-# netSimplifyClient.ConnectServer()
-read = netSimplifyClient.ReadStringFromServer(1,'123')
-if read.IsSuccess:
-	print(read.Content)
-else:
-	print(read.Message)
-# read = netSimplifyClient.ReadStringFromServer(1,'测试信号')
-# netSimplifyClient.ConnectClose()
 
