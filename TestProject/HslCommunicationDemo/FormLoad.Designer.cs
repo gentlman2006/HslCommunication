@@ -35,6 +35,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button34 = new System.Windows.Forms.Button();
             this.button21 = new System.Windows.Forms.Button();
             this.button19 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
@@ -79,7 +80,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.button33 = new System.Windows.Forms.Button();
-            this.button34 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -176,6 +176,17 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Modbus";
+            // 
+            // button34
+            // 
+            this.button34.Location = new System.Drawing.Point(19, 144);
+            this.button34.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button34.Name = "button34";
+            this.button34.Size = new System.Drawing.Size(150, 32);
+            this.button34.TabIndex = 3;
+            this.button34.Text = "Modbus Ascii";
+            this.button34.UseVisualStyleBackColor = true;
+            this.button34.Click += new System.EventHandler(this.button34_Click);
             // 
             // button21
             // 
@@ -677,20 +688,9 @@
             this.button33.Name = "button33";
             this.button33.Size = new System.Drawing.Size(150, 32);
             this.button33.TabIndex = 0;
-            this.button33.Text = "Tcp";
+            this.button33.Text = "Logix Tcp";
             this.button33.UseVisualStyleBackColor = true;
             this.button33.Click += new System.EventHandler(this.button33_Click);
-            // 
-            // button34
-            // 
-            this.button34.Location = new System.Drawing.Point(19, 144);
-            this.button34.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button34.Name = "button34";
-            this.button34.Size = new System.Drawing.Size(150, 32);
-            this.button34.TabIndex = 3;
-            this.button34.Text = "Modbus Ascii";
-            this.button34.UseVisualStyleBackColor = true;
-            this.button34.Click += new System.EventHandler(this.button34_Click);
             // 
             // FormLoad
             // 

@@ -392,6 +392,24 @@ namespace HslCommunication
     ///             <item>相关代码重构优化。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-09-08" version="5.3.0" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>串口基类接收数据优化，保证接收一次完整的数据内容。</item>
+    ///             <item>新增一个容器罐子的控件，可以调整背景颜色。</item>
+    ///             <item>OperateResult成功时的错误码调整为0。</item>
+    ///             <item>修复modbus-tcp及modbus-rtu读取coil及discrete的1个位时解析异常的bug.</item>
+    ///             <item>授权类公开一个属性，终极秘钥的属性，感谢 洛阳-LYG 的建议。</item>
+    ///             <item>修复transbool方法在特殊情况下的bug</item>
+    ///             <item>NetworkDeviceBase 写入的方法设置为了虚方法，允许子类进行重写。</item>
+    ///             <item>SoftBasic: 新增三个字节处理的方法，移除前端字节，移除后端字节，移除两端字节。</item>
+    ///             <item>新增串口应用的LRC校验方法。还未实际测试</item>
+    ///             <item>Siemens的s7协议支持V区自动转换，方便数据读取。</item>
+    ///             <item>新增ab plc的类AllenBradleyNet，已测试读写，bool写入仍存在一点问题。</item>
+    ///             <item>新增modbus-Ascii类，该类库还未仔细测试。</item>
+    ///             <item>埃夫特机器人更新，适配最新版本数据采集。</item>
+    ///             <item>其他的代码优化，重构精简</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc

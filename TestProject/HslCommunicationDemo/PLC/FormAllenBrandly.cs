@@ -18,7 +18,7 @@ namespace HslCommunicationDemo
         public FormAllenBrandly( )
         {
             InitializeComponent( );
-            allenBradleyNet = new AllenBradleyNet( );
+            allenBradleyNet = new AllenBradleyNet( "192.168.0.110" );
         }
 
 

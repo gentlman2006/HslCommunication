@@ -40,7 +40,7 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <param name="port">PLC的端口</param>
         public AllenBradleyNet( string ipAddress, int port = 44818 )
         {
-            WordLength = 1;
+            WordLength = 2;
             IpAddress = ipAddress;
             Port = port;
         }
@@ -75,27 +75,15 @@ namespace HslCommunication.Profinet.AllenBradley
 
             // 提取会话ID
             SessionHandle = ByteTransform.TransUInt32( read1.Content1, 4 );
-
-            // 打开注册
-            //OperateResult<byte[], byte[]> read2 = ReadFromCoreServerBase( socket, SendRRData( ) );
-            //if (!read2.IsSuccess) return read2;
-
-            //// 检查返回的状态
-            //OperateResult check2 = CheckResponse( read2.Content1 );
-            //if (!check2.IsSuccess) return check2;
-
-            // 提取连接标识
-            //NetWorkConnectionID = ByteTransform.TransUInt32( read2.Content2, 20 );
-
-            // 校验成功
+            
             return OperateResult.CreateSuccessResult( );
         }
 
         /// <summary>
-        /// 
+        /// 在断开AllenBradley PLC前，需要进行一步握手协议
         /// </summary>
-        /// <param name="socket"></param>
-        /// <returns></returns>
+        /// <param name="socket">网络套接字</param>
+        /// <returns>断开操作是否成功</returns>
         protected override OperateResult ExtraOnDisconnect( Socket socket )
         {
             // 注册会话信息
@@ -348,10 +336,9 @@ namespace HslCommunication.Profinet.AllenBradley
         #region Handle Single
 
         /// <summary>
-        /// 65 00 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 [发送]
-        /// 65 00 04 00 01 00 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 00 00 [返回]
+        /// 向PLC注册会话ID的报文
         /// </summary>
-        /// <returns></returns>
+        /// <returns>报文信息</returns>
         public byte[] RegisterSessionHandle( )
         {
             byte[] commandSpecificData = new byte[] { 0x01, 0x00, 0x00, 0x00, };
