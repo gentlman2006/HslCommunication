@@ -311,6 +311,9 @@
     <Compile Include="..\HslCommunication_Net45\Core\Transfer\ByteTransformHelper.cs">
       <Link>Core\Transfer\ByteTransformHelper.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Core\Transfer\DataFormat.cs">
+      <Link>Core\Transfer\DataFormat.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Core\Transfer\IByteTransform.cs">
       <Link>Core\Transfer\IByteTransform.cs</Link>
     </Compile>

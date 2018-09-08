@@ -10,6 +10,17 @@ namespace HslCommunication.Core
     /// </summary>
     public class ReverseWordTransform : ByteTransformBase
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的对象
+        /// </summary>
+        public ReverseWordTransform( )
+        {
+            DataFormat = DataFormat.ABCD;
+        }
+
+        #endregion
 
         #region Private Method
 
@@ -19,18 +30,19 @@ namespace HslCommunication.Core
         /// <param name="buffer">实际的字节数据</param>
         /// <param name="index">起始字节位置</param>
         /// <param name="length">数据长度</param>
-        /// <param name="isReverse">是否按照字来反转</param>
         /// <returns>处理过的数据信息</returns>
-        private byte[] ReverseBytesByWord( byte[] buffer, int index, int length, bool isReverse = false )
+        private byte[] ReverseBytesByWord( byte[] buffer, int index, int length )
         {
             if (buffer == null) return null;
 
+            // copy data
             byte[] tmp = new byte[length];
             for (int i = 0; i < length; i++)
             {
                 tmp[i] = buffer[index + i];
             }
 
+            // change
             for (int i = 0; i < length / 2; i++)
             {
                 byte b = tmp[i * 2 + 0];
@@ -38,60 +50,20 @@ namespace HslCommunication.Core
                 tmp[i * 2 + 1] = b;
             }
 
-            // 两两高地位互换
-            if(isReverse)
-            {
-                if(tmp.Length == 4)
-                {
-                    byte a = tmp[0];
-                    byte b = tmp[1];
-
-                    tmp[0] = tmp[2];
-                    tmp[1] = tmp[3];
-
-                    tmp[2] = a;
-                    tmp[3] = b;
-                }
-                else if(tmp.Length == 8)
-                {
-                    byte a = tmp[0];
-                    byte b = tmp[1];
-
-                    tmp[0] = tmp[6];
-                    tmp[1] = tmp[7];
-
-                    tmp[6] = a;
-                    tmp[7] = b;
-
-                    a = tmp[2];
-                    b = tmp[3];
-
-                    tmp[2] = tmp[4];
-                    tmp[3] = tmp[5];
-
-                    tmp[4] = a;
-                    tmp[5] = b;
-                }
-            }
-
             return tmp;
         }
 
-        private byte[] ReverseBytesByWord( byte[] buffer , bool isReverse = false )
+        private byte[] ReverseBytesByWord( byte[] buffer )
         {
-            return ReverseBytesByWord( buffer, 0, buffer.Length , isReverse );
+            return ReverseBytesByWord( buffer, 0, buffer.Length );
         }
+        
 
 
         #endregion
 
         #region Public Properties
         
-        /// <summary>
-        /// 多字节的数据是否高低位反转，常用于Int32,UInt32,float,double,Int64,UInt64类型读写
-        /// </summary>
-        public bool IsMultiWordReverse { get; set; }
-
         /// <summary>
         /// 字符串数据是否按照字来反转
         /// </summary>
@@ -111,7 +83,7 @@ namespace HslCommunication.Core
         /// <returns>short对象</returns>
         public override short TransInt16( byte[] buffer, int index )
         {
-            return BitConverter.ToInt16( ReverseBytesByWord( buffer, index, 2 ), 0 );
+            return base.TransInt16( ReverseBytesByWord( buffer, index, 2 ), 0 );
         }
 
 
@@ -124,7 +96,7 @@ namespace HslCommunication.Core
         /// <returns>ushort对象</returns>
         public override ushort TransUInt16( byte[] buffer, int index )
         {
-            return BitConverter.ToUInt16( ReverseBytesByWord( buffer, index, 2 ), 0 );
+            return base.TransUInt16( ReverseBytesByWord( buffer, index, 2 ), 0 );
         }
 
 
@@ -137,7 +109,7 @@ namespace HslCommunication.Core
         /// <returns>int对象</returns>
         public override int TransInt32( byte[] buffer, int index )
         {
-            return BitConverter.ToInt32( ReverseBytesByWord( buffer, index, 4, IsMultiWordReverse ), 0 );
+            return base.TransInt32( ReverseBytesByWord( buffer, index, 4 ), 0 );
         }
 
 
@@ -149,7 +121,7 @@ namespace HslCommunication.Core
         /// <returns>uint对象</returns>
         public override uint TransUInt32( byte[] buffer, int index )
         {
-            return BitConverter.ToUInt32( ReverseBytesByWord( buffer, index, 4, IsMultiWordReverse ), 0 );
+            return base.TransUInt32( ReverseBytesByWord( buffer, index, 4 ), 0 );
         }
 
 
@@ -161,7 +133,7 @@ namespace HslCommunication.Core
         /// <returns>long对象</returns>
         public override long TransInt64( byte[] buffer, int index )
         {
-            return BitConverter.ToInt64( ReverseBytesByWord( buffer, index, 8, IsMultiWordReverse ), 0 );
+            return base.TransInt64( ReverseBytesByWord( buffer, index, 8 ), 0 );
         }
 
 
@@ -174,7 +146,7 @@ namespace HslCommunication.Core
         /// <returns>ulong对象</returns>
         public override ulong TransUInt64( byte[] buffer, int index )
         {
-            return BitConverter.ToUInt64( ReverseBytesByWord( buffer, index, 8, IsMultiWordReverse ), 0 );
+            return base.TransUInt64( ReverseBytesByWord( buffer, index, 8 ), 0 );
         }
 
 
@@ -188,7 +160,7 @@ namespace HslCommunication.Core
         /// <returns>float对象</returns>
         public override float TransSingle( byte[] buffer, int index )
         {
-            return BitConverter.ToSingle( ReverseBytesByWord( buffer, index, 4, IsMultiWordReverse ), 0 );
+            return base.TransSingle( ReverseBytesByWord( buffer, index, 4 ), 0 );
         }
 
 
@@ -201,7 +173,7 @@ namespace HslCommunication.Core
         /// <returns>double对象</returns>
         public override double TransDouble( byte[] buffer, int index )
         {
-            return BitConverter.ToDouble( ReverseBytesByWord( buffer, index, 8, IsMultiWordReverse ), 0 );
+            return base.TransDouble( ReverseBytesByWord( buffer, index, 8 ), 0 );
         }
         
 
@@ -221,7 +193,7 @@ namespace HslCommunication.Core
 
             if(IsStringReverse)
             {
-                return encoding.GetString( ReverseBytesByWord( tmp, false ) );
+                return encoding.GetString( ReverseBytesByWord( tmp ) );
             }
             else
             {
@@ -282,7 +254,7 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 4];
             for (int i = 0; i < values.Length; i++)
             {
-                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 4 * i );
+                ByteTransDataFormat4( ReverseBytesByWord( BitConverter.GetBytes( values[i] ) ) ).CopyTo( buffer, 4 * i );
             }
 
             return buffer;
@@ -301,7 +273,7 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 4];
             for (int i = 0; i < values.Length; i++)
             {
-                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 4 * i );
+                ByteTransDataFormat4( ReverseBytesByWord( BitConverter.GetBytes( values[i] ) ) ).CopyTo( buffer, 4 * i );
             }
 
             return buffer;
@@ -320,7 +292,7 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 8];
             for (int i = 0; i < values.Length; i++)
             {
-                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 8 * i );
+                ByteTransDataFormat8( ReverseBytesByWord( BitConverter.GetBytes( values[i] ) ) ).CopyTo( buffer, 8 * i );
             }
 
             return buffer;
@@ -338,7 +310,7 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 8];
             for (int i = 0; i < values.Length; i++)
             {
-                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 8 * i );
+                ByteTransDataFormat8( ReverseBytesByWord( BitConverter.GetBytes( values[i] ) ) ).CopyTo( buffer, 8 * i );
             }
 
             return buffer;
@@ -357,7 +329,7 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 4];
             for (int i = 0; i < values.Length; i++)
             {
-                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 4 * i );
+                ByteTransDataFormat4( ReverseBytesByWord( BitConverter.GetBytes( values[i] ) ) ).CopyTo( buffer, 4 * i );
             }
 
             return buffer;
@@ -375,7 +347,7 @@ namespace HslCommunication.Core
             byte[] buffer = new byte[values.Length * 8];
             for (int i = 0; i < values.Length; i++)
             {
-                ReverseBytesByWord( BitConverter.GetBytes( values[i] ), IsMultiWordReverse ).CopyTo( buffer, 8 * i );
+                ByteTransDataFormat8( ReverseBytesByWord( BitConverter.GetBytes( values[i] ) ) ).CopyTo( buffer, 8 * i );
             }
 
             return buffer;
@@ -395,7 +367,7 @@ namespace HslCommunication.Core
             buffer = BasicFramework.SoftBasic.ArrayExpandToLengthEven( buffer );
             if (IsStringReverse)
             {
-                return ReverseBytesByWord( buffer, false );
+                return ReverseBytesByWord( buffer );
             }
             else
             {

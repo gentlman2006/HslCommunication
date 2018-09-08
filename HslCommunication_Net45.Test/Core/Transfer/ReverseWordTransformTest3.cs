@@ -8,11 +8,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HslCommunication_Net45.Test.Core.Transfer
 {
     [TestClass]
-    public class ReverseWordTransformTest2 : ReverseWordTransformTest
+    public class ReverseWordTransformTest3 : ReverseWordTransformTest
     {
-        public ReverseWordTransformTest2( )
+        public ReverseWordTransformTest3( )
         {
-            byteTransform.DataFormat = HslCommunication.Core.DataFormat.BADC;
+            byteTransform.DataFormat = HslCommunication.Core.DataFormat.CDAB;
         }
 
 

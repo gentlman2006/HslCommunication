@@ -30,7 +30,6 @@
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label24 = new System.Windows.Forms.Label();
             this.textBox17 = new System.Windows.Forms.TextBox();
@@ -87,6 +86,7 @@
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button4 = new System.Windows.Forms.Button();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.button_read_string = new System.Windows.Forms.Button();
             this.button_read_double = new System.Windows.Forms.Button();
@@ -108,7 +108,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -123,8 +123,8 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.comboBox2);
             this.panel1.Controls.Add(this.checkBox3);
-            this.panel1.Controls.Add(this.checkBox2);
             this.panel1.Controls.Add(this.comboBox1);
             this.panel1.Controls.Add(this.label24);
             this.panel1.Controls.Add(this.textBox17);
@@ -155,16 +155,6 @@
             this.checkBox3.TabIndex = 26;
             this.checkBox3.Text = "字符串颠倒";
             this.checkBox3.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(569, 28);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(111, 21);
-            this.checkBox2.TabIndex = 25;
-            this.checkBox2.Text = "数据高地位颠倒";
-            this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // comboBox1
             // 
@@ -236,7 +226,7 @@
             // 
             // textBox15
             // 
-            this.textBox15.Location = new System.Drawing.Point(552, 4);
+            this.textBox15.Location = new System.Drawing.Point(552, 1);
             this.textBox15.Name = "textBox15";
             this.textBox15.Size = new System.Drawing.Size(37, 23);
             this.textBox15.TabIndex = 7;
@@ -245,7 +235,7 @@
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(508, 7);
+            this.label21.Location = new System.Drawing.Point(508, 4);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(44, 17);
             this.label21.TabIndex = 6;
@@ -747,6 +737,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "单数据读取测试";
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(408, 19);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(89, 28);
+            this.button4.TabIndex = 19;
+            this.button4.Text = "离散输入读取";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click_1);
+            // 
             // textBox5
             // 
             this.textBox5.Location = new System.Drawing.Point(358, 195);
@@ -948,15 +948,19 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
-            // button4
+            // comboBox2
             // 
-            this.button4.Location = new System.Drawing.Point(408, 19);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(89, 28);
-            this.button4.TabIndex = 19;
-            this.button4.Text = "离散输入读取";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click_1);
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "ABCD",
+            "BADC",
+            "CDAB",
+            "DCAB"});
+            this.comboBox2.Location = new System.Drawing.Point(566, 25);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(111, 25);
+            this.comboBox2.TabIndex = 28;
             // 
             // FormModbusRtu
             // 
@@ -1075,8 +1079,8 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.TextBox textBox16;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.ComboBox comboBox2;
     }
 }

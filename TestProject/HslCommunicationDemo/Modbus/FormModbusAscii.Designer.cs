@@ -30,7 +30,6 @@
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label24 = new System.Windows.Forms.Label();
             this.textBox17 = new System.Windows.Forms.TextBox();
@@ -54,6 +53,7 @@
             this.label17 = new System.Windows.Forms.Label();
             this.textBox12 = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.userCurve1 = new HslCommunication.Controls.UserCurve();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBox11 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -108,7 +108,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.userCurve1 = new HslCommunication.Controls.UserCurve();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -123,8 +123,8 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.comboBox2);
             this.panel1.Controls.Add(this.checkBox3);
-            this.panel1.Controls.Add(this.checkBox2);
             this.panel1.Controls.Add(this.comboBox1);
             this.panel1.Controls.Add(this.label24);
             this.panel1.Controls.Add(this.textBox17);
@@ -156,16 +156,6 @@
             this.checkBox3.Text = "字符串颠倒";
             this.checkBox3.UseVisualStyleBackColor = true;
             // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(569, 28);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(111, 21);
-            this.checkBox2.TabIndex = 25;
-            this.checkBox2.Text = "数据高地位颠倒";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
             // comboBox1
             // 
             this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -174,7 +164,7 @@
             "无",
             "奇",
             "偶"});
-            this.comboBox1.Location = new System.Drawing.Point(452, 14);
+            this.comboBox1.Location = new System.Drawing.Point(443, 14);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(49, 25);
             this.comboBox1.TabIndex = 15;
@@ -182,7 +172,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(416, 17);
+            this.label24.Location = new System.Drawing.Point(404, 17);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(44, 17);
             this.label24.TabIndex = 14;
@@ -190,7 +180,7 @@
             // 
             // textBox17
             // 
-            this.textBox17.Location = new System.Drawing.Point(386, 14);
+            this.textBox17.Location = new System.Drawing.Point(374, 14);
             this.textBox17.Name = "textBox17";
             this.textBox17.Size = new System.Drawing.Size(23, 23);
             this.textBox17.TabIndex = 13;
@@ -199,7 +189,7 @@
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(332, 17);
+            this.label23.Location = new System.Drawing.Point(320, 17);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(56, 17);
             this.label23.TabIndex = 12;
@@ -207,7 +197,7 @@
             // 
             // textBox16
             // 
-            this.textBox16.Location = new System.Drawing.Point(295, 14);
+            this.textBox16.Location = new System.Drawing.Point(290, 14);
             this.textBox16.Name = "textBox16";
             this.textBox16.Size = new System.Drawing.Size(24, 23);
             this.textBox16.TabIndex = 11;
@@ -216,7 +206,7 @@
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(241, 17);
+            this.label22.Location = new System.Drawing.Point(236, 17);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(56, 17);
             this.label22.TabIndex = 10;
@@ -227,7 +217,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(603, 3);
+            this.checkBox1.Location = new System.Drawing.Point(665, 3);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(106, 21);
             this.checkBox1.TabIndex = 9;
@@ -236,7 +226,7 @@
             // 
             // textBox15
             // 
-            this.textBox15.Location = new System.Drawing.Point(552, 4);
+            this.textBox15.Location = new System.Drawing.Point(552, 2);
             this.textBox15.Name = "textBox15";
             this.textBox15.Size = new System.Drawing.Size(37, 23);
             this.textBox15.TabIndex = 7;
@@ -245,7 +235,7 @@
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(508, 7);
+            this.label21.Location = new System.Drawing.Point(508, 5);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(44, 17);
             this.label21.TabIndex = 6;
@@ -274,7 +264,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(188, 14);
+            this.textBox2.Location = new System.Drawing.Point(183, 14);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(47, 23);
             this.textBox2.TabIndex = 3;
@@ -283,7 +273,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(134, 17);
+            this.label3.Location = new System.Drawing.Point(129, 17);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(56, 17);
             this.label3.TabIndex = 2;
@@ -291,7 +281,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(62, 14);
+            this.textBox1.Location = new System.Drawing.Point(57, 14);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(67, 23);
             this.textBox1.TabIndex = 1;
@@ -300,7 +290,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 17);
+            this.label1.Location = new System.Drawing.Point(3, 17);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 17);
             this.label1.TabIndex = 0;
@@ -393,6 +383,17 @@
             this.label15.Size = new System.Drawing.Size(44, 17);
             this.label15.TabIndex = 4;
             this.label15.Text = "地址：";
+            // 
+            // userCurve1
+            // 
+            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.userCurve1.Location = new System.Drawing.Point(13, 82);
+            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userCurve1.Name = "userCurve1";
+            this.userCurve1.Size = new System.Drawing.Size(400, 189);
+            this.userCurve1.TabIndex = 0;
+            this.userCurve1.ValueMaxLeft = 200F;
+            this.userCurve1.ValueMaxRight = 200F;
             // 
             // groupBox4
             // 
@@ -947,16 +948,19 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
-            // userCurve1
+            // comboBox2
             // 
-            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.userCurve1.Location = new System.Drawing.Point(13, 82);
-            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userCurve1.Name = "userCurve1";
-            this.userCurve1.Size = new System.Drawing.Size(400, 189);
-            this.userCurve1.TabIndex = 0;
-            this.userCurve1.ValueMaxLeft = 200F;
-            this.userCurve1.ValueMaxRight = 200F;
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "ABCD",
+            "BADC",
+            "CDAB",
+            "DCAB"});
+            this.comboBox2.Location = new System.Drawing.Point(552, 26);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(111, 25);
+            this.comboBox2.TabIndex = 27;
             // 
             // FormModbusAscii
             // 
@@ -1075,8 +1079,8 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.TextBox textBox16;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.ComboBox comboBox2;
     }
 }

@@ -40,6 +40,33 @@ namespace HslCommunicationDemo
             panel2.Enabled = false;
             userCurve1.SetLeftCurve( "A", new float[0], Color.Tomato );
             comboBox1.SelectedIndex = 0;
+
+            comboBox2.SelectedIndex = 0;
+            comboBox2.SelectedIndexChanged += ComboBox2_SelectedIndexChanged;
+            checkBox3.CheckedChanged += CheckBox3_CheckedChanged;
+        }
+
+        private void CheckBox3_CheckedChanged( object sender, EventArgs e )
+        {
+            if (busAsciiClient != null)
+            {
+                busAsciiClient.IsStringReverse = checkBox3.Checked;
+            }
+        }
+
+        private void ComboBox2_SelectedIndexChanged( object sender, EventArgs e )
+        {
+            if (busAsciiClient != null)
+            {
+                switch (comboBox2.SelectedIndex)
+                {
+                    case 0: busAsciiClient.DataFormat = HslCommunication.Core.DataFormat.ABCD; break;
+                    case 1: busAsciiClient.DataFormat = HslCommunication.Core.DataFormat.BADC; break;
+                    case 2: busAsciiClient.DataFormat = HslCommunication.Core.DataFormat.CDAB; break;
+                    case 3: busAsciiClient.DataFormat = HslCommunication.Core.DataFormat.DCBA; break;
+                    default: break;
+                }
+            }
         }
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )
@@ -118,7 +145,8 @@ namespace HslCommunicationDemo
             busAsciiClient?.Close( );
             busAsciiClient = new ModbusAscii( station );
             busAsciiClient.AddressStartWithZero = checkBox1.Checked;
-            busAsciiClient.IsMultiWordReverse = checkBox2.Checked;
+
+            ComboBox2_SelectedIndexChanged( null, new EventArgs( ) );
             busAsciiClient.IsStringReverse = checkBox3.Checked;
 
 

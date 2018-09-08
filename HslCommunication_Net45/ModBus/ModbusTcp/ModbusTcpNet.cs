@@ -118,15 +118,15 @@ namespace HslCommunication.ModBus
         }
 
         /// <summary>
-        /// 多字节的数据是否高低位反转，该设置的改变会影响Int32,UInt32,float,double,Int64,UInt64类型的读写
+        /// 获取或设置数据解析的格式，默认ABCD，可选BADC，CDAB，DCBA格式
         /// </summary>
         /// <remarks>
         /// 对于Int32,UInt32,float,double,Int64,UInt64类型来说，存在多地址的电脑情况，需要和服务器进行匹配
         /// </remarks>
-        public bool IsMultiWordReverse
+        public DataFormat DataFormat
         {
-            get { return ByteTransform.IsMultiWordReverse; }
-            set { ByteTransform.IsMultiWordReverse = value; }
+            get { return ByteTransform.DataFormat; }
+            set { ByteTransform.DataFormat = value; }
         }
 
         /// <summary>

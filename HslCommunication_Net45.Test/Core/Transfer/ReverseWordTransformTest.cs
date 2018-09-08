@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HslCommunication.Core;
+using HslCommunication.BasicFramework;
 
 namespace HslCommunication_Net45.Test.Core.Transfer
 {
@@ -29,7 +30,7 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         /// <param name="length">数据长度</param>
         /// <param name="isReverse">是否按照字来反转</param>
         /// <returns></returns>
-        private byte[] ReverseBytesByWord( byte[] buffer, int index, int length, bool isReverse = false )
+        private byte[] ReverseBytesByWord( byte[] buffer, int index, int length, DataFormat dataFormat )
         {
             byte[] tmp = new byte[length];
 
@@ -46,47 +47,107 @@ namespace HslCommunication_Net45.Test.Core.Transfer
             }
 
             // 两两高地位互换
-            if (isReverse)
+            if (tmp.Length == 4)
             {
-                if (tmp.Length == 4)
+                if (dataFormat == DataFormat.BADC)
                 {
                     byte a = tmp[0];
-                    byte b = tmp[1];
+                    tmp[0] = tmp[1];
+                    tmp[1] = a;
 
-                    tmp[0] = tmp[2];
-                    tmp[1] = tmp[3];
 
-                    tmp[2] = a;
+                    byte b = tmp[2];
+                    tmp[2] = tmp[3];
                     tmp[3] = b;
                 }
-                else if (tmp.Length == 8)
+                else if (dataFormat == DataFormat.CDAB)
                 {
                     byte a = tmp[0];
+                    tmp[0] = tmp[2];
+                    tmp[2] = a;
+
+
                     byte b = tmp[1];
+                    tmp[1] = tmp[3];
+                    tmp[3] = b;
+                }
+                else if(dataFormat == DataFormat.DCBA)
+                {
+                    byte a = tmp[0];
+                    tmp[0] = tmp[3];
+                    tmp[3] = a;
 
+                    byte b = tmp[1];
+                    tmp[1] = tmp[2];
+                    tmp[2] = b;
+                }
+            }
+            else if (tmp.Length == 8)
+            {
+                if (dataFormat == DataFormat.BADC)
+                {
+                    byte a = tmp[0];
+                    tmp[0] = tmp[1];
+                    tmp[1] = a;
+
+
+                    byte b = tmp[2];
+                    tmp[2] = tmp[3];
+                    tmp[3] = b;
+
+                    a = tmp[4];
+                    tmp[4] = tmp[5];
+                    tmp[5] = a;
+
+                    a = tmp[6];
+                    tmp[6] = tmp[7];
+                    tmp[7] = a;
+                }
+                else if (dataFormat == DataFormat.CDAB)
+                {
+                    byte a = tmp[0];
                     tmp[0] = tmp[6];
-                    tmp[1] = tmp[7];
-
                     tmp[6] = a;
-                    tmp[7] = b;
+
+
+                    a = tmp[1];
+                    tmp[1] = tmp[7];
+                    tmp[7] = a;
 
                     a = tmp[2];
-                    b = tmp[3];
-
                     tmp[2] = tmp[4];
-                    tmp[3] = tmp[5];
-
                     tmp[4] = a;
-                    tmp[5] = b;
+
+                    a = tmp[3];
+                    tmp[3] = tmp[5];
+                    tmp[5] = a;
+                }
+                else if (dataFormat == DataFormat.DCBA)
+                {
+                    byte a = tmp[0];
+                    tmp[0] = tmp[7];
+                    tmp[7] = a;
+
+                    a = tmp[1];
+                    tmp[1] = tmp[6];
+                    tmp[6] = a;
+
+                    a = tmp[2];
+                    tmp[2] = tmp[5];
+                    tmp[5] = a;
+
+                    a = tmp[3];
+                    tmp[3] = tmp[4];
+                    tmp[4] = a;
                 }
             }
 
             return tmp;
         }
 
-        private byte[] ReverseBytesByWord( byte[] buffer, bool isReverse = false )
+        private byte[] ReverseBytesByWord( byte[] buffer, DataFormat dataFormat )
         {
-            return ReverseBytesByWord( buffer, 0, buffer.Length, isReverse );
+            return ReverseBytesByWord( buffer, 0, buffer.Length, dataFormat );
         }
 
         #endregion
@@ -96,19 +157,47 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         [TestMethod]
         public void ReverseBytesByWordTest1( )
         {
-            byte[] data = new byte[6] { 0x46, 0x38, 0xA0, 0xB0, 0xFF, 0x3D };
-            byte[] buffer = ReverseBytesByWord( data, false );
+            byte[] data = new byte[4] { 0x46, 0x38, 0xA0, 0xB0 };
+            byte[] buffer = ReverseBytesByWord( data, DataFormat.ABCD );
 
-            Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( new byte[] { 0x38, 0x46, 0xB0, 0xA0, 0x3D, 0xFF }, buffer ) );
+            Assert.IsTrue( SoftBasic.IsTwoBytesEquel( new byte[] { 0x38, 0x46, 0xB0, 0xA0 }, buffer ) );
         }
 
         [TestMethod]
         public void ReverseBytesByWordTest2( )
         {
-            byte[] data = new byte[8] { 0x46, 0x38, 0xA0, 0xB0, 0xFF, 0x3D, 0xC1, 0x08 };
-            byte[] buffer = ReverseBytesByWord( data, true );
+            byte[] data = new byte[4] { 0x46, 0x38, 0xA0, 0xB0 };
+            byte[] buffer = ReverseBytesByWord( data, DataFormat.BADC );
 
-            Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( new byte[] { 0x08, 0xC1, 0x3D, 0xFF, 0xB0, 0xA0, 0x38, 0x46 }, buffer ) );
+            Assert.IsTrue( SoftBasic.IsTwoBytesEquel( new byte[] { 0x46, 0x38, 0xA0, 0xB0 }, buffer ) );
+        }
+
+        [TestMethod]
+        public void ReverseBytesByWordTest3( )
+        {
+            byte[] data = new byte[4] { 0x46, 0x38, 0xA0, 0xB0 };
+            byte[] buffer = ReverseBytesByWord( data, DataFormat.CDAB );
+
+            Assert.IsTrue( SoftBasic.IsTwoBytesEquel( new byte[] { 0xB0, 0xA0, 0x38, 0x46 }, buffer ) );
+        }
+
+        [TestMethod]
+        public void ReverseBytesByWordTest4( )
+        {
+            byte[] data = new byte[4] { 0x46, 0x38, 0xA0, 0xB0 };
+            byte[] buffer = ReverseBytesByWord( data, DataFormat.DCBA );
+
+            Assert.IsTrue( SoftBasic.IsTwoBytesEquel( new byte[] { 0xA0, 0xB0, 0x46, 0x38 }, buffer ) );
+        }
+
+        [TestMethod]
+        public void ReverseBytesByWordTest5( )
+        {
+            byte[] data = new byte[8] { 0x46, 0x38, 0xA0, 0xB0, 0xFF, 0x3D, 0xC1, 0x08 };
+            byte[] buffer = ReverseBytesByWord( data, DataFormat.DCBA );
+
+            Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( new byte[] { 0xC1, 0x08, 0xFF, 0x3D, 0xA0, 0xB0, 0x46, 0x38 }, buffer ),
+                "Data:"+SoftBasic.ByteToHexString(buffer)+ " Actual:"+SoftBasic.ByteToHexString( new byte[] { 0x08, 0xC1, 0x3D, 0xFF, 0xB0, 0xA0, 0x38, 0x46 } ) );
         }
 
 
@@ -161,7 +250,7 @@ namespace HslCommunication_Net45.Test.Core.Transfer
             byte[] data = new byte[4];
             BitConverter.GetBytes( (short)1234 ).CopyTo( data, 0 );
             BitConverter.GetBytes( (short)-9876 ).CopyTo( data, 2 );
-            data = ReverseBytesByWord( data, false );
+            data = ReverseBytesByWord( data, DataFormat.ABCD );
 
 
             short[] array = byteTransform.TransInt16( data, 0, 2 );
@@ -175,7 +264,7 @@ namespace HslCommunication_Net45.Test.Core.Transfer
             byte[] data = new byte[4];
             BitConverter.GetBytes( (short)1234 ).CopyTo( data, 0 );
             BitConverter.GetBytes( (short)-9876 ).CopyTo( data, 2 );
-            data = ReverseBytesByWord( data, false );
+            data = ReverseBytesByWord( data, DataFormat.ABCD );
 
             byte[] buffer = byteTransform.TransByte( new short[] { 1234, -9876 } );
             Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( data, buffer ) );
@@ -191,7 +280,7 @@ namespace HslCommunication_Net45.Test.Core.Transfer
             byte[] data = new byte[4];
             BitConverter.GetBytes( (ushort)1234 ).CopyTo( data, 0 );
             BitConverter.GetBytes( (ushort)54321 ).CopyTo( data, 2 );
-            data = ReverseBytesByWord( data, false );
+            data = ReverseBytesByWord( data, DataFormat.ABCD );
 
             ushort[] array = byteTransform.TransUInt16( data, 0, 2 );
             Assert.AreEqual<ushort>( 1234, array[0] );
@@ -205,7 +294,7 @@ namespace HslCommunication_Net45.Test.Core.Transfer
             byte[] data = new byte[4];
             BitConverter.GetBytes( (ushort)1234 ).CopyTo( data, 0 );
             BitConverter.GetBytes( (ushort)54321 ).CopyTo( data, 2 );
-            data = ReverseBytesByWord( data, false );
+            data = ReverseBytesByWord( data, DataFormat.ABCD );
 
             byte[] buffer = byteTransform.TransByte( new ushort[] { 1234, 54321 } );
             Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( data, buffer ) );
@@ -221,8 +310,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void BytesToInt32TransferTest( )
         {
             byte[] data = new byte[8];
-            ReverseBytesByWord( BitConverter.GetBytes( 12345678 ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( -9876654 ), byteTransform.IsMultiWordReverse ).CopyTo( data, 4 );
+            ReverseBytesByWord( BitConverter.GetBytes( 12345678 ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( -9876654 ), byteTransform.DataFormat ).CopyTo( data, 4 );
 
             int[] array = byteTransform.TransInt32( data, 0, 2 );
             Assert.AreEqual<int>( 12345678, array[0] );
@@ -233,8 +322,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void Int32ToBytesTransferTest( )
         {
             byte[] data = new byte[8];
-            ReverseBytesByWord( BitConverter.GetBytes( 12345678 ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( -9876654 ), byteTransform.IsMultiWordReverse ).CopyTo( data, 4 );
+            ReverseBytesByWord( BitConverter.GetBytes( 12345678 ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( -9876654 ), byteTransform.DataFormat ).CopyTo( data, 4 );
 
             byte[] buffer = byteTransform.TransByte( new int[] { 12345678, -9876654 } );
             Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( data, buffer ) );
@@ -249,8 +338,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void BytesToUInt32TransferTest( )
         {
             byte[] data = new byte[8];
-            ReverseBytesByWord( BitConverter.GetBytes( (uint)12345678 ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( (uint)9876654 ), byteTransform.IsMultiWordReverse ).CopyTo( data, 4 );
+            ReverseBytesByWord( BitConverter.GetBytes( (uint)12345678 ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( (uint)9876654 ), byteTransform.DataFormat ).CopyTo( data, 4 );
 
             uint[] array = byteTransform.TransUInt32( data, 0, 2 );
             Assert.AreEqual<uint>( 12345678, array[0] );
@@ -262,8 +351,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void UInt32ToBytesTransferTest( )
         {
             byte[] data = new byte[8];
-            ReverseBytesByWord( BitConverter.GetBytes( (uint)12345678 ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( (uint)9876654 ), byteTransform.IsMultiWordReverse ).CopyTo( data, 4 );
+            ReverseBytesByWord( BitConverter.GetBytes( (uint)12345678 ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( (uint)9876654 ), byteTransform.DataFormat ).CopyTo( data, 4 );
 
             byte[] buffer = byteTransform.TransByte( new uint[] { 12345678, 9876654 } );
             Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( data, buffer ) );
@@ -278,8 +367,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void BytesToInt64TransferTest( )
         {
             byte[] data = new byte[16];
-            ReverseBytesByWord( BitConverter.GetBytes( 12345678911234L ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( -987665434123245L ), byteTransform.IsMultiWordReverse ).CopyTo( data, 8 );
+            ReverseBytesByWord( BitConverter.GetBytes( 12345678911234L ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( -987665434123245L ), byteTransform.DataFormat ).CopyTo( data, 8 );
 
             long[] array = byteTransform.TransInt64( data, 0, 2 );
             Assert.AreEqual<long>( 12345678911234L, array[0] );
@@ -290,8 +379,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void Int64ToBytesTransferTest( )
         {
             byte[] data = new byte[16];
-            ReverseBytesByWord( BitConverter.GetBytes( 12345678911234L ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( -987665434123245L ), byteTransform.IsMultiWordReverse ).CopyTo( data, 8 );
+            ReverseBytesByWord( BitConverter.GetBytes( 12345678911234L ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( -987665434123245L ), byteTransform.DataFormat ).CopyTo( data, 8 );
 
             byte[] buffer = byteTransform.TransByte( new long[] { 12345678911234L, -987665434123245L } );
             Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( data, buffer ) );
@@ -306,8 +395,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void BytesToUInt64TransferTest( )
         {
             byte[] data = new byte[16];
-            ReverseBytesByWord( BitConverter.GetBytes( 1234567812123334123UL ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( 92353421232423213UL ), byteTransform.IsMultiWordReverse ).CopyTo( data, 8 );
+            ReverseBytesByWord( BitConverter.GetBytes( 1234567812123334123UL ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( 92353421232423213UL ), byteTransform.DataFormat ).CopyTo( data, 8 );
 
             ulong[] array = byteTransform.TransUInt64( data, 0, 2 );
             Assert.AreEqual<ulong>( 1234567812123334123UL, array[0] );
@@ -319,8 +408,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void UInt64ToBytesTransferTest( )
         {
             byte[] data = new byte[16];
-            ReverseBytesByWord( BitConverter.GetBytes( 1234567812123334123UL ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( 92353421232423213UL ), byteTransform.IsMultiWordReverse ).CopyTo( data, 8 );
+            ReverseBytesByWord( BitConverter.GetBytes( 1234567812123334123UL ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( 92353421232423213UL ), byteTransform.DataFormat ).CopyTo( data, 8 );
 
             byte[] buffer = byteTransform.TransByte( new ulong[] { 1234567812123334123UL, 92353421232423213UL } );
             Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( data, buffer ) );
@@ -336,8 +425,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void BytesToFloatTransferTest( )
         {
             byte[] data = new byte[8];
-            ReverseBytesByWord( BitConverter.GetBytes( 123.456f ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( -0.001234f ), byteTransform.IsMultiWordReverse ).CopyTo( data, 4 );
+            ReverseBytesByWord( BitConverter.GetBytes( 123.456f ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( -0.001234f ), byteTransform.DataFormat ).CopyTo( data, 4 );
 
             float[] array = byteTransform.TransSingle( data, 0, 2 );
             Assert.AreEqual<float>( 123.456f, array[0] );
@@ -348,8 +437,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void FloatToBytesTransferTest( )
         {
             byte[] data = new byte[8];
-            ReverseBytesByWord( BitConverter.GetBytes( 123.456f ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( -0.001234f ), byteTransform.IsMultiWordReverse ).CopyTo( data, 4 );
+            ReverseBytesByWord( BitConverter.GetBytes( 123.456f ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( -0.001234f ), byteTransform.DataFormat ).CopyTo( data, 4 );
 
             byte[] buffer = byteTransform.TransByte( new float[] { 123.456f, -0.001234f } );
             Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( data, buffer ) );
@@ -365,8 +454,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void BytesToDoubleTransferTest( )
         {
             byte[] data = new byte[16];
-            ReverseBytesByWord( BitConverter.GetBytes( 123.456789D ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( -0.00000123D ), byteTransform.IsMultiWordReverse ).CopyTo( data, 8 );
+            ReverseBytesByWord( BitConverter.GetBytes( 123.456789D ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( -0.00000123D ), byteTransform.DataFormat ).CopyTo( data, 8 );
 
             double[] array = byteTransform.TransDouble( data, 0, 2 );
             Assert.AreEqual<double>( 123.456789D, array[0] );
@@ -377,8 +466,8 @@ namespace HslCommunication_Net45.Test.Core.Transfer
         public void DoubleToBytesTransferTest( )
         {
             byte[] data = new byte[16];
-            ReverseBytesByWord( BitConverter.GetBytes( 123.456789D ), byteTransform.IsMultiWordReverse ).CopyTo( data, 0 );
-            ReverseBytesByWord( BitConverter.GetBytes( -0.00000123D ), byteTransform.IsMultiWordReverse ).CopyTo( data, 8 );
+            ReverseBytesByWord( BitConverter.GetBytes( 123.456789D ), byteTransform.DataFormat ).CopyTo( data, 0 );
+            ReverseBytesByWord( BitConverter.GetBytes( -0.00000123D ), byteTransform.DataFormat ).CopyTo( data, 8 );
 
             byte[] buffer = byteTransform.TransByte( new double[] { 123.456789D, -0.00000123D } );
             Assert.IsTrue( HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( data, buffer ) );

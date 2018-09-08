@@ -39,8 +39,24 @@ namespace ModbusTcpServer
             panel2.Enabled = false;
 
 
-            checkBox2.CheckedChanged += CheckBox2_CheckedChanged;
+            comboBox2.SelectedIndex = 0;
+            comboBox2.SelectedIndexChanged += ComboBox2_SelectedIndexChanged;
             checkBox3.CheckedChanged += CheckBox3_CheckedChanged;
+        }
+
+        private void ComboBox2_SelectedIndexChanged( object sender, EventArgs e )
+        {
+            if (busTcpServer != null)
+            {
+                switch (comboBox2.SelectedIndex)
+                {
+                    case 0: busTcpServer.DataFormat = HslCommunication.Core.DataFormat.ABCD; break;
+                    case 1: busTcpServer.DataFormat = HslCommunication.Core.DataFormat.BADC; break;
+                    case 2: busTcpServer.DataFormat = HslCommunication.Core.DataFormat.CDAB; break;
+                    case 3: busTcpServer.DataFormat = HslCommunication.Core.DataFormat.DCBA; break;
+                    default: break;
+                }
+            }
         }
 
         private void CheckBox3_CheckedChanged( object sender, EventArgs e )
@@ -50,15 +66,7 @@ namespace ModbusTcpServer
                 busTcpServer.IsStringReverse = checkBox3.Checked;
             }
         }
-
-        private void CheckBox2_CheckedChanged( object sender, EventArgs e )
-        {
-            if (busTcpServer != null)
-            {
-                busTcpServer.IsMultiWordReverse = checkBox2.Checked;
-            }
-        }
-
+        
         private System.Windows.Forms.Timer timerSecond;
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )
@@ -110,7 +118,8 @@ namespace ModbusTcpServer
                 busTcpServer.LogNet = new HslCommunication.LogNet.LogNetSingle( "logs.txt" );        // 配置日志信息
                 busTcpServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
                 busTcpServer.OnDataReceived += BusTcpServer_OnDataReceived;
-                busTcpServer.IsMultiWordReverse = checkBox2.Checked;
+
+                ComboBox2_SelectedIndexChanged( null, new EventArgs( ) );
                 busTcpServer.IsStringReverse = checkBox3.Checked;
                 busTcpServer.ServerStart( port );
 

@@ -74,12 +74,15 @@ namespace HslCommunication.ModBus
         public int OnlineCount => onlineCount;
 
         /// <summary>
-        /// 多字节的数据是否高低位反转，常用于Int32,UInt32,float,double,Int64,UInt64类型读写
+        /// 获取或设置数据解析的格式，默认ABCD，可选BADC，CDAB，DCBA格式
         /// </summary>
-        public bool IsMultiWordReverse
+        /// <remarks>
+        /// 对于Int32,UInt32,float,double,Int64,UInt64类型来说，存在多地址的电脑情况，需要和服务器进行匹配
+        /// </remarks>
+        public DataFormat DataFormat
         {
-            get { return byteTransform.IsMultiWordReverse; }
-            set { byteTransform.IsMultiWordReverse = value; }
+            get { return byteTransform.DataFormat; }
+            set { byteTransform.DataFormat = value; }
         }
 
         /// <summary>

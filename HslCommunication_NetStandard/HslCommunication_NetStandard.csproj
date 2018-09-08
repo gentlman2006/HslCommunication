@@ -73,6 +73,7 @@
     <Compile Include="..\HslCommunication_Net45\Core\Thread\ThreadLock.cs" Link="Core\Thread\ThreadLock.cs" />
     <Compile Include="..\HslCommunication_Net45\Core\Transfer\ByteTransformBase.cs" Link="Core\Transfer\ByteTransformBase.cs" />
     <Compile Include="..\HslCommunication_Net45\Core\Transfer\ByteTransformHelper.cs" Link="Core\Transfer\ByteTransformHelper.cs" />
+    <Compile Include="..\HslCommunication_Net45\Core\Transfer\DataFormat.cs" Link="Core\Transfer\DataFormat.cs" />
     <Compile Include="..\HslCommunication_Net45\Core\Transfer\IByteTransform.cs" Link="Core\Transfer\IByteTransform.cs" />
     <Compile Include="..\HslCommunication_Net45\Core\Transfer\RegularByteTransform.cs" Link="Core\Transfer\RegularByteTransform.cs" />
     <Compile Include="..\HslCommunication_Net45\Core\Transfer\ReverseBytesTransform.cs" Link="Core\Transfer\ReverseBytesTransform.cs" />

@@ -60,6 +60,8 @@
     <Compile Include="BasicFramework\SoftBasicTest.cs" />
     <Compile Include="BasicFramework\SoftSecurityTest.cs" />
     <Compile Include="BasicFramework\SoftZippedTest.cs" />
+    <Compile Include="Core\Transfer\ReverseWordTransformTest4.cs" />
+    <Compile Include="Core\Transfer\ReverseWordTransformTest3.cs" />
     <Compile Include="Documentation\Samples\Algorithms\ConnectPool.cs" />
     <Compile Include="Documentation\Samples\BasicFramework\SoftAnimation.cs" />
     <Compile Include="Documentation\Samples\BasicFramework\SoftFileSaveBaseExample.cs" />

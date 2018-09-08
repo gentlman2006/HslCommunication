@@ -29,8 +29,8 @@
         private void InitializeComponent( )
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button11 = new System.Windows.Forms.Button();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.button5 = new System.Windows.Forms.Button();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -96,7 +96,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.button11 = new System.Windows.Forms.Button();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -109,9 +109,9 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.comboBox2);
             this.panel1.Controls.Add(this.button11);
             this.panel1.Controls.Add(this.checkBox3);
-            this.panel1.Controls.Add(this.checkBox2);
             this.panel1.Controls.Add(this.button5);
             this.panel1.Controls.Add(this.textBox10);
             this.panel1.Controls.Add(this.label14);
@@ -126,6 +126,17 @@
             this.panel1.Size = new System.Drawing.Size(978, 54);
             this.panel1.TabIndex = 0;
             // 
+            // button11
+            // 
+            this.button11.Enabled = false;
+            this.button11.Location = new System.Drawing.Point(235, 11);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(83, 28);
+            this.button11.TabIndex = 28;
+            this.button11.Text = "关闭服务";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
             // checkBox3
             // 
             this.checkBox3.AutoSize = true;
@@ -135,16 +146,6 @@
             this.checkBox3.TabIndex = 27;
             this.checkBox3.Text = "字符串颠倒";
             this.checkBox3.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(609, 16);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(111, 21);
-            this.checkBox2.TabIndex = 26;
-            this.checkBox2.Text = "数据高地位颠倒";
-            this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // button5
             // 
@@ -823,16 +824,19 @@
             this.linkLabel2.Text = "创作不易，感谢打赏";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
-            // button11
+            // comboBox2
             // 
-            this.button11.Enabled = false;
-            this.button11.Location = new System.Drawing.Point(235, 11);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(83, 28);
-            this.button11.TabIndex = 28;
-            this.button11.Text = "关闭服务";
-            this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "ABCD",
+            "BADC",
+            "CDAB",
+            "DCAB"});
+            this.comboBox2.Location = new System.Drawing.Point(611, 12);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(111, 25);
+            this.comboBox2.TabIndex = 29;
             // 
             // FormModbus
             // 
@@ -935,10 +939,10 @@
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.ComboBox comboBox2;
     }
 }

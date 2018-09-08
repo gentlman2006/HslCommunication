@@ -40,9 +40,26 @@ namespace HslCommunicationDemo
             panel2.Enabled = false;
             userCurve1.SetLeftCurve( "A", new float[0], Color.Tomato );
 
+            comboBox1.SelectedIndex = 0;
 
-            checkBox2.CheckedChanged += CheckBox2_CheckedChanged;
+            comboBox1.SelectedIndexChanged += ComboBox1_SelectedIndexChanged;
             checkBox3.CheckedChanged += CheckBox3_CheckedChanged;
+
+        }
+
+        private void ComboBox1_SelectedIndexChanged( object sender, EventArgs e )
+        {
+            if (busTcpClient != null)
+            {
+                switch (comboBox1.SelectedIndex)
+                {
+                    case 0: busTcpClient.DataFormat = HslCommunication.Core.DataFormat.ABCD;break;
+                    case 1: busTcpClient.DataFormat = HslCommunication.Core.DataFormat.BADC; break;
+                    case 2: busTcpClient.DataFormat = HslCommunication.Core.DataFormat.CDAB; break;
+                    case 3: busTcpClient.DataFormat = HslCommunication.Core.DataFormat.DCBA; break;
+                    default:break;
+                }
+            }
         }
 
         private void CheckBox3_CheckedChanged( object sender, EventArgs e )
@@ -52,14 +69,7 @@ namespace HslCommunicationDemo
                 busTcpClient.IsStringReverse = checkBox3.Checked;
             }
         }
-
-        private void CheckBox2_CheckedChanged( object sender, EventArgs e )
-        {
-            if(busTcpClient!=null)
-            {
-                busTcpClient.IsMultiWordReverse = checkBox2.Checked;
-            }
-        }
+        
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )
         {
@@ -133,7 +143,8 @@ namespace HslCommunicationDemo
             busTcpClient?.ConnectClose( );
             busTcpClient = new ModbusTcpNet( textBox1.Text, port, station );
             busTcpClient.AddressStartWithZero = checkBox1.Checked;
-            busTcpClient.IsMultiWordReverse = checkBox2.Checked;
+
+            ComboBox1_SelectedIndexChanged( null, new EventArgs( ) );  // 设置数据服务
             busTcpClient.IsStringReverse = checkBox3.Checked;
 
             try
