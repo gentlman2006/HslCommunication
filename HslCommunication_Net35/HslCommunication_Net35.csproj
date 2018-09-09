@@ -504,6 +504,9 @@
     <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronInfo.cs">
       <Link>Profinet\Omron\OmronInfo.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Panasonic\PanasonicMewtocol.cs">
+      <Link>Profinet\Panasonic\PanasonicMewtocol.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Siemens\SiemensFetchWriteNet.cs">
       <Link>Profinet\Siemens\SiemensFetchWriteNet.cs</Link>
     </Compile>
@@ -732,8 +735,6 @@
       <Link>Doc.txt</Link>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Profinet\Panasonic\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -29,6 +29,7 @@
         private void InitializeComponent( )
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.textBox15 = new System.Windows.Forms.TextBox();
@@ -102,8 +103,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -134,6 +133,20 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(978, 54);
             this.panel1.TabIndex = 0;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "ABCD",
+            "BADC",
+            "CDAB",
+            "DCAB"});
+            this.comboBox1.Location = new System.Drawing.Point(558, 13);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(111, 25);
+            this.comboBox1.TabIndex = 26;
             // 
             // checkBox3
             // 
@@ -467,7 +480,6 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.linkLabel2);
             this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Controls.Add(this.label19);
             this.groupBox2.Controls.Add(this.button14);
@@ -882,30 +894,6 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
-            // linkLabel2
-            // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(184, 166);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(66, 17);
-            this.linkLabel2.TabIndex = 24;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "linkLabel2";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "ABCD",
-            "BADC",
-            "CDAB",
-            "DCAB"});
-            this.comboBox1.Location = new System.Drawing.Point(558, 13);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(111, 25);
-            this.comboBox1.TabIndex = 26;
-            // 
             // FormModbus
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -1020,6 +1008,5 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.LinkLabel linkLabel2;
     }
 }

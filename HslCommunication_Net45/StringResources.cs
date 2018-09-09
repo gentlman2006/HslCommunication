@@ -156,5 +156,37 @@ namespace HslCommunication
         internal const string AllenBradleySessionStatus64 = "向目标发送封装消息时，始发者使用了无效的会话句柄。"; // An originator used an invalid session handle when sending an encapsulation message.
         internal const string AllenBradleySessionStatus65 = "目标收到一个无效长度的信息。"; // The target received a message of invalid length.
         internal const string AllenBradleySessionStatus69 = "不支持的封装协议修订。"; // Unsupported encapsulation protocol revision.
+
+        /***********************************************************************************
+         * 
+         *    Panasonic PLC 相关
+         * 
+         ************************************************************************************/
+        internal const string PanasonicMewStatus20 = "错误未知";
+        internal const string PanasonicMewStatus21 = "NACK错误，远程单元无法被正确识别，或者发生了数据错误。";
+        internal const string PanasonicMewStatus22 = "WACK 错误:用于远程单元的接收缓冲区已满。";
+        internal const string PanasonicMewStatus23 = "多重端口错误:远程单元编号(01 至 16)设置与本地单元重复。";
+        internal const string PanasonicMewStatus24 = "传输格式错误:试图发送不符合传输格式的数据，或者某一帧数据溢出或发生了数据错误。";
+        internal const string PanasonicMewStatus25 = "硬件错误:传输系统硬件停止操作。";
+        internal const string PanasonicMewStatus26 = "单元号错误:远程单元的编号设置超出 01 至 63 的范围。";
+        internal const string PanasonicMewStatus27 = "不支持错误:接收方数据帧溢出. 试图在不同的模块之间发送不同帧长度的数据。";
+        internal const string PanasonicMewStatus28 = "无应答错误:远程单元不存在. (超时)。";
+        internal const string PanasonicMewStatus29 = "缓冲区关闭错误:试图发送或接收处于关闭状态的缓冲区。";
+        internal const string PanasonicMewStatus30 = "超时错误:持续处于传输禁止状态。";
+        internal const string PanasonicMewStatus40 = "BCC 错误:在指令数据中发生传输错误。";
+        internal const string PanasonicMewStatus41 = "格式错误:所发送的指令信息不符合传输格式。";
+        internal const string PanasonicMewStatus42 = "不支持错误:发送了一个未被支持的指令。向未被支持的目标站发送了指令。";
+        internal const string PanasonicMewStatus43 = "处理步骤错误:在处于传输请求信息挂起时,发送了其他指令。";
+        internal const string PanasonicMewStatus50 = "链接设置错误:设置了实际不存在的链接编号。";
+        internal const string PanasonicMewStatus51 = "同时操作错误:当向其他单元发出指令时,本地单元的传输缓冲区已满。";
+        internal const string PanasonicMewStatus52 = "传输禁止错误:无法向其他单元传输。";
+        internal const string PanasonicMewStatus53 = "忙错误:在接收到指令时,正在处理其他指令。";
+        internal const string PanasonicMewStatus60 = "参数错误:在指令中包含有无法使用的代码,或者代码没有附带区域指定参数(X, Y, D), 等以外。";
+        internal const string PanasonicMewStatus61 = "数据错误:触点编号,区域编号,数据代码格式(BCD,hex,等)上溢出, 下溢出以及区域指定错误。";
+        internal const string PanasonicMewStatus62 = "寄存器错误:过多记录数据在未记录状态下的操作（监控记录、跟踪记录等。)。";
+        internal const string PanasonicMewStatus63 = "PLC 模式错误:当一条指令发出时，运行模式不能够对指令进行处理。";
+        internal const string PanasonicMewStatus65 = "保护错误:在存储保护状态下执行写操作到程序区域或系统寄存器。";
+        internal const string PanasonicMewStatus66 = "地址错误:地址（程序地址、绝对地址等）数据编码形式（BCD、hex 等）、上溢、下溢或指定范围错误。";
+        internal const string PanasonicMewStatus67 = "丢失数据错误:要读的数据不存在。（读取没有写入注释寄存区的数据。。";
     }
 }

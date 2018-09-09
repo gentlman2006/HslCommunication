@@ -254,6 +254,7 @@
     <Compile Include="Profinet\Omron\OmronFinsDataType.cs" />
     <Compile Include="Profinet\Omron\OmronFinsNet.cs" />
     <Compile Include="Profinet\Omron\OmronInfo.cs" />
+    <Compile Include="Profinet\Panasonic\PanasonicMewtocol.cs" />
     <Compile Include="Profinet\Siemens\SiemensFetchWriteNet.cs" />
     <Compile Include="Profinet\Siemens\SiemensPLCS.cs" />
     <Compile Include="Profinet\Siemens\SiemensS7Net.cs" />
@@ -371,8 +372,6 @@
     <None Include="imgaes\abstr1.png" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Profinet\Panasonic\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
