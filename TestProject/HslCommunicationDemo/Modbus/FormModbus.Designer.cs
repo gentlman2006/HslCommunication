@@ -142,7 +142,7 @@
             "ABCD",
             "BADC",
             "CDAB",
-            "DCAB"});
+            "DCBA"});
             this.comboBox1.Location = new System.Drawing.Point(558, 13);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(111, 25);

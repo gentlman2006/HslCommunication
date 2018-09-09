@@ -8,6 +8,12 @@ import HslCommunication.Utilities;
  */
 public class ReverseWordTransform extends ByteTransformBase
 {
+    /**
+     * 实例化一个默认的对象
+     */
+    public  ReverseWordTransform(){
+        this.setDataFormat(DataFormat.ABCD);
+    }
 
     /**
      * 按照字节错位的方法
@@ -62,63 +68,6 @@ public class ReverseWordTransform extends ByteTransformBase
 
 
 
-
-    /**
-     * 从缓存中提取int结果
-     * @param buffer 缓存数据
-     * @param index 索引位置
-     * @return int对象
-     */
-    @Override
-    public int TransInt32( byte[] buffer, int index ) {
-        return super.TransInt32(ReverseBytesByWord(buffer, index, 4), 0);
-    }
-
-
-
-
-    /**
-     * 从缓存中提取long结果
-     * @param buffer 缓存数据
-     * @param index 索引位置
-     * @return long对象
-     */
-    @Override
-    public long TransInt64( byte[] buffer, int index ) {
-        return super.TransInt64(ReverseBytesByWord(buffer, index, 8), 0);
-    }
-
-
-
-
-
-    /**
-     * 从缓存中提取float结果
-     * @param buffer 缓存对象
-     * @param index 索引位置
-     * @return float对象
-     */
-    @Override
-    public float TransSingle( byte[] buffer, int index ) {
-        return super.TransSingle(ReverseBytesByWord(buffer, index, 4), 0);
-    }
-
-
-
-    /**
-     * 从缓存中提取double结果
-     * @param buffer 缓存对象
-     * @param index 索引位置
-     * @return double对象
-     */
-    @Override
-    public double TransDouble( byte[] buffer, int index ) {
-        return super.TransDouble(ReverseBytesByWord(buffer, index, 8), 0);
-    }
-
-
-
-
     /**
      * 从缓存中提取string结果，使用指定的编码
      * @param buffer 缓存对象
@@ -168,87 +117,6 @@ public class ReverseWordTransform extends ByteTransformBase
         }
 
         return ReverseBytesByWord(buffer);
-    }
-
-
-
-
-
-
-    /**
-     * int数组变量转化缓存数据
-     * @param values 等待转化的数组
-     * @return buffer数据
-     */
-    @Override
-    public byte[] TransByte( int[] values ) {
-        if (values == null) return null;
-
-        byte[] buffer = new byte[values.length * 4];
-        for (int i = 0; i < values.length; i++) {
-            byte[] tmp = ReverseBytesByWord(Utilities.getBytes(values[i]));
-            System.arraycopy(ByteTransDataFormat4(tmp), 0, buffer, 4 * i, tmp.length);
-        }
-
-        return buffer;
-    }
-
-
-
-    /**
-     * long数组变量转化缓存数据
-     * @param values 等待转化的数组
-     * @return buffer数据
-     */
-    @Override
-    public byte[] TransByte( long[] values ) {
-        if (values == null) return null;
-
-        byte[] buffer = new byte[values.length * 8];
-        for (int i = 0; i < values.length; i++) {
-            byte[] tmp = ReverseBytesByWord(Utilities.getBytes(values[i]));
-            System.arraycopy(ByteTransDataFormat8(tmp), 0, buffer, 8 * i, tmp.length);
-        }
-
-        return buffer;
-    }
-
-
-
-    /**
-     * float数组变量转化缓存数据
-     * @param values 等待转化的数组
-     * @return buffer数据
-     */
-    public byte[] TransByte( float[] values ) {
-        if (values == null) return null;
-
-        byte[] buffer = new byte[values.length * 4];
-        for (int i = 0; i < values.length; i++) {
-            byte[] tmp = ReverseBytesByWord(Utilities.getBytes(values[i]));
-            System.arraycopy(ByteTransDataFormat4(tmp), 0, buffer, 4 * i, tmp.length);
-        }
-
-        return buffer;
-    }
-
-
-    /**
-     * double数组变量转化缓存数据
-     * @param values 等待转化的数组
-     * @return buffer数据
-     */
-    @Override
-    public byte[] TransByte( double[] values ) {
-        if (values == null) return null;
-
-        byte[] buffer = new byte[values.length * 8];
-        for (int i = 0; i < values.length; i++) {
-            byte[] tmp = ReverseBytesByWord(Utilities.getBytes(values[i]));
-            System.arraycopy(ByteTransDataFormat8(tmp), 0, buffer, 8 * i, tmp.length);
-        }
-
-        return buffer;
     }
 
 

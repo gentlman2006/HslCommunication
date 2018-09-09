@@ -18,7 +18,7 @@ namespace HslCommunication.Core
         /// </summary>
         public ByteTransformBase( )
         {
-            DataFormat = DataFormat.ABCD;
+            DataFormat = DataFormat.DCBA;
         }
 
         #endregion
@@ -623,22 +623,13 @@ namespace HslCommunication.Core
             {
                 case DataFormat.ABCD:
                     {
-                        buffer[0] = value[Index + 0];
-                        buffer[1] = value[Index + 1];
-                        buffer[2] = value[Index + 2];
-                        buffer[3] = value[Index + 3];
+                        buffer[0] = value[Index + 3];
+                        buffer[1] = value[Index + 2];
+                        buffer[2] = value[Index + 1];
+                        buffer[3] = value[Index + 0];
                         break;
                     }
                 case DataFormat.BADC:
-                    {
-                        buffer[0] = value[Index + 1];
-                        buffer[1] = value[Index + 0];
-                        buffer[2] = value[Index + 3];
-                        buffer[3] = value[Index + 2];
-                        break;
-                    }
-
-                case DataFormat.CDAB:
                     {
                         buffer[0] = value[Index + 2];
                         buffer[1] = value[Index + 3];
@@ -646,12 +637,21 @@ namespace HslCommunication.Core
                         buffer[3] = value[Index + 1];
                         break;
                     }
+
+                case DataFormat.CDAB:
+                    {
+                        buffer[0] = value[Index + 1];
+                        buffer[1] = value[Index + 0];
+                        buffer[2] = value[Index + 3];
+                        buffer[3] = value[Index + 2];
+                        break;
+                    }
                 case DataFormat.DCBA:
                     {
-                        buffer[0] = value[Index + 3];
-                        buffer[1] = value[Index + 2];
-                        buffer[2] = value[Index + 1];
-                        buffer[3] = value[Index + 0];
+                        buffer[0] = value[Index + 0];
+                        buffer[1] = value[Index + 1];
+                        buffer[2] = value[Index + 2];
+                        buffer[3] = value[Index + 3];
                         break;
                     }
             }
@@ -672,30 +672,17 @@ namespace HslCommunication.Core
             {
                 case DataFormat.ABCD:
                     {
-                        buffer[0] = value[Index + 0];
-                        buffer[1] = value[Index + 1];
-                        buffer[2] = value[Index + 2];
-                        buffer[3] = value[Index + 3];
-                        buffer[4] = value[Index + 4];
-                        buffer[5] = value[Index + 5];
-                        buffer[6] = value[Index + 6];
-                        buffer[7] = value[Index + 7];
+                        buffer[0] = value[Index + 7];
+                        buffer[1] = value[Index + 6];
+                        buffer[2] = value[Index + 5];
+                        buffer[3] = value[Index + 4];
+                        buffer[4] = value[Index + 3];
+                        buffer[5] = value[Index + 2];
+                        buffer[6] = value[Index + 1];
+                        buffer[7] = value[Index + 0];
                         break;
                     }
                 case DataFormat.BADC:
-                    {
-                        buffer[0] = value[Index + 1];
-                        buffer[1] = value[Index + 0];
-                        buffer[2] = value[Index + 3];
-                        buffer[3] = value[Index + 2];
-                        buffer[4] = value[Index + 5];
-                        buffer[5] = value[Index + 4];
-                        buffer[6] = value[Index + 7];
-                        buffer[7] = value[Index + 6];
-                        break;
-                    }
-
-                case DataFormat.CDAB:
                     {
                         buffer[0] = value[Index + 6];
                         buffer[1] = value[Index + 7];
@@ -707,16 +694,29 @@ namespace HslCommunication.Core
                         buffer[7] = value[Index + 1];
                         break;
                     }
+
+                case DataFormat.CDAB:
+                    {
+                        buffer[0] = value[Index + 1];
+                        buffer[1] = value[Index + 0];
+                        buffer[2] = value[Index + 3];
+                        buffer[3] = value[Index + 2];
+                        buffer[4] = value[Index + 5];
+                        buffer[5] = value[Index + 4];
+                        buffer[6] = value[Index + 7];
+                        buffer[7] = value[Index + 6];
+                        break;
+                    }
                 case DataFormat.DCBA:
                     {
-                        buffer[0] = value[Index + 7];
-                        buffer[1] = value[Index + 6];
-                        buffer[2] = value[Index + 5];
-                        buffer[3] = value[Index + 4];
-                        buffer[4] = value[Index + 3];
-                        buffer[5] = value[Index + 2];
-                        buffer[6] = value[Index + 1];
-                        buffer[7] = value[Index + 0];
+                        buffer[0] = value[Index + 0];
+                        buffer[1] = value[Index + 1];
+                        buffer[2] = value[Index + 2];
+                        buffer[3] = value[Index + 3];
+                        buffer[4] = value[Index + 4];
+                        buffer[5] = value[Index + 5];
+                        buffer[6] = value[Index + 6];
+                        buffer[7] = value[Index + 7];
                         break;
                     }
             }

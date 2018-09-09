@@ -29,6 +29,7 @@
         private void InitializeComponent( )
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label24 = new System.Windows.Forms.Label();
@@ -108,7 +109,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -145,6 +145,20 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(978, 54);
             this.panel1.TabIndex = 0;
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "ABCD",
+            "BADC",
+            "CDAB",
+            "DCBA"});
+            this.comboBox2.Location = new System.Drawing.Point(552, 26);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(111, 25);
+            this.comboBox2.TabIndex = 27;
             // 
             // checkBox3
             // 
@@ -947,20 +961,6 @@
             this.label20.Size = new System.Drawing.Size(108, 17);
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Items.AddRange(new object[] {
-            "ABCD",
-            "BADC",
-            "CDAB",
-            "DCAB"});
-            this.comboBox2.Location = new System.Drawing.Point(552, 26);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(111, 25);
-            this.comboBox2.TabIndex = 27;
             // 
             // FormModbusAscii
             // 

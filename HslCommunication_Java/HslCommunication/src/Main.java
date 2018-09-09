@@ -236,8 +236,14 @@ public class Main {
     private static void ModbusTcpTets(){
         ModbusTcpNet modbusTcpNet = new ModbusTcpNet("127.0.0.1",502,(byte) 0x01);
         // 当你需要指定格式的数据解析时，就需要设置下面的这个信息
-        modbusTcpNet.setDataFormat(DataFormat.ABCD);
-        System.out.println(modbusTcpNet.ReadInt16("s=2;x=4;200").Content);
+        modbusTcpNet.setDataFormat(DataFormat.BADC);
+        OperateResultExOne<Double> read = modbusTcpNet.ReadDouble("s=2;x=4;200");
+        if(read.IsSuccess){
+            System.out.println(read.Content);
+        }
+        else {
+            System.out.println(read.Message);
+        }
 
         modbusTcpNet.Write("100",new int[]{12345,-12345});
     }

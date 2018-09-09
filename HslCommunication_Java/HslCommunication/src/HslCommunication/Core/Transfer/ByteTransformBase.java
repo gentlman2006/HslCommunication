@@ -9,6 +9,13 @@ import HslCommunication.Utilities;
 public class ByteTransformBase implements IByteTransform {
 
     /**
+     * 实例化一个对象
+     */
+    public ByteTransformBase(){
+        this.dataFormat = DataFormat.DCBA;
+    }
+
+    /**
      * 从缓存中提取出bool结果
      *
      * @param buffer 缓存数据
@@ -423,32 +430,31 @@ public class ByteTransformBase implements IByteTransform {
         byte[] buffer = new byte[4];
         switch (dataFormat) {
             case ABCD: {
-                buffer[0] = value[Index + 0];
-                buffer[1] = value[Index + 1];
-                buffer[2] = value[Index + 2];
-                buffer[3] = value[Index + 3];
+                buffer[0] = value[Index + 3];
+                buffer[1] = value[Index + 2];
+                buffer[2] = value[Index + 1];
+                buffer[3] = value[Index + 0];
                 break;
             }
             case BADC: {
-                buffer[0] = value[Index + 1];
-                buffer[1] = value[Index + 0];
-                buffer[2] = value[Index + 3];
-                buffer[3] = value[Index + 2];
-                break;
-            }
-
-            case CDAB: {
                 buffer[0] = value[Index + 2];
                 buffer[1] = value[Index + 3];
                 buffer[2] = value[Index + 0];
                 buffer[3] = value[Index + 1];
                 break;
             }
+            case CDAB: {
+                buffer[0] = value[Index + 1];
+                buffer[1] = value[Index + 0];
+                buffer[2] = value[Index + 3];
+                buffer[3] = value[Index + 2];
+                break;
+            }
             case DCBA: {
-                buffer[0] = value[Index + 3];
-                buffer[1] = value[Index + 2];
-                buffer[2] = value[Index + 1];
-                buffer[3] = value[Index + 0];
+                buffer[0] = value[Index + 0];
+                buffer[1] = value[Index + 1];
+                buffer[2] = value[Index + 2];
+                buffer[3] = value[Index + 3];
                 break;
             }
         }
@@ -478,29 +484,17 @@ public class ByteTransformBase implements IByteTransform {
         byte[] buffer = new byte[8];
         switch (dataFormat) {
             case ABCD: {
-                buffer[0] = value[Index + 0];
-                buffer[1] = value[Index + 1];
-                buffer[2] = value[Index + 2];
-                buffer[3] = value[Index + 3];
-                buffer[4] = value[Index + 4];
-                buffer[5] = value[Index + 5];
-                buffer[6] = value[Index + 6];
-                buffer[7] = value[Index + 7];
+                buffer[0] = value[Index + 7];
+                buffer[1] = value[Index + 6];
+                buffer[2] = value[Index + 5];
+                buffer[3] = value[Index + 4];
+                buffer[4] = value[Index + 3];
+                buffer[5] = value[Index + 2];
+                buffer[6] = value[Index + 1];
+                buffer[7] = value[Index + 0];
                 break;
             }
             case BADC: {
-                buffer[0] = value[Index + 1];
-                buffer[1] = value[Index + 0];
-                buffer[2] = value[Index + 3];
-                buffer[3] = value[Index + 2];
-                buffer[4] = value[Index + 5];
-                buffer[5] = value[Index + 4];
-                buffer[6] = value[Index + 7];
-                buffer[7] = value[Index + 6];
-                break;
-            }
-
-            case CDAB: {
                 buffer[0] = value[Index + 6];
                 buffer[1] = value[Index + 7];
                 buffer[2] = value[Index + 4];
@@ -511,15 +505,27 @@ public class ByteTransformBase implements IByteTransform {
                 buffer[7] = value[Index + 1];
                 break;
             }
+
+            case CDAB: {
+                buffer[0] = value[Index + 1];
+                buffer[1] = value[Index + 0];
+                buffer[2] = value[Index + 3];
+                buffer[3] = value[Index + 2];
+                buffer[4] = value[Index + 5];
+                buffer[5] = value[Index + 4];
+                buffer[6] = value[Index + 7];
+                buffer[7] = value[Index + 6];
+                break;
+            }
             case DCBA: {
-                buffer[0] = value[Index + 7];
-                buffer[1] = value[Index + 6];
-                buffer[2] = value[Index + 5];
-                buffer[3] = value[Index + 4];
-                buffer[4] = value[Index + 3];
-                buffer[5] = value[Index + 2];
-                buffer[6] = value[Index + 1];
-                buffer[7] = value[Index + 0];
+                buffer[0] = value[Index + 0];
+                buffer[1] = value[Index + 1];
+                buffer[2] = value[Index + 2];
+                buffer[3] = value[Index + 3];
+                buffer[4] = value[Index + 4];
+                buffer[5] = value[Index + 5];
+                buffer[6] = value[Index + 6];
+                buffer[7] = value[Index + 7];
                 break;
             }
         }
