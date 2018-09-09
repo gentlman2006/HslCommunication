@@ -16,8 +16,8 @@ public class SoftBasic {
 
     /**
      * 根据大小获取文本描述信息
-     * @param size
-     * @return
+     * @param size 数据大小
+     * @return 字符串文本
      */
     public static String GetSizeDescription(long size) {
         if (size < 1000) {
@@ -37,12 +37,12 @@ public class SoftBasic {
 
     /**
      * 判断两个字节数组是否是一致的，可以指定中间的某个区域
-     * @param b1
-     * @param start1
-     * @param b2
-     * @param start2
-     * @param length
-     * @return
+     * @param b1 第一个字节数组
+     * @param start1 起始字节
+     * @param b2 第二个字节数组
+     * @param start2 起始字节
+     * @param length 对比数据的长度
+     * @return 是否一致
      */
     public static boolean IsTwoBytesEquel(byte[] b1, int start1, byte[] b2, int start2, int length)
     {
@@ -284,11 +284,11 @@ public class SoftBasic {
 
 
 
-    /// <summary>
-    /// 将16进制的字符串转化成Byte数据，将检测每2个字符转化，也就是说，中间可以是任意字符
-    /// </summary>
-    /// <param name="hex"></param>
-    /// <returns></returns>
+    /**
+     * 将16进制的字符串转化成Byte数据，将检测每2个字符转化，也就是说，中间可以是任意字符
+     * @param hex 16进制表示的字符串数据
+     * @return 字节数组
+     */
     public static byte[] HexStringToBytes(String hex)
     {
         hex = hex.toUpperCase();
@@ -317,6 +317,66 @@ public class SoftBasic {
 
         }
         return result;
+    }
+
+
+    /**
+     * 拼接2个字节数组的数据
+     * @param bytes1 数组一
+     * @param bytes2 数组二
+     * @return 拼接后的数组
+     */
+    public static byte[] SpliceTwoByteArray( byte[] bytes1, byte[] bytes2 )
+    {
+        if (bytes1 == null && bytes2 == null) return null;
+        if (bytes1 == null) return bytes2;
+        if (bytes2 == null) return bytes1;
+
+        byte[] buffer = new byte[bytes1.length + bytes2.length];
+        System.arraycopy(bytes1,0,buffer,0,bytes1.length);
+        System.arraycopy(bytes2,0,buffer,bytes1.length,bytes2.length);
+        return buffer;
+    }
+
+    /**
+     * 将一个byte数组的前面指定位数移除，返回新的一个数组
+     * @param value 字节数组
+     * @param length 等待移除的长度
+     * @return 新的数据
+     */
+    public static byte[] BytesArrayRemoveBegin( byte[] value, int length )
+    {
+        return BytesArrayRemoveDouble( value, length, 0 );
+    }
+
+
+    /**
+     * 将一个byte数组的后面指定位数移除，返回新的一个数组
+     * @param value 字节数组
+     * @param length 等待移除的长度
+     * @return 新的数据
+     */
+    public static byte[] BytesArrayRemoveLast( byte[] value, int length )
+    {
+        return BytesArrayRemoveDouble( value, 0, length );
+    }
+
+    /**
+     * 将一个byte数组的前后移除指定位数，返回新的一个数组
+     * @param value 字节数组
+     * @param leftLength 前面的位数
+     * @param rightLength 后面的位数
+     * @return 新的数据
+     */
+    public static byte[] BytesArrayRemoveDouble( byte[] value, int leftLength, int rightLength )
+    {
+        if (value == null) return null;
+        if (value.length <= (leftLength + rightLength)) return new byte[0];
+
+        byte[] buffer = new byte[value.length - leftLength - rightLength];
+        System.arraycopy( value, leftLength, buffer, 0, buffer.length );
+
+        return buffer;
     }
 
 }

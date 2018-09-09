@@ -250,4 +250,15 @@ public interface IByteTransform {
     byte[] TransByte( String value, String encoding );
 
 
+    /**
+     * 设置数据解析的格式，ABCD，BADC，CDAB，DCBA格式
+     * @param dataFormat
+     */
+    void setDataFormat( DataFormat dataFormat );
+
+    /**
+     * 获取数据解析的格式，默认ABCD，可选BADC，CDAB，DCBA格式
+     * @return
+     */
+    DataFormat getDataFormat();
 }

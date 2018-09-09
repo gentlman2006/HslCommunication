@@ -4,6 +4,7 @@ import HslCommunication.BasicFramework.SoftBasic;
 import HslCommunication.BasicFramework.SoftIncrementCount;
 import HslCommunication.Core.IMessage.ModbusTcpMessage;
 import HslCommunication.Core.Net.NetworkBase.NetworkDeviceBase;
+import HslCommunication.Core.Transfer.DataFormat;
 import HslCommunication.Core.Transfer.ReverseWordTransform;
 import HslCommunication.Core.Types.OperateResult;
 import HslCommunication.Core.Types.OperateResultExOne;
@@ -87,22 +88,23 @@ public class ModbusTcpNet extends NetworkDeviceBase<ModbusTcpMessage, ReverseWor
     }
 
     /**
-     * 获取多字节数据是否反转，适用于int,float,double,long类型的数据
+     * 设置多字节数据的反转类型，适用于int,float,double,long类型的数据
      *
-     * @return bool值
+     * @param dataFormat 数据类型
      */
-    public boolean isMultiWordReverse() {
-        return getByteTransform().IsMultiWordReverse;
+    public void setDataFormat(DataFormat dataFormat) {
+        getByteTransform().setDataFormat(dataFormat);
     }
 
     /**
-     * 设置多字节数据是否反转，适用于int,float,double,long类型的数据
+     * 获取多字节数据的反转类型，适用于int,float,double,long类型的数据
      *
-     * @param multiWordReverse bool值
+     * @return
      */
-    public void setMultiWordReverse(boolean multiWordReverse) {
-        getByteTransform().IsMultiWordReverse = multiWordReverse;
+    public DataFormat getDataFormat() {
+        return getByteTransform().getDataFormat();
     }
+
 
     /**
      * 字符串数据是否发生反转

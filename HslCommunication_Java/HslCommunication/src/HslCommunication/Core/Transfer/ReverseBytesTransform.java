@@ -36,7 +36,7 @@ public class ReverseBytesTransform extends ByteTransformBase
         tmp[1] = buffer[2 + index];
         tmp[2] = buffer[1 + index];
         tmp[3] = buffer[0 + index];
-        return Utilities.getInt(tmp, 0);
+        return Utilities.getInt(ByteTransDataFormat4(tmp),0);
     }
 
 
@@ -59,7 +59,7 @@ public class ReverseBytesTransform extends ByteTransformBase
         tmp[5] = buffer[2 + index];
         tmp[6] = buffer[1 + index];
         tmp[7] = buffer[0 + index];
-        return Utilities.getLong(tmp, 0);
+        return Utilities.getLong(ByteTransDataFormat8(tmp), 0);
     }
 
 
@@ -77,7 +77,7 @@ public class ReverseBytesTransform extends ByteTransformBase
         tmp[1] = buffer[2 + index];
         tmp[2] = buffer[1 + index];
         tmp[3] = buffer[0 + index];
-        return Utilities.getFloat(tmp, 0);
+        return Utilities.getFloat(ByteTransDataFormat4(tmp), 0);
     }
 
 
@@ -98,7 +98,7 @@ public class ReverseBytesTransform extends ByteTransformBase
         tmp[5] = buffer[2 + index];
         tmp[6] = buffer[1 + index];
         tmp[7] = buffer[0 + index];
-        return Utilities.getDouble(tmp, 0);
+        return Utilities.getDouble(ByteTransDataFormat8(tmp), 0);
     }
 
 
@@ -140,7 +140,7 @@ public class ReverseBytesTransform extends ByteTransformBase
         for (int i = 0; i < values.length; i++) {
             byte[] tmp = Utilities.getBytes(values[i]);
             Utilities.bytesReverse(tmp);
-            System.arraycopy(tmp, 0, buffer, 4 * i, tmp.length);
+            System.arraycopy(ByteTransDataFormat4(tmp), 0, buffer, 4 * i, tmp.length);
         }
 
         return buffer;
@@ -160,7 +160,7 @@ public class ReverseBytesTransform extends ByteTransformBase
         for (int i = 0; i < values.length; i++) {
             byte[] tmp = Utilities.getBytes(values[i]);
             Utilities.bytesReverse(tmp);
-            System.arraycopy(tmp, 0, buffer, 8 * i, tmp.length);
+            System.arraycopy(ByteTransDataFormat8(tmp), 0, buffer, 8 * i, tmp.length);
         }
 
         return buffer;
@@ -181,7 +181,7 @@ public class ReverseBytesTransform extends ByteTransformBase
         for (int i = 0; i < values.length; i++) {
             byte[] tmp = Utilities.getBytes(values[i]);
             Utilities.bytesReverse(tmp);
-            System.arraycopy(tmp, 0, buffer, 4 * i, tmp.length);
+            System.arraycopy(ByteTransDataFormat4(tmp), 0, buffer, 4 * i, tmp.length);
         }
 
         return buffer;
@@ -202,7 +202,7 @@ public class ReverseBytesTransform extends ByteTransformBase
         for (int i = 0; i < values.length; i++) {
             byte[] tmp = Utilities.getBytes(values[i]);
             Utilities.bytesReverse(tmp);
-            System.arraycopy(tmp, 0, buffer, 8 * i, tmp.length);
+            System.arraycopy(ByteTransDataFormat8(tmp), 0, buffer, 8 * i, tmp.length);
         }
 
         return buffer;
