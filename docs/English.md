@@ -42,6 +42,9 @@ Install-Package HslCommunication
 * QQ Group: [592132877](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8) There are many like-minded friends in the group
 * Email: hsl200909@163.com
 
+## Project Target
+The goal of this project is to develop a .Net and java. Most software systems will include the basic class library functions, implement some common data communications, log records, etc., as well as version classes, network communications, and PLC data access classes. And to achieve seamless integration of C# and java communications.
+
 
 ## HslCommunication.dll Summary
 * [How to communicate with melsec plc](https://github.com/dathlin/HslCommunication/blob/master/docs/Melsec.md)
@@ -70,38 +73,41 @@ v5.2.3 function, support
 This library include some controls render upside picture. u can easily use them
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/controls.png)
 
-## 三菱测试界面 [ Mitsubishi PLC Communication ]
+## Mitsubishi PLC Communication
 Using MC protocol, Qna 3E, Include binary and ascii
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Melsec1.png)
 
-## 西门子测试界面 [ Siemens PLC Communication ]
+## Siemens PLC Communication
 Using S7 protocol And Fetch/Write protocol
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/siemens1.png)
 
-## 欧姆测试界面 [ Omron PLC Communication ]
+## Omron PLC Communication
 Using Fins-tcp protocol
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Omron.png)
 
-## Modbus-Tcp 客户端服务器 [ Modbus-tcp Communication ]
+## AllenBradley PLC Communication
+![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/ab1.png)
+
+## Modbus-tcp Communication
 Client, using read/write coils and register, read discrete input , read register input
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Modbus1.png)
 
 Server, you can build your own modbus-tcp server easily
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Modbus2.png)
 
-## Simplify Net 测试演示 [ Based on Tcp/Ip ]
+## Simplify Net Demo [ Based on Tcp/Ip ]
 Communicaion with multi-computers , client can exchange data with server easily, include server side ,client side
 
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Simlify1.png)
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Simlify2.png)
 
-## Udp Net 测试演示 [ Base on Udp/Ip ]
+## Udp Net Demo [ Base on Udp/Ip ]
 Communicaion with multi-computers , client can send a large of data to server, include server side ,client side
 
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Udp1.png)
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Udp2.png)
 
-## File Net 测试演示 [ Base on Tcp/Ip ]
+## File Net Demo [ Base on Tcp/Ip ]
 Communicaion with multi-computers , client can exchange File with server easily, include server side ,client side
 
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/File1.png)

@@ -52,8 +52,6 @@ Install-Package HslCommunication
 ## Project Target
 本项目的目标在于开发一个.Net及java下大多数软件系统都会包含了基础类库功能，实现一些常用的数据通信，日志记录等等类，以及版本类，网络通讯类，PLC数据访问类。并且实现C#和java无缝通信集成。
 
-The goal of this project is to develop a .Net and java. Most software systems will include the basic class library functions, implement some common data communications, log records, etc., as well as version classes, network communications, and PLC data access classes. And to achieve seamless integration of C# and java communications.
-
 ## HslCommunication.dll Summary 
 完整的项目介绍地址： [http://www.cnblogs.com/dathlin/p/7703805.html](http://www.cnblogs.com/dathlin/p/7703805.html)
 
@@ -136,6 +134,9 @@ Using S7 protocol And Fetch/Write protocol
 ## 欧姆测试界面 [ Omron PLC Communication ]
 Using Fins-tcp protocol
 ![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/Omron.png)
+
+## AB PLC测试界面 [ AllenBradley PLC Communication ]
+![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/ab1.png)
 
 ## Modbus-Tcp 客户端服务器 [ Modbus-tcp Communication ]
 Client, using read/write coils and register, read discrete input , read register input
