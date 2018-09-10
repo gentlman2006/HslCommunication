@@ -728,7 +728,7 @@ namespace HslCommunication.Core
         #region Public Properties
 
         /// <summary>
-        /// 获取或设置数据解析的格式，默认ABCD，可选BADC，CDAB，DCBA格式
+        /// 获取或设置数据解析的格式，默认DCBA，也即是无修改，可选ABCD,BADC，CDAB，DCBA格式，对于Modbus协议来说，默认ABCD
         /// </summary>
         public DataFormat DataFormat { get; set; }
 

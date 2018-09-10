@@ -410,6 +410,14 @@ namespace HslCommunication
     ///             <item>其他的代码优化，重构精简</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-09-10" version="5.3.1" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>修复埃夫特机器人读取数据的bug，已测试通过。</item>
+    ///             <item>ByteTransform数据转换层新增一个DataFormat属性，可选ABCD,BADC,CDAB,DCBA</item>
+    ///             <item>三个modbus协议均适配了ByteTransform并提供了直接修改的属性，默认ABCD</item>
+    ///             <item>注意：如果您的旧项目使用的Modbus类，请务必重新测试适配。给你带来的不便，敬请谅解。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc
