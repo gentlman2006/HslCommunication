@@ -10,6 +10,7 @@ using HslCommunication.Profinet;
 using HslCommunication;
 using HslCommunication.ModBus;
 using System.Threading;
+using System.IO.Ports;
 
 namespace HslCommunicationDemo
 {
@@ -44,6 +45,16 @@ namespace HslCommunicationDemo
             comboBox2.SelectedIndex = 0;
             comboBox2.SelectedIndexChanged += ComboBox2_SelectedIndexChanged;
             checkBox3.CheckedChanged += CheckBox3_CheckedChanged;
+
+            comboBox3.DataSource = SerialPort.GetPortNames( );
+            try
+            {
+                comboBox3.SelectedIndex = 0;
+            }
+            catch
+            {
+                comboBox3.Text = "COM3";
+            }
         }
 
         private void CheckBox3_CheckedChanged( object sender, EventArgs e )
@@ -154,7 +165,7 @@ namespace HslCommunicationDemo
             {
                 busAsciiClient.SerialPortInni( sp =>
                  {
-                     sp.PortName = textBox1.Text;
+                     sp.PortName = comboBox3.Text;
                      sp.BaudRate = baudRate;
                      sp.DataBits = dataBits;
                      sp.StopBits = stopBits == 0 ? System.IO.Ports.StopBits.None : (stopBits == 1 ? System.IO.Ports.StopBits.One : System.IO.Ports.StopBits.Two);

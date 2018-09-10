@@ -22,6 +22,16 @@ namespace HslCommunicationDemo
             panel2.Enabled = false;
 
             comboBox1.SelectedIndex = 0;
+
+            comboBox2.DataSource = SerialPort.GetPortNames( );
+            try
+            {
+                comboBox2.SelectedIndex = 0;
+            }
+            catch
+            {
+                comboBox2.Text = "COM3";
+            }
         }
 
         // 01 10 00 64 00 10 20 00 00 00 01 00 02 00 03 00 04 00 05 00 06 00 07 00 08 00 09 00 0A 00 0B 00 0C 00 0D 00 0E 00 0F
@@ -56,7 +66,7 @@ namespace HslCommunicationDemo
 
 
             SP_ReadData = new SerialPort( );
-            SP_ReadData.PortName = textBox1.Text;
+            SP_ReadData.PortName = comboBox2.Text;
             SP_ReadData.BaudRate = baudRate;
             SP_ReadData.DataBits = dataBits;
             SP_ReadData.StopBits = stopBits == 0 ? StopBits.None : (stopBits == 1 ? StopBits.One : StopBits.Two);
