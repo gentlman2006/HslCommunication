@@ -63,6 +63,7 @@ Install-Package HslCommunication
 * [三菱PLC串口访问](https://www.cnblogs.com/dathlin/p/9536467.html)
 * [西门子PLC访问](http://www.cnblogs.com/dathlin/p/8685855.html)
 * [欧姆龙PLC访问](http://www.cnblogs.com/dathlin/p/8723961.html)
+* [AB PLC访问](https://www.cnblogs.com/dathlin/p/9607929.html)
 * [邮件功能使用](http://www.cnblogs.com/dathlin/p/8463613.html)
 * [流水号生成器](http://www.cnblogs.com/dathlin/p/7811489.html)
 * [软件注册码功能](http://www.cnblogs.com/dathlin/p/7832315.html)
