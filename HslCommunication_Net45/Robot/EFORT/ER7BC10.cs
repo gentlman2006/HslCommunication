@@ -41,7 +41,7 @@ namespace HslCommunication.Robot.EFORT
         /// <returns>字节数组命令</returns>
         public byte[] GetReadCommand()
         {
-            byte[] command = new byte[36];
+            byte[] command = new byte[38];
 
             Encoding.ASCII.GetBytes( "MessageHead" ).CopyTo( command, 0 );
             BitConverter.GetBytes( (ushort)command.Length ).CopyTo( command, 16 );

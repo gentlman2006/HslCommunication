@@ -192,11 +192,7 @@ namespace HslCommunicationDemo
             panel2.Enabled = false;
         }
 
-
-
-
-
-
+        
 
         #endregion
 

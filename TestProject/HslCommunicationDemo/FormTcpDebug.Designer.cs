@@ -29,6 +29,7 @@
         private void InitializeComponent( )
         {
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label8 = new System.Windows.Forms.Label();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
@@ -49,7 +50,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -57,6 +58,7 @@
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.button4);
             this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.textBox6);
             this.panel2.Controls.Add(this.checkBox4);
@@ -70,6 +72,15 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(978, 540);
             this.panel2.TabIndex = 20;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(8, 513);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(116, 17);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "已选择数据字节数：";
             // 
             // textBox6
             // 
@@ -271,14 +282,15 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Ip：";
             // 
-            // label8
+            // button4
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(8, 513);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(116, 17);
-            this.label8.TabIndex = 22;
-            this.label8.Text = "已选择数据字节数：";
+            this.button4.Location = new System.Drawing.Point(287, 7);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(80, 28);
+            this.button4.TabIndex = 23;
+            this.button4.Text = "efort msg";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // FormTcpDebug
             // 
@@ -331,5 +343,6 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button button4;
     }
 }

@@ -11,9 +11,9 @@ using System.Threading;
 
 namespace FP1_F72
 {
-    [Designer("System.Windows.Forms.Design.ParentControlDesigner, System.Design", typeof(IDesigner))]
-    public partial class FP1_C72 : UserControl
+    public partial class FP1_C72
     {
+        private SerialPort serialPort1 = new SerialPort( );
         private bool portOpened = false;
 
         private string tobcc(string s) //帧校验函数FCS
@@ -151,17 +151,7 @@ namespace FP1_F72
             return ret;
         }
 
-
-        public FP1_C72()
-        {
-            InitializeComponent();
-        }
-
-        private void FP1_C72_Load(object sender, EventArgs e)
-        {
-            if (!this.DesignMode)
-            this.Visible = false;
-        }
+        
 
         /// <summary>
         /// PortOpen--打开串口
@@ -635,15 +625,7 @@ namespace FP1_F72
             retstr = rets;
             return true;
         }
-
-        private void FP1_C72_Resize(object sender, EventArgs e)
-        {
-            
-            this.Width = 34;
-            this.Height = 34;
-            
-        }
-
+        
     }
 
 

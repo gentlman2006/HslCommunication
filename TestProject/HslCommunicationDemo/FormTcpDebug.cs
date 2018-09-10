@@ -176,5 +176,11 @@ namespace HslCommunicationDemo
                 HslCommunication.BasicFramework.SoftBasic.ShowExceptionMessage( ex );
             }
         }
+
+        private void button4_Click( object sender, EventArgs e )
+        {
+            HslCommunication.Robot.EFORT.ER7BC10 eR7BC10 = new HslCommunication.Robot.EFORT.ER7BC10( "192.168.0.100",8008 );
+            textBox5.Text = HslCommunication.BasicFramework.SoftBasic.ByteToHexString( eR7BC10.GetReadCommand( ), ' ' );
+        }
     }
 }
