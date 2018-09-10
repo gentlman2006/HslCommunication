@@ -4,6 +4,7 @@ import socket
 import struct
 import threading
 import gzip
+from enum import Enum
 
 class StringResources:
 	'''系统的资源类'''
@@ -86,7 +87,7 @@ class OperateResult:
 			self.ErrorCode = result.ErrorCode
 			self.Message = result.Message
 	@staticmethod
-	def CreateFailedResult(msg):
+	def CreateFailedResult(msg:str):
 		'''创建一个失败的结果对象'''
 		failed = OperateResult()
 		failed.Message = msg
@@ -149,7 +150,7 @@ class INetMessage:
 	def GetContentLengthByHeadBytes(self):
 		'''二次接收的数据长度'''
 		return 0
-	def CheckHeadBytesLegal(self,token):
+	def CheckHeadBytesLegal(self,toke):
 		'''令牌检查是否成功'''
 		return False
 	def GetHeadBytesIdentity(self):
@@ -226,9 +227,18 @@ class HslMessage (INetMessage):
 			return False
 		else:
 			return SoftBasic.IsTwoBytesEquel(self.HeadBytes,12,token,0,16)
+class DataFormat(Enum):
+	'''应用于多字节数据的解析或是生成格式'''
+	ABCD = 0
+	BADC = 1
+	CDAB = 2
+	DCBA = 3
+
 
 class ByteTransform:
 	'''数据转换类的基础，提供了一些基础的方法实现.'''
+	DataFormat = DataFormat.DCBA
+
 	def TransBool(self, buffer, index ):
 		'''将buffer数组转化成bool对象'''
 		return ((buffer[index] & 0x01) == 0x01)
@@ -273,7 +283,7 @@ class ByteTransform:
 	
 	def TransInt32(self, buffer, index ):
 		'''从缓存中提取int结果'''
-		data = self.TransByteArray(buffer,index,4)
+		data = self.ByteTransDataFormat4(self.TransByteArray(buffer,index,4))
 		return struct.unpack('<i',data)[0]
 	def TransInt32Array(self, buffer, index, length ):
 		'''从缓存中提取int数组结果'''
@@ -284,7 +294,7 @@ class ByteTransform:
 
 	def TransUInt32(self, buffer, index ):
 		'''从缓存中提取uint结果'''
-		data = self.TransByteArray(buffer,index,4)
+		data = self.ByteTransDataFormat4(self.TransByteArray(buffer,index,4))
 		return struct.unpack('<I',data)[0]
 	def TransUInt32Array(self, buffer, index, length ):
 		'''从缓存中提取uint数组结果'''
@@ -295,7 +305,7 @@ class ByteTransform:
 	
 	def TransInt64(self, buffer, index ):
 		'''从缓存中提取long结果'''
-		data = self.TransByteArray(buffer,index,8)
+		data = self.ByteTransDataFormat8(self.TransByteArray(buffer,index,8))
 		return struct.unpack('<q',data)[0]
 	def TransInt64Array(self, buffer, index, length):
 		'''从缓存中提取long数组结果'''
@@ -306,7 +316,7 @@ class ByteTransform:
 	
 	def TransUInt64(self, buffer, index ):
 		'''从缓存中提取ulong结果'''
-		data = self.TransByteArray(buffer,index,8)
+		data = self.ByteTransDataFormat8(self.TransByteArray(buffer,index,8))
 		return struct.unpack('<Q',data)[0]
 	def TransUInt64Array(self, buffer, index, length):
 		'''从缓存中提取ulong数组结果'''
@@ -317,7 +327,7 @@ class ByteTransform:
 	
 	def TransSingle(self, buffer, index ):
 		'''从缓存中提取float结果'''
-		data = self.TransByteArray(buffer,index,4)
+		data = self.ByteTransDataFormat4(self.TransByteArray(buffer,index,4))
 		return struct.unpack('<f',data)[0]
 	def TransSingleArray(self, buffer, index, length):
 		'''从缓存中提取float数组结果'''
@@ -328,13 +338,13 @@ class ByteTransform:
 	
 	def TransDouble(self, buffer, index ):
 		'''从缓存中提取double结果'''
-		data = self.TransByteArray(buffer,index,8)
+		data = self.ByteTransDataFormat8(self.TransByteArray(buffer,index,8))
 		return struct.unpack('<d',data)[0]
 	def TransDoubleArray(self, buffer, index, length):
 		'''从缓存中提取double数组结果'''
 		tmp = []
 		for i in range(length):
-			tmp.append( self.TransSingle( buffer, index + 8 * i ))
+			tmp.append( self.TransDouble( buffer, index + 8 * i ))
 		return tmp
 
 	def TransString( self, buffer, index, length, encoding ):
@@ -383,7 +393,7 @@ class ByteTransform:
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 4)
 		for i in range(len(values)):
-			buffer[(i*4): (i*4+4)] = struct.pack('<i',values[i])
+			buffer[(i*4): (i*4+4)] = self.ByteTransDataFormat4(struct.pack('<i',values[i]))
 		return buffer
 	def Int32TransByte(self, value ):
 		'''int变量转化缓存数据，需要传入int值'''
@@ -394,7 +404,7 @@ class ByteTransform:
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 4)
 		for i in range(len(values)):
-			buffer[(i*4): (i*4+4)] = struct.pack('<I',values[i])
+			buffer[(i*4): (i*4+4)] = self.ByteTransDataFormat4(struct.pack('<I',values[i]))
 		return buffer
 	def UInt32TransByte(self, value ):
 		'''uint变量转化缓存数据，需要传入uint值'''
@@ -405,7 +415,7 @@ class ByteTransform:
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 8)
 		for i in range(len(values)):
-			buffer[(i*8): (i*8+8)] = struct.pack('<q',values[i])
+			buffer[(i*8): (i*8+8)] = self.ByteTransDataFormat8(struct.pack('<q',values[i]))
 		return buffer
 	def Int64TransByte(self, value ):
 		'''long变量转化缓存数据，需要传入long值'''
@@ -416,7 +426,7 @@ class ByteTransform:
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 8)
 		for i in range(len(values)):
-			buffer[(i*8): (i*8+8)] = struct.pack('<Q',values[i])
+			buffer[(i*8): (i*8+8)] = self.ByteTransDataFormat8(struct.pack('<Q',values[i]))
 		return buffer
 	def UInt64TransByte(self, value ):
 		'''ulong变量转化缓存数据，需要传入ulong值'''
@@ -427,7 +437,7 @@ class ByteTransform:
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 4)
 		for i in range(len(values)):
-			buffer[(i*4): (i*4+4)] = struct.pack('<f',values[i])
+			buffer[(i*4): (i*4+4)] = self.ByteTransDataFormat4(struct.pack('<f',values[i]))
 		return buffer
 	def FloatTransByte(self, value ):
 		'''float变量转化缓存数据，需要传入float值'''
@@ -438,15 +448,81 @@ class ByteTransform:
 		if (values == None) : return None
 		buffer = bytearray(len(values) * 8)
 		for i in range(len(values)):
-			buffer[(i*8): (i*8+8)] = struct.pack('<d',values[i])
+			buffer[(i*8): (i*8+8)] = self.ByteTransDataFormat8(struct.pack('<d',values[i]))
 		return buffer
 	def DoubleTransByte(self, value ):
 		'''double变量转化缓存数据，需要传入double值'''
 		return self.DoubleArrayTransByte([value])
 
-	def StringTransByte(self, value, encoding ):
+	def StringTransByte(self, value:str, encoding:str ):
 		'''使用指定的编码字符串转化缓存数据，需要传入string值及编码信息'''
 		return value.encode(encoding)
+
+	def ByteTransDataFormat4(self, value, index = 0 ):
+		'''反转多字节的数据信息'''
+		buffer = bytearray(4)
+		if self.DataFormat == DataFormat.ABCD:
+			buffer[0] = value[index + 3]
+			buffer[1] = value[index + 2]
+			buffer[2] = value[index + 1]
+			buffer[3] = value[index + 0]
+		elif self.DataFormat == DataFormat.BADC:
+			buffer[0] = value[index + 2]
+			buffer[1] = value[index + 3]
+			buffer[2] = value[index + 0]
+			buffer[3] = value[index + 1]
+		elif self.DataFormat == DataFormat.CDAB:
+			buffer[0] = value[index + 1]
+			buffer[1] = value[index + 0]
+			buffer[2] = value[index + 3]
+			buffer[3] = value[index + 2]
+		elif self.DataFormat == DataFormat.DCBA:
+			buffer[0] = value[index + 0]
+			buffer[1] = value[index + 1]
+			buffer[2] = value[index + 2]
+			buffer[3] = value[index + 3]
+		return buffer
+
+	def ByteTransDataFormat8(self, value, index = 0 ):
+		'''反转多字节的数据信息'''
+		buffer = bytearray(8)
+		if self.DataFormat == DataFormat.ABCD:
+			buffer[0] = value[index + 7]
+			buffer[1] = value[index + 6]
+			buffer[2] = value[index + 5]
+			buffer[3] = value[index + 4]
+			buffer[4] = value[index + 3]
+			buffer[5] = value[index + 2]
+			buffer[6] = value[index + 1]
+			buffer[7] = value[index + 0]
+		elif self.DataFormat == DataFormat.BADC:
+			buffer[0] = value[index + 6]
+			buffer[1] = value[index + 7]
+			buffer[2] = value[index + 4]
+			buffer[3] = value[index + 5]
+			buffer[4] = value[index + 2]
+			buffer[5] = value[index + 3]
+			buffer[6] = value[index + 0]
+			buffer[7] = value[index + 1]
+		elif self.DataFormat == DataFormat.CDAB:
+			buffer[0] = value[index + 1]
+			buffer[1] = value[index + 0]
+			buffer[2] = value[index + 3]
+			buffer[3] = value[index + 2]
+			buffer[4] = value[index + 5]
+			buffer[5] = value[index + 4]
+			buffer[6] = value[index + 7]
+			buffer[7] = value[index + 6]
+		elif self.DataFormat == DataFormat.DCBA:
+			buffer[0] = value[index + 0]
+			buffer[1] = value[index + 1]
+			buffer[2] = value[index + 2]
+			buffer[3] = value[index + 3]
+			buffer[4] = value[index + 4]
+			buffer[5] = value[index + 5]
+			buffer[6] = value[index + 6]
+			buffer[7] = value[index + 7]
+		return buffer
 
 class RegularByteTransform(ByteTransform):
 	'''常规的字节转换类'''
@@ -547,23 +623,22 @@ class ReverseBytesTransform(ByteTransform):
 
 class ReverseWordTransform(ByteTransform):
 	'''按照字节错位的数据转换类'''
-	def ReverseBytesByWord( self,buffer, index, length, isReverse = False):
+	def __init__(self):
+		'''初始化方法，重新设置DataFormat'''
+		self.DataFormat = DataFormat.ABCD
+	
+	IsStringReverse = False
+
+	def ReverseBytesByWord( self, buffer, index, length ):
 		'''按照字节错位的方法 -> bytearray'''
 		if buffer == None: return None
 		data = self.TransByteArray(buffer,index,length)
 		for i in range(len(data)//2):
 			data[i*2+0],data[i*2+1]= data[i*2+1],data[i*2+0]
-		if isReverse:
-			if len(data)==4:
-				data[0],data[1],data[2],data[3] = data[2],data[3],data[0],data[1]
-			elif len(data) == 8:
-				data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7] = data[6],data[7],data[4],data[5],data[2],data[3],data[0],data[1]
 		return data
-	def ReverseAllBytesByWord( self, buffer , isReverse = False ):
+	def ReverseAllBytesByWord( self, buffer ):
 		'''按照字节错位的方法 -> bytearray'''
-		return self.ReverseBytesByWord(buffer,0,len(buffer),isReverse)
-	IsMultiWordReverse = False
-	IsStringReverse = False
+		return self.ReverseBytesByWord(buffer,0,len(buffer))
 	def TransInt16( self, buffer, index ):
 		'''从缓存中提取short结果'''
 		data = self.ReverseBytesByWord(buffer,index,2)
@@ -572,94 +647,28 @@ class ReverseWordTransform(ByteTransform):
 		'''从缓存中提取ushort结果'''
 		data = self.ReverseBytesByWord(buffer,index,2)
 		return struct.unpack('<H',data)[0]
-	def TransInt32(self, buffer, index ):
-		'''从缓存中提取int结果'''
-		data = self.ReverseBytesByWord(buffer,index,4,self.IsMultiWordReverse)
-		return struct.unpack('<i',data)[0]
-	def TransUInt32(self, buffer, index ):
-		'''从缓存中提取uint结果'''
-		data = self.ReverseBytesByWord(buffer,index,4,self.IsMultiWordReverse)
-		return struct.unpack('<I',data)[0]
-	def TransInt64(self, buffer, index ):
-		'''从缓存中提取long结果'''
-		data = self.ReverseBytesByWord(buffer,index,8,self.IsMultiWordReverse)
-		return struct.unpack('<q',data)[0]
-	def TransUInt64(self, buffer, index ):
-		'''从缓存中提取ulong结果'''
-		data = self.ReverseBytesByWord(buffer,index,8,self.IsMultiWordReverse)
-		return struct.unpack('<Q',data)[0]
-	def TransSingle(self, buffer, index ):
-		'''从缓存中提取float结果'''
-		data = self.ReverseBytesByWord(buffer,index,4,self.IsMultiWordReverse)
-		return struct.unpack('<f',data)[0]
-	def TransDouble(self, buffer, index ):
-		'''从缓存中提取double结果'''
-		data = self.ReverseBytesByWord(buffer,index,8,self.IsMultiWordReverse)
-		return struct.unpack('<d',data)[0]
 	def TransString( self, buffer, index, length, encoding ):
 		'''从缓存中提取string结果，使用指定的编码'''
 		data = self.TransByteArray(buffer,index,length)
 		if self.IsStringReverse:
-			return self.ReverseAllBytesByWord(data,False).decode(encoding)
+			return self.ReverseAllBytesByWord(data).decode(encoding)
 		else:
 			return data.decode(encoding)
 	
 	def Int16ArrayTransByte(self, values ):
 		'''short数组变量转化缓存数据，需要传入short数组'''
 		buffer = super().Int16ArrayTransByte(values)
-		return self.ReverseAllBytesByWord(buffer,False)
+		return self.ReverseAllBytesByWord(buffer)
 	def UInt16ArrayTransByte(self, values ):
 		'''ushort数组变量转化缓存数据，需要传入ushort数组'''
 		buffer = super().UInt16ArrayTransByte(values)
-		return self.ReverseAllBytesByWord(buffer,False)
-	def Int32ArrayTransByte(self, values ):
-		'''int数组变量转化缓存数据，需要传入int数组'''
-		if (values == None) : return None
-		buffer = bytearray(len(values) * 4)
-		for i in range(len(values)):
-			buffer[(i*4): (i*4+4)] = self.ReverseAllBytesByWord(struct.pack('<i',values[i]),self.IsMultiWordReverse)
-		return buffer
-	def UInt32ArrayTransByte(self, values ):
-		'''uint数组变量转化缓存数据，需要传入uint数组'''
-		if (values == None) : return None
-		buffer = bytearray(len(values) * 4)
-		for i in range(len(values)):
-			buffer[(i*4): (i*4+4)] = self.ReverseAllBytesByWord(struct.pack('<I',values[i]),self.IsMultiWordReverse)
-		return buffer
-	def Int64ArrayTransByte(self, values ):
-		'''long数组变量转化缓存数据，需要传入long数组'''
-		if (values == None) : return None
-		buffer = bytearray(len(values) * 8)
-		for i in range(len(values)):
-			buffer[(i*8): (i*8+8)] = self.ReverseAllBytesByWord(struct.pack('<q',values[i]),self.IsMultiWordReverse)
-		return buffer
-	def UInt64ArrayTransByte(self, values ):
-		'''ulong数组变量转化缓存数据，需要传入ulong数组'''
-		if (values == None) : return None
-		buffer = bytearray(len(values) * 8)
-		for i in range(len(values)):
-			buffer[(i*8): (i*8+8)] = self.ReverseAllBytesByWord(struct.pack('<Q',values[i]),self.IsMultiWordReverse)
-		return buffer
-	def FloatArrayTransByte(self, values ):
-		'''float数组变量转化缓存数据，需要传入float数组'''
-		if (values == None) : return None
-		buffer = bytearray(len(values) * 4)
-		for i in range(len(values)):
-			buffer[(i*4): (i*4+4)] = self.ReverseAllBytesByWord(struct.pack('<f',values[i]),self.IsMultiWordReverse)
-		return buffer
-	def DoubleArrayTransByte(self, values ):
-		'''double数组变量转化缓存数据，需要传入double数组'''
-		if (values == None) : return None
-		buffer = bytearray(len(values) * 8)
-		for i in range(len(values)):
-			buffer[(i*8): (i*8+8)] = self.ReverseAllBytesByWord(struct.pack('<d',values[i]),self.IsMultiWordReverse)
-		return buffer
+		return self.ReverseAllBytesByWord(buffer)
 	def StringTransByte(self, value, encoding ):
 		'''使用指定的编码字符串转化缓存数据，需要传入string值及编码信息'''
 		buffer = value.encode(encoding)
 		buffer = SoftBasic.BytesArrayExpandToLengthEven(buffer)
 		if self.IsStringReverse:
-			return self.ReverseAllBytesByWord( buffer, False )
+			return self.ReverseAllBytesByWord( buffer )
 		else:
 			return buffer
 
@@ -1519,6 +1528,7 @@ class ModbusInfo:
 	
 
 class ModbusAddress(DeviceAddressBase):
+	'''Modbus协议的地址类'''
 	Station = 0
 	Function = ModbusInfo.ReadRegister()
 	def __init__(self, address = "0"):
@@ -1529,17 +1539,18 @@ class ModbusAddress(DeviceAddressBase):
 
 	def AnalysisAddress( self, address = "0" ):
 		'''解析Modbus的地址码'''
-		if address.index(";")<0:
+		try:
+			if address.index(';')>=0:
+				listAddress = address.split(";")
+				for index in range(len(listAddress)):
+					if listAddress[index][0] == 's' or listAddress[index][0] == 'S':
+						self.Station = int(listAddress[index][2:])
+					elif listAddress[index][0] == 'x' or listAddress[index][0] == 'X':
+						self.Function = int(listAddress[index][2:])
+					else:
+						self.Address = int(listAddress[index])
+		except:
 			self.Address = int(address)
-		else:
-			listAddress = address.split(";")
-			for index in range(len(listAddress)):
-				if listAddress[index][0] == 's' or listAddress[index][0] == 'S':
-					self.Station = int(listAddress[index][2:])
-				elif listAddress[index][0] == 'x' or listAddress[index][0] == 'X':
-					self.Function = int(listAddress[index][2:])
-				else:
-					self.Address = int(listAddress[index])
 	
 	def CreateReadCoils( self, station, length ):
 		'''创建一个读取线圈的字节对象'''
@@ -1570,7 +1581,7 @@ class ModbusAddress(DeviceAddressBase):
 			buffer[0] = station
 		else:
 			buffer[0] = self.Station
-		buffer[1] = ModbusInfo.ReadRegister()
+		buffer[1] = self.Function
 		buffer[2:4] = struct.pack('>H', self.Address)
 		buffer[4:6] = struct.pack('>H', length)
 		return buffer
@@ -1592,7 +1603,7 @@ class ModbusAddress(DeviceAddressBase):
 			buffer[0] = station
 		else:
 			buffer[0] = self.Station
-		buffer[1] = ModbusInfo.ReadRegister()
+		buffer[1] = ModbusInfo.WriteOneCoil()
 		buffer[2:4] = struct.pack('>H', self.Address)
 		if value == True:
 			buffer[4] = 0xFF
@@ -1604,7 +1615,7 @@ class ModbusAddress(DeviceAddressBase):
 			buffer[0] = station
 		else:
 			buffer[0] = self.Station
-		buffer[1] = ModbusInfo.ReadRegister()
+		buffer[1] = ModbusInfo.WriteOneRegister()
 		buffer[2:4] = struct.pack('>H', self.Address)
 		buffer[4:6] = values
 		return buffer
@@ -1616,11 +1627,12 @@ class ModbusAddress(DeviceAddressBase):
 			buffer[0] = station
 		else:
 			buffer[0] = self.Station
-		buffer[1] = ModbusInfo.ReadRegister()
+		buffer[1] = ModbusInfo.WriteCoil()
 		buffer[2:4] = struct.pack('>H', self.Address)
 		buffer[4:6] = struct.pack('>H', len(values))
 		buffer[6] = len(data)
 		buffer[7:len(buffer)] = data
+		return buffer
 	def CreateWriteRegister(self, station, values):
 		'''创建一个写入批量寄存器的指令'''
 		buffer = bytearray(7 + len(values))
@@ -1628,11 +1640,12 @@ class ModbusAddress(DeviceAddressBase):
 			buffer[0] = station
 		else:
 			buffer[0] = self.Station
-		buffer[1] = ModbusInfo.ReadRegister()
+		buffer[1] = ModbusInfo.WriteRegister()
 		buffer[2:4] = struct.pack('>H', self.Address)
-		buffer[4:6] = struct.pack('>H', len(values))
+		buffer[4:6] = struct.pack('>H', len(values)//2)
 		buffer[6] = len(values)
 		buffer[7:len(buffer)] = values
+		return buffer
 	def AddressAdd(self, value):
 		'''地址新增指定的数'''
 		modbusAddress = ModbusAddress()
@@ -1658,12 +1671,12 @@ class ModbusTcpNet(NetworkDeviceBase):
 		self.port = port
 		self.byteTransform = ReverseWordTransform()
 		self.iNetMessage = ModbusTcpMessage()
-	def SetIsMultiWordReverse( self, value ):
+	def SetDataFormat( self, value ):
 		'''多字节的数据是否高低位反转，该设置的改变会影响Int32,UInt32,float,double,Int64,UInt64类型的读写'''
-		self.byteTransform.IsMultiWordReverse = value
-	def GetIsMultiWordReverse( self ):
+		self.byteTransform.DataFormat = value
+	def GetDataFormat( self ):
 		'''多字节的数据是否高低位反转，该设置的改变会影响Int32,UInt32,float,double,Int64,UInt64类型的读写'''
-		return self.byteTransform.IsMultiWordReverse
+		return self.byteTransform.DataFormat
 	def SetIsStringReverse( self, value ):
 		'''字符串数据是否按照字来反转'''
 		self.byteTransform.IsStringReverse = value
@@ -1737,11 +1750,18 @@ class ModbusTcpNet(NetworkDeviceBase):
 		messageId = self.softIncrementCount.GetCurrentValue()
 		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteRegister(self.station,values), messageId)
 		return OperateResult.CreateSuccessResult(buffer)
+	def BuildReadModbusAddressCommand( self, address, length ):
+		'''生成一个读取寄存器的指令头，address->ModbusAddress'''
+		# 获取消息号
+		messageId =  self.softIncrementCount.GetCurrentValue()
+		# 生成最终tcp指令
+		buffer = ModbusInfo.PackCommandToTcp( address.CreateReadRegister( self.station, length ), messageId )
+		return OperateResult.CreateSuccessResult( buffer )
 	def CheckModbusTcpResponse( self, send ):
 		'''检查当前的Modbus-Tcp响应是否是正确的'''
 		resultBytes = self.ReadFromCoreServer( send )
-		if resultBytes.IsSuccess == False:
-			if ((send[7] + 0x80) == resultBytes.Content[7]):
+		if resultBytes.IsSuccess == True:
+			if (send[7] + 0x80) == resultBytes.Content[7]:
 				# 发生了错误
 				resultBytes.IsSuccess = False
 				resultBytes.Message = ModbusInfo.GetDescriptionByErrorCode( resultBytes.Content[8] )
@@ -1760,8 +1780,20 @@ class ModbusTcpNet(NetworkDeviceBase):
 			command = self.BuildReadInputRegisterCommand( address, length )
 		else:
 			command = OperateResult.CreateFailedResult( StringResources.ModbusTcpFunctionCodeNotSupport() )
-		
 		if command.IsSuccess == False : return OperateResult.CreateFromFailedResult( command )
+
+		resultBytes = self.CheckModbusTcpResponse( command.Content )
+		if resultBytes.IsSuccess == True:
+			# 二次数据处理
+			if len(resultBytes.Content) >= 9:
+				buffer = bytearray(len(resultBytes.Content) - 9)
+				buffer[0:len(buffer)] = resultBytes.Content[9:]
+				resultBytes.Content = buffer
+		return resultBytes
+	def ReadModBusAddressBase( self, address, length = 1 ):
+		'''读取服务器的数据，需要指定不同的功能码'''
+		command = self.BuildReadModbusAddressCommand( address, length )
+		if command.IsSuccess == False: return OperateResult.CreateFromFailedResult(command)
 
 		resultBytes = self.CheckModbusTcpResponse( command.Content )
 		if resultBytes.IsSuccess == True:
@@ -1795,7 +1827,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 		'''从Modbus服务器批量读取寄存器的信息，需要指定起始地址，读取长度'''
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
 		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult( analysis )
-		return self.ReadModBusBase( analysis.Content.Function, address, length )
+		return self.ReadModBusAddressBase( analysis.Content, length )
 	def WriteOneRegister( self, address, value ):
 		'''写一个寄存器数据'''
 		if type(value) == list:
