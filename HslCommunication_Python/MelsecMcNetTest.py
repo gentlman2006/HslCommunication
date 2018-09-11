@@ -13,5 +13,7 @@ def printWriteResult(result):
 
 if __name__ == "__main__":
     melsecNet = MelsecMcNet("192.168.8.12",6002)
-
-    printReadResult(melsecNet.ReadInt16("D300"))
+    if melsecNet.ConnectServer().IsSuccess == False:
+        print("connect falied  ")
+    else:
+        printReadResult(melsecNet.ReadInt16("D300"))

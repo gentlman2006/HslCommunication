@@ -917,6 +917,24 @@ class SoftBasic:
 		buffer[4],buffer[5] = buffer[5],buffer[4]
 		buffer[6],buffer[7] = buffer[7],buffer[6]
 		return buffer
+	@staticmethod
+	def ArrayExpandToLength( value, length ):
+		'''将数组扩充到指定的长度'''
+		buffer = bytearray(length)
+		if len(value) >= length:
+			buffer[0:] = value[0:len(value)]
+		else:
+			buffer[0:len(value)] = value
+		return buffer
+	@staticmethod
+	def ArrayExpandToLengthEven( value ):
+		'''将数组扩充到偶数的长度'''
+		if len(value) % 2 == 0:
+			return value
+		else:
+			buffer = bytearray(len(value)+1)
+			buffer[0:len(value)] = value
+			return value
 
 class HslSecurity:
 	@staticmethod
@@ -2212,7 +2230,42 @@ class MelsecMcNet(NetworkDeviceBase):
 				else:
 					content.append(False)
 			return OperateResult.CreateSuccessResult( content )
+	def Write( self, address, value ):
+		'''向PLC写入数据，数据格式为原始的字节类型'''
+		# 解析指令
+		command = MelsecMcNet.BuildWriteCommand( address, value, self.NetworkNumber, self.NetworkStationNumber )
+		if command.IsSuccess == False : return command
 
+		# 核心交互
+		read = self.ReadFromCoreServer( command.Content )
+		if read.IsSuccess == False : return read
+
+		# 错误码校验
+		errorCode = read.Content[9] * 256 + read.Content[10]
+		if errorCode != 0 : 
+			result = OperateResult()
+			result.ErrorCode = errorCode
+			read.Message = "请翻查三菱通讯手册来查看具体的信息。"
+			return result
+
+		# 成功
+		return OperateResult.CreateSuccessResult( )
+	def WriteString( self, address, value, length ):
+		'''写入string类型的数据'''
+		temp = self.byteTransform.TransByte( value, 'ascii' )
+		temp = SoftBasic.ArrayExpandToLength( temp, length )
+		temp = SoftBasic.ArrayExpandToLengthEven( temp )
+		return self.Write( address, temp )
+	def WriteBool( self, address, values ):
+		'''向PLC中位软元件写入bool数组或是值，返回值说明，比如你写入M100,values[0]对应M100'''
+		if type(values) == list:
+			buffer = bytearray(len(values))
+			for i in range(len(values)):
+				if values[i] == True:
+					buffer[i] = 0x01
+			return self.Write(address, buffer)
+		else:
+			return self.WriteBool(address,[values])
 
 # NetSimplifyClient类
 class NetSimplifyClient(NetworkDoubleBase):
