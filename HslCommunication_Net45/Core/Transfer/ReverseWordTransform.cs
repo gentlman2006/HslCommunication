@@ -127,17 +127,6 @@ namespace HslCommunication.Core
 
         #region Get Bytes From Value
         
-        /// <summary>
-        /// bool数组变量转化缓存数据
-        /// </summary>
-        /// <param name="values">等待转化的数组</param>
-        /// <returns>buffer数据</returns>
-        public override byte[] TransByte( bool[] values )
-        {
-            return BasicFramework.SoftBasic.BoolArrayToByte( values );
-        }
-
-
 
         /// <summary>
         /// short数组变量转化缓存数据

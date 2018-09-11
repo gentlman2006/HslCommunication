@@ -131,7 +131,7 @@ namespace HslCommunication.Profinet.Melsec
         /// </example>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
-            //获取指令
+            // 获取指令
             var command = BuildReadCommand( address, length, NetworkNumber, NetworkStationNumber );
             if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
@@ -458,14 +458,14 @@ namespace HslCommunication.Profinet.Melsec
             _PLCCommand[5]  = 0x03;
             _PLCCommand[6]  = networkStationNumber;                          // 目标模块站号
             _PLCCommand[7]  = (byte)((_PLCCommand.Length - 9) % 256);        // 请求数据长度
-            _PLCCommand[8]  = (byte)((_PLCCommand.Length - 9) / 256); ;
+            _PLCCommand[8]  = (byte)((_PLCCommand.Length - 9) / 256);
             _PLCCommand[9]  = 0x0A;                                          // CPU监视定时器
             _PLCCommand[10] = 0x00;
             _PLCCommand[11] = 0x01;                                          // 批量读取数据命令
             _PLCCommand[12] = 0x14;
             _PLCCommand[13] = analysis.Content1.DataType;                    // 以点为单位还是字为单位成批读取
             _PLCCommand[14] = 0x00;
-            _PLCCommand[15] = (byte)(analysis.Content2 % 256); ;             // 起始地址的地位
+            _PLCCommand[15] = (byte)(analysis.Content2 % 256);               // 起始地址的地位
             _PLCCommand[16] = (byte)(analysis.Content2 / 256);
             _PLCCommand[17] = 0x00;
             _PLCCommand[18] = analysis.Content1.DataCode;                    // 指明写入的数据

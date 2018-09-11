@@ -614,44 +614,44 @@ namespace HslCommunication.Core
         /// 反转多字节的数据信息
         /// </summary>
         /// <param name="value">数据字节</param>
-        /// <param name="Index">起始索引，默认值为0</param>
+        /// <param name="index">起始索引，默认值为0</param>
         /// <returns>实际字节信息</returns>
-        protected byte[] ByteTransDataFormat4( byte[] value, int Index = 0 )
+        protected byte[] ByteTransDataFormat4( byte[] value, int index = 0 )
         {
             byte[] buffer = new byte[4];
             switch (DataFormat)
             {
                 case DataFormat.ABCD:
                     {
-                        buffer[0] = value[Index + 3];
-                        buffer[1] = value[Index + 2];
-                        buffer[2] = value[Index + 1];
-                        buffer[3] = value[Index + 0];
+                        buffer[0] = value[index + 3];
+                        buffer[1] = value[index + 2];
+                        buffer[2] = value[index + 1];
+                        buffer[3] = value[index + 0];
                         break;
                     }
                 case DataFormat.BADC:
                     {
-                        buffer[0] = value[Index + 2];
-                        buffer[1] = value[Index + 3];
-                        buffer[2] = value[Index + 0];
-                        buffer[3] = value[Index + 1];
+                        buffer[0] = value[index + 2];
+                        buffer[1] = value[index + 3];
+                        buffer[2] = value[index + 0];
+                        buffer[3] = value[index + 1];
                         break;
                     }
 
                 case DataFormat.CDAB:
                     {
-                        buffer[0] = value[Index + 1];
-                        buffer[1] = value[Index + 0];
-                        buffer[2] = value[Index + 3];
-                        buffer[3] = value[Index + 2];
+                        buffer[0] = value[index + 1];
+                        buffer[1] = value[index + 0];
+                        buffer[2] = value[index + 3];
+                        buffer[3] = value[index + 2];
                         break;
                     }
                 case DataFormat.DCBA:
                     {
-                        buffer[0] = value[Index + 0];
-                        buffer[1] = value[Index + 1];
-                        buffer[2] = value[Index + 2];
-                        buffer[3] = value[Index + 3];
+                        buffer[0] = value[index + 0];
+                        buffer[1] = value[index + 1];
+                        buffer[2] = value[index + 2];
+                        buffer[3] = value[index + 3];
                         break;
                     }
             }
@@ -663,60 +663,60 @@ namespace HslCommunication.Core
         /// 反转多字节的数据信息
         /// </summary>
         /// <param name="value">数据字节</param>
-        /// <param name="Index">起始索引，默认值为0</param>
+        /// <param name="index">起始索引，默认值为0</param>
         /// <returns>实际字节信息</returns>
-        protected byte[] ByteTransDataFormat8( byte[] value, int Index = 0 )
+        protected byte[] ByteTransDataFormat8( byte[] value, int index = 0 )
         {
             byte[] buffer = new byte[8];
             switch (DataFormat)
             {
                 case DataFormat.ABCD:
                     {
-                        buffer[0] = value[Index + 7];
-                        buffer[1] = value[Index + 6];
-                        buffer[2] = value[Index + 5];
-                        buffer[3] = value[Index + 4];
-                        buffer[4] = value[Index + 3];
-                        buffer[5] = value[Index + 2];
-                        buffer[6] = value[Index + 1];
-                        buffer[7] = value[Index + 0];
+                        buffer[0] = value[index + 7];
+                        buffer[1] = value[index + 6];
+                        buffer[2] = value[index + 5];
+                        buffer[3] = value[index + 4];
+                        buffer[4] = value[index + 3];
+                        buffer[5] = value[index + 2];
+                        buffer[6] = value[index + 1];
+                        buffer[7] = value[index + 0];
                         break;
                     }
                 case DataFormat.BADC:
                     {
-                        buffer[0] = value[Index + 6];
-                        buffer[1] = value[Index + 7];
-                        buffer[2] = value[Index + 4];
-                        buffer[3] = value[Index + 5];
-                        buffer[4] = value[Index + 2];
-                        buffer[5] = value[Index + 3];
-                        buffer[6] = value[Index + 0];
-                        buffer[7] = value[Index + 1];
+                        buffer[0] = value[index + 6];
+                        buffer[1] = value[index + 7];
+                        buffer[2] = value[index + 4];
+                        buffer[3] = value[index + 5];
+                        buffer[4] = value[index + 2];
+                        buffer[5] = value[index + 3];
+                        buffer[6] = value[index + 0];
+                        buffer[7] = value[index + 1];
                         break;
                     }
 
                 case DataFormat.CDAB:
                     {
-                        buffer[0] = value[Index + 1];
-                        buffer[1] = value[Index + 0];
-                        buffer[2] = value[Index + 3];
-                        buffer[3] = value[Index + 2];
-                        buffer[4] = value[Index + 5];
-                        buffer[5] = value[Index + 4];
-                        buffer[6] = value[Index + 7];
-                        buffer[7] = value[Index + 6];
+                        buffer[0] = value[index + 1];
+                        buffer[1] = value[index + 0];
+                        buffer[2] = value[index + 3];
+                        buffer[3] = value[index + 2];
+                        buffer[4] = value[index + 5];
+                        buffer[5] = value[index + 4];
+                        buffer[6] = value[index + 7];
+                        buffer[7] = value[index + 6];
                         break;
                     }
                 case DataFormat.DCBA:
                     {
-                        buffer[0] = value[Index + 0];
-                        buffer[1] = value[Index + 1];
-                        buffer[2] = value[Index + 2];
-                        buffer[3] = value[Index + 3];
-                        buffer[4] = value[Index + 4];
-                        buffer[5] = value[Index + 5];
-                        buffer[6] = value[Index + 6];
-                        buffer[7] = value[Index + 7];
+                        buffer[0] = value[index + 0];
+                        buffer[1] = value[index + 1];
+                        buffer[2] = value[index + 2];
+                        buffer[3] = value[index + 3];
+                        buffer[4] = value[index + 4];
+                        buffer[5] = value[index + 5];
+                        buffer[6] = value[index + 6];
+                        buffer[7] = value[index + 7];
                         break;
                     }
             }
