@@ -422,5 +422,27 @@ namespace HslCommunication_Net45.Test.Documentation.Samples.BasicFramework
 
             #endregion
         }
+
+        public void BytesReverseByWordExample( )
+        {
+            #region BytesReverseByWord
+
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05, 0x12 };
+
+
+            byte[] buffer = SoftBasic.BytesReverseByWord( b1 );
+
+            // buffer的值就为 = new byte[] { 0xA6, 0x13, 0x85, 0x15, 0x05, 0x5B, 0x00, 0x12 };
+
+            // 再举个例子
+
+            byte[] b2 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05 };
+            
+            byte[] buffer2 = SoftBasic.BytesReverseByWord( b1 );
+
+            // buffer2的值就是 = new byte[] { 0xA6, 0x13, 0x85, 0x15, 0x05, 0x5B };
+
+            #endregion
+        }
     }
 }

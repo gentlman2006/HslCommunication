@@ -245,6 +245,30 @@ namespace HslCommunication_Net45.Test.BasicFramework
             if (version1.InnerVersion != version2.InnerVersion) Assert.Fail( "内部版不一致" );
         }
 
+
+        [TestMethod]
+        public void BytesReverseByWordTest1( )
+        {
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05, 0x12 };
+            byte[] b2 = new byte[] { 0xA6, 0x13, 0x85, 0x15, 0x05, 0x5B, 0x00, 0x12 };
+
+
+            byte[] buffer = SoftBasic.BytesReverseByWord( b1 );
+            Assert.IsTrue( SoftBasic.IsTwoBytesEquel( b2, buffer ) );
+        }
+
+        [TestMethod]
+        public void BytesReverseByWordTest2( )
+        {
+            byte[] b1 = new byte[] { 0x13, 0xA6, 0x15, 0x85, 0x5B, 0x05 };
+            byte[] b2 = new byte[] { 0xA6, 0x13, 0x85, 0x15, 0x05, 0x5B };
+
+
+            byte[] buffer = SoftBasic.BytesReverseByWord( b1 );
+            Assert.IsTrue( SoftBasic.IsTwoBytesEquel( b2, buffer ) );
+        }
+
+
     }
 
 

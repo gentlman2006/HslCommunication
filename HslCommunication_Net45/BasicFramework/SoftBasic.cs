@@ -118,7 +118,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region 数组处理方法
+        #region Array Expaned
 
         /// <summary>
         /// 一个通用的数组新增个数方法，会自动判断越界情况，越界的情况下，会自动的截断或是填充
@@ -543,6 +543,33 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
+        #region Byte Reverse By Word
+
+        /// <summary>
+        /// 将byte数组按照双字节进行反转，如果为单数的情况，则自动补齐
+        /// </summary>
+        /// <param name="inBytes">输入的字节信息</param>
+        /// <returns>反转后的数据</returns>
+        /// <example>
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\BasicFramework\SoftBasicExample.cs" region="BytesReverseByWord" title="BytesReverseByWord示例" />
+        /// </example>
+        public static byte[] BytesReverseByWord(byte[] inBytes )
+        {
+            if (inBytes == null) return null;
+            byte[] buffer = ArrayExpandToLengthEven( inBytes );
+
+            for (int i = 0; i < buffer.Length / 2; i++)
+            {
+                byte tmp = buffer[i * 2 + 0];
+                buffer[i * 2 + 0] = buffer[i * 2 + 1];
+                buffer[i * 2 + 1] = tmp;
+            }
+
+            return buffer;
+        }
+
+        #endregion
+
         #region Byte[] and AsciiByte[] transform
 
         /// <summary>
@@ -568,7 +595,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region Bool[]  and byte[] transform
+        #region Bool[] and byte[] transform
 
 
         /// <summary>
