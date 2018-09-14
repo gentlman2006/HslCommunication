@@ -100,6 +100,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -360,6 +361,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.button3);
             this.groupBox3.Controls.Add(this.textBox10);
             this.groupBox3.Controls.Add(this.label13);
             this.groupBox3.Controls.Add(this.button25);
@@ -404,7 +406,7 @@
             // 
             // textBox9
             // 
-            this.textBox9.Location = new System.Drawing.Point(239, 27);
+            this.textBox9.Location = new System.Drawing.Point(234, 27);
             this.textBox9.Name = "textBox9";
             this.textBox9.Size = new System.Drawing.Size(102, 23);
             this.textBox9.TabIndex = 7;
@@ -852,6 +854,16 @@
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(342, 24);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(82, 28);
+            this.button3.TabIndex = 15;
+            this.button3.Text = "订货号";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // FormSiemens
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -963,5 +975,6 @@
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Button button23;
         private System.Windows.Forms.Button button_read_byte;
+        private System.Windows.Forms.Button button3;
     }
 }

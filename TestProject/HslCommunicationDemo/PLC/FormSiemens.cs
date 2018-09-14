@@ -382,6 +382,20 @@ namespace HslCommunicationDemo
 
 
 
+        private void button3_Click( object sender, EventArgs e )
+        {
+            // 订货号
+            OperateResult<string> read = siemensTcpNet.ReadOrderNumber( );
+            if (read.IsSuccess)
+            {
+                textBox10.Text = "订货号：" + read.Content;
+            }
+            else
+            {
+                MessageBox.Show( "读取失败：" + read.ToMessageShowString( ) );
+            }
+        }
+
         #endregion
 
         #region 报文读取测试
@@ -567,5 +581,6 @@ namespace HslCommunicationDemo
         }
 
         #endregion
+
     }
 }
