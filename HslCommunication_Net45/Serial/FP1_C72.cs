@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace FP1_F72
 {
-    public partial class FP1_C72
+    class FP1_C72
     {
         private SerialPort serialPort1 = new SerialPort( );
         private bool portOpened = false;

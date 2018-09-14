@@ -172,6 +172,12 @@
     <Compile Include="PLC\FormMelsecSerial.Designer.cs">
       <DependentUpon>FormMelsecSerial.cs</DependentUpon>
     </Compile>
+    <Compile Include="PLC\FormPanasonicMew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PLC\FormPanasonicMew.Designer.cs">
+      <DependentUpon>FormPanasonicMew.cs</DependentUpon>
+    </Compile>
     <Compile Include="PLC\FormOmron.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -314,6 +320,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PLC\FormMelsecSerial.resx">
       <DependentUpon>FormMelsecSerial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PLC\FormPanasonicMew.resx">
+      <DependentUpon>FormPanasonicMew.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PLC\FormOmron.resx">
       <DependentUpon>FormOmron.cs</DependentUpon>

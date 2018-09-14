@@ -96,6 +96,7 @@
     <Compile Include="Modbus\ModbusTcpTest.cs" />
     <Compile Include="Profinet\AllenBradley\AllenBradleyHelper.cs" />
     <Compile Include="Profinet\Melsec\MelsecFxSerialTest.cs" />
+    <Compile Include="Profinet\Panasonic\PanasonicMewtocolTest.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
