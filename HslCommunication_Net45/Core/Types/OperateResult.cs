@@ -17,12 +17,15 @@ namespace HslCommunication
      *    
      *    时间：2018年3月11日 22:08:08
      *    更新：新增一些静态方法来方便的获取带有参数的成功对象，新增快速复制错误信息的方法
+     *    
+     *    时间：2018年8月23日 12:19:36
+     *    更新：新增两个不同的结果对象构造方法
      * 
      *******************************************************************************/
 
 
     /// <summary>
-    /// 操作结果的类，只带有成功标志和错误信息
+    /// 操作结果的类，只带有成功标志和错误信息 -> The class that operates the result, with only success flags and error messages
     /// </summary>
     /// <remarks>
     /// 当 <see cref="IsSuccess"/> 为 True 时，忽略 <see cref="Message"/> 及 <see cref="ErrorCode"/> 的值
@@ -59,8 +62,7 @@ namespace HslCommunication
         }
 
         #endregion
-
-
+        
         /// <summary>
         /// 指示本次访问是否成功
         /// </summary>
@@ -647,6 +649,36 @@ namespace HslCommunication
     /// <typeparam name="T">泛型类</typeparam>
     public class OperateResult<T> : OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult( ) : base( )
+        {
+        }
+
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg ) : base( msg )
+        {
+
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg ) : base( err, msg )
+        {
+
+        }
+
+        #endregion
+
         /// <summary>
         /// 用户自定义的泛型数据
         /// </summary>
@@ -660,6 +692,36 @@ namespace HslCommunication
     /// <typeparam name="T2">泛型类</typeparam>
     public class OperateResult<T1, T2> : OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult( ) : base( )
+        {
+        }
+
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg ) : base( msg )
+        {
+
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg ) : base( err, msg )
+        {
+
+        }
+
+        #endregion
+
         /// <summary>
         /// 用户自定义的泛型数据1
         /// </summary>
@@ -679,6 +741,36 @@ namespace HslCommunication
     /// <typeparam name="T3">泛型类</typeparam>
     public class OperateResult<T1, T2, T3> : OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult( ) : base( )
+        {
+        }
+
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg ) : base( msg )
+        {
+
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg ) : base( err, msg )
+        {
+
+        }
+
+        #endregion
+
         /// <summary>
         /// 用户自定义的泛型数据1
         /// </summary>
@@ -704,6 +796,36 @@ namespace HslCommunication
     /// <typeparam name="T4">泛型类</typeparam>
     public class OperateResult<T1, T2, T3, T4> : OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult( ) : base( )
+        {
+        }
+
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg ) : base( msg )
+        {
+
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg ) : base( err, msg )
+        {
+
+        }
+
+        #endregion
+
         /// <summary>
         /// 用户自定义的泛型数据1
         /// </summary>
@@ -735,6 +857,36 @@ namespace HslCommunication
     /// <typeparam name="T5">泛型类</typeparam>
     public class OperateResult<T1, T2, T3, T4, T5> : OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult( ) : base( )
+        {
+        }
+
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg ) : base( msg )
+        {
+
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg ) : base( err, msg )
+        {
+
+        }
+
+        #endregion
+
         /// <summary>
         /// 用户自定义的泛型数据1
         /// </summary>
@@ -773,6 +925,36 @@ namespace HslCommunication
     /// <typeparam name="T6">泛型类</typeparam>
     public class OperateResult<T1, T2, T3, T4, T5, T6> : OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult( ) : base( )
+        {
+        }
+
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg ) : base( msg )
+        {
+
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg ) : base( err, msg )
+        {
+
+        }
+
+        #endregion
+
         /// <summary>
         /// 用户自定义的泛型数据1
         /// </summary>
@@ -817,6 +999,36 @@ namespace HslCommunication
     /// <typeparam name="T7">泛型类</typeparam>
     public class OperateResult<T1, T2, T3, T4, T5, T6, T7> : OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult( ) : base( )
+        {
+        }
+
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg ) : base( msg )
+        {
+
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg ) : base( err, msg )
+        {
+
+        }
+
+        #endregion
+
         /// <summary>
         /// 用户自定义的泛型数据1
         /// </summary>
@@ -868,6 +1080,36 @@ namespace HslCommunication
     /// <typeparam name="T8">泛型类</typeparam>
     public class OperateResult<T1, T2, T3, T4, T5, T6, T7, T8> : OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult( ) : base( )
+        {
+        }
+
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg ) : base( msg )
+        {
+
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg ) : base( err, msg )
+        {
+
+        }
+
+        #endregion
+
         /// <summary>
         /// 用户自定义的泛型数据1
         /// </summary>
@@ -923,6 +1165,36 @@ namespace HslCommunication
     /// <typeparam name="T9">泛型类</typeparam>
     public class OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9> : OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult( ) : base( )
+        {
+        }
+
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg ) : base( msg )
+        {
+
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg ) : base( err, msg )
+        {
+
+        }
+
+        #endregion
+
         /// <summary>
         /// 用户自定义的泛型数据1
         /// </summary>
@@ -984,6 +1256,36 @@ namespace HslCommunication
     /// <typeparam name="T10">泛型类</typeparam>
     public class OperateResult<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> : OperateResult
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个默认的结果对象
+        /// </summary>
+        public OperateResult( ) : base( )
+        {
+        }
+
+        /// <summary>
+        /// 使用指定的消息实例化一个默认的结果对象
+        /// </summary>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( string msg ) : base( msg )
+        {
+
+        }
+
+        /// <summary>
+        /// 使用错误代码，消息文本来实例化对象
+        /// </summary>
+        /// <param name="err">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        public OperateResult( int err, string msg ) : base( err, msg )
+        {
+
+        }
+
+        #endregion
+
         /// <summary>
         /// 用户自定义的泛型数据1
         /// </summary>
