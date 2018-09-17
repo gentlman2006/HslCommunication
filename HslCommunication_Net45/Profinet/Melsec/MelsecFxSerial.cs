@@ -31,12 +31,11 @@ namespace HslCommunication.Profinet.Melsec
 
         #region Check Response
         
-
         private OperateResult CheckPlcReadResponse(byte[] ack )
         {
-            if (ack.Length == 0) return new OperateResult( "receive data length : 0" );
-            if (ack[0] == 0x15) return new OperateResult("plc ack nagative" );
-            if (ack[0] != 0x02) return new OperateResult( "plc ack wrong : " + ack[0] );
+            if (ack.Length == 0) return new OperateResult( StringResources.MelsecFxReceiveZore );
+            if (ack[0] == 0x15) return new OperateResult( StringResources.MelsecFxAckNagative );
+            if (ack[0] != 0x02) return new OperateResult( StringResources.MelsecFxAckWrong + ack[0] );
             
             if (!MelsecHelper.CheckCRC( ack ))
             {
@@ -50,17 +49,13 @@ namespace HslCommunication.Profinet.Melsec
 
         private OperateResult CheckPlcWriteResponse( byte[] ack )
         {
-            if (ack.Length == 0) return new OperateResult( "receive data length : 0" );
-            if (ack[0] == 0x15) return new OperateResult( "plc ack nagative" );
-            if (ack[0] != 0x06) return new OperateResult( "plc ack wrong : " + ack[0] );
+            if (ack.Length == 0) return new OperateResult( StringResources.MelsecFxReceiveZore );
+            if (ack[0] == 0x15) return new OperateResult( StringResources.MelsecFxAckNagative );
+            if (ack[0] != 0x06) return new OperateResult( StringResources.MelsecFxAckWrong + ack[0] );
 
             return OperateResult.CreateSuccessResult( );
         }
-
-
-
-
-
+        
         #endregion
 
         #region Read Support
@@ -218,7 +213,7 @@ namespace HslCommunication.Profinet.Melsec
 
         #endregion
 
-        #region Write Base
+        #region Write Override
 
         /// <summary>
         /// 向PLC写入数据，数据格式为原始的字节类型
@@ -249,9 +244,6 @@ namespace HslCommunication.Profinet.Melsec
             return OperateResult.CreateSuccessResult( );
         }
 
-
-
-
         #endregion
 
         #region Write Bool
@@ -277,51 +269,6 @@ namespace HslCommunication.Profinet.Melsec
             if (!checkResult.IsSuccess) return checkResult;
 
             return OperateResult.CreateSuccessResult( );
-        }
-
-        #endregion
-
-        #region Write String
-
-
-        /// <summary>
-        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>是否写入成功的结果对象</returns>
-        public OperateResult Write( string address, string value, int length )
-        {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
-            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入字符串，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value )
-        {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>是否写入成功的结果对象</returns>
-        public OperateResult WriteUnicodeString( string address, string value, int length )
-        {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
-            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length * 2 );
-            return Write( address, temp );
         }
 
         #endregion
@@ -388,7 +335,7 @@ namespace HslCommunication.Profinet.Melsec
             }
             else
             {
-                return new OperateResult<byte[]>( ) { Message = "当前类型不支持位写入" };
+                return new OperateResult<byte[]>( StringResources.MelsecCurrentTypeNotSupportedBitOperate );
             }
 
 
@@ -480,17 +427,17 @@ namespace HslCommunication.Profinet.Melsec
 
             ushort startAddress = addressResult.Content;
             byte[] _PLCCommand = new byte[11 + value.Length];
-            _PLCCommand[0] = 0x02;                                                              // STX
-            _PLCCommand[1] = 0x31;                                                              // Read
-            _PLCCommand[2] = MelsecHelper.BuildBytesFromData( startAddress )[0];                             // 偏移地址
+            _PLCCommand[0] = 0x02;                                                                    // STX
+            _PLCCommand[1] = 0x31;                                                                    // Read
+            _PLCCommand[2] = MelsecHelper.BuildBytesFromData( startAddress )[0];                      // Offect Address
             _PLCCommand[3] = MelsecHelper.BuildBytesFromData( startAddress )[1];
             _PLCCommand[4] = MelsecHelper.BuildBytesFromData( startAddress )[2];
             _PLCCommand[5] = MelsecHelper.BuildBytesFromData( startAddress )[3];
-            _PLCCommand[6] = MelsecHelper.BuildBytesFromData( (byte)(value.Length / 2) )[0];                 // 读取长度
+            _PLCCommand[6] = MelsecHelper.BuildBytesFromData( (byte)(value.Length / 2) )[0];          // Read Length
             _PLCCommand[7] = MelsecHelper.BuildBytesFromData( (byte)(value.Length / 2) )[1];
             Array.Copy( value, 0, _PLCCommand, 8, value.Length );
-            _PLCCommand[_PLCCommand.Length - 3] = 0x03;                                         // ETX
-            MelsecHelper.FxCalculateCRC( _PLCCommand ).CopyTo( _PLCCommand, _PLCCommand.Length - 2 );        // CRC
+            _PLCCommand[_PLCCommand.Length - 3] = 0x03;                                               // ETX
+            MelsecHelper.FxCalculateCRC( _PLCCommand ).CopyTo( _PLCCommand, _PLCCommand.Length - 2 ); // CRC
 
             return OperateResult.CreateSuccessResult( _PLCCommand );
         }
@@ -623,12 +570,12 @@ namespace HslCommunication.Profinet.Melsec
                             result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.C.FromBase );
                             break;
                         }
-                    default: throw new Exception( "输入的类型不支持，请重新输入" );
+                    default: throw new Exception( StringResources.NotSupportedDataType );
                 }
             }
             catch (Exception ex)
             {
-                result.Message = "地址格式填写错误：" + ex.Message;
+                result.Message = ex.Message;
                 return result;
             }
 
@@ -678,7 +625,7 @@ namespace HslCommunication.Profinet.Melsec
             }
             else
             {
-                return new OperateResult<ushort>( ) { Message = "当前类型不支持字读取" };
+                return new OperateResult<ushort>( StringResources.MelsecCurrentTypeNotSupportedWordOperate );
             }
 
             return OperateResult.CreateSuccessResult( startAddress );
@@ -729,7 +676,7 @@ namespace HslCommunication.Profinet.Melsec
             }
             else
             {
-                return new OperateResult<ushort, ushort>( ) { Message = "当前类型不支持位读取" };
+                return new OperateResult<ushort, ushort>( StringResources.MelsecCurrentTypeNotSupportedBitOperate );
             }
 
             return OperateResult.CreateSuccessResult( startAddress, (ushort)(analysis.Content2 % 8) );

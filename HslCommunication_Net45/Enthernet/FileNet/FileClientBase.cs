@@ -177,10 +177,8 @@ namespace HslCommunication.Enthernet
             else
             {
                 socketResult.Content?.Close( );
-                LogNet?.WriteError( ToString(), "Not supported data type!" );
-                return new OperateResult( ) {
-                    Message = "不支持的数据类型"
-                };
+                LogNet?.WriteError( ToString(), StringResources.NotSupportedDataType );
+                return new OperateResult( StringResources.NotSupportedDataType );
             }
 
             socketResult.Content?.Close( );
@@ -249,11 +247,8 @@ namespace HslCommunication.Enthernet
             else
             {
                 socketResult.Content?.Close( );
-                LogNet?.WriteError( ToString( ), "数据源格式不正确！" );
-                return new OperateResult( )
-                {
-                    Message = "数据源格式不正确！",
-                };
+                LogNet?.WriteError( ToString( ), StringResources.DataSourseFormatError );
+                return new OperateResult( StringResources.DataSourseFormatError );
             }
             
 
@@ -267,10 +262,7 @@ namespace HslCommunication.Enthernet
             }
             else
             {
-                return new OperateResult( )
-                {
-                    Message = "服务器确认文件失败，请重新上传！",
-                };
+                return new OperateResult( StringResources.ServerFileCheckFailed );
             }
         }
 

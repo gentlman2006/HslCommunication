@@ -34,7 +34,7 @@ namespace HslCommunication.Profinet.Panasonic
 
         #endregion
 
-        #region Device Override
+        #region Read Write Override
 
         /// <summary>
         /// 从松下PLC中读取数据
@@ -238,7 +238,7 @@ namespace HslCommunication.Profinet.Panasonic
                 }
                 else
                 {
-                    throw new Exception( "Address Not Supported!" );
+                    throw new Exception( StringResources.NotSupportedDataType );
                 }
             }
             catch (Exception ex)
@@ -259,8 +259,8 @@ namespace HslCommunication.Profinet.Panasonic
         public static OperateResult<byte[]> BuildReadMultiCoil( string[] address )
         {
             // 参数检查
-            if (address == null) return new OperateResult<byte[]>( ) { Message = "address is not allowed null" };
-            if (address.Length < 1 || address.Length > 8) return new OperateResult<byte[]>( ) { Message = "length must be 1-8" };
+            if (address == null) return new OperateResult<byte[]>( "address is not allowed null" );
+            if (address.Length < 1 || address.Length > 8) return new OperateResult<byte[]>( "length must be 1-8" );
 
             StringBuilder sb = new StringBuilder( "%EE#RCP" );
             sb.Append( address.Length.ToString( ) );
@@ -289,9 +289,9 @@ namespace HslCommunication.Profinet.Panasonic
         public static OperateResult<byte[]> BuildWriteMultiCoil( string[] address, bool[] values )
         {
             // 参数检查
-            if (address == null || values == null) return new OperateResult<byte[]>( ) { Message = "address and values is not allowed null" };
-            if (address.Length < 1 || address.Length > 8) return new OperateResult<byte[]>( ) { Message = "address length must be 1-8" };
-            if (address.Length != values.Length) return new OperateResult<byte[]>( ) { Message = "address and values length must be same" };
+            if (address == null || values == null) return new OperateResult<byte[]>( "address and values is not allowed null" );
+            if (address.Length < 1 || address.Length > 8) return new OperateResult<byte[]>( "address length must be 1-8" );
+            if (address.Length != values.Length) return new OperateResult<byte[]>( "address and values length must be same" );
 
             StringBuilder sb = new StringBuilder( "%EE#WCP" );
             sb.Append( address.Length.ToString( ) );
@@ -324,7 +324,7 @@ namespace HslCommunication.Profinet.Panasonic
         public static OperateResult<byte[]> BuildReadCommand(byte station, string address, ushort length )
         {
             // 参数检查
-            if (address == null) return new OperateResult<byte[]>( ) { Message = "address is not allowed null" };
+            if (address == null) return new OperateResult<byte[]>( StringResources.PanasonicAddressParameterCannotBeNull );
 
             // 解析地址
             OperateResult<string, int> analysis = AnalysisAddress( address );
@@ -362,7 +362,7 @@ namespace HslCommunication.Profinet.Panasonic
             }
             else
             {
-                return new OperateResult<byte[]>( ) { Message = "Not Supported DataType" };
+                return new OperateResult<byte[]>( StringResources.NotSupportedDataType );
             }
 
             sb.Append( CalculateCrc( sb ) );
@@ -382,7 +382,7 @@ namespace HslCommunication.Profinet.Panasonic
         public static OperateResult<byte[]> BuildWriteCommand( byte station, string address, byte[] values, short length = -1 )
         {
             // 参数检查
-            if (address == null) return new OperateResult<byte[]>( ) { Message = "address is not allowed null" };
+            if (address == null) return new OperateResult<byte[]>( StringResources.PanasonicAddressParameterCannotBeNull );
 
             // 解析地址
             OperateResult<string, int> analysis = AnalysisAddress( address );
@@ -439,7 +439,7 @@ namespace HslCommunication.Profinet.Panasonic
         /// <returns>是否成功的结果信息</returns>
         public static OperateResult<byte[]> ExtraActualData( byte[] response )
         {
-            if (response.Length < 9) return new OperateResult<byte[]>( ) { Message = "receive length must larger than 9" };
+            if (response.Length < 9) return new OperateResult<byte[]>( StringResources.PanasonicReceiveLengthMustLargerThan9 );
 
             if(response[3] == '$')
             {
@@ -485,11 +485,11 @@ namespace HslCommunication.Profinet.Panasonic
                     case 67: msg = StringResources.PanasonicMewStatus67; break;
                     default: msg = StringResources.UnknownError; break;
                 }
-                return new OperateResult<byte[]>( ) { ErrorCode = err, Message = msg };
+                return new OperateResult<byte[]>( err, msg );
             }
             else
             {
-                return new OperateResult<byte[]>( ) { Message = "Unknown Staus" };
+                return new OperateResult<byte[]>( StringResources.UnknownError );
             }
         }
         

@@ -37,8 +37,11 @@ namespace HslCommunication
         internal const string ExceptopnTargetSite = "错误方法：";
         internal const string ExceprionCustomer = "用户自定义方法出错：";
         internal const string SuccessText = "Success";
-
-
+        internal const string TwoParametersLengthIsNotSame = "两个参数的个数不一致";
+        internal const string NotSupportedDataType = "输入的类型不支持，请重新输入";
+        internal const string DataLengthIsNotEnough = "接收的数据长度不足，应该值:{0},实际值:{1}";
+        internal const string ReceiveDataTimeout = "接收数据超时：";
+        internal const string ReceiveDataLengthTooShort = "接收的数据长度太短：";
 
         /***********************************************************************************
          * 
@@ -90,7 +93,7 @@ namespace HslCommunication
         internal const string FileSendClientFailed = "文件发送的时候发生了异常";
         internal const string FileWriteToNetFailed = "文件写入网络异常";
         internal const string FileReadFromNetFailed = "从网络读取文件异常";
-        internal const string FilePathCreateFailed = "文件夹路径创建失败";
+        internal const string FilePathCreateFailed = "文件夹路径创建失败：";
 
         /***********************************************************************************
          * 
@@ -110,7 +113,34 @@ namespace HslCommunication
         internal const string NetClientBreak = "异常掉线";
         internal const string NetClientFull = "服务器承载上限，收到超出的请求连接。";
         internal const string NetClientLoginFailed = "客户端登录中错误：";
+        internal const string NetHeartCheckFailed = "心跳验证异常：";
+        internal const string NetHeartCheckTimeout = "心跳验证超时，强制下线：";
+        internal const string DataSourseFormatError = "数据源格式不正确";
+        internal const string ServerFileCheckFailed = "服务器确认文件失败，请重新上传";
+        internal const string ClientOnlineInfo = "客户端 [ {0} ] 上线";
+        internal const string ClientOfflineInfo = "客户端 [ {0} ] 下线";
 
+        /***********************************************************************************
+         * 
+         *    Client 相关
+         * 
+         ************************************************************************************/
+
+        internal const string ReConnectServerSuccess = "重连服务器成功";
+        internal const string ReConnectServerAfterTenSeconds = "在10秒后重新连接服务器";
+        internal const string KeyIsNotAllowedNull = "关键字不允许为空";
+        internal const string KeyIsExistAlready = "当前的关键字已经存在";
+        internal const string KeyIsNotExist = "当前订阅的关键字不存在";
+        internal const string ConnectingServer = "正在连接服务器...";
+        internal const string ConnectFailedAndWait = "连接断开，等待{0}秒后重新连接";
+        internal const string AttemptConnectServer = "正在尝试第{0}次连接服务器";
+        internal const string ConnectServerSuccess = "连接服务器成功";
+        internal const string GetClientIpaddressFailed = "客户端IP地址获取失败";
+        internal const string ConnectionIsNotAvailable = "当前的连接不可用";
+        internal const string DeviceCurrentIsLoginRepeat = "当前设备的id重复登录";
+        internal const string DeviceCurrentIsLoginForbidden = "当前设备的id禁止登录";
+        internal const string PasswordCheckFailed = "密码验证失败";
+        internal const string DataTransformError = "数据转换失败，源数据：";
 
         /***********************************************************************************
          * 
@@ -130,6 +160,53 @@ namespace HslCommunication
         internal const string ModbusAsciiFormatCheckFailed = "Modbus的ascii指令检查失败，不是modbus-ascii报文";
         internal const string ModbusCRCCheckFailed = "Modbus的CRC校验检查失败";
         internal const string ModbusLRCCheckFailed = "Modbus的LRC校验检查失败";
+
+
+        /***********************************************************************************
+         * 
+         *    Melsec PLC 相关
+         * 
+         ************************************************************************************/
+        internal const string MelsecPleaseReferToManulDocument = "请查看三菱的通讯手册来查看报警的具体信息";
+        internal const string MelsecReadBitInfo = "读取位变量数组只能针对位软元件，如果读取字软元件，请调用Read方法";
+        internal const string MelsecCurrentTypeNotSupportedWordOperate = "当前的类型不支持字读写";
+        internal const string MelsecCurrentTypeNotSupportedBitOperate = "当前的类型不支持位读写";
+        internal const string MelsecFxReceiveZore = "接收的数据长度为0";
+        internal const string MelsecFxAckNagative = "PLC反馈的数据无效";
+        internal const string MelsecFxAckWrong = "PLC反馈信号错误：";
+
+        /***********************************************************************************
+         * 
+         *    Siemens PLC 相关
+         * 
+         ************************************************************************************/
+
+        internal const string SiemensDBAddressNotAllowedLargerThan255 = "DB块数据无法大于255";
+        internal const string SiemensReadLengthMustBeEvenNumber = "读取的数据长度必须为偶数";
+        internal const string SiemensWriteError = "写入数据异常，代号为：";
+        internal const string SiemensReadLengthCannotLargerThan19 = "读取的数组数量不允许大于19";
+        internal const string SiemensDataLengthCheckFailed = "数据块长度校验失败，请检查是否开启get/set以及关闭db块优化";
+        internal const string SiemensFWError = "发生了异常，具体信息查找Fetch/Write协议文档";
+
+        /***********************************************************************************
+         * 
+         *    Omron PLC 相关
+         * 
+         ************************************************************************************/
+
+        internal const string OmronAddressMustBeZeroToFiveteen = "输入的位地址只能在0-15之间";
+        internal const string OmronReceiveDataError = "数据接收异常";
+        internal const string OmronStatus0 = "通讯正常";
+        internal const string OmronStatus1 = "消息头不是FINS";
+        internal const string OmronStatus2 = "数据长度太长";
+        internal const string OmronStatus3 = "该命令不支持";
+        internal const string OmronStatus20 = "超过连接上限";
+        internal const string OmronStatus21 = "指定的节点已经处于连接中";
+        internal const string OmronStatus22 = "尝试去连接一个受保护的网络节点，该节点还未配置到PLC中";
+        internal const string OmronStatus23 = "当前客户端的网络节点超过正常范围";
+        internal const string OmronStatus24 = "当前客户端的网络节点已经被使用";
+        internal const string OmronStatus25 = "所有的网络节点已经被使用";
+
 
 
         /***********************************************************************************
@@ -162,6 +239,8 @@ namespace HslCommunication
          *    Panasonic PLC 相关
          * 
          ************************************************************************************/
+        internal const string PanasonicReceiveLengthMustLargerThan9 = "接收数据长度必须大于9";
+        internal const string PanasonicAddressParameterCannotBeNull = "地址参数不允许为空";
         internal const string PanasonicMewStatus20 = "错误未知";
         internal const string PanasonicMewStatus21 = "NACK错误，远程单元无法被正确识别，或者发生了数据错误。";
         internal const string PanasonicMewStatus22 = "WACK 错误:用于远程单元的接收缓冲区已满。";

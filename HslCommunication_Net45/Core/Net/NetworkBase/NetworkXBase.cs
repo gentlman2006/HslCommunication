@@ -693,7 +693,7 @@ namespace HslCommunication.Core.Net
             catch (Exception ex)
             {
                 socket?.Close( );
-                result.Message = "提取信息失败，" + ex.Message;
+                result.Message = "Extra，" + ex.Message;
             }
 
             return result;

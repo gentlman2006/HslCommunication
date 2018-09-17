@@ -70,9 +70,9 @@ namespace HslCommunication.Profinet.Omron
         /// </summary>
         public byte DNA { get; set; } = 0x00;
 
-        
+
         /// <summary>
-        /// PLC的节点地址，默认0x13，需要根据实际来填写
+        /// PLC的节点地址，假如你的PLC的Ip地址为192.168.0.10，那么这个值就是10
         /// </summary>
         /// <remarks>
         /// <note type="important">假如你的PLC的Ip地址为192.168.0.10，那么这个值就是10</note>
@@ -96,7 +96,7 @@ namespace HslCommunication.Profinet.Omron
         private byte computerSA1 = 0x0B;
 
         /// <summary>
-        /// 上位机的节点地址，默认0x0B
+        /// 上位机的节点地址，假如你的电脑的Ip地址为192.168.0.13，那么这个值就是13
         /// </summary>
         /// <remarks>
         /// <note type="important">假如你的电脑的Ip地址为192.168.0.13，那么这个值就是13</note>
@@ -215,8 +215,9 @@ namespace HslCommunication.Profinet.Omron
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             byte[] _PLCCommand = new byte[8 + value.Length];
-            _PLCCommand[0] = 0x01;    // 读取存储区数据
+            _PLCCommand[0] = 0x01;
             _PLCCommand[1] = 0x02;
+
             if (isBit)
             {
                 _PLCCommand[2] = analysis.Content1.BitCode;
@@ -225,22 +226,21 @@ namespace HslCommunication.Profinet.Omron
             {
                 _PLCCommand[2] = analysis.Content1.WordCode;
             }
-            analysis.Content2.CopyTo( _PLCCommand, 3 );
 
+            analysis.Content2.CopyTo( _PLCCommand, 3 );
             if (isBit)
             {
-                _PLCCommand[6] = (byte)(value.Length / 256);                       // 长度
+                _PLCCommand[6] = (byte)(value.Length / 256);
                 _PLCCommand[7] = (byte)(value.Length % 256);
             }
             else
             {
-                _PLCCommand[6] = (byte)(value.Length / 2 / 256);                       // 长度
+                _PLCCommand[6] = (byte)(value.Length / 2 / 256);
                 _PLCCommand[7] = (byte)(value.Length / 2 % 256);
             }
 
             value.CopyTo( _PLCCommand, 8 );
-
-
+            
             try
             {
                 result.Content = PackCommand( _PLCCommand );
@@ -248,7 +248,6 @@ namespace HslCommunication.Profinet.Omron
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), ex );
                 result.Message = ex.Message;
             }
             return result;
@@ -266,7 +265,7 @@ namespace HslCommunication.Profinet.Omron
         /// <returns>初始化成功与否</returns>
         protected override OperateResult InitializationOnConnect( Socket socket )
         {
-            // handSingle就是握手信号字节
+            // 握手信号
             OperateResult<byte[], byte[]> read = ReadFromCoreServerBase( socket, handSingle );
             if (!read.IsSuccess) return read;
             
@@ -276,21 +275,13 @@ namespace HslCommunication.Profinet.Omron
             buffer[1] = read.Content2[6];
             buffer[2] = read.Content2[5];
             buffer[3] = read.Content2[4];
+
             int status = BitConverter.ToInt32( buffer, 0 );
-            if(status != 0)
-            {
-                return new OperateResult( )
-                {
-                    ErrorCode = status,
-                    Message = "初始化失败，具体原因请根据错误码查找"
-                };
-            }
+            if(status != 0) return new OperateResult( status, GetStatusDescription( status ) );
 
             // 提取PLC的节点地址
-            if (read.Content2.Length >= 16)
-            {
-                DA1 = read.Content2[15];
-            }
+            if (read.Content2.Length >= 16) DA1 = read.Content2[15];
+
             return OperateResult.CreateSuccessResult( ) ;
         }
 
@@ -302,7 +293,7 @@ namespace HslCommunication.Profinet.Omron
         /// 从欧姆龙PLC中读取想要的数据，返回读取结果，读取单位为字
         /// </summary>
         /// <param name="address">读取地址，格式为"D100","C100","W100","H100","A100"</param>
-        /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
+        /// <param name="length">读取的数据长度</param>
         /// <returns>带成功标志的结果数据对象</returns>
         /// <remarks>
         /// 地址支持的列表如下：
@@ -525,54 +516,7 @@ namespace HslCommunication.Profinet.Omron
         
 
         #endregion
-
-        #region Write String
-
         
-
-        /// <summary>
-        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult Write( string address, string value, int length )
-        {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
-            temp = SoftBasic.ArrayExpandToLength( temp, length );
-            temp = SoftBasic.ArrayExpandToLengthEven( temp );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入字符串，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value )
-        {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value, int length )
-        {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
-            temp = SoftBasic.ArrayExpandToLength( temp, length * 2 );
-            return Write( address, temp );
-        }
-
-        #endregion
-
         #region Write bool[]
 
 
@@ -629,11 +573,11 @@ namespace HslCommunication.Profinet.Omron
         // 46494E530000000C0000000000000000000000D6 
         private readonly byte[] handSingle = new byte[]
         {
-            0x46,0x49,0x4E,0x53, // FINS
-            0x00,0x00,0x00,0x0C, // 后面的命令长度
-            0x00,0x00,0x00,0x00, // 命令码
-            0x00,0x00,0x00,0x00, // 错误码
-            0x00,0x00,0x00,0x01  // 节点号
+            0x46, 0x49, 0x4E, 0x53, // FINS
+            0x00, 0x00, 0x00, 0x0C, // 后面的命令长度
+            0x00, 0x00, 0x00, 0x00, // 命令码
+            0x00, 0x00, 0x00, 0x00, // 错误码
+            0x00, 0x00, 0x00, 0x01  // 节点号
         };
 
 
@@ -647,7 +591,7 @@ namespace HslCommunication.Profinet.Omron
         /// <returns>字符串</returns>
         public override string ToString( )
         {
-            return "OmronFinsNet";
+            return $"OmronFinsNet[{IpAddress}:{Port}]";
         }
 
         #endregion
@@ -703,7 +647,7 @@ namespace HslCommunication.Profinet.Omron
                             result.Content1 = OmronFinsDataType.AR;
                             break;
                         }
-                    default: throw new Exception( "输入的类型不支持，请重新输入" );
+                    default: throw new Exception( StringResources.NotSupportedDataType );
                 }
 
                 if (isBit)
@@ -720,7 +664,7 @@ namespace HslCommunication.Profinet.Omron
                         result.Content2[2] = byte.Parse( splits[1] );
                         if (result.Content2[2] > 15)
                         {
-                            throw new Exception( "输入的位地址只能在0-15之间。" );
+                            throw new Exception( StringResources.OmronAddressMustBeZeroToFiveteen );
                         }
                     }
                 }
@@ -735,7 +679,7 @@ namespace HslCommunication.Profinet.Omron
             }
             catch (Exception ex)
             {
-                result.Message = "地址格式填写错误：" + ex.Message;
+                result.Message = ex.Message;
                 return result;
             }
 
@@ -754,53 +698,49 @@ namespace HslCommunication.Profinet.Omron
                 buffer[1] = response[14];
                 buffer[2] = response[13];
                 buffer[3] = response[12];
+
                 int err = BitConverter.ToInt32( buffer, 0 );
-                if (err > 0)
-                {
-                    return new OperateResult<byte[]>( )
-                    {
-                        ErrorCode = err,
-                        Message = OmronInfo.GetStatusDescription( err ),
-                    };
-                }
+                if (err > 0) return new OperateResult<byte[]>( err, GetStatusDescription( err ) );
 
                 if (response.Length >= 30)
                 {
                     err = response[28] * 256 + response[29];
-                    if (err > 0)
-                    {
-                        return new OperateResult<byte[]>( )
-                        {
-                            ErrorCode = err,
-                            Message = "结束码错误，为：" + err,
-                        };
-                    }
+                    if (err > 0) return new OperateResult<byte[]>( err, StringResources.OmronReceiveDataError );
 
-                    if (!isRead)
-                    {
-                        // 写入操作
-                        return OperateResult.CreateSuccessResult( new byte[0] );
-                    }
-                    else
-                    {
-                        // 读取操作
-                        byte[] content = new byte[response.Length - 30];
-                        if (content.Length > 0)
-                        {
-                            Array.Copy( response, 30, content, 0, content.Length );
-                        }
-                        return OperateResult.CreateSuccessResult( content );
-                    }
+                    if (!isRead) return OperateResult.CreateSuccessResult( new byte[0] );
+                    // 读取操作
+                    byte[] content = new byte[response.Length - 30];
+                    if (content.Length > 0) Array.Copy( response, 30, content, 0, content.Length );
+                    
+                    return OperateResult.CreateSuccessResult( content );
                 }
             }
 
-            return new OperateResult<byte[]>( )
-            {
-                Message = "数据长度接收错误",
-            };
+            return new OperateResult<byte[]>( StringResources.OmronReceiveDataError );
         }
 
-
+        /// <summary>
+        /// 获取错误信息的字符串描述文本
+        /// </summary>
+        /// <param name="err">错误码</param>
+        /// <returns>文本描述</returns>
+        public static string GetStatusDescription( int err )
+        {
+            switch (err)
+            {
+                case 0: return StringResources.OmronStatus0;
+                case 1: return StringResources.OmronStatus1;
+                case 2: return StringResources.OmronStatus2;
+                case 3: return StringResources.OmronStatus3;
+                case 20: return StringResources.OmronStatus20;
+                case 21: return StringResources.OmronStatus21;
+                case 22: return StringResources.OmronStatus22;
+                case 23: return StringResources.OmronStatus23;
+                case 24: return StringResources.OmronStatus24;
+                case 25: return StringResources.OmronStatus25;
+                default: return StringResources.UnknownError;
+            }
+        }
 
         #endregion
     }

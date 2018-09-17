@@ -211,13 +211,13 @@ namespace HslCommunication.Core.Net
 
             if (!rSocket.IsSuccess)
             {
-                IsSocketError = true;                         // 创建失败
+                IsSocketError = true;
                 rSocket.Content = null;                 
                 result.Message = rSocket.Message;
             }
             else
             {
-                CoreSocket = rSocket.Content;                 // 创建成功
+                CoreSocket = rSocket.Content;
                 result.IsSuccess = true;
                 LogNet?.WriteDebug( ToString( ), StringResources.NetEngineStart );
             }
@@ -359,7 +359,7 @@ namespace HslCommunication.Core.Net
                 {
                     if(IsSocketError)
                     {
-                        return new OperateResult<Socket>( ) { Message = "连接不可用" };
+                        return new OperateResult<Socket>( StringResources.ConnectionIsNotAvailable );
                     }
                     else
                     {
@@ -532,7 +532,7 @@ namespace HslCommunication.Core.Net
                 if (!resultReceive.IsSuccess)
                 {
                     socket?.Close( );
-                    return new OperateResult<byte[], byte[]>( ) { Message = "Receive data timeout: " + receiveTimeOut };
+                    return new OperateResult<byte[], byte[]>( StringResources.ReceiveDataTimeout + receiveTimeOut );
                 }
                 return OperateResult.CreateSuccessResult( resultReceive.Content.HeadBytes, resultReceive.Content.ContentBytes );
             }
@@ -553,7 +553,7 @@ namespace HslCommunication.Core.Net
         /// <returns>字符串信息</returns>
         public override string ToString( )
         {
-            return "NetworkDoubleBase<TNetMessage>";
+            return $"NetworkDoubleBase<{typeof(TNetMessage)},{typeof(TTransform)}>";
         }
 
 

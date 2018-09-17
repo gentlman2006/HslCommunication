@@ -621,52 +621,6 @@ namespace HslCommunication.ModBus
 
         #endregion
 
-        #region Write String
-
-        
-        /// <summary>
-        /// 向寄存器中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, string value, int length )
-        {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
-            temp = SoftBasic.ArrayExpandToLength( temp, length );
-
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入字符串，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value )
-        {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value, int length )
-        {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
-            temp = SoftBasic.ArrayExpandToLength( temp, length * 2 );
-            return Write( address, temp );
-        }
-
-        #endregion
-
         #region Write bool[]
 
         /// <summary>

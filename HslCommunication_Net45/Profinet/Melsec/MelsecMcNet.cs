@@ -56,7 +56,7 @@ namespace HslCommunication.Profinet.Melsec
         #region Public Member
 
         /// <summary>
-        /// 网络号
+        /// 网络号，通常为0
         /// </summary>
         /// <remarks>
         /// 依据PLC的配置而配置，如果PLC配置了1，那么此处也填0，如果PLC配置了2，此处就填2，测试不通的话，继续测试0
@@ -64,7 +64,7 @@ namespace HslCommunication.Profinet.Melsec
         public byte NetworkNumber { get; set; } = 0x00;
 
         /// <summary>
-        /// 网络站号
+        /// 网络站号，通常为0
         /// </summary>
         /// <remarks>
         /// 依据PLC的配置而配置，如果PLC配置了1，那么此处也填0，如果PLC配置了2，此处就填2，测试不通的话，继续测试0
@@ -141,7 +141,7 @@ namespace HslCommunication.Profinet.Melsec
 
             // 错误代码验证
             ushort errorCode = BitConverter.ToUInt16( read.Content, 9 );
-            if (errorCode != 0) return new OperateResult<byte[]>( ) { ErrorCode = errorCode, Message = "请翻查三菱通讯手册来查看具体的信息。" };
+            if (errorCode != 0) return new OperateResult<byte[]>( errorCode, StringResources.MelsecPleaseReferToManulDocument );
 
             // 数据解析，需要传入是否使用位的参数
             return ExtractActualData( read.Content, command.Content[13] == 1 );
@@ -215,7 +215,7 @@ namespace HslCommunication.Profinet.Melsec
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( analysis );
 
             // 位读取校验
-            if (analysis.Content1.DataType == 0x00) return new OperateResult<bool[]>( ) { Message = "读取位变量数组只能针对位软元件，如果读取字软元件，请调用Read方法" };
+            if (analysis.Content1.DataType == 0x00) return new OperateResult<bool[]>( 0, StringResources.MelsecReadBitInfo );
 
             // 核心交互
             var read = Read( address, length );
@@ -244,7 +244,7 @@ namespace HslCommunication.Profinet.Melsec
 
         #endregion
 
-        #region Write Base
+        #region Write Override
 
 
         /// <summary>
@@ -271,7 +271,7 @@ namespace HslCommunication.Profinet.Melsec
 
             // 错误码校验
             ushort ErrorCode = BitConverter.ToUInt16( read.Content, 9 );
-            if (ErrorCode != 0) return new OperateResult<byte[]>( ) { ErrorCode = ErrorCode, Message = "请翻查三菱通讯手册来查看具体的信息。" };
+            if (ErrorCode != 0) return new OperateResult<byte[]>( ErrorCode, StringResources.MelsecPleaseReferToManulDocument );
 
             // 成功
             return OperateResult.CreateSuccessResult( );
@@ -279,53 +279,7 @@ namespace HslCommunication.Profinet.Melsec
         
 
         #endregion
-
-        #region Write String
-
         
-        /// <summary>
-        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult Write( string address, string value, int length )
-        {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
-            temp = SoftBasic.ArrayExpandToLength( temp, length );
-            temp = SoftBasic.ArrayExpandToLengthEven( temp );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入字符串，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value )
-        {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value, int length )
-        {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
-            temp = SoftBasic.ArrayExpandToLength( temp, length * 2 );
-            return Write( address, temp );
-        }
-
-        #endregion
-
         #region Write bool[]
 
 
@@ -368,7 +322,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>字符串信息</returns>
         public override string ToString()
         {
-            return "MelsecMcNet";
+            return $"MelsecMcNet[{IpAddress}:{Port}]";
         }
 
         #endregion
@@ -433,19 +387,8 @@ namespace HslCommunication.Profinet.Melsec
             if (analysis.Content1.DataType == 1)
             {
                 // 按照位写入的操作，数据需要重新计算
-                int length2 = value.Length % 2 == 0 ? value.Length / 2 : value.Length / 2 + 1;
-                byte[] buffer = new byte[length2];
-
-                for (int i = 0; i < length2; i++)
-                {
-                    if (value[i * 2 + 0] != 0x00) buffer[i] += 0x10;
-                    if ((i * 2 + 1) < value.Length)
-                    {
-                        if (value[i * 2 + 1] != 0x00) buffer[i] += 0x01;
-                    }
-                }
                 length = value.Length;
-                value = buffer;
+                value = MelsecHelper.TransBoolArrayToByteData( value );
             }
 
 

@@ -417,7 +417,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt16Array" title="Int16类型示例" />
@@ -432,7 +432,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt16" title="Int16类型示例" />
@@ -452,7 +452,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt16Array" title="UInt16类型示例" />
@@ -468,7 +468,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt16" title="UInt16类型示例" />
@@ -488,7 +488,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt32Array" title="Int32类型示例" />
@@ -503,7 +503,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt32" title="Int32类型示例" />
@@ -522,7 +522,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt32Array" title="UInt32类型示例" />
@@ -537,7 +537,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt32Array" title="UInt32类型示例" />
@@ -591,7 +591,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt64Array" title="Int64类型示例" />
@@ -606,7 +606,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt64" title="Int64类型示例" />
@@ -625,7 +625,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt64Array" title="UInt64类型示例" />
@@ -640,7 +640,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt64" title="UInt64类型示例" />
@@ -659,7 +659,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteDoubleArray" title="Double类型示例" />
@@ -674,7 +674,7 @@ namespace HslCommunication.Core.Net
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteDouble" title="Double类型示例" />
@@ -689,11 +689,11 @@ namespace HslCommunication.Core.Net
         #region Write String
 
         /// <summary>
-        /// 向P设备中写入字符串，编码格式为ASCII
+        /// 向设备中写入字符串，编码格式为ASCII
         /// </summary>
         /// <param name="address">数据地址</param>
-        /// <param name="value">实际数据</param>
-        /// <returns>返回读取结果</returns>
+        /// <param name="value">字符串数据</param>
+        /// <returns>是否写入成功的结果对象</returns>
         /// <example>
         /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteString" title="String类型示例" />
@@ -705,7 +705,46 @@ namespace HslCommunication.Core.Net
             return Write( address, temp );
         }
 
+        /// <summary>
+        /// 向设备中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">字符串数据</param>
+        /// <param name="length">指定的字符串长度，必须大于0</param>
+        /// <returns>是否写入成功的结果对象 -> Whether to write a successful result object</returns>
+        public virtual OperateResult Write( string address, string value, int length )
+        {
+            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
+            if (WordLength == 1) temp = SoftBasic.ArrayExpandToLengthEven( temp );
+            temp = SoftBasic.ArrayExpandToLength( temp, length );
+            return Write( address, temp );
+        }
 
+        /// <summary>
+        /// 向设备中写入字符串，编码格式为Unicode
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">字符串数据</param>
+        /// <returns>是否写入成功的结果对象</returns>
+        public virtual OperateResult WriteUnicodeString( string address, string value )
+        {
+            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
+            return Write( address, temp );
+        }
+
+        /// <summary>
+        /// 向设备中写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">字符串数据</param>
+        /// <param name="length">指定的字符串长度，必须大于0</param>
+        /// <returns>是否写入成功的结果对象 -> Whether to write a successful result object</returns>
+        public virtual OperateResult WriteUnicodeString( string address, string value, int length )
+        {
+            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
+            temp = SoftBasic.ArrayExpandToLength( temp, length * 2 );
+            return Write( address, temp );
+        }
 
         #endregion
 
@@ -717,7 +756,7 @@ namespace HslCommunication.Core.Net
         /// <returns>字符串数据</returns>
         public override string ToString( )
         {
-            return "NetworkDeviceBase<TNetMessage, TTransform>";
+            return $"NetworkDeviceBase<{typeof(TNetMessage)}, {typeof(TTransform)}>[{IpAddress}:{Port}]";
         }
 
         #endregion

@@ -19,14 +19,16 @@ using System.Text;
 namespace HslCommunication.Profinet.AllenBradley
 {
     /// <summary>
-    /// AB PLC的数据通讯类，支持读写PLC的节点数据
+    /// AB PLC的数据通讯类，支持读写PLC的节点数据 ->
+    /// AB PLC Data communication class, support read and write PLC node data
     /// </summary>
     public class AllenBradleyNet : NetworkDeviceBase<AllenBradleyMessage, RegularByteTransform>
     {
         #region Constructor
 
         /// <summary>
-        /// 实例化一个AllenBradley PLC协议的通讯对象
+        /// 实例化一个AllenBradley PLC协议的通讯对象 ->
+        /// Instantiate a communication object for a Allenbradley PLC protocol
         /// </summary>
         public AllenBradleyNet( )
         {
@@ -34,7 +36,8 @@ namespace HslCommunication.Profinet.AllenBradley
         }
 
         /// <summary>
-        /// 实例化一个AllenBradley PLC协议的通讯对象
+        /// 实例化一个AllenBradley PLC协议的通讯对象 ->
+        /// Instantiate a communication object for a Allenbradley PLC protocol
         /// </summary>
         /// <param name="ipAddress">PLCd的Ip地址</param>
         /// <param name="port">PLC的端口</param>

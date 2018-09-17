@@ -70,8 +70,8 @@ namespace HslCommunication.Enthernet
                 // 判断当前的关键字在服务器是否有消息发布
                 if(!IsPushGroupOnline(receive.Content2))
                 {
-                    SendStringAndCheckReceive( socket, 1, "当前订阅的关键字不存在" );
-                    LogNet?.WriteWarn( ToString( ), "当前订阅的关键字不存在" );
+                    SendStringAndCheckReceive( socket, 1, StringResources.KeyIsNotExist );
+                    LogNet?.WriteWarn( ToString( ), StringResources.KeyIsNotExist );
                     socket?.Close( );
                     return;
                 }
@@ -89,7 +89,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), "Ip信息获取失败", ex );
+                    LogNet?.WriteException( ToString( ), StringResources.GetClientIpaddressFailed, ex );
                 }
 
                 try
@@ -98,11 +98,11 @@ namespace HslCommunication.Enthernet
                 }
                 catch(Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), "开启信息接收失败", ex );
+                    LogNet?.WriteException( ToString( ), StringResources.SocketReceiveException, ex );
                     return;
                 }
 
-                LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 上线" );
+                LogNet?.WriteDebug( ToString( ), string.Format( StringResources.ClientOnlineInfo, session.IpEndPoint ) );
                 PushGroupClient push = GetPushGroupClient( receive.Content2 );
                 if (push != null)
                 {
@@ -197,7 +197,7 @@ namespace HslCommunication.Enthernet
             }
             else
             {
-                result = new OperateResult( ) { Message = "当前的关键字已经存在。" };
+                result = new OperateResult( StringResources.KeyIsExistAlready );
             }
 
             hybirdLock.Leave( );
@@ -233,12 +233,12 @@ namespace HslCommunication.Enthernet
                     int bytesRead = client.EndReceive( ar );
 
                     // 正常下线退出
-                    LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 下线" );
+                    LogNet?.WriteDebug( ToString( ), string.Format( StringResources.ClientOfflineInfo, session.IpEndPoint ) );
                     RemoveGroupOnlien( session.KeyGroup, session.ClientUniqueID );
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), $"客户端 [ {session.IpEndPoint} ] 下线", ex );
+                    LogNet?.WriteException( ToString( ), string.Format( StringResources.ClientOfflineInfo, session.IpEndPoint ), ex );
                     RemoveGroupOnlien( session.KeyGroup, session.ClientUniqueID );
                 }
             }

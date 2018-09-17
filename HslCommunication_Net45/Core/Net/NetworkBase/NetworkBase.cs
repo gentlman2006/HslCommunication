@@ -51,7 +51,7 @@ namespace HslCommunication.Core.Net
 
         #endregion
 
-        #region Log Support
+        #region Public Properties
 
         /// <summary>
         /// 组件的日志工具，支持日志记录

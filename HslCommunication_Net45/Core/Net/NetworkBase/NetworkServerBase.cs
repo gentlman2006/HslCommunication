@@ -225,17 +225,17 @@ namespace HslCommunication.Core.Net
                 case 0x01:
                     {
                         connect.Content?.Close( );
-                        return new OperateResult( ) { Message = "设备唯一ID重复登录" };
+                        return new OperateResult( StringResources.DeviceCurrentIsLoginRepeat );
                     }
                 case 0x02:
                     {
                         connect.Content?.Close( );
-                        return new OperateResult( ) { Message = "设备唯一ID禁止登录" };
+                        return new OperateResult( StringResources.DeviceCurrentIsLoginForbidden );
                     }
                 case 0x03:
                     {
                         connect.Content?.Close( );
-                        return new OperateResult( ) { Message = "密码验证失败" };
+                        return new OperateResult( StringResources.PasswordCheckFailed );
                     }
             }
 

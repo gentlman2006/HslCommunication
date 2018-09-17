@@ -83,8 +83,7 @@ namespace HslCommunication.ModBus
         #endregion
 
         #region Public Member
-
-
+        
         /// <summary>
         /// 获取或设置起始的地址是否从0开始，默认为True
         /// </summary>
@@ -108,8 +107,7 @@ namespace HslCommunication.ModBus
             get { return station; }
             set { station = value; }
         }
-
-
+        
         /// <summary>
         /// 获取或设置数据解析的格式，默认ABCD，可选BADC，CDAB，DCBA格式
         /// </summary>
@@ -133,13 +131,11 @@ namespace HslCommunication.ModBus
             get { return ByteTransform.IsStringReverse; }
             set { ByteTransform.IsStringReverse = value; }
         }
-
-
+        
         #endregion
 
         #region Build Command
-
-
+        
         /// <summary>
         /// 生成一个读取线圈的指令头
         /// </summary>
@@ -171,10 +167,7 @@ namespace HslCommunication.ModBus
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateReadDiscrete( station, length ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
-
-
-
-
+        
         /// <summary>
         /// 生成一个读取寄存器的指令头
         /// </summary>
@@ -190,9 +183,7 @@ namespace HslCommunication.ModBus
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateReadRegister( station, length ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
-
-
-
+        
         /// <summary>
         /// 生成一个读取寄存器的指令头
         /// </summary>
@@ -205,8 +196,7 @@ namespace HslCommunication.ModBus
             byte[] buffer = ModbusInfo.PackCommandToRtu( address.CreateReadRegister( station, length ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
-
-
+        
         /// <summary>
         /// 生成一个写入单线圈的指令头
         /// </summary>
@@ -222,10 +212,7 @@ namespace HslCommunication.ModBus
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteOneCoil( station, value ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
-
-
-
-
+        
         /// <summary>
         /// 生成一个写入单个寄存器的报文
         /// </summary>
@@ -241,8 +228,7 @@ namespace HslCommunication.ModBus
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteOneRegister( station, data ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
-
-
+        
         /// <summary>
         /// 生成批量写入单个线圈的报文信息
         /// </summary>
@@ -258,8 +244,7 @@ namespace HslCommunication.ModBus
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteCoil( station, values ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
-
-
+        
         /// <summary>
         /// 生成批量写入寄存器的报文信息
         /// </summary>
@@ -275,14 +260,11 @@ namespace HslCommunication.ModBus
             byte[] buffer = ModbusInfo.PackCommandToRtu( analysis.Content.CreateWriteRegister( station, values ) );
             return OperateResult.CreateSuccessResult( buffer );
         }
-
-
-
+        
         #endregion
         
         #region Core Interative
         
-
         /// <summary>
         /// 检查当前的Modbus-Rtu响应是否是正确的
         /// </summary>
@@ -295,13 +277,13 @@ namespace HslCommunication.ModBus
             if (!result.IsSuccess) return result;
 
             // 长度校验
-            if(result.Content.Length < 5) return new OperateResult<byte[]>( ) { IsSuccess = false, Message = "接收数据长度不能小于5" };
-            
+            if (result.Content.Length < 5) return new OperateResult<byte[]>( StringResources.ReceiveDataLengthTooShort + "5" );
+
             // 检查crc
-            if(!SoftCRC16.CheckCRC16(result.Content)) return new OperateResult<byte[]>( ) { Message = "CRC校验失败" };
+            if (!SoftCRC16.CheckCRC16( result.Content )) return new OperateResult<byte[]>( StringResources.ModbusCRCCheckFailed );
 
             // 发生了错误
-            if ((send[1] + 0x80) == result.Content[1]) return new OperateResult<byte[]>( ) { ErrorCode = result.Content[2], Message = ModbusInfo.GetDescriptionByErrorCode( result.Content[2] ) };
+            if ((send[1] + 0x80) == result.Content[1]) return new OperateResult<byte[]>( result.Content[2], ModbusInfo.GetDescriptionByErrorCode( result.Content[2] ) );
 
             // 移除CRC校验
             byte[] buffer = new byte[result.Content.Length - 2];
@@ -397,8 +379,7 @@ namespace HslCommunication.ModBus
             }
             return resultBytes;
         }
-
-
+        
         /// <summary>
         /// 读取线圈，需要指定起始地址
         /// </summary>
@@ -411,12 +392,7 @@ namespace HslCommunication.ModBus
 
             return OperateResult.CreateSuccessResult( read.Content[0] );
         }
-
-
-
-
-
-
+        
         /// <summary>
         /// 批量的读取线圈，需要指定起始地址，读取长度
         /// </summary>
@@ -430,10 +406,7 @@ namespace HslCommunication.ModBus
 
             return OperateResult.CreateSuccessResult( SoftBasic.ByteToBoolArray( read.Content, length ) );
         }
-
-
-
-
+        
         /// <summary>
         /// 读取输入线圈，需要指定起始地址
         /// </summary>
@@ -446,12 +419,7 @@ namespace HslCommunication.ModBus
 
             return OperateResult.CreateSuccessResult( read.Content[0] );
         }
-
-
-
-
-
-
+        
         /// <summary>
         /// 批量的读取输入点，需要指定起始地址，读取长度
         /// </summary>
@@ -465,9 +433,7 @@ namespace HslCommunication.ModBus
 
             return OperateResult.CreateSuccessResult( SoftBasic.ByteToBoolArray( read.Content, length ) );
         }
-
-
-
+        
         /// <summary>
         /// 从Modbus服务器批量读取寄存器的信息，需要指定起始地址，读取长度
         /// </summary>
@@ -496,15 +462,11 @@ namespace HslCommunication.ModBus
             }
             return OperateResult.CreateSuccessResult( lists.ToArray( ) );
         }
-
         
-
         #endregion
 
         #region Write One Register
-
-
-
+        
         /// <summary>
         /// 写一个寄存器数据
         /// </summary>
@@ -543,14 +505,11 @@ namespace HslCommunication.ModBus
             byte[] buffer = BitConverter.GetBytes( value );
             return WriteOneRegister( address, buffer[1], buffer[0] );
         }
-
-
-
+        
         #endregion
 
         #region Write Base
-
-
+        
         /// <summary>
         /// 将数据写入到Modbus的寄存器上去，需要指定起始地址和数据内容
         /// </summary>
@@ -573,8 +532,7 @@ namespace HslCommunication.ModBus
             // 核心交互
             return CheckModbusTcpResponse( command.Content );
         }
-
-
+        
         #endregion
 
         #region Write Coil
@@ -610,51 +568,6 @@ namespace HslCommunication.ModBus
             // 核心交互
             return CheckModbusTcpResponse( command.Content );
         }
-
-
-        #endregion
-
-        #region Write String
-        
-        /// <summary>
-        /// 向寄存器中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, string value, int length )
-        {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
-            temp = SoftBasic.ArrayExpandToLength( temp, length );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入字符串，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value )
-        {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向寄存器中写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回写入结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value, int length )
-        {
-            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
-            temp = SoftBasic.ArrayExpandToLength( temp, length * 2 );
-            return Write( address, temp );
-        }
         
         #endregion
 
@@ -670,8 +583,7 @@ namespace HslCommunication.ModBus
         {
             return Write( address, BasicFramework.SoftBasic.BoolArrayToByte( values ) );
         }
-
-
+        
         #endregion
         
         #region Object Override
@@ -686,8 +598,6 @@ namespace HslCommunication.ModBus
         }
 
         #endregion
-
-
-
+        
     }
 }

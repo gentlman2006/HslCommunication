@@ -179,8 +179,7 @@ namespace HslCommunication.Enthernet
         {
             if (ConnectFailedCount == 0)
             {
-                // English Version : Connecting Server...
-                MessageAlerts?.Invoke( "正在连接服务器..." );
+                MessageAlerts?.Invoke( StringResources.ConnectingServer );
             }
             else
             {
@@ -189,11 +188,10 @@ namespace HslCommunication.Enthernet
                 {
                     if (IsQuie) return;
                     count--;
-                    // English Version : Disconnected, wait [count] second to restart
-                    MessageAlerts?.Invoke( "连接断开，等待" + count + "秒后重新连接" );
+                    MessageAlerts?.Invoke( string.Format( StringResources.ConnectFailedAndWait, count ) );
                     Thread.Sleep( 1000 );
                 }
-                MessageAlerts?.Invoke( "正在尝试第" + ConnectFailedCount + "次连接服务器..." );
+                MessageAlerts?.Invoke( string.Format( StringResources.AttemptConnectServer, ConnectFailedCount ) );
             }
         }
 
@@ -220,7 +218,7 @@ namespace HslCommunication.Enthernet
                 return OperateResult.CreateFailedResult<Socket>( sendResult );
             }
 
-            MessageAlerts?.Invoke( "连接服务器成功！" );
+            MessageAlerts?.Invoke( StringResources.ConnectServerSuccess );
             return connectResult;
         }
 

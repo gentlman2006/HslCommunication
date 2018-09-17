@@ -128,7 +128,6 @@
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecNetMultiAsync.cs" Link="Profinet\Melsec\MelsecNetMultiAsync.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronFinsDataType.cs" Link="Profinet\Omron\OmronFinsDataType.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronFinsNet.cs" Link="Profinet\Omron\OmronFinsNet.cs" />
-    <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronInfo.cs" Link="Profinet\Omron\OmronInfo.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Siemens\SiemensFetchWriteNet.cs" Link="Profinet\Siemens\SiemensFetchWriteNet.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Siemens\SiemensPLCS.cs" Link="Profinet\Siemens\SiemensPLCS.cs" />
     <Compile Include="..\HslCommunication_Net45\Profinet\Siemens\SiemensS7Net.cs" Link="Profinet\Siemens\SiemensS7Net.cs" />

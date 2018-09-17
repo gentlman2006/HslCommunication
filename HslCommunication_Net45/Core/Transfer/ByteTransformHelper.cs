@@ -34,7 +34,7 @@ namespace HslCommunication.Core
             }
             catch (Exception ex)
             {
-                return new OperateResult<TResult>( ) { Message = "数据转化失败，源数据：" + BasicFramework.SoftBasic.ByteToHexString( result.Content ) + " 消息：" + ex.Message };
+                return new OperateResult<TResult>( ) { Message = StringResources.DataTransformError + BasicFramework.SoftBasic.ByteToHexString( result.Content ) + " : " + ex.Message };
             }
         }
 

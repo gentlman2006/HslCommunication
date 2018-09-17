@@ -127,12 +127,12 @@ namespace HslCommunication.Profinet.Melsec
                             result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.C.FromBase );
                             break;
                         }
-                    default: throw new Exception( "输入的类型不支持，请重新输入" );
+                    default: throw new Exception( StringResources.NotSupportedDataType );
                 }
             }
             catch (Exception ex)
             {
-                result.Message = "地址格式填写错误：" + ex.Message;
+                result.Message = ex.Message;
                 return result;
             }
 
@@ -199,6 +199,28 @@ namespace HslCommunication.Profinet.Melsec
             {
                 BuildBytesFromData( value[i] ).CopyTo( buffer, 2 * i );
             }
+            return buffer;
+        }
+
+        /// <summary>
+        /// 将0，1，0，1的字节数组压缩成三菱格式的字节数组来表示开关量的
+        /// </summary>
+        /// <param name="value">原始的数据字节</param>
+        /// <returns>压缩过后的数据字节</returns>
+        internal static byte[] TransBoolArrayToByteData( byte[] value )
+        {
+            int length = value.Length % 2 == 0 ? value.Length / 2 : (value.Length / 2) + 1;
+            byte[] buffer = new byte[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                if (value[i * 2 + 0] != 0x00) buffer[i] += 0x10;
+                if ((i * 2 + 1) < value.Length)
+                {
+                    if (value[i * 2 + 1] != 0x00) buffer[i] += 0x01;
+                }
+            }
+
             return buffer;
         }
 

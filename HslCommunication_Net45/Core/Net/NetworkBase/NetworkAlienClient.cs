@@ -148,12 +148,7 @@ namespace HslCommunication.Core.Net
         {
             return new byte[]
             {
-                0x48,
-                0x73,
-                0x6E,
-                0x00,
-                0x01,
-                status
+                0x48,0x73,0x6E,0x00,0x01,status
             };
         }
 

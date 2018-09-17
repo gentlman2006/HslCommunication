@@ -80,7 +80,7 @@ namespace HslCommunication.BasicFramework
 
         #endregion
 
-        #region 数据大小相关
+        #region DataSize Format
 
 
         /// <summary>

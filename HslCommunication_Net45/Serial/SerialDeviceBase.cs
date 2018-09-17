@@ -377,7 +377,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, short[] values )
+        public virtual OperateResult Write( string address, short[] values )
         {
             return Write( address, ByteTransform.TransByte( values ) );
         }
@@ -388,7 +388,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, short value )
+        public virtual OperateResult Write( string address, short value )
         {
             return Write( address, new short[] { value } );
         }
@@ -396,15 +396,14 @@ namespace HslCommunication.Serial
         #endregion
 
         #region Write UInt16
-
-
+        
         /// <summary>
         /// 向设备中写入ushort数组，返回是否写入成功
         /// </summary>
         /// <param name="address">要写入的数据地址</param>
         /// <param name="values">要写入的实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ushort[] values )
+        public virtual OperateResult Write( string address, ushort[] values )
         {
             return Write( address, ByteTransform.TransByte( values ) );
         }
@@ -416,7 +415,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ushort value )
+        public virtual OperateResult Write( string address, ushort value )
         {
             return Write( address, new ushort[] { value } );
         }
@@ -432,7 +431,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, int[] values )
+        public virtual OperateResult Write( string address, int[] values )
         {
             return Write( address, ByteTransform.TransByte( values ) );
         }
@@ -443,7 +442,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, int value )
+        public virtual OperateResult Write( string address, int value )
         {
             return Write( address, new int[] { value } );
         }
@@ -458,7 +457,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, uint[] values )
+        public virtual OperateResult Write( string address, uint[] values )
         {
             return Write( address, ByteTransform.TransByte( values ) );
         }
@@ -469,7 +468,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, uint value )
+        public virtual OperateResult Write( string address, uint value )
         {
             return Write( address, new uint[] { value } );
         }
@@ -484,7 +483,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, float[] values )
+        public virtual OperateResult Write( string address, float[] values )
         {
             return Write( address, ByteTransform.TransByte( values ) );
         }
@@ -495,7 +494,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, float value )
+        public virtual OperateResult Write( string address, float value )
         {
             return Write( address, new float[] { value } );
         }
@@ -511,7 +510,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, long[] values )
+        public virtual OperateResult Write( string address, long[] values )
         {
             return Write( address, ByteTransform.TransByte( values ) );
         }
@@ -522,7 +521,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, long value )
+        public virtual OperateResult Write( string address, long value )
         {
             return Write( address, new long[] { value } );
         }
@@ -537,7 +536,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ulong[] values )
+        public virtual OperateResult Write( string address, ulong[] values )
         {
             return Write( address, ByteTransform.TransByte( values ) );
         }
@@ -548,7 +547,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, ulong value )
+        public virtual OperateResult Write( string address, ulong value )
         {
             return Write( address, new ulong[] { value } );
         }
@@ -563,7 +562,7 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, double[] values )
+        public virtual OperateResult Write( string address, double[] values )
         {
             return Write( address, ByteTransform.TransByte( values ) );
         }
@@ -574,29 +573,72 @@ namespace HslCommunication.Serial
         /// <param name="address">数据地址</param>
         /// <param name="value">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public OperateResult Write( string address, double value )
+        public virtual OperateResult Write( string address, double value )
         {
             return Write( address, new double[] { value } );
         }
 
         #endregion
-
+        
         #region Write String
 
         /// <summary>
-        /// 向P设备中写入字符串，编码格式为ASCII
+        /// 向设备中写入字符串，编码格式为ASCII
         /// </summary>
         /// <param name="address">数据地址</param>
-        /// <param name="value">实际数据</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult Write( string address, string value )
+        /// <param name="value">字符串数据</param>
+        /// <returns>是否写入成功的结果对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteString" title="String类型示例" />
+        /// </example>
+        public virtual OperateResult Write( string address, string value )
         {
             byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
             if (WordLength == 1) temp = SoftBasic.ArrayExpandToLengthEven( temp );
             return Write( address, temp );
         }
 
+        /// <summary>
+        /// 向设备中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">字符串数据</param>
+        /// <param name="length">指定的字符串长度，必须大于0</param>
+        /// <returns>是否写入成功的结果对象 -> Whether to write a successful result object</returns>
+        public virtual OperateResult Write( string address, string value, int length )
+        {
+            byte[] temp = ByteTransform.TransByte( value, Encoding.ASCII );
+            if (WordLength == 1) temp = SoftBasic.ArrayExpandToLengthEven( temp );
+            temp = SoftBasic.ArrayExpandToLength( temp, length );
+            return Write( address, temp );
+        }
 
+        /// <summary>
+        /// 向设备中写入字符串，编码格式为Unicode
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">字符串数据</param>
+        /// <returns>是否写入成功的结果对象</returns>
+        public virtual OperateResult WriteUnicodeString( string address, string value )
+        {
+            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
+            return Write( address, temp );
+        }
+
+        /// <summary>
+        /// 向设备中写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <param name="value">字符串数据</param>
+        /// <param name="length">指定的字符串长度，必须大于0</param>
+        /// <returns>是否写入成功的结果对象 -> Whether to write a successful result object</returns>
+        public virtual OperateResult WriteUnicodeString( string address, string value, int length )
+        {
+            byte[] temp = ByteTransform.TransByte( value, Encoding.Unicode );
+            temp = SoftBasic.ArrayExpandToLength( temp, length * 2 );
+            return Write( address, temp );
+        }
 
         #endregion
 

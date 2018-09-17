@@ -95,7 +95,7 @@ namespace HslCommunication.ModBus
             if (!modbus_core.IsSuccess) return modbus_core;
 
             // 发生了错误
-            if ((send[1] + 0x80) == modbus_core.Content[1]) return new OperateResult<byte[]>( ) { ErrorCode = modbus_core.Content[2], Message = ModbusInfo.GetDescriptionByErrorCode( modbus_core.Content[2] ) };
+            if ((send[1] + 0x80) == modbus_core.Content[1]) return new OperateResult<byte[]>( modbus_core.Content[2], ModbusInfo.GetDescriptionByErrorCode( modbus_core.Content[2] ) );
 
             // 成功的消息
             return OperateResult.CreateSuccessResult( modbus_core.Content );

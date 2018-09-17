@@ -24,7 +24,7 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 根据指定的端口启动Upd侦听
         /// </summary>
-        /// <param name="port"></param>
+        /// <param name="port">端口号信息</param>
         public override void ServerStart( int port )
         {
             if (!IsStarted)
@@ -53,14 +53,13 @@ namespace HslCommunication.Enthernet
         /// 重新开始接收数据
         /// </summary>
         /// <exception cref="ArgumentNullException"></exception>
-        /// 
         private void RefreshReceive( )
         {
             AppSession session = new AppSession( );
             session.WorkSocket = CoreSocket;
             session.UdpEndPoint = new IPEndPoint( IPAddress.Any, 0 );
             session.BytesContent = new byte[ReceiveCacheLength];
-            //WorkSocket.BeginReceiveFrom(state.BytesHead, 0, 8, SocketFlags.None, ref state.UdpEndPoint, new AsyncCallback(ReceiveAsyncCallback), state);
+            // WorkSocket.BeginReceiveFrom(state.BytesHead, 0, 8, SocketFlags.None, ref state.UdpEndPoint, new AsyncCallback(ReceiveAsyncCallback), state);
             CoreSocket.BeginReceiveFrom( session.BytesContent, 0, ReceiveCacheLength, SocketFlags.None, ref session.UdpEndPoint, new AsyncCallback( AsyncCallback ), session );
         }
 
@@ -71,14 +70,14 @@ namespace HslCommunication.Enthernet
                 try
                 {
                     int received = session.WorkSocket.EndReceiveFrom( ar, ref session.UdpEndPoint );
-                    //释放连接关联
+                    // 释放连接关联
                     session.WorkSocket = null;
-                    //马上开始重新接收，提供性能保障
+                    // 马上开始重新接收，提供性能保障
                     RefreshReceive( );
-                    //处理数据
+                    // 处理数据
                     if (received >= HslProtocol.HeadByteLength)
                     {
-                        //检测令牌
+                        // 检测令牌
                         if (CheckRemoteToken( session.BytesContent ))
                         {
                             session.IpEndPoint = (IPEndPoint)session.UdpEndPoint;
@@ -94,18 +93,18 @@ namespace HslCommunication.Enthernet
                                     Array.Copy( session.BytesContent, 32, content, 0, contentLength );
                                 }
 
-                                //解析内容
+                                // 解析内容
                                 content = HslProtocol.CommandAnalysis( head, content );
 
                                 int protocol = BitConverter.ToInt32( head, 0 );
                                 int customer = BitConverter.ToInt32( head, 4 );
-                                //丢给数据中心处理
+                                // 丢给数据中心处理
                                 DataProcessingCenter( session, protocol, customer, content );
                             }
                             else
                             {
-                                //否则记录到日志
-                                LogNet?.WriteWarn( ToString(), $"接收到异常数据，应接收长度：{(BitConverter.ToInt32( session.BytesContent, 4 ) + 8)} 实际接收：{received}" );
+                                // 否则记录到日志
+                                LogNet?.WriteWarn( ToString(), $"Should Rece：{(BitConverter.ToInt32( session.BytesContent, 4 ) + 8)} Actual：{received}" );
                             }
                         }
                         else
@@ -115,7 +114,7 @@ namespace HslCommunication.Enthernet
                     }
                     else
                     {
-                        LogNet?.WriteWarn( ToString( ), $"接收到异常数据，长度不符合要求，实际接收：{received}" );
+                        LogNet?.WriteWarn( ToString( ), $"Receive error, Actual：{received}" );
                     }
                 }
                 catch (ObjectDisposedException)

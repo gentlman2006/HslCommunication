@@ -501,9 +501,6 @@
     <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronFinsNet.cs">
       <Link>Profinet\Omron\OmronFinsNet.cs</Link>
     </Compile>
-    <Compile Include="..\HslCommunication_Net45\Profinet\Omron\OmronInfo.cs">
-      <Link>Profinet\Omron\OmronInfo.cs</Link>
-    </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Panasonic\PanasonicMewtocol.cs">
       <Link>Profinet\Panasonic\PanasonicMewtocol.cs</Link>
     </Compile>

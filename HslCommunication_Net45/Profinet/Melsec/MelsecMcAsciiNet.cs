@@ -122,7 +122,7 @@ namespace HslCommunication.Profinet.Melsec
 
             // 错误代码验证
             ushort errorCode = Convert.ToUInt16( Encoding.ASCII.GetString( read.Content, 18, 4 ), 16 );
-            if (errorCode != 0) return new OperateResult<byte[]>( ) { ErrorCode = errorCode, Message = "请翻查三菱通讯手册来查看具体的信息。" };
+            if (errorCode != 0) return new OperateResult<byte[]>( errorCode, StringResources.MelsecPleaseReferToManulDocument );
 
             // 数据解析，需要传入是否使用位的参数
             return ExtractActualData( read.Content, command.Content[29] == 0x31 );
@@ -196,7 +196,7 @@ namespace HslCommunication.Profinet.Melsec
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( analysis );
 
             // 位读取校验
-            if (analysis.Content1.DataType == 0x00) return new OperateResult<bool[]>( ) { Message = "读取位变量数组只能针对位软元件，如果读取字软元件，请调用Read方法" };
+            if (analysis.Content1.DataType == 0x00) return new OperateResult<bool[]>( StringResources.MelsecReadBitInfo );
             
             // 核心交互
             var read = Read( address, length );
@@ -251,7 +251,7 @@ namespace HslCommunication.Profinet.Melsec
 
             // 错误码验证
             ushort errorCode = Convert.ToUInt16( Encoding.ASCII.GetString( read.Content, 18, 4 ), 16 );
-            if(errorCode != 0) return new OperateResult<byte[]>( ) { ErrorCode = errorCode, Message = "请翻查三菱通讯手册来查看具体的信息。" };
+            if (errorCode != 0) return new OperateResult<byte[]>( errorCode, StringResources.MelsecPleaseReferToManulDocument );
 
             // 写入成功
             return OperateResult.CreateSuccessResult( );
@@ -259,51 +259,6 @@ namespace HslCommunication.Profinet.Melsec
 
 
 
-
-        #endregion
-
-        #region Write String
-
-        
-        /// <summary>
-        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult Write( string address, string value, int length )
-        {
-            byte[] temp = Encoding.ASCII.GetBytes( value );
-            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入字符串，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value )
-        {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
-            return Write( address, temp );
-        }
-
-        /// <summary>
-        /// 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
-        /// </summary>
-        /// <param name="address">要写入的数据地址</param>
-        /// <param name="value">要写入的实际数据</param>
-        /// <param name="length">指定的字符串长度，必须大于0</param>
-        /// <returns>返回读取结果</returns>
-        public OperateResult WriteUnicodeString( string address, string value, int length )
-        {
-            byte[] temp = Encoding.Unicode.GetBytes( value );
-            temp = BasicFramework.SoftBasic.ArrayExpandToLength( temp, length * 2 );
-            return Write( address, temp );
-        }
 
         #endregion
 
@@ -347,7 +302,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>字符串信息</returns>
         public override string ToString( )
         {
-            return "MelsecMcAsciiNet";
+            return $"MelsecMcAsciiNet[{IpAddress}:{Port}]";
         }
 
         #endregion

@@ -44,8 +44,7 @@ namespace HslCommunication.Enthernet
         }
 
         #endregion
-
-
+        
         /// <summary>
         /// 客户端向服务器进行请求，请求字符串数据
         /// </summary>
@@ -59,8 +58,7 @@ namespace HslCommunication.Enthernet
 
             return OperateResult.CreateSuccessResult( Encoding.Unicode.GetString( read.Content ) );
         }
-
-
+        
         /// <summary>
         /// 客户端向服务器进行请求，请求字节数据
         /// </summary>
@@ -103,10 +101,9 @@ namespace HslCommunication.Enthernet
         /// <returns>字符串信息</returns>
         public override string ToString()
         {
-            return "NetSimplifyClient";
+            return $"NetSimplifyClient[{IpAddress}:{Port}]";
         }
-
-
+        
         #endregion
 
     }

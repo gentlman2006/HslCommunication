@@ -82,10 +82,8 @@ namespace HslCommunication.Robot.EFORT
             OperateResult<byte[]> read = ReadFromCoreServer( GetReadCommand( ) );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<EfortData>( read );
 
-            if (read.Content.Length < 788) return new OperateResult<EfortData>( )
-            {
-                Message = "数据长度不足"
-            };
+            if (read.Content.Length < 788)
+                return new OperateResult<EfortData>( string.Format( StringResources.DataLengthIsNotEnough, 788, read.Content.Length ) );
 
             // 开始解析数据
             EfortData efortData = new EfortData( );

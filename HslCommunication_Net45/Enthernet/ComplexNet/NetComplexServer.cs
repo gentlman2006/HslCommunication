@@ -246,7 +246,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), "客户端地址获取失败：", ex );
+                    LogNet?.WriteException( ToString( ), StringResources.GetClientIpaddressFailed, ex );
                 }
 
                 if (readResult.Content1 == 1)
@@ -267,11 +267,11 @@ namespace HslCommunication.Enthernet
                         session.BytesHead.Length - session.AlreadyReceivedHead, SocketFlags.None,
                         new AsyncCallback( HeadBytesReceiveCallback ), session );
                     TcpStateUpLine( session );
-                    Thread.Sleep( 100 );//留下一些时间进行反应
+                    Thread.Sleep( 100 );// 留下一些时间进行反应
                 }
                 catch (Exception ex)
                 {
-                    //登录前已经出错
+                    // 登录前已经出错
                     TcpStateClose( session );
                     LogNet?.WriteException( ToString( ), StringResources.NetClientLoginFailed, ex );
                 }
@@ -439,7 +439,7 @@ namespace HslCommunication.Enthernet
 
                         if ((DateTime.Now - appSessions[i].HeartTime).TotalSeconds > 1 * 8)//8次没有收到失去联系
                         {
-                            LogNet?.WriteWarn( ToString( ), "心跳验证超时，强制下线：" + appSessions[i].IpAddress.ToString( ) );
+                            LogNet?.WriteWarn( ToString( ), StringResources.NetHeartCheckTimeout + appSessions[i].IpAddress.ToString( ) );
                             TcpStateDownLine( appSessions[i], false, false );
                             continue;
                         }
@@ -447,7 +447,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), "心跳线程异常：", ex );
+                    LogNet?.WriteException( ToString( ), StringResources.NetHeartCheckFailed, ex );
                 }
 
 

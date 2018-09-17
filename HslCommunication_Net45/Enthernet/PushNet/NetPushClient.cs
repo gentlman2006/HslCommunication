@@ -36,7 +36,7 @@ namespace HslCommunication.Enthernet
 
             if (string.IsNullOrEmpty( key ))
             {
-                throw new Exception( "key 不允许为空" );
+                throw new Exception( StringResources.KeyIsNotAllowedNull );
             }
         }
 
@@ -58,12 +58,12 @@ namespace HslCommunication.Enthernet
             while (true)
             {
                 Console.WriteLine( ex );
-                Console.WriteLine( "10 秒钟后尝试重连服务器" );
+                Console.WriteLine( StringResources.ReConnectServerAfterTenSeconds );
                 System.Threading.Thread.Sleep( 10000 );
 
                 if(CreatePush( ).IsSuccess)
                 {
-                    Console.WriteLine( "重连服务器成功" );
+                    Console.WriteLine( StringResources.ReConnectServerSuccess );
                     break;
                 }
             }
@@ -86,10 +86,7 @@ namespace HslCommunication.Enthernet
             OperateResult<int, string> receive = ReceiveStringContentFromSocket( connect.Content );
             if (!receive.IsSuccess) return receive;
 
-            if (receive.Content1 != 0) return new OperateResult( )
-            {
-                Message = receive.Content2
-            };
+            if (receive.Content1 != 0) return new OperateResult( receive.Content2 );
 
             AppSession appSession = new AppSession( );
             CoreSocket = connect.Content;
@@ -151,7 +148,7 @@ namespace HslCommunication.Enthernet
         /// <returns>字符串</returns>
         public override string ToString( )
         {
-            return "NetPushClient";
+            return $"NetPushClient[{endPoint.ToString()}]";
         }
 
         #endregion

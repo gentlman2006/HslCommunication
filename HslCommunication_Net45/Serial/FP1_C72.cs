@@ -398,7 +398,7 @@ namespace FP1_F72
         /// <param name="addend">结束数据编码</param>
         /// <param name="retstr">反馈信息</param>
         /// <param name="errstr">错误信息</param>
-        /// <returns>true-正确执行,false-执行错误<</returns>
+        /// <returns>true-正确执行,false-执行错误</returns>
         public bool ReadWordContactPoint( string code, string addstart, string addend,ref string retstr, ref string errstr)
         {
             string sendstr;
