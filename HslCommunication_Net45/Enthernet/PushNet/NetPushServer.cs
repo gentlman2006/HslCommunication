@@ -70,8 +70,8 @@ namespace HslCommunication.Enthernet
                 // 判断当前的关键字在服务器是否有消息发布
                 if(!IsPushGroupOnline(receive.Content2))
                 {
-                    SendStringAndCheckReceive( socket, 1, StringResources.KeyIsNotExist );
-                    LogNet?.WriteWarn( ToString( ), StringResources.KeyIsNotExist );
+                    SendStringAndCheckReceive( socket, 1, StringResources.Language.KeyIsNotExist );
+                    LogNet?.WriteWarn( ToString( ), StringResources.Language.KeyIsNotExist );
                     socket?.Close( );
                     return;
                 }
@@ -79,9 +79,12 @@ namespace HslCommunication.Enthernet
                 SendStringAndCheckReceive( socket, 0, "" );
 
                 // 允许发布订阅信息
-                AppSession session = new AppSession( );
-                session.KeyGroup = receive.Content2;
-                session.WorkSocket = socket;
+                AppSession session = new AppSession
+                {
+                    KeyGroup = receive.Content2,
+                    WorkSocket = socket
+                };
+
                 try
                 {
                     session.IpEndPoint = (System.Net.IPEndPoint)socket.RemoteEndPoint;
@@ -89,7 +92,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), StringResources.GetClientIpaddressFailed, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.Language.GetClientIpaddressFailed, ex );
                 }
 
                 try
@@ -98,11 +101,11 @@ namespace HslCommunication.Enthernet
                 }
                 catch(Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), StringResources.SocketReceiveException, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.Language.SocketReceiveException, ex );
                     return;
                 }
 
-                LogNet?.WriteDebug( ToString( ), string.Format( StringResources.ClientOnlineInfo, session.IpEndPoint ) );
+                LogNet?.WriteDebug( ToString( ), string.Format( StringResources.Language.ClientOnlineInfo, session.IpEndPoint ) );
                 PushGroupClient push = GetPushGroupClient( receive.Content2 );
                 if (push != null)
                 {
@@ -197,7 +200,7 @@ namespace HslCommunication.Enthernet
             }
             else
             {
-                result = new OperateResult( StringResources.KeyIsExistAlready );
+                result = new OperateResult( StringResources.Language.KeyIsExistAlready );
             }
 
             hybirdLock.Leave( );
@@ -233,12 +236,12 @@ namespace HslCommunication.Enthernet
                     int bytesRead = client.EndReceive( ar );
 
                     // 正常下线退出
-                    LogNet?.WriteDebug( ToString( ), string.Format( StringResources.ClientOfflineInfo, session.IpEndPoint ) );
+                    LogNet?.WriteDebug( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, session.IpEndPoint ) );
                     RemoveGroupOnlien( session.KeyGroup, session.ClientUniqueID );
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), string.Format( StringResources.ClientOfflineInfo, session.IpEndPoint ), ex );
+                    LogNet?.WriteException( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, session.IpEndPoint ), ex );
                     RemoveGroupOnlien( session.KeyGroup, session.ClientUniqueID );
                 }
             }

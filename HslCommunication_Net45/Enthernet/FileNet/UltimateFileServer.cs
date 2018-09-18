@@ -157,7 +157,7 @@ namespace HslCommunication.Enthernet
                 {
                     if (!DeleteFileByName( fileUltimatePath ))
                     {
-                        LogNet?.WriteInfo( ToString(), StringResources.FileDeleteFailed + fileUltimatePath );
+                        LogNet?.WriteInfo( ToString(), StringResources.Language.FileDeleteFailed + fileUltimatePath );
                     }
                 } );
             }
@@ -207,12 +207,12 @@ namespace HslCommunication.Enthernet
                     if (!send.IsSuccess)
                     {
                         fileMarkId.LeaveReadOperator( );
-                        LogNet?.WriteError( ToString( ), $"{StringResources.FileDownloadFailed} : {send.Message} :{relativeName} ip:{IpAddress}" );
+                        LogNet?.WriteError( ToString( ), $"{StringResources.Language.FileDownloadFailed} : {send.Message} :{relativeName} ip:{IpAddress}" );
                         return;
                     }
                     else
                     {
-                        LogNet?.WriteInfo( ToString( ), StringResources.FileDownloadSuccess + ":" + relativeName );
+                        LogNet?.WriteInfo( ToString( ), StringResources.Language.FileDownloadSuccess + ":" + relativeName );
                     }
 
                     fileMarkId.LeaveReadOperator( );
@@ -235,7 +235,7 @@ namespace HslCommunication.Enthernet
                     }
                     catch (Exception ex)
                     {
-                        LogNet?.WriteException( ToString( ), StringResources.FilePathCreateFailed + fullFileName, ex );
+                        LogNet?.WriteException( ToString( ), StringResources.Language.FilePathCreateFailed + fullFileName, ex );
                         socket?.Close( );
                         return;
                     }
@@ -246,11 +246,11 @@ namespace HslCommunication.Enthernet
                         fullFileName ).IsSuccess)
                     {
                         socket?.Close( );
-                        LogNet?.WriteInfo( ToString( ), StringResources.FileUploadSuccess + ":" + relativeName );
+                        LogNet?.WriteInfo( ToString( ), StringResources.Language.FileUploadSuccess + ":" + relativeName );
                     }
                     else
                     {
-                        LogNet?.WriteInfo( ToString( ), StringResources.FileUploadFailed + ":" + relativeName );
+                        LogNet?.WriteInfo( ToString( ), StringResources.Language.FileUploadFailed + ":" + relativeName );
                     }
                 }
                 else if (customer == HslProtocol.ProtocolFileDelete)
@@ -273,7 +273,7 @@ namespace HslCommunication.Enthernet
                         socket?.Close( );
                     }
 
-                    LogNet?.WriteInfo( ToString( ), StringResources.FileDeleteSuccess + ":" + relativeName );
+                    LogNet?.WriteInfo( ToString( ), StringResources.Language.FileDeleteSuccess + ":" + relativeName );
                 }
                 else if (customer == HslProtocol.ProtocolFileDirectoryFiles)
                 {

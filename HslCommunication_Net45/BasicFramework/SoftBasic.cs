@@ -416,9 +416,9 @@ namespace HslCommunication.BasicFramework
         /// </example>
         public static string GetExceptionMessage( Exception ex )
         {
-            return StringResources.ExceptionMessage + ex.Message + Environment.NewLine +
-                StringResources.ExceptionStackTrace + ex.StackTrace + Environment.NewLine +
-                StringResources.ExceptopnTargetSite + ex.TargetSite;
+            return StringResources.Language.ExceptionMessage + ex.Message + Environment.NewLine +
+                StringResources.Language.ExceptionStackTrace + ex.StackTrace + Environment.NewLine +
+                StringResources.Language.ExceptopnTargetSite + ex.TargetSite;
         }
 
         /// <summary>

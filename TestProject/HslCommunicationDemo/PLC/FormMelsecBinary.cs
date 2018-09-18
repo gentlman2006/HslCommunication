@@ -40,6 +40,27 @@ namespace HslCommunicationDemo
         {
             panel2.Enabled = false;
             userCurve1.SetLeftCurve( "A", new float[0], Color.Tomato );
+
+
+            if(Program.Language == 2)
+            {
+                Text = "Melsec Read PLC Demo";
+                label2.Text = "Blog";
+                label4.Text = "Protocols";
+                label5.Text = "Qna-3E Binary";
+                label1.Text = "Ip:";
+                label3.Text = "Port:";
+                button1.Text = "Connect";
+                button2.Text = "Disconnect";
+                label21.Text = "Address:";
+                groupBox1.Text = "Read single data";
+                label6.Text = "address:";
+                label7.Text = "result:";
+                button_read_bool.Text = "Read Bit";
+                label23.Text = "X,Y,M,L,V,B";
+                button_read_short.Text = "short";
+
+            }
         }
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )

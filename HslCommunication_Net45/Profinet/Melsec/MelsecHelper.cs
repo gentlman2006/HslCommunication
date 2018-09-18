@@ -127,7 +127,7 @@ namespace HslCommunication.Profinet.Melsec
                             result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.C.FromBase );
                             break;
                         }
-                    default: throw new Exception( StringResources.NotSupportedDataType );
+                    default: throw new Exception( StringResources.Language.NotSupportedDataType );
                 }
             }
             catch (Exception ex)
@@ -137,7 +137,7 @@ namespace HslCommunication.Profinet.Melsec
             }
 
             result.IsSuccess = true;
-            result.Message = StringResources.SuccessText;
+            result.Message = StringResources.Language.SuccessText;
             return result;
         }
 

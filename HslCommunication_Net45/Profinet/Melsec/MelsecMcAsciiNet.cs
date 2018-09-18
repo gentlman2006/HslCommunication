@@ -122,7 +122,7 @@ namespace HslCommunication.Profinet.Melsec
 
             // 错误代码验证
             ushort errorCode = Convert.ToUInt16( Encoding.ASCII.GetString( read.Content, 18, 4 ), 16 );
-            if (errorCode != 0) return new OperateResult<byte[]>( errorCode, StringResources.MelsecPleaseReferToManulDocument );
+            if (errorCode != 0) return new OperateResult<byte[]>( errorCode, StringResources.Language.MelsecPleaseReferToManulDocument );
 
             // 数据解析，需要传入是否使用位的参数
             return ExtractActualData( read.Content, command.Content[29] == 0x31 );
@@ -196,7 +196,7 @@ namespace HslCommunication.Profinet.Melsec
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( analysis );
 
             // 位读取校验
-            if (analysis.Content1.DataType == 0x00) return new OperateResult<bool[]>( StringResources.MelsecReadBitInfo );
+            if (analysis.Content1.DataType == 0x00) return new OperateResult<bool[]>( StringResources.Language.MelsecReadBitInfo );
             
             // 核心交互
             var read = Read( address, length );
@@ -251,7 +251,7 @@ namespace HslCommunication.Profinet.Melsec
 
             // 错误码验证
             ushort errorCode = Convert.ToUInt16( Encoding.ASCII.GetString( read.Content, 18, 4 ), 16 );
-            if (errorCode != 0) return new OperateResult<byte[]>( errorCode, StringResources.MelsecPleaseReferToManulDocument );
+            if (errorCode != 0) return new OperateResult<byte[]>( errorCode, StringResources.Language.MelsecPleaseReferToManulDocument );
 
             // 写入成功
             return OperateResult.CreateSuccessResult( );

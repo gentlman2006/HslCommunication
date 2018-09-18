@@ -34,7 +34,7 @@ namespace HslCommunication.Core
             }
             catch (Exception ex)
             {
-                return new OperateResult<TResult>( ) { Message = StringResources.DataTransformError + BasicFramework.SoftBasic.ByteToHexString( result.Content ) + " : " + ex.Message };
+                return new OperateResult<TResult>( ) { Message = StringResources.Language.DataTransformError + BasicFramework.SoftBasic.ByteToHexString( result.Content ) + " : " + ex.Message };
             }
         }
 

@@ -370,7 +370,7 @@ namespace HslCommunication.ModBus
                         command = BuildReadRegisterCommand( address, length );
                         break;
                     }
-                default:command = new OperateResult<byte[]>( ) { Message = StringResources.ModbusTcpFunctionCodeNotSupport };break;
+                default:command = new OperateResult<byte[]>( StringResources.Language.ModbusTcpFunctionCodeNotSupport );break;
             }
             if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 

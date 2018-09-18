@@ -82,6 +82,8 @@
             this.button33 = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.button35 = new System.Windows.Forms.Button();
+            this.linkLabel5 = new System.Windows.Forms.LinkLabel();
+            this.linkLabel6 = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -718,12 +720,36 @@
             this.button35.UseVisualStyleBackColor = true;
             this.button35.Click += new System.EventHandler(this.button35_Click);
             // 
+            // linkLabel5
+            // 
+            this.linkLabel5.AutoSize = true;
+            this.linkLabel5.LinkColor = System.Drawing.Color.Chocolate;
+            this.linkLabel5.Location = new System.Drawing.Point(381, 37);
+            this.linkLabel5.Name = "linkLabel5";
+            this.linkLabel5.Size = new System.Drawing.Size(56, 17);
+            this.linkLabel5.TabIndex = 20;
+            this.linkLabel5.TabStop = true;
+            this.linkLabel5.Text = "简体中文";
+            // 
+            // linkLabel6
+            // 
+            this.linkLabel6.AutoSize = true;
+            this.linkLabel6.LinkColor = System.Drawing.Color.Chocolate;
+            this.linkLabel6.Location = new System.Drawing.Point(443, 37);
+            this.linkLabel6.Name = "linkLabel6";
+            this.linkLabel6.Size = new System.Drawing.Size(49, 17);
+            this.linkLabel6.TabIndex = 21;
+            this.linkLabel6.TabStop = true;
+            this.linkLabel6.Text = "English";
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(975, 645);
+            this.Controls.Add(this.linkLabel6);
+            this.Controls.Add(this.linkLabel5);
             this.Controls.Add(this.groupBox10);
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.linkLabel4);
@@ -820,6 +846,8 @@
         private System.Windows.Forms.Button button34;
         private System.Windows.Forms.GroupBox groupBox10;
         private System.Windows.Forms.Button button35;
+        private System.Windows.Forms.LinkLabel linkLabel5;
+        private System.Windows.Forms.LinkLabel linkLabel6;
     }
 }
 

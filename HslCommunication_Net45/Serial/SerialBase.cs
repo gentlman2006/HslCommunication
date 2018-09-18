@@ -134,7 +134,7 @@ namespace HslCommunication.Serial
 
                 if (isReceiveTimeout)
                 {
-                    result = new OperateResult<byte[]>( ) { Message = "Receive Data Timeout : " + ReceiveTimeout };
+                    result = new OperateResult<byte[]>( StringResources.Language.ReceiveDataTimeout + ReceiveTimeout );
                 }
                 else
                 {
@@ -255,7 +255,7 @@ namespace HslCommunication.Serial
 
         private SerialPort SP_ReadData = null;                    // 串口交互的核心
         private AutoResetEvent resetEvent = null;                 // 消息同步机制
-        private byte[] buffer = null;                             // 接收缓冲区
+        private readonly byte[] buffer = null;                    // 接收缓冲区
         private int receiveCount = 0;                             // 接收的数据长度
         private SimpleHybirdLock hybirdLock;                      // 数据交互的锁
         private ILogNet logNet;                                   // 日志存储

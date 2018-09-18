@@ -26,9 +26,59 @@ namespace HslCommunicationDemo
             panel2.Enabled = false;
             textBox3.Text = Guid.Empty.ToString( );
             button2.Enabled = false;
+
+            Language( Program.Language );
         }
 
-
+        private void Language( int language )
+        {
+            if (language == 1)
+            {
+                Text = "Simplify网络客户端";
+                label2.Text = "博客地址：";
+                label4.Text = "使用协议：";
+                label1.Text = "Ip地址：";
+                label3.Text = "端口号：";
+                button1.Text = "连接";
+                button2.Text = "断开连接";
+                label6.Text = "令牌：";
+                button5.Text = "启动短连接";
+                button6.Text = "压力测试";
+                label7.Text = "指令头：";
+                label8.Text = "举例：12345 或是1.1.1";
+                label9.Text = "数据：";
+                button3.Text = "发送";
+                label10.Text = "次数：";
+                label11.Text = "耗时：";
+                button4.Text = "清空";
+                label12.Text = "接收：";
+                label5.Text = "Hsl协议";
+                label20.Text = "作者：Richard Hu";
+            }
+            else
+            {
+                Text = "Simplify Net Client Test";
+                label2.Text = "Blogs:";
+                label4.Text = "Protocols:";
+                label1.Text = "Ip:";
+                label3.Text = "Port:";
+                button1.Text = "Connect";
+                button2.Text = "Disconnect";
+                label6.Text = "Token:";
+                button5.Text = "Start a short connection";
+                button6.Text = "Pressure test";
+                label7.Text = "Command:";
+                label8.Text = "Example: 12345 or 1.1.1";
+                label9.Text = "Data:";
+                button3.Text = "Send";
+                label10.Text = "Times:";
+                label11.Text = "Take:";
+                button4.Text = "Clear";
+                label12.Text = "Receive:";
+                label5.Text = "Hsl protocol";
+                label20.Text = "Author:Richard Hu";
+            }
+        }
 
         private NetSimplifyClient simplifyClient = new NetSimplifyClient( );
 
@@ -46,11 +96,11 @@ namespace HslCommunicationDemo
                 button2.Enabled = true;
                 panel2.Enabled = true;
                 button5.Enabled = false;
-                MessageBox.Show( "连接成功！" );
+                MessageBox.Show( StringResources.Language.ConnectingServer );
             }
             else
             {
-                MessageBox.Show( "连接失败" + connect.ToMessageShowString( ) );
+                MessageBox.Show( StringResources.Language.ConnectedFailed + connect.ToMessageShowString( ) );
             }
         }
 
@@ -65,9 +115,10 @@ namespace HslCommunicationDemo
             simplifyClient.ConnectClose( );
         }
 
+        private int status = 1;
         private void button5_Click( object sender, EventArgs e )
         {
-            if (button5.Text != "重新选择连接")
+            if (status == 1)
             {
                 // 启动短连接
                 simplifyClient.IpAddress = textBox1.Text;
@@ -77,13 +128,15 @@ namespace HslCommunicationDemo
                 button1.Enabled = false;
                 button2.Enabled = false;
                 panel2.Enabled = true;
-
-                button5.Text = "重新选择连接";
+                status = 2;
+                button5.Text = Program.Language == 1 ? "重新选择连接" : "Choose again";
             }
             else
             {
+                status = 1;
                 button1.Enabled = true;
-                button5.Text = "启动短连接";
+                panel2.Enabled = false;
+                button5.Text = Program.Language == 1 ? "启动短连接" : "Start a short connection";
             }
         }
 
@@ -113,7 +166,7 @@ namespace HslCommunicationDemo
                 }
                 else
                 {
-                    MessageBox.Show( "读取失败：" + read.ToMessageShowString( ) );
+                    MessageBox.Show( Program.Language == 1 ? "读取失败：" : "Read Failed:" + read.ToMessageShowString( ) );
                 }
             }
 

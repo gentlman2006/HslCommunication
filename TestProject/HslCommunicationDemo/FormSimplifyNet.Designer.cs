@@ -134,18 +134,18 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(875, 45);
+            this.button6.Location = new System.Drawing.Point(798, 45);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(91, 28);
+            this.button6.Size = new System.Drawing.Size(168, 28);
             this.button6.TabIndex = 9;
             this.button6.Text = "压力测试";
             this.button6.UseVisualStyleBackColor = true;
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(875, 11);
+            this.button5.Location = new System.Drawing.Point(798, 11);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(91, 28);
+            this.button5.Size = new System.Drawing.Size(168, 28);
             this.button5.TabIndex = 8;
             this.button5.Text = "启动短连接";
             this.button5.UseVisualStyleBackColor = true;

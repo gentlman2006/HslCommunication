@@ -71,7 +71,7 @@ namespace HslCommunication
         /// <summary>
         /// 具体的错误描述
         /// </summary>
-        public string Message { get; set; } = StringResources.UnknownError;
+        public string Message { get; set; } = StringResources.Language.UnknownError;
         
         /// <summary>
         /// 具体的错误代码
@@ -84,7 +84,7 @@ namespace HslCommunication
         /// <returns>包含错误码及错误消息</returns>
         public string ToMessageShowString()
         {
-            return $"{StringResources.ErrorCode}:{ErrorCode}{Environment.NewLine}{StringResources.TextDescription}:{Message}";
+            return $"{StringResources.Language.ErrorCode}:{ErrorCode}{Environment.NewLine}{StringResources.Language.TextDescription}:{Message}";
         }
 
 
@@ -325,7 +325,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
             };
         }
 
@@ -341,7 +341,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
                 Content = value
             };
         }
@@ -361,7 +361,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
             };
@@ -384,7 +384,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
                 Content3 = value3,
@@ -409,7 +409,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
                 Content3 = value3,
@@ -438,7 +438,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
                 Content3 = value3,
@@ -469,7 +469,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
                 Content3 = value3,
@@ -503,7 +503,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
                 Content3 = value3,
@@ -541,7 +541,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
                 Content3 = value3,
@@ -582,7 +582,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
                 Content3 = value3,
@@ -625,7 +625,7 @@ namespace HslCommunication
             {
                 IsSuccess = true,
                 ErrorCode = 0,
-                Message = StringResources.SuccessText,
+                Message = StringResources.Language.SuccessText,
                 Content1 = value1,
                 Content2 = value2,
                 Content3 = value3,

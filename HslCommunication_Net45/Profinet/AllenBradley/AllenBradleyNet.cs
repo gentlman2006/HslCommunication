@@ -369,20 +369,20 @@ namespace HslCommunication.Profinet.AllenBradley
                 string msg = string.Empty;
                 switch (status)
                 {
-                    case 0x01: msg = StringResources.AllenBradleySessionStatus01;break;
-                    case 0x02: msg = StringResources.AllenBradleySessionStatus02;break;
-                    case 0x03: msg = StringResources.AllenBradleySessionStatus03;break;
-                    case 0x64: msg = StringResources.AllenBradleySessionStatus64;break;
-                    case 0x65: msg = StringResources.AllenBradleySessionStatus65;break;
-                    case 0x69: msg = StringResources.AllenBradleySessionStatus69;break;
-                    default: msg = StringResources.UnknownError;break;
+                    case 0x01: msg = StringResources.Language.AllenBradleySessionStatus01;break;
+                    case 0x02: msg = StringResources.Language.AllenBradleySessionStatus02;break;
+                    case 0x03: msg = StringResources.Language.AllenBradleySessionStatus03;break;
+                    case 0x64: msg = StringResources.Language.AllenBradleySessionStatus64;break;
+                    case 0x65: msg = StringResources.Language.AllenBradleySessionStatus65;break;
+                    case 0x69: msg = StringResources.Language.AllenBradleySessionStatus69;break;
+                    default: msg = StringResources.Language.UnknownError;break;
                 }
 
                 return new OperateResult( status, msg );
             }
             catch(Exception ex)
             {
-                return new OperateResult( ) { Message = ex.Message };
+                return new OperateResult( ex.Message );
             }
         }
 

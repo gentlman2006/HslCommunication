@@ -111,7 +111,7 @@ namespace HslCommunication.Profinet.Melsec
                             result.Content2 = Convert.ToUInt16(address.Substring(1), MelsecA1EDataType.R.FromBase);
                             break;
                         }
-                    default: throw new Exception( StringResources.NotSupportedDataType );
+                    default: throw new Exception( StringResources.Language.NotSupportedDataType );
                 }
             }
             catch (Exception ex)
@@ -233,7 +233,7 @@ namespace HslCommunication.Profinet.Melsec
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );
 
             // 错误代码验证
-            if (read.Content[1] != 0) return new OperateResult<byte[]>( read.Content[1], StringResources.MelsecPleaseReferToManulDocument );
+            if (read.Content[1] != 0) return new OperateResult<byte[]>( read.Content[1], StringResources.Language.MelsecPleaseReferToManulDocument );
 
 
             if (command.Content1.DataType == 0x01)
@@ -281,7 +281,7 @@ namespace HslCommunication.Profinet.Melsec
             
             // 字读取验证
             if (analysis.Content1.DataType == 0x00)
-                return new OperateResult<bool[]>( StringResources.MelsecReadBitInfo);
+                return new OperateResult<bool[]>( StringResources.Language.MelsecReadBitInfo);
 
             // 核心交互
             var read = Read(address, length);
@@ -354,7 +354,7 @@ namespace HslCommunication.Profinet.Melsec
             else
             {
                 // 在A兼容1E协议中，结束代码后面紧跟的是异常信息的代码}
-                return new OperateResult( read.Content[1], StringResources.MelsecPleaseReferToManulDocument );
+                return new OperateResult( read.Content[1], StringResources.Language.MelsecPleaseReferToManulDocument );
             }
         }
 

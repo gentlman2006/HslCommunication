@@ -29,6 +29,7 @@
         private void InitializeComponent( )
         {
             this.panel2 = new System.Windows.Forms.Panel();
+            this.button4 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
@@ -50,7 +51,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -72,6 +72,16 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(978, 540);
             this.panel2.TabIndex = 20;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(393, 3);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(120, 28);
+            this.button4.TabIndex = 23;
+            this.button4.Text = "efort msg test";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // label8
             // 
@@ -96,7 +106,7 @@
             this.checkBox4.AutoSize = true;
             this.checkBox4.Checked = true;
             this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox4.Location = new System.Drawing.Point(239, 76);
+            this.checkBox4.Location = new System.Drawing.Point(363, 76);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(99, 21);
             this.checkBox4.TabIndex = 20;
@@ -108,7 +118,7 @@
             this.checkBox3.AutoSize = true;
             this.checkBox3.Checked = true;
             this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.Location = new System.Drawing.Point(94, 76);
+            this.checkBox3.Location = new System.Drawing.Point(151, 76);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(123, 21);
             this.checkBox3.TabIndex = 19;
@@ -146,7 +156,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Checked = true;
             this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(119, 8);
+            this.checkBox1.Location = new System.Drawing.Point(151, 8);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(135, 21);
             this.checkBox1.TabIndex = 2;
@@ -281,16 +291,6 @@
             this.label1.Size = new System.Drawing.Size(32, 17);
             this.label1.TabIndex = 0;
             this.label1.Text = "Ip：";
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(287, 7);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(80, 28);
-            this.button4.TabIndex = 23;
-            this.button4.Text = "efort msg";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // FormTcpDebug
             // 

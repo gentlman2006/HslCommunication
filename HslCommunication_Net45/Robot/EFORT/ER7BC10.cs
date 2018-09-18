@@ -83,7 +83,7 @@ namespace HslCommunication.Robot.EFORT
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<EfortData>( read );
 
             if (read.Content.Length < 788)
-                return new OperateResult<EfortData>( string.Format( StringResources.DataLengthIsNotEnough, 788, read.Content.Length ) );
+                return new OperateResult<EfortData>( string.Format( StringResources.Language.DataLengthIsNotEnough, 788, read.Content.Length ) );
 
             // 开始解析数据
             EfortData efortData = new EfortData( );

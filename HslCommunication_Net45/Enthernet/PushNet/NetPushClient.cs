@@ -36,7 +36,7 @@ namespace HslCommunication.Enthernet
 
             if (string.IsNullOrEmpty( key ))
             {
-                throw new Exception( StringResources.KeyIsNotAllowedNull );
+                throw new Exception( StringResources.Language.KeyIsNotAllowedNull );
             }
         }
 
@@ -58,12 +58,12 @@ namespace HslCommunication.Enthernet
             while (true)
             {
                 Console.WriteLine( ex );
-                Console.WriteLine( StringResources.ReConnectServerAfterTenSeconds );
+                Console.WriteLine( StringResources.Language.ReConnectServerAfterTenSeconds );
                 System.Threading.Thread.Sleep( 10000 );
 
                 if(CreatePush( ).IsSuccess)
                 {
-                    Console.WriteLine( StringResources.ReConnectServerSuccess );
+                    Console.WriteLine( StringResources.Language.ReConnectServerSuccess );
                     break;
                 }
             }

@@ -27,6 +27,40 @@ namespace HslCommunicationDemo.Algorithms
 
             // 无规律波
             Others( );
+
+            Language( Program.Language );
+        }
+
+        private void Language( int language )
+        {
+            if (language == 1)
+            {
+                Text = "傅里叶变换测试";
+                label2.Text = "博客地址：";
+                label4.Text = "使用协议：";
+                label20.Text = "作者：Richard Hu";
+                label5.Text = "FFT 快速离散傅立叶变换";
+                label1.Text = "方波及变换后的波形";
+                label3.Text = "正弦波及变换后的波形";
+                label6.Text = "混合波及变换后的波形";
+                userButton1.UIText = "专用图形";
+                userButton2.UIText = "专用图形";
+                userButton3.UIText = "专用图形";
+            }
+            else
+            {
+                Text = "FFT Test";
+                label2.Text = "Blogs:";
+                label4.Text = "Protocols:";
+                label20.Text = "Author:Richard Hu";
+                label5.Text = "FFT Fast discrete Fourier transform";
+                label1.Text = "The waveform of the square sweep and the transformed";
+                label3.Text = "Waveform after sine wave and transform";
+                label6.Text = "Waveform after mixed sweep and transform";
+                userButton1.UIText = "Graphics";
+                userButton2.UIText = "Graphics";
+                userButton3.UIText = "Graphics";
+            }
         }
 
         private void Squarewave( )

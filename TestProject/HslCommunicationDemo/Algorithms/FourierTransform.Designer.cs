@@ -118,9 +118,9 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(8, 445);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(116, 17);
+            this.label6.Size = new System.Drawing.Size(128, 17);
             this.label6.TabIndex = 20;
-            this.label6.Text = "杂波及变换后的波形";
+            this.label6.Text = "混合波及变换后的波形";
             // 
             // userButton1
             // 

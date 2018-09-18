@@ -177,8 +177,8 @@ namespace HslCommunication.Enthernet
             else
             {
                 socketResult.Content?.Close( );
-                LogNet?.WriteError( ToString(), StringResources.NotSupportedDataType );
-                return new OperateResult( StringResources.NotSupportedDataType );
+                LogNet?.WriteError( ToString(), StringResources.Language.NotSupportedDataType );
+                return new OperateResult( StringResources.Language.NotSupportedDataType );
             }
 
             socketResult.Content?.Close( );
@@ -247,8 +247,8 @@ namespace HslCommunication.Enthernet
             else
             {
                 socketResult.Content?.Close( );
-                LogNet?.WriteError( ToString( ), StringResources.DataSourseFormatError );
-                return new OperateResult( StringResources.DataSourseFormatError );
+                LogNet?.WriteError( ToString( ), StringResources.Language.DataSourseFormatError );
+                return new OperateResult( StringResources.Language.DataSourseFormatError );
             }
             
 
@@ -262,7 +262,7 @@ namespace HslCommunication.Enthernet
             }
             else
             {
-                return new OperateResult( StringResources.ServerFileCheckFailed );
+                return new OperateResult( StringResources.Language.ServerFileCheckFailed );
             }
         }
 

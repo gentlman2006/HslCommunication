@@ -8,6 +8,10 @@ namespace HslCommunicationDemo
     static class Program
     {
         /// <summary>
+        /// 1代表中文，2代表英文
+        /// </summary>
+        public static int Language = 1;
+        /// <summary>
         /// 应用程序的主入口点。
         /// </summary>
         [STAThread]

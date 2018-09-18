@@ -126,7 +126,7 @@ namespace HslCommunication.Profinet.Siemens
             if (!read.IsSuccess) return read;
 
             // 错误码验证 -> Error code Verification
-            if (read.Content[8] != 0x00) return new OperateResult<byte[]>( read.Content[8], StringResources.SiemensFWError );
+            if (read.Content[8] != 0x00) return new OperateResult<byte[]>( read.Content[8], StringResources.Language.SiemensFWError );
 
             // 读取正确 -> Read Right
             byte[] buffer = new byte[read.Content.Length - 16];
@@ -177,7 +177,7 @@ namespace HslCommunication.Profinet.Siemens
             if (!write.IsSuccess) return write;
 
             // 错误码验证 -> Error code Verification
-            if (write.Content[8] != 0x00) return new OperateResult( write.Content[8], StringResources.SiemensWriteError + write.Content[8] );
+            if (write.Content[8] != 0x00) return new OperateResult( write.Content[8], StringResources.Language.SiemensWriteError + write.Content[8] );
 
             // 写入成功 -> Write Right
             return OperateResult.CreateSuccessResult( );
@@ -297,7 +297,7 @@ namespace HslCommunication.Profinet.Siemens
 
                     if (result.Content3 > 255)
                     {
-                        result.Message = StringResources.SiemensDBAddressNotAllowedLargerThan255;
+                        result.Message = StringResources.Language.SiemensDBAddressNotAllowedLargerThan255;
                         return result;
                     }
 
@@ -315,7 +315,7 @@ namespace HslCommunication.Profinet.Siemens
                 }
                 else
                 {
-                    result.Message = StringResources.NotSupportedDataType;
+                    result.Message = StringResources.Language.NotSupportedDataType;
                     result.Content1 = 0;
                     result.Content2 = 0;
                     result.Content3 = 0;
@@ -377,7 +377,7 @@ namespace HslCommunication.Profinet.Siemens
             {
                 if (count % 2 != 0)
                 {
-                    result.Message = StringResources.SiemensReadLengthMustBeEvenNumber;
+                    result.Message = StringResources.Language.SiemensReadLengthMustBeEvenNumber;
                     return result;
                 }
                 else
@@ -442,7 +442,7 @@ namespace HslCommunication.Profinet.Siemens
             {
                 if (data.Length % 2 != 0)
                 {
-                    result.Message = StringResources.SiemensReadLengthMustBeEvenNumber;
+                    result.Message = StringResources.Language.SiemensReadLengthMustBeEvenNumber;
                     return result;
                 }
                 else

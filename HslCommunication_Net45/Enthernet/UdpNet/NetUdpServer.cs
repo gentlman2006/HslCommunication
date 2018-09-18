@@ -34,7 +34,7 @@ namespace HslCommunication.Enthernet
                 //绑定网络地址
                 CoreSocket.Bind( new IPEndPoint( IPAddress.Any, port ) );
                 RefreshReceive( );
-                LogNet?.WriteInfo( ToString(), StringResources.NetEngineStart );
+                LogNet?.WriteInfo( ToString(), StringResources.Language.NetEngineStart );
                 IsStarted = true;
             }
         }
@@ -109,7 +109,7 @@ namespace HslCommunication.Enthernet
                         }
                         else
                         {
-                            LogNet?.WriteWarn( ToString( ), StringResources.TokenCheckFailed );
+                            LogNet?.WriteWarn( ToString( ), StringResources.Language.TokenCheckFailed );
                         }
                     }
                     else
@@ -123,7 +123,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), StringResources.SocketEndReceiveException, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.Language.SocketEndReceiveException, ex );
                     //重新接收，此处已经排除掉了对象释放的异常
                     RefreshReceive( );
                 }
@@ -175,7 +175,7 @@ namespace HslCommunication.Enthernet
         //        }
         //        catch(Exception ex)
         //        {
-        //            LogHelper.SaveError(StringResources.异步数据结束挂起发送出错, ex);
+        //            LogHelper.SaveError(StringResources.Language.异步数据结束挂起发送出错, ex);
         //        }
 
 
@@ -205,7 +205,7 @@ namespace HslCommunication.Enthernet
         //        }
         //        catch (Exception ex)
         //        {
-        //            LogHelper.SaveError(StringResources.异步数据结束挂起发送出错, ex);
+        //            LogHelper.SaveError(StringResources.Language.异步数据结束挂起发送出错, ex);
         //        }
 
 

@@ -238,7 +238,7 @@ namespace HslCommunication.Profinet.Panasonic
                 }
                 else
                 {
-                    throw new Exception( StringResources.NotSupportedDataType );
+                    throw new Exception( StringResources.Language.NotSupportedDataType );
                 }
             }
             catch (Exception ex)
@@ -324,7 +324,7 @@ namespace HslCommunication.Profinet.Panasonic
         public static OperateResult<byte[]> BuildReadCommand(byte station, string address, ushort length )
         {
             // 参数检查
-            if (address == null) return new OperateResult<byte[]>( StringResources.PanasonicAddressParameterCannotBeNull );
+            if (address == null) return new OperateResult<byte[]>( StringResources.Language.PanasonicAddressParameterCannotBeNull );
 
             // 解析地址
             OperateResult<string, int> analysis = AnalysisAddress( address );
@@ -362,7 +362,7 @@ namespace HslCommunication.Profinet.Panasonic
             }
             else
             {
-                return new OperateResult<byte[]>( StringResources.NotSupportedDataType );
+                return new OperateResult<byte[]>( StringResources.Language.NotSupportedDataType );
             }
 
             sb.Append( CalculateCrc( sb ) );
@@ -382,7 +382,7 @@ namespace HslCommunication.Profinet.Panasonic
         public static OperateResult<byte[]> BuildWriteCommand( byte station, string address, byte[] values, short length = -1 )
         {
             // 参数检查
-            if (address == null) return new OperateResult<byte[]>( StringResources.PanasonicAddressParameterCannotBeNull );
+            if (address == null) return new OperateResult<byte[]>( StringResources.Language.PanasonicAddressParameterCannotBeNull );
 
             // 解析地址
             OperateResult<string, int> analysis = AnalysisAddress( address );
@@ -439,7 +439,7 @@ namespace HslCommunication.Profinet.Panasonic
         /// <returns>是否成功的结果信息</returns>
         public static OperateResult<byte[]> ExtraActualData( byte[] response )
         {
-            if (response.Length < 9) return new OperateResult<byte[]>( StringResources.PanasonicReceiveLengthMustLargerThan9 );
+            if (response.Length < 9) return new OperateResult<byte[]>( StringResources.Language.PanasonicReceiveLengthMustLargerThan9 );
 
             if(response[3] == '$')
             {
@@ -457,39 +457,39 @@ namespace HslCommunication.Profinet.Panasonic
                 string msg = string.Empty;
                 switch (err)
                 {
-                    case 20: msg = StringResources.PanasonicMewStatus20; break;
-                    case 21: msg = StringResources.PanasonicMewStatus21; break;
-                    case 22: msg = StringResources.PanasonicMewStatus22; break;
-                    case 23: msg = StringResources.PanasonicMewStatus23; break;
-                    case 24: msg = StringResources.PanasonicMewStatus24; break;
-                    case 25: msg = StringResources.PanasonicMewStatus25; break;
-                    case 26: msg = StringResources.PanasonicMewStatus26; break;
-                    case 27: msg = StringResources.PanasonicMewStatus27; break;
-                    case 28: msg = StringResources.PanasonicMewStatus28; break;
-                    case 29: msg = StringResources.PanasonicMewStatus29; break;
-                    case 30: msg = StringResources.PanasonicMewStatus30; break;
-                    case 40: msg = StringResources.PanasonicMewStatus40; break;
-                    case 41: msg = StringResources.PanasonicMewStatus41; break;
-                    case 42: msg = StringResources.PanasonicMewStatus42; break;
-                    case 43: msg = StringResources.PanasonicMewStatus43; break;
-                    case 50: msg = StringResources.PanasonicMewStatus50; break;
-                    case 51: msg = StringResources.PanasonicMewStatus51; break;
-                    case 52: msg = StringResources.PanasonicMewStatus52; break;
-                    case 53: msg = StringResources.PanasonicMewStatus53; break;
-                    case 60: msg = StringResources.PanasonicMewStatus60; break;
-                    case 61: msg = StringResources.PanasonicMewStatus61; break;
-                    case 62: msg = StringResources.PanasonicMewStatus62; break;
-                    case 63: msg = StringResources.PanasonicMewStatus63; break;
-                    case 65: msg = StringResources.PanasonicMewStatus65; break;
-                    case 66: msg = StringResources.PanasonicMewStatus66; break;
-                    case 67: msg = StringResources.PanasonicMewStatus67; break;
-                    default: msg = StringResources.UnknownError; break;
+                    case 20: msg = StringResources.Language.PanasonicMewStatus20; break;
+                    case 21: msg = StringResources.Language.PanasonicMewStatus21; break;
+                    case 22: msg = StringResources.Language.PanasonicMewStatus22; break;
+                    case 23: msg = StringResources.Language.PanasonicMewStatus23; break;
+                    case 24: msg = StringResources.Language.PanasonicMewStatus24; break;
+                    case 25: msg = StringResources.Language.PanasonicMewStatus25; break;
+                    case 26: msg = StringResources.Language.PanasonicMewStatus26; break;
+                    case 27: msg = StringResources.Language.PanasonicMewStatus27; break;
+                    case 28: msg = StringResources.Language.PanasonicMewStatus28; break;
+                    case 29: msg = StringResources.Language.PanasonicMewStatus29; break;
+                    case 30: msg = StringResources.Language.PanasonicMewStatus30; break;
+                    case 40: msg = StringResources.Language.PanasonicMewStatus40; break;
+                    case 41: msg = StringResources.Language.PanasonicMewStatus41; break;
+                    case 42: msg = StringResources.Language.PanasonicMewStatus42; break;
+                    case 43: msg = StringResources.Language.PanasonicMewStatus43; break;
+                    case 50: msg = StringResources.Language.PanasonicMewStatus50; break;
+                    case 51: msg = StringResources.Language.PanasonicMewStatus51; break;
+                    case 52: msg = StringResources.Language.PanasonicMewStatus52; break;
+                    case 53: msg = StringResources.Language.PanasonicMewStatus53; break;
+                    case 60: msg = StringResources.Language.PanasonicMewStatus60; break;
+                    case 61: msg = StringResources.Language.PanasonicMewStatus61; break;
+                    case 62: msg = StringResources.Language.PanasonicMewStatus62; break;
+                    case 63: msg = StringResources.Language.PanasonicMewStatus63; break;
+                    case 65: msg = StringResources.Language.PanasonicMewStatus65; break;
+                    case 66: msg = StringResources.Language.PanasonicMewStatus66; break;
+                    case 67: msg = StringResources.Language.PanasonicMewStatus67; break;
+                    default: msg = StringResources.Language.UnknownError; break;
                 }
                 return new OperateResult<byte[]>( err, msg );
             }
             else
             {
-                return new OperateResult<byte[]>( StringResources.UnknownError );
+                return new OperateResult<byte[]>( StringResources.Language.UnknownError );
             }
         }
         

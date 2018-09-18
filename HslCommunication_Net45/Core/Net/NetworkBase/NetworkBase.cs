@@ -192,7 +192,7 @@ namespace HslCommunication.Core.Net
             if (state.IsClose)
             {
                 // result.IsSuccess = true;
-                result.Message = "远程关闭了连接";
+                result.Message = StringResources.Language.RemoteClosedConnection;
                 socket?.Close( );
                 return result;
             }
@@ -303,8 +303,8 @@ namespace HslCommunication.Core.Net
                 // 令牌校验失败
                 hslTimeOut.IsSuccessful = true;
                 socket?.Close( );
-                LogNet?.WriteError( ToString( ), StringResources.TokenCheckFailed );
-                result.Message = StringResources.TokenCheckFailed;
+                LogNet?.WriteError( ToString( ), StringResources.Language.TokenCheckFailed );
+                result.Message = StringResources.Language.TokenCheckFailed;
                 return result;
             }
 
@@ -387,7 +387,7 @@ namespace HslCommunication.Core.Net
             state.Clear( );
             state = null;
             result.IsSuccess = true;
-            result.Message = StringResources.SuccessText;
+            result.Message = StringResources.Language.SuccessText;
 
             return result;
         }
@@ -498,11 +498,11 @@ namespace HslCommunication.Core.Net
             catch (Exception ex)
             {
                 // 直接失败
-                connectTimeout.IsSuccessful = true;                      // 退出线程池的超时检查
-                LogNet?.WriteException( ToString( ), ex );               // 记录错误日志
-                socket.Close( );                                         // 关闭网络信息
-                connectDone.Close( );                                    // 释放等待资源
-                result.Message = "Connect Failed : " + ex.Message;       // 传递错误消息
+                connectTimeout.IsSuccessful = true;                                  // 退出线程池的超时检查
+                LogNet?.WriteException( ToString( ), ex );                           // 记录错误日志
+                socket.Close( );                                                     // 关闭网络信息
+                connectDone.Close( );                                                // 释放等待资源
+                result.Message = StringResources.Language.ConnectedFailed + ex.Message;       // 传递错误消息
                 return result;
             }
             
@@ -516,7 +516,7 @@ namespace HslCommunication.Core.Net
             if (state.IsError)
             {
                 // 连接失败
-                result.Message = "Connect Failed : " + state.ErrerMsg;
+                result.Message = StringResources.Language.ConnectedFailed + state.ErrerMsg;
                 socket?.Close( );
                 return result;
             }
@@ -578,11 +578,14 @@ namespace HslCommunication.Core.Net
         protected OperateResult<int> ReadStream( Stream stream, byte[] buffer)
         {
             ManualResetEvent WaitDone = new ManualResetEvent( false );
-            FileStateObject stateObject = new FileStateObject( );
-            stateObject.WaitDone = WaitDone;
-            stateObject.Stream = stream;
-            stateObject.DataLength = buffer.Length;
-            stateObject.Buffer = buffer;
+            FileStateObject stateObject = new FileStateObject
+            {
+                WaitDone = WaitDone,
+                Stream = stream,
+                DataLength = buffer.Length,
+                Buffer = buffer
+            };
+
             try
             {
                 stream.BeginRead( buffer, 0, stateObject.DataLength, new AsyncCallback( ReadStreamCallBack ), stateObject );
@@ -644,9 +647,12 @@ namespace HslCommunication.Core.Net
         protected OperateResult WriteStream( Stream stream, byte[] buffer )
         {
             ManualResetEvent WaitDone = new ManualResetEvent( false );
-            FileStateObject stateObject = new FileStateObject( );
-            stateObject.WaitDone = WaitDone;
-            stateObject.Stream = stream;
+            FileStateObject stateObject = new FileStateObject
+            {
+                WaitDone = WaitDone,
+                Stream = stream
+            };
+
             try
             {
                 stream.BeginWrite( buffer, 0, buffer.Length, new AsyncCallback( WriteStreamCallBack ), stateObject );

@@ -145,9 +145,9 @@
             this.label5.ForeColor = System.Drawing.Color.Red;
             this.label5.Location = new System.Drawing.Point(539, 7);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(65, 17);
+            this.label5.Size = new System.Drawing.Size(37, 17);
             this.label5.TabIndex = 25;
-            this.label5.Text = "smtp 协议";
+            this.label5.Text = "smtp";
             // 
             // label4
             // 

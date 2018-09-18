@@ -219,7 +219,7 @@ namespace HslCommunication.Core.Net
             {
                 CoreSocket = rSocket.Content;
                 result.IsSuccess = true;
-                LogNet?.WriteDebug( ToString( ), StringResources.NetEngineStart );
+                LogNet?.WriteDebug( ToString( ), StringResources.Language.NetEngineStart );
             }
 
             return result;
@@ -297,7 +297,7 @@ namespace HslCommunication.Core.Net
             CoreSocket = null;
             InteractiveLock.Leave( );
             
-            LogNet?.WriteDebug( ToString( ), StringResources.NetEngineClose );
+            LogNet?.WriteDebug( ToString( ), StringResources.Language.NetEngineClose );
             return result;
         }
 
@@ -359,7 +359,7 @@ namespace HslCommunication.Core.Net
                 {
                     if(IsSocketError)
                     {
-                        return new OperateResult<Socket>( StringResources.ConnectionIsNotAvailable );
+                        return new OperateResult<Socket>( StringResources.Language.ConnectionIsNotAvailable );
                     }
                     else
                     {
@@ -483,7 +483,7 @@ namespace HslCommunication.Core.Net
                 IsSocketError = false;
                 result.IsSuccess = read.IsSuccess;
                 result.Content = read.Content;
-                result.Message = StringResources.SuccessText;
+                result.Message = StringResources.Language.SuccessText;
                 //string tmp2 = BasicFramework.SoftBasic.ByteToHexString( result.Content, '-' );
 
             }
@@ -532,7 +532,7 @@ namespace HslCommunication.Core.Net
                 if (!resultReceive.IsSuccess)
                 {
                     socket?.Close( );
-                    return new OperateResult<byte[], byte[]>( StringResources.ReceiveDataTimeout + receiveTimeOut );
+                    return new OperateResult<byte[], byte[]>( StringResources.Language.ReceiveDataTimeout + receiveTimeOut );
                 }
                 return OperateResult.CreateSuccessResult( resultReceive.Content.HeadBytes, resultReceive.Content.ContentBytes );
             }

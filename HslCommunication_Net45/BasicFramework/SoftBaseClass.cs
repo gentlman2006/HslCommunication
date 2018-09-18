@@ -162,7 +162,7 @@ namespace HslCommunication.BasicFramework
                     }
                     catch (Exception ex)
                     {
-                        ILogNet?.WriteException( LogHeaderText, StringResources.FileLoadFailed, ex );
+                        ILogNet?.WriteException( LogHeaderText, StringResources.Language.FileLoadFailed, ex );
                     }
                     finally
                     {
@@ -202,7 +202,7 @@ namespace HslCommunication.BasicFramework
                 }
                 catch (Exception ex)
                 {
-                    ILogNet?.WriteException( LogHeaderText, StringResources.FileSaveFailed, ex );
+                    ILogNet?.WriteException( LogHeaderText, StringResources.Language.FileSaveFailed, ex );
                 }
                 finally
                 {

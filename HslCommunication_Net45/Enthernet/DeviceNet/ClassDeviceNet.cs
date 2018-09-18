@@ -87,7 +87,7 @@ namespace HslCommunication.Enthernet
 
         #region Private Member
 
-        private byte endByte = 0x0D;                   // 结束的指令
+        private readonly byte endByte = 0x0D;                   // 结束的指令
 
 
         #endregion
@@ -121,7 +121,7 @@ namespace HslCommunication.Enthernet
                 {
                     //登录前已经出错
                     RemoveClient( stateone );
-                    LogNet?.WriteException( ToString(), StringResources.NetClientLoginFailed, ex );
+                    LogNet?.WriteException( ToString(), StringResources.Language.NetClientLoginFailed, ex );
                 }
             }
         }
@@ -165,14 +165,14 @@ namespace HslCommunication.Enthernet
                     else
                     {
                         RemoveClient( stateone );
-                        LogNet?.WriteInfo( ToString( ), StringResources.NetClientOffline );
+                        LogNet?.WriteInfo( ToString( ), StringResources.Language.NetClientOffline );
                     }
                 }
                 catch(Exception ex)
                 {
                     //登录前已经出错
                     RemoveClient( stateone );
-                    LogNet?.WriteException( ToString( ), StringResources.NetClientLoginFailed, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.Language.NetClientLoginFailed, ex );
                 }
             }
         }

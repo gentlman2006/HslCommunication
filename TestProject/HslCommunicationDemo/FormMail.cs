@@ -22,6 +22,47 @@ namespace HslCommunicationDemo
         private void FormMail_Load( object sender, EventArgs e )
         {
             textBox3.Text = "<html><body style=\"background-color:PowderBlue;\"><h1>Look! Styles and colors</h1><p style=\"font-family:verdana;color:red\">This text is in Verdana and red</p><p style=\"font-family:times;color:green\">This text is in Times and green</p><p style=\"font-size:30px\">This text is 30 pixels high</p></body></html> ";
+            Language( Program.Language );
+        }
+
+        private void Language( int language )
+        {
+            if (language == 1)
+            {
+                Text = "邮件发送测试";
+                label2.Text = "博客地址：";
+                label4.Text = "使用协议：";
+                label20.Text = "作者：Richard Hu";
+                label7.Text = "发送地址：";
+                label9.Text = "主题：";
+                label1.Text = "内容：(字符串)";
+                textBox1.Text = "测试主题";
+                textBox4.Text = "测试内容";
+                button3.Text = "发送";
+                label8.Text = "发送地址：";
+                label6.Text = "主题：";
+                label3.Text = "内容：(html)";
+                textBox2.Text = "测试主题";
+                button1.Text = "发送";
+            }
+            else
+            {
+                Text = "Mail Send Test";
+                label2.Text = "Blogs:";
+                label4.Text = "Protocols:";
+                label20.Text = "Author:Richard Hu";
+                label7.Text = "Address:";
+                label9.Text = "Subject:";
+                label1.Text = "String Content:";
+                textBox1.Text = "Test Subject";
+                textBox4.Text = "Test Content";
+                button3.Text = "Send";
+                label8.Text = "Address:";
+                label6.Text = "Subject:";
+                label3.Text = "Html Content:";
+                textBox2.Text = "Test Subject";
+                button1.Text = "Send";
+            }
         }
 
         private void button3_Click( object sender, EventArgs e )

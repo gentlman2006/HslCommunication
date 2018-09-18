@@ -267,21 +267,21 @@ namespace HslCommunication.Profinet.AllenBradley
                     ushort err = BitConverter.ToUInt16( response, offectStart + 2 );
                     switch (err)
                     {
-                        case 0x04: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley04 };
-                        case 0x05: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley05 };
+                        case 0x04: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley04 };
+                        case 0x05: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley05 };
                         case 0x06:
                             {
                                 if (response[offect + 2] != 0xD2 && response[offect + 2] != 0xCC)
-                                    return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley06 };
+                                    return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley06 };
                                 break;
                             }
-                        case 0x0A: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley0A };
-                        case 0x13: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley13 };
-                        case 0x1C: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley1C };
-                        case 0x1E: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley1E };
-                        case 0x26: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley26 };
+                        case 0x0A: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley0A };
+                        case 0x13: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley13 };
+                        case 0x1C: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley1C };
+                        case 0x1E: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley1E };
+                        case 0x26: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley26 };
                         case 0x00: break;
-                        default: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.UnknownError };
+                        default: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.UnknownError };
                     }
                     if (isRead)
                     {
@@ -298,21 +298,21 @@ namespace HslCommunication.Profinet.AllenBradley
                 byte err = response[offect + 4];
                 switch (err)
                 {
-                    case 0x04: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley04 };
-                    case 0x05: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley05 };
+                    case 0x04: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley04 };
+                    case 0x05: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley05 };
                     case 0x06:
                         {
                             if (response[offect + 2] != 0xD2 && response[offect + 2] != 0xCC)
-                                return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley06 };
+                                return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley06 };
                             break;
                         }
-                    case 0x0A: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley0A };
-                    case 0x13: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley13 };
-                    case 0x1C: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley1C };
-                    case 0x1E: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley1E };
-                    case 0x26: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.AllenBradley26 };
+                    case 0x0A: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley0A };
+                    case 0x13: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley13 };
+                    case 0x1C: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley1C };
+                    case 0x1E: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley1E };
+                    case 0x26: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley26 };
                     case 0x00: break;
-                    default: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.UnknownError };
+                    default: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.UnknownError };
                 }
 
                 if (isRead)

@@ -108,8 +108,43 @@ namespace HslCommunicationDemo
 
         private void FormByteTransfer_Load( object sender, EventArgs e )
         {
-
+            Language( Program.Language );
         }
+
+        private void Language( int language )
+        {
+            if (language == 1)
+            {
+                Text = "字节转换工具";
+                label2.Text = "博客地址:";
+                label4.Text = "转换规则:";
+                label5.Text = "低位在前，高位在后";
+                label7.Text = "等待转换的值：";
+                label3.Text = "整型数据：";
+                label6.Text = "浮点数据：";
+                label8.Text = "字符数据：";
+                label1.Text = "输出：(Hex)";
+                label20.Text = "作者：Richard Hu";
+                button1.Text = "转换";
+                button2.Text = "反向转换";
+            }
+            else
+            {
+                Text = "ByteTransform Tools";
+                label2.Text = "Blogs:";
+                label4.Text = "Regular:";
+                label5.Text = "Low in front, high in the rear";
+                label7.Text = "Input value:";
+                label3.Text = "Integer:";
+                label6.Text = "Float:";
+                label8.Text = "String:";
+                label1.Text = "Output:(Hex)";
+                label20.Text = "Author:Richard Hu";
+                button1.Text = "Conversion";
+                button2.Text = "Re-conversion";
+            }
+        }
+
 
         private void FormByteTransfer_Shown( object sender, EventArgs e )
         {

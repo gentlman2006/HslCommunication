@@ -80,13 +80,13 @@ namespace HslCommunication.Enthernet
                     OperateResult sendFile = SendFileAndCheckReceive( socket, fullFileName, fileName, "", "" );
                     if (!sendFile.IsSuccess)
                     {
-                        LogNet?.WriteError( ToString( ), $"{StringResources.FileDownloadFailed}:{relativeName} ip:{IpAddress} reason：{sendFile.Message}" );
+                        LogNet?.WriteError( ToString( ), $"{StringResources.Language.FileDownloadFailed}:{relativeName} ip:{IpAddress} reason：{sendFile.Message}" );
                         return;
                     }
                     else
                     {
                         socket?.Close( );
-                        LogNet?.WriteInfo( ToString( ), StringResources.FileDownloadSuccess + ":" + relativeName );
+                        LogNet?.WriteInfo( ToString( ), StringResources.Language.FileDownloadSuccess + ":" + relativeName );
                     }
                 }
                 else if (customer == HslProtocol.ProtocolFileUpload)
@@ -109,7 +109,7 @@ namespace HslCommunication.Enthernet
                     }
                     catch (Exception ex)
                     {
-                        LogNet?.WriteException( ToString( ), StringResources.FilePathCreateFailed + fullFileName, ex );
+                        LogNet?.WriteException( ToString( ), StringResources.Language.FilePathCreateFailed + fullFileName, ex );
                         socket?.Close( );
                         return;
                     }
@@ -127,11 +127,11 @@ namespace HslCommunication.Enthernet
                     if (receiveFile.IsSuccess)
                     {
                         socket?.Close( );
-                        LogNet?.WriteInfo( ToString( ), StringResources.FileUploadSuccess + ":" + relativeName );
+                        LogNet?.WriteInfo( ToString( ), StringResources.Language.FileUploadSuccess + ":" + relativeName );
                     }
                     else
                     {
-                        LogNet?.WriteInfo( ToString( ), StringResources.FileUploadFailed + ":" + relativeName + " " + StringResources.TextDescription + receiveFile.Message );
+                        LogNet?.WriteInfo( ToString( ), StringResources.Language.FileUploadFailed + ":" + relativeName + " " + StringResources.Language.TextDescription + receiveFile.Message );
                     }
                 }
                 else if (customer == HslProtocol.ProtocolFileDelete)
@@ -150,7 +150,7 @@ namespace HslCommunication.Enthernet
                         socket?.Close( );
                     }
 
-                    if (deleteResult) LogNet?.WriteInfo( ToString( ), StringResources.FileDeleteSuccess + ":" + relativeName );
+                    if (deleteResult) LogNet?.WriteInfo( ToString( ), StringResources.Language.FileDeleteSuccess + ":" + relativeName );
                 }
                 else if (customer == HslProtocol.ProtocolFileDirectoryFiles)
                 {

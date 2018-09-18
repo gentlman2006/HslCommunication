@@ -12,7 +12,7 @@ namespace HslCommunicationCoreDemo
         {
             Console.WriteLine("Hello World!");
 
-            
+            Console.WriteLine( System.Globalization.CultureInfo.CurrentCulture.ToString() );
             Console.ReadLine( );
         }
 

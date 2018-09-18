@@ -72,7 +72,7 @@ namespace HslCommunication.Core.Net
                 {
                     // 有可能刚连接上就断开了，那就不管
                     client?.Close( );
-                    LogNet?.WriteException( ToString(), StringResources.SocketAcceptCallbackException, ex );
+                    LogNet?.WriteException( ToString(), StringResources.Language.SocketAcceptCallbackException, ex );
                 }
 
                 // 如果失败，尝试启动三次
@@ -87,16 +87,16 @@ namespace HslCommunication.Core.Net
                     catch (Exception ex)
                     {
                         Thread.Sleep( 1000 );
-                        LogNet?.WriteException( ToString( ), StringResources.SocketReAcceptCallbackException, ex );
+                        LogNet?.WriteException( ToString( ), StringResources.Language.SocketReAcceptCallbackException, ex );
                         i++;
                     }
                 }
 
                 if (i >= 3)
                 {
-                    LogNet?.WriteError( ToString( ), StringResources.SocketReAcceptCallbackException );
+                    LogNet?.WriteError( ToString( ), StringResources.Language.SocketReAcceptCallbackException );
                     // 抛出异常，终止应用程序
-                    throw new Exception( StringResources.SocketReAcceptCallbackException );
+                    throw new Exception( StringResources.Language.SocketReAcceptCallbackException );
                 }
             }
         }
@@ -142,7 +142,7 @@ namespace HslCommunication.Core.Net
                 Port = port;
 
                 LogNet?.WriteNewLine( );
-                LogNet?.WriteInfo( ToString(), StringResources.NetEngineStart );
+                LogNet?.WriteInfo( ToString(), StringResources.Language.NetEngineStart );
             }
         }
 
@@ -173,7 +173,7 @@ namespace HslCommunication.Core.Net
                 CloseAction( );
                 CoreSocket?.Close( );
                 IsStarted = false;
-                LogNet?.WriteInfo( ToString(), StringResources.NetEngineClose );
+                LogNet?.WriteInfo( ToString(), StringResources.Language.NetEngineClose );
             }
         }
         
@@ -225,17 +225,17 @@ namespace HslCommunication.Core.Net
                 case 0x01:
                     {
                         connect.Content?.Close( );
-                        return new OperateResult( StringResources.DeviceCurrentIsLoginRepeat );
+                        return new OperateResult( StringResources.Language.DeviceCurrentIsLoginRepeat );
                     }
                 case 0x02:
                     {
                         connect.Content?.Close( );
-                        return new OperateResult( StringResources.DeviceCurrentIsLoginForbidden );
+                        return new OperateResult( StringResources.Language.DeviceCurrentIsLoginForbidden );
                     }
                 case 0x03:
                     {
                         connect.Content?.Close( );
-                        return new OperateResult( StringResources.PasswordCheckFailed );
+                        return new OperateResult( StringResources.Language.PasswordCheckFailed );
                     }
             }
 

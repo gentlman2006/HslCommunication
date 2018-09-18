@@ -45,7 +45,7 @@ namespace HslCommunication.LogNet
         {
             if (!string.IsNullOrEmpty(m_LogSource))
             {
-                AnalysisLogSource(DateTime.MinValue, DateTime.MaxValue, LogNetManagment.TextAll);
+                AnalysisLogSource(DateTime.MinValue, DateTime.MaxValue, StringResources.Language.LogNetAll);
                 if (selectButton != null) selectButton.Selected = false;
                 selectButton = userButton_All;
             }
@@ -99,8 +99,8 @@ namespace HslCommunication.LogNet
                 for (int i = 0; i < collection.Count; i++)
                 {
                     Match m = collection[i];
-                    string deg = m.Value.Substring(2, 2);
-                    DateTime dateTime = Convert.ToDateTime(m.Value.Substring(6, 19));
+                    string deg = m.Value.Substring( 2, 5 );
+                    DateTime dateTime = Convert.ToDateTime( m.Value.Substring( m.Value.IndexOf('2'), 19 ) );
 
 
 
@@ -109,13 +109,13 @@ namespace HslCommunication.LogNet
                         if (i == 0)
                         {
                             // 提取第一个时间
-                            textBox2.Text = m.Value.Substring(6, 19);
+                            textBox2.Text = m.Value.Substring( m.Value.IndexOf( '2' ), 19 );
                         }
 
                         if (i == collection.Count - 1)
                         {
                             // 提取最后一个时间
-                            textBox3.Text = m.Value.Substring(6, 19);
+                            textBox3.Text = m.Value.Substring( m.Value.IndexOf( '2' ), 19 );
                         }
                     }
 
@@ -125,57 +125,38 @@ namespace HslCommunication.LogNet
                         if (checkBox1.Checked)
                         {
                             // 正则表达式过滤
-                            if (!Regex.IsMatch(m.Value, textBox4.Text))
+                            if (!Regex.IsMatch( m.Value, textBox4.Text ))
                             {
                                 continue;
                             }
                         }
 
-                        switch (deg)
-                        {
-                            case LogNetManagment.TextDebug:
-                                {
-                                    debug++;
-                                    break;
-                                }
-                            case LogNetManagment.TextInfo:
-                                {
-                                    info++;
-                                    break;
-                                }
-                            case LogNetManagment.TextWarn:
-                                {
-                                    warn++;
-                                    break;
-                                }
-                            case LogNetManagment.TextError:
-                                {
-                                    error++;
-                                    break;
-                                }
-                            case LogNetManagment.TextFatal:
-                                {
-                                    fatal++;
-                                    break;
-                                }
-                            default: break;
-                        }
+                        if (deg.StartsWith( StringResources.Language.LogNetDebug ))
+                            debug++;
+                        else if (deg.StartsWith( StringResources.Language.LogNetInfo ))
+                            info++;
+                        else if (deg.StartsWith( StringResources.Language.LogNetWarn ))
+                            warn++;
+                        else if (deg.StartsWith( StringResources.Language.LogNetError ))
+                            error++;
+                        else if (deg.StartsWith( StringResources.Language.LogNetFatal ))
+                            fatal++;
                         all++;
-                        if (degree == LogNetManagment.TextAll || degree == deg)
+                        if (degree == StringResources.Language.LogNetAll || deg.StartsWith(degree))
                         {
-                            sb.Append(m.Value.Substring(1));
-                            list.Add(dateTime);
+                            sb.Append( m.Value.Substring( 1 ) );
+                            list.Add( dateTime );
                         }
                     }
                 }
 
 
-                userButton_Debug.UIText = $"{LogNetManagment.TextDebug} ({debug})";
-                userButton_Info.UIText = $"{LogNetManagment.TextInfo} ({info})";
-                userButton_Warn.UIText = $"{LogNetManagment.TextWarn} ({warn})";
-                userButton_Error.UIText = $"{LogNetManagment.TextError} ({error})";
-                userButton_Fatal.UIText = $"{LogNetManagment.TextFatal} ({fatal})";
-                userButton_All.UIText = $"{LogNetManagment.TextAll} ({all})";
+                userButton_Debug.UIText = $"{StringResources.Language.LogNetDebug} ({debug})";
+                userButton_Info.UIText = $"{StringResources.Language.LogNetInfo} ({info})";
+                userButton_Warn.UIText = $"{StringResources.Language.LogNetWarn} ({warn})";
+                userButton_Error.UIText = $"{StringResources.Language.LogNetError} ({error})";
+                userButton_Fatal.UIText = $"{StringResources.Language.LogNetFatal} ({fatal})";
+                userButton_All.UIText = $"{StringResources.Language.LogNetAll} ({all})";
 
                 textBox1.Text = sb.ToString();
 
@@ -205,35 +186,35 @@ namespace HslCommunication.LogNet
         {
             // 调试
             UserButtonSetSelected(userButton_Debug);
-            FilterLogSource(LogNetManagment.TextDebug);
+            FilterLogSource( StringResources.Language.LogNetDebug );
         }
 
         private void userButton_Info_Click(object sender, EventArgs e)
         {
             // 信息
             UserButtonSetSelected(userButton_Info);
-            FilterLogSource(LogNetManagment.TextInfo);
+            FilterLogSource( StringResources.Language.LogNetInfo );
         }
 
         private void userButton_Warn_Click(object sender, EventArgs e)
         {
             // 警告
             UserButtonSetSelected(userButton_Warn);
-            FilterLogSource(LogNetManagment.TextWarn);
+            FilterLogSource( StringResources.Language.LogNetWarn );
         }
 
         private void userButton_Error_Click(object sender, EventArgs e)
         {
             // 错误
             UserButtonSetSelected(userButton_Error);
-            FilterLogSource(LogNetManagment.TextError);
+            FilterLogSource( StringResources.Language.LogNetError );
         }
 
         private void userButton_Fatal_Click(object sender, EventArgs e)
         {
             // 致命
             UserButtonSetSelected(userButton_Fatal);
-            FilterLogSource(LogNetManagment.TextFatal);
+            FilterLogSource( StringResources.Language.LogNetFatal );
 
         }
 
@@ -241,7 +222,7 @@ namespace HslCommunication.LogNet
         {
             // 全部
             UserButtonSetSelected(userButton_All);
-            FilterLogSource(LogNetManagment.TextAll);
+            FilterLogSource( StringResources.Language.LogNetAll );
         }
 
         private void userButton_source_Click(object sender, EventArgs e)

@@ -243,7 +243,7 @@ namespace HslCommunication.Profinet.Siemens
             }
             else
             {
-                return new OperateResult<byte[]>( read.ErrorCode, StringResources.SiemensDataLengthCheckFailed );
+                return new OperateResult<byte[]>( read.ErrorCode, StringResources.Language.SiemensDataLengthCheckFailed );
             }
         }
 
@@ -319,7 +319,7 @@ namespace HslCommunication.Profinet.Siemens
             }
             else
             {
-                return new OperateResult<byte[]>( ) { ErrorCode = read.ErrorCode, Message = StringResources.SiemensDataLengthCheckFailed };
+                return new OperateResult<byte[]>( ) { ErrorCode = read.ErrorCode, Message = StringResources.Language.SiemensDataLengthCheckFailed };
             }
         }
 
@@ -409,7 +409,7 @@ namespace HslCommunication.Profinet.Siemens
             if (write.Content[write.Content.Length - 1] != 0xFF)
             {
                 // 写入异常 -> WriteError
-                return new OperateResult( write.Content[write.Content.Length - 1], StringResources.SiemensWriteError + write.Content[write.Content.Length - 1] );
+                return new OperateResult( write.Content[write.Content.Length - 1], StringResources.Language.SiemensWriteError + write.Content[write.Content.Length - 1] );
             }
             else
             {
@@ -629,7 +629,7 @@ namespace HslCommunication.Profinet.Siemens
                 }
                 else
                 {
-                    result.Message = StringResources.NotSupportedDataType;
+                    result.Message = StringResources.Language.NotSupportedDataType;
                     result.Content1 = 0;
                     result.Content2 = 0;
                     result.Content3 = 0;
@@ -680,8 +680,8 @@ namespace HslCommunication.Profinet.Siemens
         {
             if (address == null) throw new NullReferenceException( "address" );
             if (length == null) throw new NullReferenceException( "count" );
-            if (address.Length != length.Length) throw new Exception( StringResources.TwoParametersLengthIsNotSame );
-            if (length.Length > 19) throw new Exception( StringResources.SiemensReadLengthCannotLargerThan19 );
+            if (address.Length != length.Length) throw new Exception( StringResources.Language.TwoParametersLengthIsNotSame );
+            if (length.Length > 19) throw new Exception( StringResources.Language.SiemensReadLengthCannotLargerThan19 );
 
             int readCount = length.Length;
             byte[] _PLCCommand = new byte[19 + readCount * 12];

@@ -112,7 +112,7 @@ namespace HslCommunication.Enthernet
         /// <param name="ex">异常</param>
         internal override void SocketReceiveException( AppSession session, Exception ex )
         {
-            if (ex.Message.Contains( StringResources.SocketRemoteCloseException ))
+            if (ex.Message.Contains( StringResources.Language.SocketRemoteCloseException ))
             {
                 //异常掉线
                 TcpStateDownLine( session, false );
@@ -148,7 +148,7 @@ namespace HslCommunication.Enthernet
             // 是否保存上线信息
             if (IsSaveLogClientLineChange)
             {
-                LogNet?.WriteInfo( ToString( ), $"[{state.IpEndPoint}] Name:{ state?.LoginAlias } { StringResources.NetClientOnline }" );
+                LogNet?.WriteInfo( ToString( ), $"[{state.IpEndPoint}] Name:{ state?.LoginAlias } { StringResources.Language.NetClientOnline }" );
             }
         }
 
@@ -167,7 +167,7 @@ namespace HslCommunication.Enthernet
             // 关闭连接
             TcpStateClose( state );
             // 判断是否正常下线
-            string str = is_regular ? StringResources.NetClientOffline : StringResources.NetClientBreak;
+            string str = is_regular ? StringResources.Language.NetClientOffline : StringResources.Language.NetClientBreak;
             ClientOffline?.Invoke( state, str );
             AllClientsStatusChange?.Invoke( ClientCount );
             // 是否保存上线信息
@@ -222,7 +222,7 @@ namespace HslCommunication.Enthernet
                 if (appSessions.Count > ConnectMax)
                 {
                     socket?.Close( );
-                    LogNet?.WriteWarn( ToString( ), StringResources.NetClientFull );
+                    LogNet?.WriteWarn( ToString( ), StringResources.Language.NetClientFull );
                     return;
                 }
 
@@ -246,7 +246,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), StringResources.GetClientIpaddressFailed, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.Language.GetClientIpaddressFailed, ex );
                 }
 
                 if (readResult.Content1 == 1)
@@ -273,7 +273,7 @@ namespace HslCommunication.Enthernet
                 {
                     // 登录前已经出错
                     TcpStateClose( session );
-                    LogNet?.WriteException( ToString( ), StringResources.NetClientLoginFailed, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.Language.NetClientLoginFailed, ex );
                 }
             }
         }
@@ -439,7 +439,7 @@ namespace HslCommunication.Enthernet
 
                         if ((DateTime.Now - appSessions[i].HeartTime).TotalSeconds > 1 * 8)//8次没有收到失去联系
                         {
-                            LogNet?.WriteWarn( ToString( ), StringResources.NetHeartCheckTimeout + appSessions[i].IpAddress.ToString( ) );
+                            LogNet?.WriteWarn( ToString( ), StringResources.Language.NetHeartCheckTimeout + appSessions[i].IpAddress.ToString( ) );
                             TcpStateDownLine( appSessions[i], false, false );
                             continue;
                         }
@@ -447,7 +447,7 @@ namespace HslCommunication.Enthernet
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), StringResources.NetHeartCheckFailed, ex );
+                    LogNet?.WriteException( ToString( ), StringResources.Language.NetHeartCheckFailed, ex );
                 }
 
 

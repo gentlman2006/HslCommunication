@@ -165,9 +165,11 @@ namespace HslCommunication.Enthernet
             // 启动心跳线程，在第一次Start的时候
             if (thread_heart_check == null)
             {
-                thread_heart_check = new Thread( new ThreadStart( ThreadHeartCheck ) );
-                thread_heart_check.Priority = ThreadPriority.AboveNormal;
-                thread_heart_check.IsBackground = true;
+                thread_heart_check = new Thread( new ThreadStart( ThreadHeartCheck ) )
+                {
+                    Priority = ThreadPriority.AboveNormal,
+                    IsBackground = true
+                };
                 thread_heart_check.Start( );
             }
         }
@@ -179,7 +181,7 @@ namespace HslCommunication.Enthernet
         {
             if (ConnectFailedCount == 0)
             {
-                MessageAlerts?.Invoke( StringResources.ConnectingServer );
+                MessageAlerts?.Invoke( StringResources.Language.ConnectingServer );
             }
             else
             {
@@ -188,10 +190,10 @@ namespace HslCommunication.Enthernet
                 {
                     if (IsQuie) return;
                     count--;
-                    MessageAlerts?.Invoke( string.Format( StringResources.ConnectFailedAndWait, count ) );
+                    MessageAlerts?.Invoke( string.Format( StringResources.Language.ConnectFailedAndWait, count ) );
                     Thread.Sleep( 1000 );
                 }
-                MessageAlerts?.Invoke( string.Format( StringResources.AttemptConnectServer, ConnectFailedCount ) );
+                MessageAlerts?.Invoke( string.Format( StringResources.Language.AttemptConnectServer, ConnectFailedCount ) );
             }
         }
 
@@ -218,7 +220,7 @@ namespace HslCommunication.Enthernet
                 return OperateResult.CreateFailedResult<Socket>( sendResult );
             }
 
-            MessageAlerts?.Invoke( StringResources.ConnectServerSuccess );
+            MessageAlerts?.Invoke( StringResources.Language.ConnectServerSuccess );
             return connectResult;
         }
 
@@ -289,7 +291,7 @@ namespace HslCommunication.Enthernet
         /// <param name="ex"></param>
         internal override void SocketReceiveException( AppSession receive, Exception ex )
         {
-            if (ex.Message.Contains( StringResources.SocketRemoteCloseException ))
+            if (ex.Message.Contains( StringResources.Language.SocketRemoteCloseException ))
             {
                 // 异常掉线
                 ReconnectServer( );

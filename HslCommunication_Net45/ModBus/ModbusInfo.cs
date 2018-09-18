@@ -163,7 +163,7 @@ namespace HslCommunication.ModBus
             {
                 // response check
                 if (value[0] != 0x3A || value[value.Length - 2] != 0x0D || value[value.Length - 1] != 0x0A)
-                    return new OperateResult<byte[]>( ) { Message = StringResources.ModbusAsciiFormatCheckFailed + BasicFramework.SoftBasic.ByteToHexString( value ) };
+                    return new OperateResult<byte[]>( ) { Message = StringResources.Language.ModbusAsciiFormatCheckFailed + BasicFramework.SoftBasic.ByteToHexString( value ) };
 
                 // remove head and end
                 byte[] modbus_ascii = BasicFramework.SoftBasic.BytesArrayRemoveDouble( value, 1, 2 );
@@ -172,7 +172,7 @@ namespace HslCommunication.ModBus
                 byte[] modbus_core = BasicFramework.SoftBasic.AsciiBytesToBytes( modbus_ascii );
 
                 if (!Serial.SoftLRC.CheckLRC( modbus_core ))
-                    return new OperateResult<byte[]>( ) { Message = StringResources.ModbusLRCCheckFailed + BasicFramework.SoftBasic.ByteToHexString( modbus_core ) };
+                    return new OperateResult<byte[]>( ) { Message = StringResources.Language.ModbusLRCCheckFailed + BasicFramework.SoftBasic.ByteToHexString( modbus_core ) };
 
                 // remove the last info
                 return OperateResult.CreateSuccessResult( BasicFramework.SoftBasic.BytesArrayRemoveLast( modbus_core, 1 ) );
@@ -198,7 +198,7 @@ namespace HslCommunication.ModBus
                 ModbusAddress mAddress = new ModbusAddress( address );
                 if (!isStartWithZero)
                 {
-                    if (mAddress.Address < 1) throw new Exception( StringResources.ModbusAddressMustMoreThanOne );
+                    if (mAddress.Address < 1) throw new Exception( StringResources.Language.ModbusAddressMustMoreThanOne );
                     mAddress.Address = (ushort)(mAddress.Address - 1);
                 }
                 return OperateResult.CreateSuccessResult( mAddress );
@@ -218,11 +218,11 @@ namespace HslCommunication.ModBus
         {
             switch (code)
             {
-                case ModbusInfo.FunctionCodeNotSupport: return StringResources.ModbusTcpFunctionCodeNotSupport;
-                case ModbusInfo.FunctionCodeOverBound: return StringResources.ModbusTcpFunctionCodeOverBound;
-                case ModbusInfo.FunctionCodeQuantityOver: return StringResources.ModbusTcpFunctionCodeQuantityOver;
-                case ModbusInfo.FunctionCodeReadWriteException: return StringResources.ModbusTcpFunctionCodeReadWriteException;
-                default: return StringResources.UnknownError;
+                case ModbusInfo.FunctionCodeNotSupport: return StringResources.Language.ModbusTcpFunctionCodeNotSupport;
+                case ModbusInfo.FunctionCodeOverBound: return StringResources.Language.ModbusTcpFunctionCodeOverBound;
+                case ModbusInfo.FunctionCodeQuantityOver: return StringResources.Language.ModbusTcpFunctionCodeQuantityOver;
+                case ModbusInfo.FunctionCodeReadWriteException: return StringResources.Language.ModbusTcpFunctionCodeReadWriteException;
+                default: return StringResources.Language.UnknownError;
             }
         }
 

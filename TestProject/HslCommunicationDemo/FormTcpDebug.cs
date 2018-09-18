@@ -24,6 +24,50 @@ namespace HslCommunicationDemo
             timer.Interval = 200;
             timer.Tick += Timer_Tick;
             timer.Start( );
+
+            Language( Program.Language );
+        }
+
+        private void Language( int language )
+        {
+            if (language == 1)
+            {
+                Text = "TCP/IP调试助手";
+                label2.Text = "博客地址：";
+                label4.Text = "使用协议：";
+                label20.Text = "作者：Richard Hu";
+                label5.Text = "TCP/IP，无协议";
+                label1.Text = "Ip地址：";
+                label3.Text = "端口号：";
+                button1.Text = "连接";
+                button2.Text = "关闭连接";
+                label6.Text = "数据发送区：";
+                checkBox1.Text = "是否使用二进制通信";
+                label7.Text = "数据接收区：";
+                checkBox3.Text = "是否显示发送数据";
+                checkBox4.Text = "是否显示时间";
+                button3.Text = "发送数据";
+                label8.Text = "已选择数据字节数：";
+            }
+            else
+            {
+                Text = "TCP/IP Debug Tools";
+                label2.Text = "Blogs:";
+                label4.Text = "Protocols:";
+                label20.Text = "Author:Richard Hu";
+                label5.Text = "TCP/IP";
+                label1.Text = "Ip:";
+                label3.Text = "Port:";
+                button1.Text = "Connect";
+                button2.Text = "Disconnect";
+                label6.Text = "Data sending Area:";
+                checkBox1.Text = "Whether to use binary communication";
+                label7.Text = "Data receiving Area:";
+                checkBox3.Text = "Whether to display send data";
+                checkBox4.Text = "Whether to show time";
+                button3.Text = "Send Data";
+                label8.Text = "Number of data bytes selected:";
+            }
         }
 
         private void Timer_Tick( object sender, EventArgs e )
@@ -37,11 +81,11 @@ namespace HslCommunicationDemo
                     {
                         // 二进制
                         byte[] bytes = HslCommunication.BasicFramework.SoftBasic.HexStringToBytes( select );
-                        label8.Text = "已选择数据字节数：" + bytes.Length;
+                        label8.Text = Program.Language == 1? "已选择数据字节数：" : "Number of data bytes selected:" + bytes.Length;
                     }
                     else
                     {
-                        label8.Text = "已选择数据字节数：" + select.Length;
+                        label8.Text = Program.Language == 1 ? "已选择数据字节数：" : "Number of data bytes selected:" + select.Length;
                     }
                 }
             }
@@ -73,11 +117,11 @@ namespace HslCommunicationDemo
                 button2.Enabled = true;
                 panel2.Enabled = true;
 
-                MessageBox.Show( "连接成功！" );
+                MessageBox.Show( HslCommunication.StringResources.Language.ConnectServerSuccess );
             }
             catch(Exception ex)
             {
-                MessageBox.Show( "连接失败！" + Environment.NewLine + ex.Message );
+                MessageBox.Show( HslCommunication.StringResources.Language.ConnectedFailed + Environment.NewLine + ex.Message );
             }
         }
 
@@ -116,11 +160,11 @@ namespace HslCommunicationDemo
 
                     if (checkBox4.Checked)
                     {
-                        textBox6.AppendText( "[" + DateTime.Now.ToString( "yyyy-MM-dd HH:mm:ss.fff" ) + "][收]   " + msg + Environment.NewLine );
+                        textBox6.AppendText( "[" + DateTime.Now.ToString( "yyyy-MM-dd HH:mm:ss.fff" ) + (Program.Language == 1 ? "][收]   ": "][R]   ") + msg + Environment.NewLine );
                     }
                     else
                     {
-                        textBox6.AppendText( "[收]   " + msg + Environment.NewLine );
+                        textBox6.AppendText( (Program.Language == 1 ? "][收]   " : "][R]   ") + msg + Environment.NewLine );
                     }
 
                 } ) );
@@ -133,7 +177,7 @@ namespace HslCommunicationDemo
             {
                 Invoke( new Action( ( ) =>
                 {
-                    MessageBox.Show( "服务器断开连接。" );
+                    MessageBox.Show( Program.Language == 1 ? "服务器断开连接。" : "DisConnect from remote" );
                     panel2.Enabled = false;
                     button1.Enabled = true;
                     button2.Enabled = false;
@@ -160,11 +204,11 @@ namespace HslCommunicationDemo
                 // 显示发送信息
                 if (checkBox4.Checked)
                 {
-                    textBox6.AppendText( "[" + DateTime.Now.ToString( "yyyy-MM-dd HH:mm:ss.fff" ) + "][发]   " + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( send, ' ' ) + Environment.NewLine );
+                    textBox6.AppendText( "[" + DateTime.Now.ToString( "yyyy-MM-dd HH:mm:ss.fff" ) + (Program.Language == 1 ? "][发]   " : "][S]   ") + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( send, ' ' ) + Environment.NewLine );
                 }
                 else
                 {
-                    textBox6.AppendText("[发]   " + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( send, ' ' ) + Environment.NewLine );
+                    textBox6.AppendText( (Program.Language == 1 ? "][发]   " : "][S]   ") + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( send, ' ' ) + Environment.NewLine );
                 }
             }
             try

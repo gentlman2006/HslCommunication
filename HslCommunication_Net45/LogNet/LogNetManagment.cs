@@ -42,15 +42,7 @@ namespace HslCommunication.LogNet
         /// 存储文件的时候指示根据日志时间来存储
         /// </summary>
         internal const int LogSaveModeByDateTime = 3;
-
-        internal const string TextDebug = "调试";
-        internal const string TextInfo = "信息";
-        internal const string TextWarn = "警告";
-        internal const string TextError = "错误";
-        internal const string TextFatal = "致命";
-        internal const string TextAbandon = "放弃";
-        internal const string TextAll = "全部";
-
+        
 
         /// <summary>
         /// 日志文件的头标志
@@ -62,13 +54,13 @@ namespace HslCommunication.LogNet
         {
             switch (degree)
             {
-                case HslMessageDegree.DEBUG: return TextDebug;
-                case HslMessageDegree.INFO: return TextInfo;
-                case HslMessageDegree.WARN: return TextWarn;
-                case HslMessageDegree.ERROR: return TextError;
-                case HslMessageDegree.FATAL: return TextFatal;
-                case HslMessageDegree.None: return TextAbandon;
-                default: return TextAbandon;
+                case HslMessageDegree.DEBUG: return StringResources.Language.LogNetDebug;
+                case HslMessageDegree.INFO: return StringResources.Language.LogNetInfo;
+                case HslMessageDegree.WARN: return StringResources.Language.LogNetWarn;
+                case HslMessageDegree.ERROR: return StringResources.Language.LogNetError;
+                case HslMessageDegree.FATAL: return StringResources.Language.LogNetFatal;
+                case HslMessageDegree.None: return StringResources.Language.LogNetAbandon;
+                default: return StringResources.Language.LogNetAbandon;
             }
         }
 
@@ -98,19 +90,19 @@ namespace HslCommunication.LogNet
 
                 try
                 {
-                    builder.Append( "错误消息：" );
+                    builder.Append( StringResources.Language.ExceptionMessage );
                     builder.Append( ex.Message );
                     builder.Append( Environment.NewLine );
-                    builder.Append( "源：" );
+                    builder.Append( StringResources.Language.ExceptionSourse );
                     builder.Append( ex.Source );
                     builder.Append( Environment.NewLine );
-                    builder.Append( "堆栈：" );
+                    builder.Append( StringResources.Language.ExceptionStackTrace );
                     builder.Append( ex.StackTrace );
                     builder.Append( Environment.NewLine );
-                    builder.Append( "错误类型：" );
+                    builder.Append( StringResources.Language.ExceptionType );
                     builder.Append( ex.GetType( ).ToString( ) );
                     builder.Append( Environment.NewLine );
-                    builder.Append( "调用方法：" );
+                    builder.Append( StringResources.Language.ExceptopnTargetSite );
                     builder.Append( ex.TargetSite?.ToString( ) );
                 }
                 catch

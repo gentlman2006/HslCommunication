@@ -398,6 +398,12 @@
     <Compile Include="..\HslCommunication_Net45\Enthernet\UdpNet\NetUdpServer.cs">
       <Link>Enthernet\UdpNet\NetUdpServer.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Language\DefaultLanguage.cs">
+      <Link>Language\DefaultLanguage.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Language\English.cs">
+      <Link>Language\English.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\LogNet\Core\ILogNet.cs">
       <Link>LogNet\Core\ILogNet.cs</Link>
     </Compile>

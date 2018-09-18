@@ -212,6 +212,8 @@
     <Compile Include="Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" />
     <Compile Include="Enthernet\UdpNet\NetUdpClient.cs" />
     <Compile Include="Enthernet\UdpNet\NetUdpServer.cs" />
+    <Compile Include="Language\DefaultLanguage.cs" />
+    <Compile Include="Language\English.cs" />
     <Compile Include="LogNet\Core\ILogNet.cs" />
     <Compile Include="LogNet\Core\LogBase.cs" />
     <Compile Include="LogNet\Core\Types.cs" />

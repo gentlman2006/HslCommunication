@@ -102,6 +102,8 @@
     <Compile Include="..\HslCommunication_Net45\Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" Link="Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\UdpNet\NetUdpClient.cs" Link="Enthernet\UdpNet\NetUdpClient.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\UdpNet\NetUdpServer.cs" Link="Enthernet\UdpNet\NetUdpServer.cs" />
+    <Compile Include="..\HslCommunication_Net45\Language\DefaultLanguage.cs" Link="Language\DefaultLanguage.cs" />
+    <Compile Include="..\HslCommunication_Net45\Language\English.cs" Link="Language\English.cs" />
     <Compile Include="..\HslCommunication_Net45\LogNet\Core\ILogNet.cs" Link="LogNet\Core\ILogNet.cs" />
     <Compile Include="..\HslCommunication_Net45\LogNet\Core\LogBase.cs" Link="LogNet\Core\LogBase.cs" />
     <Compile Include="..\HslCommunication_Net45\LogNet\Core\Types.cs" Link="LogNet\Core\Types.cs" />
@@ -175,6 +177,7 @@
     <Folder Include="Profinet\AllenBradley\" />
     <Folder Include="Profinet\Panasonic\" />
     <Folder Include="Robot\EFORT\" />
+    <Folder Include="Language\" />
   </ItemGroup>
 
 </Project>

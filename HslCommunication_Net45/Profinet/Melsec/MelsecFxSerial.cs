@@ -25,33 +25,28 @@ namespace HslCommunication.Profinet.Melsec
         {
             WordLength = 1;
         }
-        
-        
+
+
         #endregion
 
         #region Check Response
-        
-        private OperateResult CheckPlcReadResponse(byte[] ack )
+
+        private OperateResult CheckPlcReadResponse( byte[] ack )
         {
-            if (ack.Length == 0) return new OperateResult( StringResources.MelsecFxReceiveZore );
-            if (ack[0] == 0x15) return new OperateResult( StringResources.MelsecFxAckNagative );
-            if (ack[0] != 0x02) return new OperateResult( StringResources.MelsecFxAckWrong + ack[0] );
-            
-            if (!MelsecHelper.CheckCRC( ack ))
-            {
-                return new OperateResult( "Check CRC Failed" );
-            }
-            else
-            {
-                return OperateResult.CreateSuccessResult( );
-            }
+            if (ack.Length == 0) return new OperateResult( StringResources.Language.MelsecFxReceiveZore );
+            if (ack[0] == 0x15) return new OperateResult( StringResources.Language.MelsecFxAckNagative );
+            if (ack[0] != 0x02) return new OperateResult( StringResources.Language.MelsecFxAckWrong + ack[0] );
+
+            if (!MelsecHelper.CheckCRC( ack )) return new OperateResult( StringResources.Language.MelsecFxCrcCheckFailed );
+
+            return OperateResult.CreateSuccessResult( );
         }
 
         private OperateResult CheckPlcWriteResponse( byte[] ack )
         {
-            if (ack.Length == 0) return new OperateResult( StringResources.MelsecFxReceiveZore );
-            if (ack[0] == 0x15) return new OperateResult( StringResources.MelsecFxAckNagative );
-            if (ack[0] != 0x06) return new OperateResult( StringResources.MelsecFxAckWrong + ack[0] );
+            if (ack.Length == 0) return new OperateResult( StringResources.Language.MelsecFxReceiveZore );
+            if (ack[0] == 0x15) return new OperateResult( StringResources.Language.MelsecFxAckNagative );
+            if (ack[0] != 0x06) return new OperateResult( StringResources.Language.MelsecFxAckWrong + ack[0] );
 
             return OperateResult.CreateSuccessResult( );
         }
@@ -335,7 +330,7 @@ namespace HslCommunication.Profinet.Melsec
             }
             else
             {
-                return new OperateResult<byte[]>( StringResources.MelsecCurrentTypeNotSupportedBitOperate );
+                return new OperateResult<byte[]>( StringResources.Language.MelsecCurrentTypeNotSupportedBitOperate );
             }
 
 
@@ -570,7 +565,7 @@ namespace HslCommunication.Profinet.Melsec
                             result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.C.FromBase );
                             break;
                         }
-                    default: throw new Exception( StringResources.NotSupportedDataType );
+                    default: throw new Exception( StringResources.Language.NotSupportedDataType );
                 }
             }
             catch (Exception ex)
@@ -625,7 +620,7 @@ namespace HslCommunication.Profinet.Melsec
             }
             else
             {
-                return new OperateResult<ushort>( StringResources.MelsecCurrentTypeNotSupportedWordOperate );
+                return new OperateResult<ushort>( StringResources.Language.MelsecCurrentTypeNotSupportedWordOperate );
             }
 
             return OperateResult.CreateSuccessResult( startAddress );
@@ -676,7 +671,7 @@ namespace HslCommunication.Profinet.Melsec
             }
             else
             {
-                return new OperateResult<ushort, ushort>( StringResources.MelsecCurrentTypeNotSupportedBitOperate );
+                return new OperateResult<ushort, ushort>( StringResources.Language.MelsecCurrentTypeNotSupportedBitOperate );
             }
 
             return OperateResult.CreateSuccessResult( startAddress, (ushort)(analysis.Content2 % 8) );

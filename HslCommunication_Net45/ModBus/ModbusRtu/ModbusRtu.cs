@@ -277,10 +277,10 @@ namespace HslCommunication.ModBus
             if (!result.IsSuccess) return result;
 
             // 长度校验
-            if (result.Content.Length < 5) return new OperateResult<byte[]>( StringResources.ReceiveDataLengthTooShort + "5" );
+            if (result.Content.Length < 5) return new OperateResult<byte[]>( StringResources.Language.ReceiveDataLengthTooShort + "5" );
 
             // 检查crc
-            if (!SoftCRC16.CheckCRC16( result.Content )) return new OperateResult<byte[]>( StringResources.ModbusCRCCheckFailed );
+            if (!SoftCRC16.CheckCRC16( result.Content )) return new OperateResult<byte[]>( StringResources.Language.ModbusCRCCheckFailed );
 
             // 发生了错误
             if ((send[1] + 0x80) == result.Content[1]) return new OperateResult<byte[]>( result.Content[2], ModbusInfo.GetDescriptionByErrorCode( result.Content[2] ) );
@@ -337,7 +337,7 @@ namespace HslCommunication.ModBus
                         command = BuildReadRegisterCommand( address, length );
                         break;
                     }
-                default: command = new OperateResult<byte[]>( ) { Message = StringResources.ModbusTcpFunctionCodeNotSupport }; break;
+                default: command = new OperateResult<byte[]>( ) { Message = StringResources.Language.ModbusTcpFunctionCodeNotSupport }; break;
             }
             if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 

@@ -647,7 +647,7 @@ namespace HslCommunication.Profinet.Omron
                             result.Content1 = OmronFinsDataType.AR;
                             break;
                         }
-                    default: throw new Exception( StringResources.NotSupportedDataType );
+                    default: throw new Exception( StringResources.Language.NotSupportedDataType );
                 }
 
                 if (isBit)
@@ -664,7 +664,7 @@ namespace HslCommunication.Profinet.Omron
                         result.Content2[2] = byte.Parse( splits[1] );
                         if (result.Content2[2] > 15)
                         {
-                            throw new Exception( StringResources.OmronAddressMustBeZeroToFiveteen );
+                            throw new Exception( StringResources.Language.OmronAddressMustBeZeroToFiveteen );
                         }
                     }
                 }
@@ -705,7 +705,7 @@ namespace HslCommunication.Profinet.Omron
                 if (response.Length >= 30)
                 {
                     err = response[28] * 256 + response[29];
-                    if (err > 0) return new OperateResult<byte[]>( err, StringResources.OmronReceiveDataError );
+                    if (err > 0) return new OperateResult<byte[]>( err, StringResources.Language.OmronReceiveDataError );
 
                     if (!isRead) return OperateResult.CreateSuccessResult( new byte[0] );
                     // 读取操作
@@ -716,7 +716,7 @@ namespace HslCommunication.Profinet.Omron
                 }
             }
 
-            return new OperateResult<byte[]>( StringResources.OmronReceiveDataError );
+            return new OperateResult<byte[]>( StringResources.Language.OmronReceiveDataError );
         }
 
         /// <summary>
@@ -728,17 +728,17 @@ namespace HslCommunication.Profinet.Omron
         {
             switch (err)
             {
-                case 0: return StringResources.OmronStatus0;
-                case 1: return StringResources.OmronStatus1;
-                case 2: return StringResources.OmronStatus2;
-                case 3: return StringResources.OmronStatus3;
-                case 20: return StringResources.OmronStatus20;
-                case 21: return StringResources.OmronStatus21;
-                case 22: return StringResources.OmronStatus22;
-                case 23: return StringResources.OmronStatus23;
-                case 24: return StringResources.OmronStatus24;
-                case 25: return StringResources.OmronStatus25;
-                default: return StringResources.UnknownError;
+                case 0: return StringResources.Language.OmronStatus0;
+                case 1: return StringResources.Language.OmronStatus1;
+                case 2: return StringResources.Language.OmronStatus2;
+                case 3: return StringResources.Language.OmronStatus3;
+                case 20: return StringResources.Language.OmronStatus20;
+                case 21: return StringResources.Language.OmronStatus21;
+                case 22: return StringResources.Language.OmronStatus22;
+                case 23: return StringResources.Language.OmronStatus23;
+                case 24: return StringResources.Language.OmronStatus24;
+                case 25: return StringResources.Language.OmronStatus25;
+                default: return StringResources.Language.UnknownError;
             }
         }
 

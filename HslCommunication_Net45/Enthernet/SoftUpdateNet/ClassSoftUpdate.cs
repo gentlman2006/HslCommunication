@@ -66,11 +66,11 @@ namespace HslCommunication.Enthernet
                     // 安装系统和更新系统
                     if (Protocol == 0x1001)
                     {
-                        LogNet?.WriteInfo(ToString(), StringResources.SystemInstallOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
+                        LogNet?.WriteInfo(ToString(), StringResources.Language.SystemInstallOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
                     }
                     else
                     {
-                        LogNet?.WriteInfo( ToString( ), StringResources.SystemUpdateOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
+                        LogNet?.WriteInfo( ToString( ), StringResources.Language.SystemUpdateOperater + ((IPEndPoint)socket.RemoteEndPoint).Address.ToString());
                     }
                     if (Directory.Exists(FileUpdatePath))
                     {
@@ -145,7 +145,7 @@ namespace HslCommunication.Enthernet
             {
                 Thread.Sleep(20);
                 socket?.Close();
-                LogNet?.WriteException( ToString( ), StringResources.FileSendClientFailed, ex);
+                LogNet?.WriteException( ToString( ), StringResources.Language.FileSendClientFailed, ex);
             }
         }
 

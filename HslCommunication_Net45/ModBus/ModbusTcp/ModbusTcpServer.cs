@@ -1281,7 +1281,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpReadCoilException, ex );
+                LogNet?.WriteException( ToString( ), StringResources.Language.ModbusTcpReadCoilException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1311,7 +1311,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpReadCoilException, ex );
+                LogNet?.WriteException( ToString( ), StringResources.Language.ModbusTcpReadCoilException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1341,7 +1341,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpReadRegisterException, ex );
+                LogNet?.WriteException( ToString( ), StringResources.Language.ModbusTcpReadRegisterException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1370,7 +1370,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpReadRegisterException, ex );
+                LogNet?.WriteException( ToString( ), StringResources.Language.ModbusTcpReadRegisterException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1393,7 +1393,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpWriteCoilException, ex );
+                LogNet?.WriteException( ToString( ), StringResources.Language.ModbusTcpWriteCoilException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1416,7 +1416,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpWriteRegisterException, ex );
+                LogNet?.WriteException( ToString( ), StringResources.Language.ModbusTcpWriteRegisterException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1446,7 +1446,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpWriteCoilException, ex );
+                LogNet?.WriteException( ToString( ), StringResources.Language.ModbusTcpWriteCoilException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
@@ -1497,7 +1497,7 @@ namespace HslCommunication.ModBus
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString( ), StringResources.ModbusTcpWriteRegisterException, ex );
+                LogNet?.WriteException( ToString( ), StringResources.Language.ModbusTcpWriteRegisterException, ex );
                 return CreateExceptionBack( modbus, ModbusInfo.FunctionCodeReadWriteException );
             }
         }
