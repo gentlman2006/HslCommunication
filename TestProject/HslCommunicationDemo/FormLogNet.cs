@@ -30,6 +30,14 @@ namespace HslCommunicationDemo
             comboBox2.SelectedIndexChanged += ComboBox2_SelectedIndexChanged;
 
             logNet.FiltrateKeyword( "123" );
+
+
+            if (!Program.ShowAuthorInfomation)
+            {
+                label2.Visible = false;
+                linkLabel1.Visible = false;
+                label20.Visible = false;
+            }
         }
 
         private void ComboBox2_SelectedIndexChanged( object sender, EventArgs e )

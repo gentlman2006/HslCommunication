@@ -117,17 +117,17 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.comboBox1);
-            this.panel1.Controls.Add(this.checkBox3);
             this.panel1.Controls.Add(this.checkBox1);
             this.panel1.Controls.Add(this.textBox15);
             this.panel1.Controls.Add(this.label21);
             this.panel1.Controls.Add(this.button2);
-            this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.textBox2);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.checkBox3);
             this.panel1.Location = new System.Drawing.Point(14, 32);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panel1.Name = "panel1";
@@ -518,7 +518,7 @@
             this.label19.ForeColor = System.Drawing.Color.Red;
             this.label19.Location = new System.Drawing.Point(61, 82);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(147, 41);
+            this.label19.Size = new System.Drawing.Size(147, 70);
             this.label19.TabIndex = 17;
             this.label19.Text = "注意：值的字符串需要能转化成对应的数据类型";
             // 

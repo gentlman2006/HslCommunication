@@ -305,6 +305,19 @@ namespace HslCommunicationDemo
                 Program.Language = 2;
                 Language( Program.Language );
             }
+
+
+            if (!Program.ShowAuthorInfomation)
+            {
+                label2.Visible = false;
+                linkLabel1.Visible = false;
+                label4.Visible = false;
+                linkLabel4.Visible = false;
+                linkLabel2.Visible = false;
+                label20.Visible = false;
+                label1.Visible = false;
+                linkLabel3.Visible = false;
+            }
         }
 
         private void Language(int language )

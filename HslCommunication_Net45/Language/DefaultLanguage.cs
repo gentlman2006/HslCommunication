@@ -33,6 +33,8 @@ namespace HslCommunication.Language
         public virtual string DataLengthIsNotEnough => "接收的数据长度不足，应该值:{0},实际值:{1}";
         public virtual string ReceiveDataTimeout => "接收数据超时：";
         public virtual string ReceiveDataLengthTooShort => "接收的数据长度太短：";
+        public virtual string MessageTip => "消息提示：";
+        public virtual string Close => "关闭";
 
         /***********************************************************************************
          * 

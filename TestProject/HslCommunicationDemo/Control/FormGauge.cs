@@ -18,12 +18,28 @@ namespace HslCommunicationDemo
 
         private void FormGauge_Load( object sender, EventArgs e )
         {
+            Language( Program.Language );
+
             propertyGrid1.SelectedObject = userGaugeChart5;
             random = new Random( );
             timerTick = new Timer( );
             timerTick.Interval = 1000;
             timerTick.Tick += TimerTick_Tick;
             timerTick.Start( );
+        }
+
+        private void Language( int language )
+        {
+            if (language == 1)
+            {
+                Text = "仪表盘控件";
+                label1.Text = "该控件的基本属性可由右侧的控件界面设置";
+            }
+            else
+            {
+                Text = "Instrument panel Controls";
+                label1.Text = "The control's basic properties can be set by the control interface on the right";
+            }
         }
 
         private void TimerTick_Tick( object sender, EventArgs e )

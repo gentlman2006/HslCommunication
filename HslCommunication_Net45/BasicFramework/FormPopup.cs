@@ -96,7 +96,7 @@ namespace HslCommunication.BasicFramework
             InfoExistTime = existTime;
         }
         
-        private string InfoText { get; set; } = "这是一条测试消息";
+        private string InfoText { get; set; } = "This is a test message";
         private Color InfoColor { get; set; } = Color.DimGray;
         private int InfoExistTime { get; set; } = -1;
 
@@ -117,6 +117,8 @@ namespace HslCommunication.BasicFramework
         {
             label1.Text = InfoText;
             label1.ForeColor = InfoColor;
+            label2.Text = StringResources.Language.Close;
+
             AddNewForm(this);
             int x = Screen.PrimaryScreen.WorkingArea.Right - this.Width;
             int y = Screen.PrimaryScreen.WorkingArea.Bottom - this.Height;
@@ -185,7 +187,7 @@ namespace HslCommunication.BasicFramework
                 Alignment = StringAlignment.Near,
                 LineAlignment = StringAlignment.Center,
             };
-            g.DrawString("消息提示：", label2.Font, Brushes.DimGray, new Rectangle(5, 0, Width - 1, 30), sf);
+            g.DrawString(StringResources.Language.MessageTip, label2.Font, Brushes.DimGray, new Rectangle(5, 0, Width - 1, 30), sf);
 
 
             g.DrawRectangle(Pens.DimGray, 0, 0, Width - 1, Height - 1);

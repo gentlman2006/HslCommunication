@@ -24,6 +24,14 @@ namespace HslCommunicationDemo
             softAuthorize.ILogNet = new HslCommunication.LogNet.LogNetSingle( "log.txt" );   // 日志
             softAuthorize.FileSavePath = Application.StartupPath + @"\Authorize.txt";        // 设置存储激活码的文件，该存储是加密的
             softAuthorize.LoadByFile( );
+
+
+            if (!Program.ShowAuthorInfomation)
+            {
+                label2.Visible = false;
+                linkLabel1.Visible = false;
+                label20.Visible = false;
+            }
         }
 
         private void button1_Click( object sender, EventArgs e )

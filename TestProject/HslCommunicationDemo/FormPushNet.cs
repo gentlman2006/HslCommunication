@@ -24,6 +24,14 @@ namespace HslCommunicationDemo
         {
             textBox15.Text = Guid.Empty.ToString( );
             panel2.Enabled = false;
+
+
+            if (!Program.ShowAuthorInfomation)
+            {
+                label2.Visible = false;
+                linkLabel1.Visible = false;
+                label20.Visible = false;
+            }
         }
 
 

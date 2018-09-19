@@ -21,6 +21,14 @@ namespace HslCommunicationDemo
         private void FormFileClient_Load( object sender, EventArgs e )
         {
             textBox15.Text = Guid.Empty.ToString( );
+
+
+            if (!Program.ShowAuthorInfomation)
+            {
+                label2.Visible = false;
+                linkLabel1.Visible = false;
+                label20.Visible = false;
+            }
         }
 
 

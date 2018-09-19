@@ -29,6 +29,14 @@ namespace HslCommunicationDemo.Algorithms
             Others( );
 
             Language( Program.Language );
+
+
+            if (!Program.ShowAuthorInfomation)
+            {
+                label2.Visible = false;
+                linkLabel1.Visible = false;
+                label20.Visible = false;
+            }
         }
 
         private void Language( int language )

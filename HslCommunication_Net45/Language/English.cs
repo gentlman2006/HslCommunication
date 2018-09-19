@@ -33,6 +33,8 @@ namespace HslCommunication.Language
         public override string DataLengthIsNotEnough => "Receive length is not enough，Should:{0},Actual:{1}";
         public override string ReceiveDataTimeout => "Receive timeout: ";
         public override string ReceiveDataLengthTooShort => "Receive length is too short: ";
+        public override string MessageTip => "Message prompt:";
+        public override string Close => "Close";
 
         /***********************************************************************************
          * 

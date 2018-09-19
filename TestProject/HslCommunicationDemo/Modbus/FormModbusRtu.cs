@@ -57,6 +57,90 @@ namespace HslCommunicationDemo
             {
                 comboBox3.Text = "COM3";
             }
+
+            Language( Program.Language );
+
+            if (!Program.ShowAuthorInfomation)
+            {
+                label2.Visible = false;
+                linkLabel1.Visible = false;
+                label20.Visible = false;
+            }
+        }
+
+
+        private void Language( int language )
+        {
+            if (language == 2)
+            {
+                Text = "Modbus Rtu Read Demo";
+                label2.Text = "Blogs:";
+                label4.Text = "Protocols:";
+                label20.Text = "Author:Richard Hu";
+                label5.Text = "Modbus Rtu";
+
+                label1.Text = "Com:";
+                label3.Text = "baudRate:";
+                label22.Text = "DataBit";
+                label23.Text = "StopBit";
+                label24.Text = "parity";
+                label21.Text = "station";
+                checkBox1.Text = "address from 0";
+                checkBox3.Text = "string reverse";
+                button1.Text = "Connect";
+                button2.Text = "Disconnect";
+
+                label6.Text = "address:";
+                label7.Text = "result:";
+
+                button_read_bool.Text = "r-coil";
+                button4.Text = "r-discrete";
+                button_read_short.Text = "r-short";
+                button_read_ushort.Text = "r-ushort";
+                button_read_int.Text = "r-int";
+                button_read_uint.Text = "r-uint";
+                button_read_long.Text = "r-long";
+                button_read_ulong.Text = "r-ulong";
+                button_read_float.Text = "r-float";
+                button_read_double.Text = "r-double";
+                button_read_string.Text = "r-string";
+                label8.Text = "length:";
+                label11.Text = "Address:";
+                label12.Text = "length:";
+                button25.Text = "Bulk Read";
+                label13.Text = "Results:";
+                label16.Text = "Message:";
+                label14.Text = "Results:";
+                button26.Text = "Read";
+
+                label10.Text = "Address:";
+                label9.Text = "Value:";
+                label19.Text = "Note: The value of the string needs to be converted";
+                button24.Text = "Write Bit";
+                button22.Text = "w-short";
+                button21.Text = "w-ushort";
+                button20.Text = "w-int";
+                button19.Text = "w-uint";
+                button18.Text = "w-long";
+                button17.Text = "w-ulong";
+                button16.Text = "w-float";
+                button15.Text = "w-double";
+                button14.Text = "w-string";
+
+                groupBox1.Text = "Single Data Read test";
+                groupBox2.Text = "Single Data Write test";
+                groupBox3.Text = "Bulk Read test";
+                groupBox4.Text = "Message reading test, hex string needs to be filled in,without crc";
+                groupBox5.Text = "Timed reading, curve display";
+
+                button3.Text = "Pressure test, r/w 3,000s";
+                label15.Text = "Address:";
+                label18.Text = "Interval";
+                button27.Text = "Start";
+                label17.Text = "This assumes that the type of data is determined for short:";
+
+                comboBox1.DataSource = new string[] { "None", "Odd", "Even" };
+            }
         }
 
         private void CheckBox3_CheckedChanged( object sender, EventArgs e )

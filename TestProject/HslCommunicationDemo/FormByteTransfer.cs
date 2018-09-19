@@ -109,6 +109,14 @@ namespace HslCommunicationDemo
         private void FormByteTransfer_Load( object sender, EventArgs e )
         {
             Language( Program.Language );
+
+
+            if (!Program.ShowAuthorInfomation)
+            {
+                label2.Visible = false;
+                linkLabel1.Visible = false;
+                label20.Visible = false;
+            }
         }
 
         private void Language( int language )

@@ -46,10 +46,9 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(386, 196);
+            this.label1.Location = new System.Drawing.Point(350, 196);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(236, 17);
+            this.label1.Size = new System.Drawing.Size(304, 75);
             this.label1.TabIndex = 35;
             this.label1.Text = "该控件的基本属性可由右侧的控件界面设置";
             // 
@@ -138,7 +137,6 @@
             this.Text = "仪表盘控件";
             this.Load += new System.EventHandler(this.FormGauge_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

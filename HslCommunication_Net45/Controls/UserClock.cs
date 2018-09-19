@@ -241,7 +241,7 @@ namespace HslCommunication.Controls
 
             g.ResetTransform();
 
-            string _StrDate = _NowTime.Year + "年" + _NowTime.Month + "月" + _NowTime.Day + "日";
+            string _StrDate = _NowTime.Year + "-" + _NowTime.Month + "-" + _NowTime.Day;
             System.Drawing.Size _Size2 = g.MeasureString(_StrDate, new Font(_ShowTextFont, 12)).ToSize();
             g.DrawString(_StrDate, new Font(_ShowTextFont, 12), Brushes.Green, new PointF(_R - _Size2.Width / 2 + 10, _R * 2 + 15));
         }

@@ -30,6 +30,13 @@ namespace HslCommunicationDemo
                    7,                  // "ABC201711090000001" 中的0000001，总位数为7，然后不停的累加，即使日期时间变了，也不停的累加，最好长度设置大一些
                    Application.StartupPath + @"\numericalOrder.txt"  // 该生成器会自动存储当前值到文件去，实例化时从文件加载，自动实现数据同步
                    );
+
+
+            if (!Program.ShowAuthorInfomation)
+            {
+                label2.Visible = false;
+                linkLabel1.Visible = false;
+            }
         }
 
         private void userButton1_Click( object sender, EventArgs e )

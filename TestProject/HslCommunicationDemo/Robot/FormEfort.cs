@@ -26,6 +26,14 @@ namespace HslCommunicationDemo.Robot
             threadRead = new System.Threading.Thread( ThreadReadRobot );
             threadRead.IsBackground = true;
             threadRead.Start( );
+
+
+            if (!Program.ShowAuthorInfomation)
+            {
+                label2.Visible = false;
+                linkLabel1.Visible = false;
+                label20.Visible = false;
+            }
         }
 
         private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
