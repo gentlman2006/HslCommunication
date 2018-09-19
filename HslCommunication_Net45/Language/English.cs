@@ -35,6 +35,11 @@ namespace HslCommunication.Language
         public override string ReceiveDataLengthTooShort => "Receive length is too short: ";
         public override string MessageTip => "Message prompt:";
         public override string Close => "Close";
+        public override string Time => "Time:";
+        public override string SoftWare => "Software:";
+        public override string BugSubmit => "Bug submit";
+        public override string MailServerCenter => "Mail Center System";
+        public override string MailSendTail => "Mail Service system issued automatically, do not reply";
 
         /***********************************************************************************
          * 

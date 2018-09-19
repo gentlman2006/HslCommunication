@@ -137,12 +137,12 @@ namespace HslCommunication.BasicFramework
 
         private string GetExceptionMail(Exception ex)
         {
-            return $"时间：{DateTime.Now.ToString()}" +
-                $"{Environment.NewLine}软件：{ex.Source}" +
-                $"{Environment.NewLine}信息：{ex.Message}" +
-                $"{Environment.NewLine}类型：{ex.GetType().ToString()}" +
-                $"{Environment.NewLine}堆栈：{ex.StackTrace}" +
-                $"{Environment.NewLine}方式：{ex.TargetSite.Name}";
+            return $"{StringResources.Language.Time}{DateTime.Now.ToString()}" +
+                $"{Environment.NewLine}{StringResources.Language.SoftWare}{ex.Source}" +
+                $"{Environment.NewLine}{StringResources.Language.ExceptionMessage}{ex.Message}" +
+                $"{Environment.NewLine}{StringResources.Language.ExceptionType}{ex.GetType().ToString()}" +
+                $"{Environment.NewLine}{StringResources.Language.ExceptionStackTrace}{ex.StackTrace}" +
+                $"{Environment.NewLine}{StringResources.Language.ExceptopnTargetSite}{ex.TargetSite.Name}";
         }
 
         #endregion
@@ -193,8 +193,8 @@ namespace HslCommunication.BasicFramework
         public bool SendMail(Exception ex, string addtion)
         {
             if (string.IsNullOrEmpty(MailSendAddress)) return false;
-            return SendMail(MailSendAddress, "BUG提交", string.IsNullOrEmpty(addtion) ? GetExceptionMail(ex) :
-                $"用户：{addtion}{Environment.NewLine}" + GetExceptionMail(ex));
+            return SendMail(MailSendAddress, StringResources.Language.BugSubmit, string.IsNullOrEmpty(addtion) ? GetExceptionMail(ex) :
+                $"User：{addtion}{Environment.NewLine}" + GetExceptionMail(ex));
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace HslCommunication.BasicFramework
         /// <returns>是否发送成功，内容不正确会被视为垃圾邮件</returns>
         public bool SendMail(string addr_to, string subject, string body, bool isHtml)
         {
-            return SendMail(MailFromAddress, "邮件发送系统", new string[] { addr_to }, subject, body, MailPriority.Normal, isHtml);
+            return SendMail(MailFromAddress, StringResources.Language.MailServerCenter, new string[] { addr_to }, subject, body, MailPriority.Normal, isHtml);
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace HslCommunication.BasicFramework
                     }
                     Message.Subject = subject;
                     Message.Body = body;
-                    Message.Body += Environment.NewLine + Environment.NewLine + Environment.NewLine + "邮件服务系统自动发出，请勿回复！";
+                    Message.Body += Environment.NewLine + Environment.NewLine + Environment.NewLine + StringResources.Language.MailSendTail;
                     Message.SubjectEncoding = Encoding.UTF8;
                     Message.BodyEncoding = Encoding.UTF8;
                     Message.Priority = priority;

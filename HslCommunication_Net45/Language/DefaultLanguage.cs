@@ -35,6 +35,11 @@ namespace HslCommunication.Language
         public virtual string ReceiveDataLengthTooShort => "接收的数据长度太短：";
         public virtual string MessageTip => "消息提示：";
         public virtual string Close => "关闭";
+        public virtual string Time => "时间：";
+        public virtual string SoftWare => "软件：";
+        public virtual string BugSubmit => "Bug提交";
+        public virtual string MailServerCenter => "邮件发送系统";
+        public virtual string MailSendTail => "邮件服务系统自动发出，请勿回复！";
 
         /***********************************************************************************
          * 
