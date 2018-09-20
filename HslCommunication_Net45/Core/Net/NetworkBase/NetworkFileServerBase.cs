@@ -241,7 +241,7 @@ namespace HslCommunication.Core.Net
             }
             catch (Exception ex)
             {
-                LogNet?.WriteException( ToString(), "Move a file to new file failed:", ex );
+                LogNet?.WriteException( ToString(), "Move a file to new file failed: ", ex );
                 return false;
             }
         }
@@ -277,7 +277,7 @@ namespace HslCommunication.Core.Net
             }
 
             // 回发消息
-           return SendStringAndCheckReceive( socket, customer, "成功" );
+           return SendStringAndCheckReceive( socket, customer, StringResources.Language.SuccessText );
         }
 
 

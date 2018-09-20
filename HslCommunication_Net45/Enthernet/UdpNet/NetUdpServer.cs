@@ -212,7 +212,7 @@ namespace HslCommunication.Enthernet
         //    }
         //}
 
-        #region 数据中心处理块
+        #region Data Process Center
 
         /// <summary>
         /// 数据处理中心
@@ -237,10 +237,8 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
-        #region 事件委托块
-
-
-
+        #region Event Handle
+        
         /// <summary>
         /// 当接收到文本数据的时候,触发此事件
         /// </summary>
@@ -254,8 +252,7 @@ namespace HslCommunication.Enthernet
 
 
         #endregion
-
-
+        
         #region Object Override
 
         /// <summary>

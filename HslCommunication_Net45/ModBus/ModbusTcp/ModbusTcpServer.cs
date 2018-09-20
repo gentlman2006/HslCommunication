@@ -192,7 +192,7 @@ namespace HslCommunication.ModBus
         public void LoadDataPool( string path )
         {
             byte[] buffer = System.IO.File.ReadAllBytes( path );
-            if (buffer.Length < DataPoolLength * 6) throw new Exception( "文件数据不对" );
+            if (buffer.Length < DataPoolLength * 6) throw new Exception( "File is not correct" );
 
             // 线圈数据加载
             hybirdLockCoil.Enter( );
@@ -955,7 +955,7 @@ namespace HslCommunication.ModBus
                 }
                 catch (Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), "Ip信息获取失败", ex );
+                    LogNet?.WriteException( ToString( ), StringResources.Language.GetClientIpaddressFailed, ex );
                 }
 
                 if (IsTrustedClientsOnly)
@@ -964,13 +964,13 @@ namespace HslCommunication.ModBus
                     if (!CheckIpAddressTrusted( state.IpAddress ))
                     {
                         // 客户端不被信任，退出
-                        LogNet?.WriteDebug( ToString( ), $"客户端 [ {state.IpEndPoint} ] 不被信任，禁止登录！" );
+                        LogNet?.WriteDebug( ToString( ), string.Format( StringResources.Language.ClientDisableLogin, state.IpEndPoint ) );
                         state.WorkSocket.Close( );
                         return;
                     }
                 }
 
-                LogNet?.WriteDebug( ToString( ), $"客户端 [ {state.IpEndPoint} ] 上线" );
+                LogNet?.WriteDebug( ToString( ), string.Format( StringResources.Language.ClientOnlineInfo, state.IpEndPoint ) );
 
                 try
                 {
@@ -1003,7 +1003,7 @@ namespace HslCommunication.ModBus
                         state.WorkSocket?.Close( );
                         if (state.IsModbusOffline( ))
                         {
-                            LogNet?.WriteDebug( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线" );
+                            LogNet?.WriteDebug( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, state.IpEndPoint ) );
                             System.Threading.Interlocked.Decrement( ref onlineCount );
                         }
                         return;
@@ -1019,7 +1019,7 @@ namespace HslCommunication.ModBus
                     state.WorkSocket?.Close( );
                     if (state.IsModbusOffline( ))
                     {
-                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，消息子节接收失败！", ex );
+                        LogNet?.WriteException( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, state.IpEndPoint ), ex );
                         System.Threading.Interlocked.Decrement( ref onlineCount );
                     }
                     return;
@@ -1040,7 +1040,7 @@ namespace HslCommunication.ModBus
                     state.WorkSocket?.Close( );
                     if (state.IsModbusOffline( ))
                     {
-                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，再次启动接收失败！", ex );
+                        LogNet?.WriteException( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, state.IpEndPoint ), ex );
                         System.Threading.Interlocked.Decrement( ref onlineCount );
                     }
                     return;
@@ -1068,7 +1068,7 @@ namespace HslCommunication.ModBus
                         state.WorkSocket?.Close( );
                         if (state.IsModbusOffline( ))
                         {
-                            LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，启动内容接收失败！", ex );
+                            LogNet?.WriteException( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, state.IpEndPoint ), ex );
                             System.Threading.Interlocked.Decrement( ref onlineCount );
                         }
                         return;
@@ -1080,7 +1080,7 @@ namespace HslCommunication.ModBus
                     state.WorkSocket?.Close( );
                     if (state.IsModbusOffline( ))
                     {
-                        LogNet?.WriteWarn( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线，不是标准的Modbus协议！" );
+                        LogNet?.WriteWarn( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, state.IpEndPoint ) + StringResources.Language.ModbusMatchFailed );
                         System.Threading.Interlocked.Decrement( ref onlineCount );
                     }
                 }
@@ -1109,7 +1109,7 @@ namespace HslCommunication.ModBus
                     state.WorkSocket?.Close( );
                     if (state.IsModbusOffline( ))
                     {
-                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线，内容数据接收失败！", ex );
+                        LogNet?.WriteException( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, state.IpEndPoint ), ex );
                         System.Threading.Interlocked.Decrement( ref onlineCount );
                     }
                     return;
@@ -1133,7 +1133,7 @@ namespace HslCommunication.ModBus
                     state.WorkSocket?.Close( );
                     if (state.IsModbusOffline( ))
                     {
-                        LogNet?.WriteError( ToString( ), $"客户端 [ {state.IpEndPoint} ] 下线，消息长度检查失败！" );
+                        LogNet?.WriteError( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, state.IpEndPoint ) );
                         System.Threading.Interlocked.Decrement( ref onlineCount );
                     }
                     return;
@@ -1155,7 +1155,7 @@ namespace HslCommunication.ModBus
                     state.WorkSocket?.Close( );
                     if (state.IsModbusOffline( ))
                     {
-                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，重新接收消息失败！", ex );
+                        LogNet?.WriteException( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, state.IpEndPoint ), ex );
                         System.Threading.Interlocked.Decrement( ref onlineCount );
                     }
                     return;
@@ -1174,7 +1174,7 @@ namespace HslCommunication.ModBus
                     state.hybirdLock.Leave( );
                     if (state.IsModbusOffline( ))
                     {
-                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，开始回发消息失败！", ex );
+                        LogNet?.WriteException( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, state.IpEndPoint ), ex );
                         System.Threading.Interlocked.Decrement( ref onlineCount );
                     }
                     return;
@@ -1200,7 +1200,7 @@ namespace HslCommunication.ModBus
                     state.WorkSocket?.Close( );
                     if (state.IsModbusOffline( ))
                     {
-                        LogNet?.WriteException( ToString( ), $"客户端 [ {state.IpEndPoint} ] 异常下线，确认回发消息失败！", ex );
+                        LogNet?.WriteException( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, state.IpEndPoint ), ex );
                         state = null;
                         System.Threading.Interlocked.Decrement( ref onlineCount );
                     }
@@ -1956,12 +1956,12 @@ namespace HslCommunication.ModBus
         #region Object Override
 
         /// <summary>
-        /// 获取本对象的字符串表示形式
+        /// 返回表示当前对象的字符串
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串</returns>
         public override string ToString( )
         {
-            return "ModbusTcpServer";
+            return $"ModbusTcpServer[{Port}]";
         }
 
         #endregion

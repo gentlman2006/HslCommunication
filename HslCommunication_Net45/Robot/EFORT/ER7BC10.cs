@@ -187,10 +187,10 @@ namespace HslCommunication.Robot.EFORT
         /// <summary>
         /// 返回表示当前对象的字符串
         /// </summary>
-        /// <returns></returns>
+        /// <returns>字符串</returns>
         public override string ToString( )
         {
-            return "ER7BC10 Robot";
+            return $"ER7BC10 Robot[{IpAddress}:{Port}]";
         }
 
         #endregion

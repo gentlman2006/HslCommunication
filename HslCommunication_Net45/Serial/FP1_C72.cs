@@ -614,7 +614,7 @@ namespace FP1_F72
         /// <returns>true-正确执行,false-执行错误</returns>
         public bool GetMonitorData(ref string retstr, ref string errstr)
         {
-            string sendstr,rets="",errs="",tmp;
+            string sendstr,rets="",errs="";
             sendstr = "%EE#MG";
             if(!SendPlcCmd(sendstr, ref rets, ref errs))
             {

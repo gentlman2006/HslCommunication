@@ -79,7 +79,7 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
-        #region 接收文件数据并更新文件列表
+        #region Receive File And Updata List
 
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace HslCommunication.Enthernet
 
 
             // 回发消息
-            return SendStringAndCheckReceive( socket, 1, "成功" );
+            return SendStringAndCheckReceive( socket, 1, StringResources.Language.SuccessText );
         }
 
         #endregion

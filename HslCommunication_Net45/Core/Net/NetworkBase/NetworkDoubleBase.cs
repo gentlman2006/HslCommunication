@@ -119,7 +119,7 @@ namespace HslCommunication.Core.Net
                 {
                     if (!IPAddress.TryParse( value, out IPAddress address ))
                     {
-                        throw new Exception( "Ip地址设置异常，格式不正确" );
+                        throw new Exception( StringResources.Language.IpAddresError );
                     }
                     ipAddress = value;
                 }

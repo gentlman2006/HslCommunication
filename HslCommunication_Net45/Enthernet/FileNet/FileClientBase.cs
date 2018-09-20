@@ -111,14 +111,9 @@ namespace HslCommunication.Enthernet
             if (!receiveBack.IsSuccess) return receiveBack;
 
             OperateResult result = new OperateResult( );
-            if (receiveBack.Content1 == 1)
-            {
-                result.IsSuccess = true;
-            }
-            else
-            {
-                result.Message = receiveBack.Message;
-            }
+
+            if (receiveBack.Content1 == 1) result.IsSuccess = true;
+            result.Message = receiveBack.Message;
 
             socketResult.Content?.Close( );
             return result;

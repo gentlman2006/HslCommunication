@@ -40,6 +40,7 @@ namespace HslCommunication.Language
         public override string BugSubmit => "Bug submit";
         public override string MailServerCenter => "Mail Center System";
         public override string MailSendTail => "Mail Service system issued automatically, do not reply";
+        public override string IpAddresError => "IP address input exception, format is incorrect";
 
         /***********************************************************************************
          * 
@@ -92,6 +93,7 @@ namespace HslCommunication.Language
         public override string FileWriteToNetFailed => "File Write Network exception";
         public override string FileReadFromNetFailed => "Read file exceptions from the network";
         public override string FilePathCreateFailed => "Folder path creation failed: ";
+        public override string FileRemoteNotExist => "The other file does not exist, cannot receive!";
 
         /***********************************************************************************
          * 
@@ -117,6 +119,7 @@ namespace HslCommunication.Language
         public override string ServerFileCheckFailed => "Server confirmed file failed, please re-upload";
         public override string ClientOnlineInfo => "Client [ {0} ] Online";
         public override string ClientOfflineInfo => "Client [ {0} ] Offline";
+        public override string ClientDisableLogin => "Client [ {0} ] is not trusted, login forbidden";
 
         /***********************************************************************************
          * 
@@ -157,7 +160,7 @@ namespace HslCommunication.Language
 
         /***********************************************************************************
          * 
-         *    Modbus-Tcp related
+         *    Modbus related
          * 
          ************************************************************************************/
 
@@ -173,6 +176,7 @@ namespace HslCommunication.Language
         public override string ModbusAsciiFormatCheckFailed => "Modbus ASCII command check failed, not MODBUS-ASCII message";
         public override string ModbusCRCCheckFailed => "The CRC checksum check failed for Modbus";
         public override string ModbusLRCCheckFailed => "The LRC checksum check failed for Modbus";
+        public override string ModbusMatchFailed => "Not the standard Modbus protocol";
 
 
         /***********************************************************************************

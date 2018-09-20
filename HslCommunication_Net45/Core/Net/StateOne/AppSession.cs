@@ -109,11 +109,11 @@ namespace HslCommunication.Core.Net
         {
             if (string.IsNullOrEmpty( LoginAlias ))
             {
-                return $"[{IpEndPoint}]";
+                return $"AppSession[{IpEndPoint}]";
             }
             else
             {
-                return $"[{IpEndPoint}] [{LoginAlias}]";
+                return $"AppSession[{IpEndPoint}] [{LoginAlias}]";
             }
         }
 

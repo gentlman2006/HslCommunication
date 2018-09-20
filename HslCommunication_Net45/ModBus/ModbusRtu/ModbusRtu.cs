@@ -594,7 +594,7 @@ namespace HslCommunication.ModBus
         /// <returns>字符串信息</returns>
         public override string ToString( )
         {
-            return "ModbusRtuNet";
+            return "ModbusRtu";
         }
 
         #endregion

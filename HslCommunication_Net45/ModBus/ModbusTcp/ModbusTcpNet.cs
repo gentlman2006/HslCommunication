@@ -645,7 +645,7 @@ namespace HslCommunication.ModBus
         /// <returns>字符串信息</returns>
         public override string ToString( )
         {
-            return "ModbusTcpNet";
+            return $"ModbusTcpNet[{IpAddress}:{Port}]";
         }
 
         #endregion

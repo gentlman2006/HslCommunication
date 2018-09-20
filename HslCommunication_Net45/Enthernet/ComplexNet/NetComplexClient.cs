@@ -287,8 +287,8 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 通信出错后的处理
         /// </summary>
-        /// <param name="receive"></param>
-        /// <param name="ex"></param>
+        /// <param name="receive">接收的会话</param>
+        /// <param name="ex">异常</param>
         internal override void SocketReceiveException( AppSession receive, Exception ex )
         {
             if (ex.Message.Contains( StringResources.Language.SocketRemoteCloseException ))

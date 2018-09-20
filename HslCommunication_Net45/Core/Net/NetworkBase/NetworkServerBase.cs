@@ -14,8 +14,6 @@ namespace HslCommunication.Core.Net
     /// </summary>
     public class NetworkServerBase : NetworkXBase
     {
-
-
         #region Constructor
 
         /// <summary>

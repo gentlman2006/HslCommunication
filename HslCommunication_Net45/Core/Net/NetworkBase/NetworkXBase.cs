@@ -660,7 +660,7 @@ namespace HslCommunication.Core.Net
             if (receiveString.Content1 == 0)
             {
                 socket?.Close( );
-                LogNet?.WriteWarn( ToString( ), "对方文件不存在，无法接收！" );
+                LogNet?.WriteWarn( ToString( ), StringResources.Language.FileRemoteNotExist );
                 return new OperateResult<FileBaseInfo>( )
                 {
                     Message = StringResources.Language.FileNotExist

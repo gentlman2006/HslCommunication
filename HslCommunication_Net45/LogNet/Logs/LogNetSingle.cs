@@ -14,8 +14,14 @@ namespace HslCommunication.LogNet
     /// </remarks>
     public class LogNetSingle : LogNetBase, ILogNet
     {
+        #region Private Member
+
         private string m_fileName = string.Empty;
 
+        #endregion
+
+        #region Constructor
+        
         /// <summary>
         /// 实例化一个单文件日志的对象
         /// </summary>
@@ -33,6 +39,10 @@ namespace HslCommunication.LogNet
                 Directory.CreateDirectory(fileInfo.DirectoryName);
             }
         }
+
+        #endregion
+
+        #region Public Method
 
         /// <summary>
         /// 单日志文件允许清空日志内容
@@ -67,6 +77,22 @@ namespace HslCommunication.LogNet
             m_fileSaveLock.Leave();
             return result;
         }
+        
+        /// <summary>
+        /// 获取所有的日志文件数组，对于单日志文件来说就只有一个
+        /// </summary>
+        /// <returns>字符串数组，包含了所有的存在的日志数据</returns>
+        public string[] GetExistLogFileNames( )
+        {
+            return new string[]
+            {
+                m_fileName,
+            };
+        }
+
+        #endregion
+
+        #region LogNetBase Override
 
         /// <summary>
         /// 获取存储的文件的名称
@@ -76,19 +102,8 @@ namespace HslCommunication.LogNet
         {
             return m_fileName;
         }
+        
+        #endregion
 
-
-
-        /// <summary>
-        /// 获取所有的日志文件数组，对于单日志文件来说就只有一个
-        /// </summary>
-        /// <returns>字符串数组，包含了所有的存在的日志数据</returns>
-        public string[] GetExistLogFileNames()
-        {
-            return new string[]
-            {
-                m_fileName,
-            };
-        }
     }
 }

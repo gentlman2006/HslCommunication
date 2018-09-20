@@ -194,26 +194,26 @@ namespace HslCommunication.Core
         #region Lock State Management
 #if false
               private struct BitField {
-                 private Int32 m_mask, m_1, m_startBit;
-                 public BitField(Int32 startBit, Int32 numBits) {
+                 private int m_mask, m_1, m_startBit;
+                 public BitField(int startBit, int numBits) {
                     m_startBit = startBit;
-                    m_mask = unchecked((Int32)((1 << numBits) - 1) << startBit);
-                    m_1 = unchecked((Int32)1 << startBit);
+                    m_mask = unchecked((int)((1 << numBits) - 1) << startBit);
+                    m_1 = unchecked((int)1 << startBit);
                  }
-                 public void Increment(ref Int32 value) { value += m_1; }
-                 public void Decrement(ref Int32 value) { value -= m_1; }
-                 public void Decrement(ref Int32 value, Int32 amount) { value -= m_1 * amount; }
-                 public Int32 Get(Int32 value) { return (value & m_mask) >> m_startBit; }
-                 public Int32 Set(Int32 value, Int32 fieldValue) { return (value & ~m_mask) | (fieldValue << m_startBit); }
+                 public void Increment(ref int value) { value += m_1; }
+                 public void Decrement(ref int value) { value -= m_1; }
+                 public void Decrement(ref int value, int amount) { value -= m_1 * amount; }
+                 public int Get(int value) { return (value & m_mask) >> m_startBit; }
+                 public int Set(int value, int fieldValue) { return (value & ~m_mask) | (fieldValue << m_startBit); }
               }
 
               private static BitField s_state = new BitField(0, 3);
               private static BitField s_readersReading = new BitField(3, 9);
               private static BitField s_readersWaiting = new BitField(12, 9);
               private static BitField s_writersWaiting = new BitField(21, 9);
-              private static OneManyLockStates State(Int32 value) { return (OneManyLockStates)s_state.Get(value); }
-              private static void State(ref Int32 ls, OneManyLockStates newState) {
-                 ls = s_state.Set(ls, (Int32)newState);
+              private static OneManyLockStates State(int value) { return (OneManyLockStates)s_state.Get(value); }
+              private static void State(ref int ls, OneManyLockStates newState) {
+                 ls = s_state.Set(ls, (int)newState);
               }
 #endif
         private enum OneManyLockStates
@@ -225,43 +225,43 @@ namespace HslCommunication.Core
             ReservedForWriter = 0x00000004,
         }
 
-        private const Int32 c_lsStateStartBit = 0;
-        private const Int32 c_lsReadersReadingStartBit = 3;
-        private const Int32 c_lsReadersWaitingStartBit = 12;
-        private const Int32 c_lsWritersWaitingStartBit = 21;
+        private const int c_lsStateStartBit = 0;
+        private const int c_lsReadersReadingStartBit = 3;
+        private const int c_lsReadersWaitingStartBit = 12;
+        private const int c_lsWritersWaitingStartBit = 21;
 
-        // Mask = unchecked((Int32) ((1 << numBits) - 1) << startBit);
-        private const Int32 c_lsStateMask = unchecked((Int32)((1 << 3) - 1) << c_lsStateStartBit);
-        private const Int32 c_lsReadersReadingMask = unchecked((Int32)((1 << 9) - 1) << c_lsReadersReadingStartBit);
-        private const Int32 c_lsReadersWaitingMask = unchecked((Int32)((1 << 9) - 1) << c_lsReadersWaitingStartBit);
-        private const Int32 c_lsWritersWaitingMask = unchecked((Int32)((1 << 9) - 1) << c_lsWritersWaitingStartBit);
-        private const Int32 c_lsAnyWaitingMask = c_lsReadersWaitingMask | c_lsWritersWaitingMask;
+        // Mask = unchecked((int) ((1 << numBits) - 1) << startBit);
+        private const int c_lsStateMask = unchecked((int)((1 << 3) - 1) << c_lsStateStartBit);
+        private const int c_lsReadersReadingMask = unchecked((int)((1 << 9) - 1) << c_lsReadersReadingStartBit);
+        private const int c_lsReadersWaitingMask = unchecked((int)((1 << 9) - 1) << c_lsReadersWaitingStartBit);
+        private const int c_lsWritersWaitingMask = unchecked((int)((1 << 9) - 1) << c_lsWritersWaitingStartBit);
+        private const int c_lsAnyWaitingMask = c_lsReadersWaitingMask | c_lsWritersWaitingMask;
 
-        // FirstBit = unchecked((Int32) 1 << startBit);
-        private const Int32 c_ls1ReaderReading = unchecked((Int32)1 << c_lsReadersReadingStartBit);
-        private const Int32 c_ls1ReaderWaiting = unchecked((Int32)1 << c_lsReadersWaitingStartBit);
-        private const Int32 c_ls1WriterWaiting = unchecked((Int32)1 << c_lsWritersWaitingStartBit);
+        // FirstBit = unchecked((int) 1 << startBit);
+        private const int c_ls1ReaderReading = unchecked((int)1 << c_lsReadersReadingStartBit);
+        private const int c_ls1ReaderWaiting = unchecked((int)1 << c_lsReadersWaitingStartBit);
+        private const int c_ls1WriterWaiting = unchecked((int)1 << c_lsWritersWaitingStartBit);
 
-        private static OneManyLockStates State(Int32 ls) { return (OneManyLockStates)(ls & c_lsStateMask); }
-        private static void SetState(ref Int32 ls, OneManyLockStates newState)
+        private static OneManyLockStates State(int ls) { return (OneManyLockStates)(ls & c_lsStateMask); }
+        private static void SetState(ref int ls, OneManyLockStates newState)
         {
-            ls = (ls & ~c_lsStateMask) | ((Int32)newState);
+            ls = (ls & ~c_lsStateMask) | ((int)newState);
         }
 
-        private static Int32 NumReadersReading(Int32 ls) { return (ls & c_lsReadersReadingMask) >> c_lsReadersReadingStartBit; }
-        private static void AddReadersReading(ref Int32 ls, Int32 amount) { ls += (c_ls1ReaderReading * amount); }
+        private static int NumReadersReading(int ls) { return (ls & c_lsReadersReadingMask) >> c_lsReadersReadingStartBit; }
+        private static void AddReadersReading(ref int ls, int amount) { ls += (c_ls1ReaderReading * amount); }
 
-        private static Int32 NumReadersWaiting(Int32 ls) { return (ls & c_lsReadersWaitingMask) >> c_lsReadersWaitingStartBit; }
-        private static void AddReadersWaiting(ref Int32 ls, Int32 amount) { ls += (c_ls1ReaderWaiting * amount); }
+        private static int NumReadersWaiting(int ls) { return (ls & c_lsReadersWaitingMask) >> c_lsReadersWaitingStartBit; }
+        private static void AddReadersWaiting(ref int ls, int amount) { ls += (c_ls1ReaderWaiting * amount); }
 
-        private static Int32 NumWritersWaiting(Int32 ls) { return (ls & c_lsWritersWaitingMask) >> c_lsWritersWaitingStartBit; }
-        private static void AddWritersWaiting(ref Int32 ls, Int32 amount) { ls += (c_ls1WriterWaiting * amount); }
+        private static int NumWritersWaiting(int ls) { return (ls & c_lsWritersWaitingMask) >> c_lsWritersWaitingStartBit; }
+        private static void AddWritersWaiting(ref int ls, int amount) { ls += (c_ls1WriterWaiting * amount); }
 
-        private static Boolean AnyWaiters(Int32 ls) { return (ls & c_lsAnyWaitingMask) != 0; }
+        private static bool AnyWaiters( int ls ) { return (ls & c_lsAnyWaitingMask) != 0; }
 
-        private static String DebugState(Int32 ls)
+        private static string DebugState(int ls)
         {
-            return String.Format(CultureInfo.InvariantCulture,
+            return string.Format(CultureInfo.InvariantCulture,
                "State={0}, RR={1}, RW={2}, WW={3}", State(ls),
                NumReadersReading(ls), NumReadersWaiting(ls), NumWritersWaiting(ls));
         }
@@ -270,17 +270,17 @@ namespace HslCommunication.Core
         /// 返回本对象的描述字符串
         /// </summary>
         /// <returns>对象的描述字符串</returns>
-        public override String ToString() { return DebugState(m_LockState); }
+        public override string ToString() { return DebugState(m_LockState); }
         #endregion
 
         #region State Fields
-        private Int32 m_LockState = (Int32)OneManyLockStates.Free;
+        private int m_LockState = (int)OneManyLockStates.Free;
 
         // Readers wait on this if a writer owns the lock
-        private Semaphore m_ReadersLock = new Semaphore(0, Int32.MaxValue);
+        private Semaphore m_ReadersLock = new Semaphore(0, int.MaxValue);
 
         // Writers wait on this if a reader owns the lock
-        private Semaphore m_WritersLock = new Semaphore(0, Int32.MaxValue);
+        private Semaphore m_WritersLock = new Semaphore(0, int.MaxValue);
         #endregion
 
         #region Construction
@@ -331,13 +331,13 @@ namespace HslCommunication.Core
         #endregion
 
         #region Writer members
-        private Boolean m_exclusive;
+        private bool m_exclusive;
 
         /// <summary>
         /// 根据读写情况请求锁
         /// </summary>
         /// <param name="exclusive">True为写请求，False为读请求</param>
-        public void Enter(Boolean exclusive)
+        public void Enter(bool exclusive)
         {
             if (exclusive)
             {
@@ -350,14 +350,14 @@ namespace HslCommunication.Core
             m_exclusive = exclusive;
         }
 
-        private static Boolean WaitToWrite(ref Int32 target)
+        private static bool WaitToWrite(ref int target)
         {
-            Int32 start, current = target;
-            Boolean wait;
+            int start, current = target;
+            bool wait;
             do
             {
                 start = current;
-                Int32 desired = start;
+                int desired = start;
                 wait = false;
 
                 switch (State(desired))
@@ -392,7 +392,7 @@ namespace HslCommunication.Core
         /// </summary>
         public void Leave()
         {
-            Int32 wakeup;
+            int wakeup;
             if (m_exclusive)
             {
                 Debug.Assert((State(m_LockState) == OneManyLockStates.OwnedByWriter) && (NumReadersReading(m_LockState) == 0));
@@ -419,13 +419,13 @@ namespace HslCommunication.Core
         }
 
         // Returns -1 to wake a writer, +# to wake # readers, or 0 to wake no one
-        private static Int32 DoneWriting(ref Int32 target)
+        private static int DoneWriting(ref int target)
         {
-            Int32 start, current = target;
-            Int32 wakeup = 0;
+            int start, current = target;
+            int wakeup = 0;
             do
             {
-                Int32 desired = (start = current);
+                int desired = (start = current);
 
                 // We do this test first because it is commonly true & 
                 // we avoid the other tests improving performance
@@ -455,13 +455,13 @@ namespace HslCommunication.Core
         #endregion
 
         #region Reader members
-        private static Boolean WaitToRead(ref Int32 target)
+        private static bool WaitToRead(ref int target)
         {
-            Int32 start, current = target;
-            Boolean wait;
+            int start, current = target;
+            bool wait;
             do
             {
-                Int32 desired = (start = current);
+                int desired = (start = current);
                 wait = false;
 
                 switch (State(desired))
@@ -492,13 +492,13 @@ namespace HslCommunication.Core
         }
 
         // Returns -1 to wake a writer, +# to wake # readers, or 0 to wake no one
-        private static Int32 DoneReading(ref Int32 target)
+        private static int DoneReading(ref int target)
         {
-            Int32 start, current = target;
-            Int32 wakeup;
+            int start, current = target;
+            int wakeup;
             do
             {
-                Int32 desired = (start = current);
+                int desired = (start = current);
                 AddReadersReading(ref desired, -1);  // RR--
                 if (NumReadersReading(desired) > 0)
                 {
@@ -583,7 +583,7 @@ namespace HslCommunication.Core
         /// <summary>
         /// 基元用户模式构造同步锁
         /// </summary>
-        private Int32 m_waiters = 0;
+        private int m_waiters = 0;
         /// <summary>
         /// 基元内核模式构造同步锁
         /// </summary>
@@ -644,7 +644,7 @@ namespace HslCommunication.Core
         {
             m_dataList = dataList ?? throw new ArgumentNullException("dataList");
             m_operater = operater ?? throw new ArgumentNullException("operater");
-            if (threadCount < 1) throw new ArgumentException("线程数不能小于1", "threadCount");
+            if (threadCount < 1) throw new ArgumentException( "threadCount can not less than 1", "threadCount");
             m_threadCount = threadCount;
             //增加任务处理
             Interlocked.Add(ref m_opCount, dataList.Length);
@@ -657,19 +657,19 @@ namespace HslCommunication.Core
         /// <summary>
         /// 操作总数，判定操作是否完成
         /// </summary>
-        private Int32 m_opCount = 0;
+        private int m_opCount = 0;
         /// <summary>
         /// 判断是否所有的线程是否处理完成
         /// </summary>
-        private Int32 m_opThreadCount = 1;
+        private int m_opThreadCount = 1;
         /// <summary>
         /// 准备启动的处理数据的线程数量
         /// </summary>
-        private Int32 m_threadCount = 10;
+        private int m_threadCount = 10;
         /// <summary>
         /// 指示多线程处理是否在运行中，防止冗余调用
         /// </summary>
-        private Int32 m_runStatus = 0;
+        private int m_runStatus = 0;
 
         /// <summary>
         /// 列表数据
@@ -738,7 +738,7 @@ namespace HslCommunication.Core
         private bool m_isQuitAfterException = false;
 
 
-        #region 公开的接口
+        #region Start Stop Method
         /// <summary>
         /// 启动多线程进行数据处理
         /// </summary>
@@ -877,14 +877,13 @@ namespace HslCommunication.Core
 
     #endregion
 
-    #region 弃用的双检锁
+    #region 双检锁
 
-
+#if NET451 || NETSTANDARD2_0
 
     /// <summary>
     /// 一个双检锁的示例，适合一些占内存的静态数据对象，获取的时候才实例化真正的对象
     /// </summary>
-    [Obsolete(".NET 4.5才拥有Volatile类，目前该类还是不安全的")]
     internal sealed class Singleton
     {
         private static object m_lock = new object();
@@ -903,8 +902,8 @@ namespace HslCommunication.Core
             Monitor.Enter(m_lock);
             if (SValue == null)
             {
-                //Singleton temp = new Singleton();
-                //Volatile.Write(ref SValue, temp);
+                Singleton temp = new Singleton();
+                Volatile.Write(ref SValue, temp);
 
                 //上述编译不通过，简单的使用下述过程
                 SValue = new Singleton();
@@ -914,7 +913,7 @@ namespace HslCommunication.Core
         }
     }
 
-
+#endif
 
 
     #endregion
@@ -922,6 +921,7 @@ namespace HslCommunication.Core
     #region 高级混合锁
 
 
+#if NET451 || NETSTANDARD2_0
 
 
     /// <summary>
@@ -972,7 +972,7 @@ namespace HslCommunication.Core
         /// <summary>
         /// 基元用户模式构造同步锁
         /// </summary>
-        private Int32 m_waiters = 0;
+        private int m_waiters = 0;
         /// <summary>
         /// 基元内核模式构造同步锁
         /// </summary>
@@ -980,22 +980,22 @@ namespace HslCommunication.Core
         /// <summary>
         /// 控制自旋的一个字段
         /// </summary>
-        private Int32 m_spincount = 4000;
+        private int m_spincount = 4000;
         /// <summary>
         /// 指出哪个线程拥有锁
         /// </summary>
-        private Int32 m_owningThreadId = 0;
+        private int m_owningThreadId = 0;
         /// <summary>
         /// 指示锁拥有了多少次
         /// </summary>
-        private Int32 m_recursion = 0;
+        private int m_recursion = 0;
 
         /// <summary>
         /// 获取锁
         /// </summary>
         public void Enter( )
         {
-            Int32 threadId = Thread.CurrentThread.ManagedThreadId;
+            int threadId = Thread.CurrentThread.ManagedThreadId;
             if (threadId == m_owningThreadId)
             {
                 m_recursion++;
@@ -1019,5 +1019,7 @@ namespace HslCommunication.Core
 
     }
 
-#endregion
+#endif
+
+    #endregion
 }

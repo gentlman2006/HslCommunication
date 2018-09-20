@@ -15,7 +15,7 @@ namespace HslCommunication.LogNet
     public class LogNetFileSize : LogNetBase, ILogNet
     {
 
-        #region 构造方法
+        #region Constructor
 
         /// <summary>
         /// 实例化一个根据文件大小生成新文件的

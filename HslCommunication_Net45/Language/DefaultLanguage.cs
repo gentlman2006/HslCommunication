@@ -27,7 +27,7 @@ namespace HslCommunication.Language
         public virtual string ExceptionStackTrace => "错误堆栈：";
         public virtual string ExceptopnTargetSite => "错误方法：";
         public virtual string ExceprionCustomer => "用户自定义方法出错：";
-        public virtual string SuccessText => "Success";
+        public virtual string SuccessText => "成功";
         public virtual string TwoParametersLengthIsNotSame => "两个参数的个数不一致";
         public virtual string NotSupportedDataType => "输入的类型不支持，请重新输入";
         public virtual string DataLengthIsNotEnough => "接收的数据长度不足，应该值:{0},实际值:{1}";
@@ -40,6 +40,7 @@ namespace HslCommunication.Language
         public virtual string BugSubmit => "Bug提交";
         public virtual string MailServerCenter => "邮件发送系统";
         public virtual string MailSendTail => "邮件服务系统自动发出，请勿回复！";
+        public virtual string IpAddresError => "Ip地址输入异常，格式不正确";
 
         /***********************************************************************************
          * 
@@ -92,6 +93,7 @@ namespace HslCommunication.Language
         public virtual string FileWriteToNetFailed => "文件写入网络异常";
         public virtual string FileReadFromNetFailed => "从网络读取文件异常";
         public virtual string FilePathCreateFailed => "文件夹路径创建失败：";
+        public virtual string FileRemoteNotExist => "对方文件不存在，无法接收！";
 
         /***********************************************************************************
          * 
@@ -117,6 +119,7 @@ namespace HslCommunication.Language
         public virtual string ServerFileCheckFailed => "服务器确认文件失败，请重新上传";
         public virtual string ClientOnlineInfo => "客户端 [ {0} ] 上线";
         public virtual string ClientOfflineInfo => "客户端 [ {0} ] 下线";
+        public virtual string ClientDisableLogin => "客户端 [ {0} ] 不被信任，禁止登录";
 
         /***********************************************************************************
          * 
@@ -156,7 +159,7 @@ namespace HslCommunication.Language
         
         /***********************************************************************************
          * 
-         *    Modbus-Tcp相关
+         *    Modbus相关
          * 
          ************************************************************************************/
 
@@ -172,6 +175,7 @@ namespace HslCommunication.Language
         public virtual string ModbusAsciiFormatCheckFailed => "Modbus的ascii指令检查失败，不是modbus-ascii报文";
         public virtual string ModbusCRCCheckFailed => "Modbus的CRC校验检查失败";
         public virtual string ModbusLRCCheckFailed => "Modbus的LRC校验检查失败";
+        public virtual string ModbusMatchFailed => "不是标准的modbus协议";
 
 
         /***********************************************************************************

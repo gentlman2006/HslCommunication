@@ -230,6 +230,14 @@ namespace HslCommunication.Core
         /// <returns>带有成功标识的结果类对象</returns>
         OperateResult Write( string address, string value );
         /// <summary>
+        /// 写入指定长度的字符串信息，编码为ASCII
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="value">写入值</param>
+        /// <param name="length">字符串的长度</param>
+        /// <returns>带有成功标识的结果类对象</returns>
+        OperateResult Write( string address, string value, int length );
+        /// <summary>
         /// 写入自定义类型的数据，该类型必须继承自IDataTransfer接口
         /// </summary>
         /// <typeparam name="T">类型对象</typeparam>

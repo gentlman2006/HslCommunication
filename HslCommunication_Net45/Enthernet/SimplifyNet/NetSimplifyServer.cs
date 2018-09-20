@@ -32,7 +32,7 @@ namespace HslCommunication.Enthernet
 
         #endregion
         
-        #region 事件通知块
+        #region Event Handle
 
         /// <summary>
         /// 接收字符串信息的事件
@@ -82,7 +82,7 @@ namespace HslCommunication.Enthernet
 
         #endregion
 
-        #region 启动停止块
+        #region Start Close
 
         /// <summary>
         /// 关闭网络的操作
@@ -112,10 +112,10 @@ namespace HslCommunication.Enthernet
                 }
                 catch(Exception ex)
                 {
-                    LogNet?.WriteException( ToString( ), "Ip信息获取失败", ex );
+                    LogNet?.WriteException( ToString( ), StringResources.Language.GetClientIpaddressFailed, ex );
                 }
 
-                LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 上线" );
+                LogNet?.WriteDebug( ToString( ), string.Format( StringResources.Language.ClientOnlineInfo, session.IpEndPoint ) );
                 System.Threading.Interlocked.Increment( ref clientCount );
                 ReBeginReceiveHead( session, false );
             }
@@ -130,18 +130,18 @@ namespace HslCommunication.Enthernet
         {
             session.WorkSocket?.Close( );
             System.Threading.Interlocked.Decrement( ref clientCount );
-            LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 异常下线" );
+            LogNet?.WriteDebug( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, session.IpEndPoint ) );
         }
 
         /// <summary>
         /// 正常下线
         /// </summary>
-        /// <param name="session"></param>
+        /// <param name="session">会话</param>
         internal override void AppSessionRemoteClose( AppSession session )
         {
             session.WorkSocket?.Close( );
             System.Threading.Interlocked.Decrement( ref clientCount );
-            LogNet?.WriteDebug( ToString( ), $"客户端 [ {session.IpEndPoint} ] 下线" );
+            LogNet?.WriteDebug( ToString( ), string.Format( StringResources.Language.ClientOfflineInfo, session.IpEndPoint ) );
         }
 
         /// <summary>

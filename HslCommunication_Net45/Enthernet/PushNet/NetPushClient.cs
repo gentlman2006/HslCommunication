@@ -59,7 +59,7 @@ namespace HslCommunication.Enthernet
             {
                 Console.WriteLine( ex );
                 Console.WriteLine( StringResources.Language.ReConnectServerAfterTenSeconds );
-                System.Threading.Thread.Sleep( 10000 );
+                System.Threading.Thread.Sleep( this.reconnectTime );
 
                 if(CreatePush( ).IsSuccess)
                 {
@@ -130,6 +130,11 @@ namespace HslCommunication.Enthernet
         /// </summary>
         public string KeyWord => keyWord;
 
+        /// <summary>
+        /// 获取或设置重连服务器的间隔时间
+        /// </summary>
+        public int ReConnectTime { set => reconnectTime = value; get => reconnectTime; }
+
         #endregion
 
         #region Private Member
@@ -137,6 +142,7 @@ namespace HslCommunication.Enthernet
         private IPEndPoint endPoint;                           // 服务器的地址及端口信息
         private string keyWord = string.Empty;                 // 缓存的订阅关键字
         private Action<NetPushClient, string> action;          // 服务器推送后的回调方法
+        private int reconnectTime = 10000;                     // 重连服务器的时间
 
         #endregion
 

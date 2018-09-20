@@ -144,7 +144,7 @@ namespace HslCommunication.Enthernet
                     if (SendStringAndCheckReceive(
                         socket,                                                                // 网络套接字
                         deleteResult ? 1 : 0,                                                  // 是否移动成功
-                        deleteResult ? "成功" : "失败"                                         // 字符串数据
+                        deleteResult ? StringResources.Language.FileDeleteSuccess : StringResources.Language.FileDeleteFailed
                         ).IsSuccess)
                     {
                         socket?.Close( );

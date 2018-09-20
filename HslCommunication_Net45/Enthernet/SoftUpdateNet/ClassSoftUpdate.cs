@@ -24,16 +24,20 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 实例化一个对象
         /// </summary>
-        public NetSoftUpdateServer()
+        /// <param name="updateExeFileName">更新程序的名称</param>
+        public NetSoftUpdateServer( string updateExeFileName = "软件自动更新.exe" )
         {
-            
+            this.updateExeFileName = updateExeFileName;
         }
 
         #endregion
-        
 
+        #region Private Member
 
         private string m_FilePath = @"C:\HslCommunication";
+        private string updateExeFileName;                     // 软件更新的声明
+
+        #endregion
 
         /// <summary>
         /// 系统升级时客户端所在的目录，默认为C:\HslCommunication
@@ -75,8 +79,7 @@ namespace HslCommunication.Enthernet
                     if (Directory.Exists(FileUpdatePath))
                     {
                         string[] files = Directory.GetFiles(FileUpdatePath);
-
-
+                        
                         List<string> Files = new List<string>(files);
                         for (int i = Files.Count - 1; i >= 0; i--)
                         {
@@ -87,7 +90,7 @@ namespace HslCommunication.Enthernet
                             }
                             if (Protocol == 0x1002)
                             {
-                                if (finfo.Name == "软件自动更新.exe")
+                                if (finfo.Name == this.updateExeFileName)
                                 {
                                     Files.RemoveAt(i);
                                 }
@@ -174,7 +177,7 @@ namespace HslCommunication.Enthernet
         #region Object Override
 
         /// <summary>
-        /// 获取本对象的字符串表示形式
+        /// 返回表示当前对象的字符串
         /// </summary>
         /// <returns>字符串信息</returns>
         public override string ToString( )
