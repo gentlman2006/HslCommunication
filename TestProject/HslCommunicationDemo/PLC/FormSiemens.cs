@@ -302,6 +302,12 @@ namespace HslCommunicationDemo
             // byte写入
             try
             {
+                //byte[] buffer = new byte[500];
+                //for (int i = 0; i < 500; i++)
+                //{
+                //    buffer[i] = (byte)i;
+                //}
+                //writeResultRender( siemensTcpNet.Write( textBox8.Text, buffer ), textBox8.Text );
                 writeResultRender( siemensTcpNet.Write( textBox8.Text, byte.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)

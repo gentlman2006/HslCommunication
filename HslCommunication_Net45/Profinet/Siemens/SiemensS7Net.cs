@@ -434,10 +434,27 @@ namespace HslCommunication.Profinet.Siemens
         /// </example>
         public override OperateResult Write( string address, byte[] value )
         {
-            OperateResult<byte[]> command = BuildWriteByteCommand( address, value );
-            if (!command.IsSuccess) return command;
+            OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
+            
+            int length = value.Length;
+            ushort alreadyFinished = 0;
+            while (alreadyFinished < length)
+            {
+                ushort writeLength = (ushort)Math.Min( length - alreadyFinished, 200 );
+                byte[] buffer = ByteTransform.TransByte( value, alreadyFinished, writeLength );
 
-            return WriteBase( command.Content );
+                OperateResult<byte[]> command = BuildWriteByteCommand( analysis, buffer );
+                if (!command.IsSuccess) return command;
+
+                OperateResult write = WriteBase( command.Content );
+                if (!write.IsSuccess) return write;
+                
+                alreadyFinished += writeLength;
+                analysis.Content2 += writeLength * 8;
+            }
+
+            return OperateResult.CreateSuccessResult( );
         }
 
 
@@ -811,15 +828,21 @@ namespace HslCommunication.Profinet.Siemens
         public static OperateResult<byte[]> BuildWriteByteCommand( string address, byte[] data )
         {
             if (data == null) data = new byte[0];
-            var result = new OperateResult<byte[]>( );
 
             OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
+            return BuildWriteByteCommand( analysis, data );
+        }
+
+        /// <summary>
+        /// 生成一个写入字节数据的指令 -> Generate an instruction to write byte data
+        /// </summary>
+        /// <param name="analysis">起始地址，示例M100,I100,Q100,DB1.100 -> Start Address, example M100,I100,Q100,DB1.100</param>
+        /// <param name="data">原始的字节数据 -> Raw byte data</param>
+        /// <returns>包含结果对象的报文 -> Message containing the result object</returns>
+        public static OperateResult<byte[]> BuildWriteByteCommand( OperateResult<byte, int, ushort> analysis, byte[] data )
+        {
             byte[] _PLCCommand = new byte[35 + data.Length];
             _PLCCommand[0] = 0x03;
             _PLCCommand[1] = 0x00;
@@ -875,9 +898,7 @@ namespace HslCommunication.Profinet.Siemens
 
             data.CopyTo( _PLCCommand, 35 );
 
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( _PLCCommand );
         }
 
         /// <summary>
@@ -888,14 +909,8 @@ namespace HslCommunication.Profinet.Siemens
         /// <returns>包含结果对象的报文 -> Message containing the result object</returns>
         public static OperateResult<byte[]> BuildWriteBitCommand( string address, bool data )
         {
-            var result = new OperateResult<byte[]>( );
-
             OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
 
             byte[] buffer = new byte[1];
@@ -955,9 +970,7 @@ namespace HslCommunication.Profinet.Siemens
 
             buffer.CopyTo( _PLCCommand, 35 );
 
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( _PLCCommand );
         }
         
 
