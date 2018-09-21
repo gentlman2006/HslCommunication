@@ -418,6 +418,19 @@ namespace HslCommunication
     ///             <item>注意：如果您的旧项目使用的Modbus类，请务必重新测试适配。给你带来的不便，敬请谅解。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-09-21" version="5.3.2" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>所有显示字符串支持中英文，支持切换，默认为系统语言。</item>
+    ///             <item>Json组件依赖设置为不依赖指定版本。</item>
+    ///             <item>modbus-ascii类库测试通过。</item>
+    ///             <item>新增松下的plc串口读写类，还未测试。</item>
+    ///             <item>西门子s7类写入byte数组长度不受限制，原先大概250个字节左右。</item>
+    ///             <item>demo界面进行了部分的中英文适配。</item>
+    ///             <item>OperateResult类新增了一些额外的构造方法。</item>
+    ///             <item>SoftBasic新增了几个字节数组操作相关的通用方法。</item>
+    ///             <item>其他大量的细节的代码优化，重构。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc
