@@ -2,11 +2,38 @@ package HslCommunication.Core.Types;
 
 /**
  * 带2个参数的结果类
- * @param <T1>
- * @param <T2>
+ * @param <T1> 第一个参数类型
+ * @param <T2> 第二个参数类型
  */
 public class OperateResultExTwo<T1,T2> extends OperateResult
 {
+
+    /**
+     * 默认的无参构造方法
+     */
+    public OperateResultExTwo(){
+        super();
+    }
+
+    /**
+     * 使用指定的消息实例化默认的对象
+     * @param msg 错误消息
+     */
+    public OperateResultExTwo(String msg){
+        super(msg);
+    }
+
+    /**
+     * 使用指定的错误号和消息实例化默认的对象
+     * @param err 错误码
+     * @param msg 错误消息
+     */
+    public OperateResultExTwo(int err,String msg){
+        super(err,msg);
+    }
+
+
+
 
     /**
      * 泛型对象1

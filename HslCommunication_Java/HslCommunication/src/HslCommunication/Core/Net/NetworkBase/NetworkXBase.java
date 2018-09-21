@@ -43,9 +43,9 @@ public class NetworkXBase extends NetworkBase
         }
         catch (Exception ex)
         {
-            if (!ex.getMessage().contains( StringResources.SocketRemoteCloseException ))
+            if (!ex.getMessage().contains( StringResources.Language.SocketRemoteCloseException() ))
             {
-                if(LogNet!=null) LogNet.WriteException( toString( ), StringResources.SocketSendException, ex );
+                if(LogNet!=null) LogNet.WriteException( toString( ), StringResources.Language.SocketSendException(), ex );
             }
         }
         finally {
@@ -88,7 +88,7 @@ public class NetworkXBase extends NetworkBase
                         DataProcessingCenter(session,protocol,customer,content);
                     }
                     else {
-                        if(LogNet!=null) LogNet.WriteWarn( toString( ), StringResources.TokenCheckFailed );
+                        if(LogNet!=null) LogNet.WriteWarn( toString( ), StringResources.Language.TokenCheckFailed() );
                         AppSessionRemoteClose( session );
                     }
                 }
@@ -170,7 +170,7 @@ public class NetworkXBase extends NetworkBase
         if (checkResult.Content != send.length)
         {
             CloseSocket(socket);
-            return OperateResult.CreateFailedResult(StringResources.CommandLengthCheckFailed);
+            return new OperateResult(StringResources.Language.CommandLengthCheckFailed());
         }
 
         return checkResult;
@@ -358,7 +358,7 @@ public class NetworkXBase extends NetworkBase
         //if (timeout > 0) ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), hslTimeOut );
 
         // 接收头指令
-        OperateResultExOne<byte[]> headResult = Receive(socket, HslProtocol.HeadByteLength);
+        OperateResultExOne<byte[]> headResult = Receive(socket, HslProtocol.HeadByteLength, timeout);
         if (!headResult.IsSuccess) {
             hslTimeOut.IsSuccessful = true;
             return OperateResultExTwo.<byte[],byte[]>CreateFailedResult(headResult);
@@ -369,7 +369,7 @@ public class NetworkXBase extends NetworkBase
         if (!CheckRemoteToken(headResult.Content)) {
             CloseSocket(socket);
             OperateResultExTwo<byte[], byte[]> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.Message = StringResources.TokenCheckFailed;
+            resultExTwo.Message = StringResources.Language.TokenCheckFailed();
             return resultExTwo;
         }
 
@@ -414,10 +414,10 @@ public class NetworkXBase extends NetworkBase
         // 检查是否是字符串信息
         if (Utilities.getInt( receive.Content1, 0 ) != HslProtocol.ProtocolUserString)
         {
-            if(LogNet!=null) LogNet.WriteError( toString( ), StringResources.CommandHeadCodeCheckFailed );
+            if(LogNet!=null) LogNet.WriteError( toString( ), StringResources.Language.CommandHeadCodeCheckFailed() );
             CloseSocket(socket);
             OperateResultExTwo<Integer, String> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.Message = StringResources.CommandHeadCodeCheckFailed;
+            resultExTwo.Message = StringResources.Language.CommandHeadCodeCheckFailed();
             return resultExTwo;
         }
 
@@ -446,11 +446,11 @@ public class NetworkXBase extends NetworkBase
         // 检查是否是字节信息
         if (Utilities.getInt( receive.Content1, 0 ) != HslProtocol.ProtocolUserBytes)
         {
-            if(LogNet!=null) LogNet.WriteError( toString( ), StringResources.CommandHeadCodeCheckFailed );
+            if(LogNet!=null) LogNet.WriteError( toString( ), StringResources.Language.CommandHeadCodeCheckFailed() );
             CloseSocket(socket);
 
             OperateResultExTwo<Integer, byte[]> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.Message = StringResources.CommandHeadCodeCheckFailed;
+            resultExTwo.Message = StringResources.Language.CommandHeadCodeCheckFailed();
             return resultExTwo;
         }
 

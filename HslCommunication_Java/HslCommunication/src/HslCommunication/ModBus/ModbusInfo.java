@@ -134,15 +134,15 @@ public class ModbusInfo {
     public static String GetDescriptionByErrorCode(byte code) {
         switch (code) {
             case ModbusInfo.FunctionCodeNotSupport:
-                return StringResources.ModbusTcpFunctionCodeNotSupport;
+                return StringResources.Language.ModbusTcpFunctionCodeNotSupport();
             case ModbusInfo.FunctionCodeOverBound:
-                return StringResources.ModbusTcpFunctionCodeOverBound;
+                return StringResources.Language.ModbusTcpFunctionCodeOverBound();
             case ModbusInfo.FunctionCodeQuantityOver:
-                return StringResources.ModbusTcpFunctionCodeQuantityOver;
+                return StringResources.Language.ModbusTcpFunctionCodeQuantityOver();
             case ModbusInfo.FunctionCodeReadWriteException:
-                return StringResources.ModbusTcpFunctionCodeReadWriteException;
+                return StringResources.Language.ModbusTcpFunctionCodeReadWriteException();
             default:
-                return StringResources.UnknownError;
+                return StringResources.Language.UnknownError();
         }
     }
 

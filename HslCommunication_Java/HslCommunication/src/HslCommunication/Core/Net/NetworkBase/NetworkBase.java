@@ -63,11 +63,11 @@ public abstract class NetworkBase {
 
     /**
      * 从套接字接收定长度的字节数组
-     * @param socket
-     * @param length
-     * @return
+     * @param socket 套接字
+     * @param length 数据长度
+     * @return 消息类对象
      */
-    protected OperateResultExOne<byte[]> Receive(Socket socket, int length )
+    protected OperateResultExOne<byte[]> Receive(Socket socket, int length, int timeout )
     {
         OperateResultExOne<byte[]> resultExOne = new OperateResultExOne<>();
 
@@ -80,6 +80,7 @@ public abstract class NetworkBase {
         int count_receive = 0;
         byte[] bytes_receive = new byte[length];
         try {
+            if(timeout>0) socket.setSoTimeout(timeout);
             InputStream input = socket.getInputStream();
             while (count_receive<length)
             {
@@ -98,6 +99,17 @@ public abstract class NetworkBase {
         return  resultExOne;
     }
 
+    /**
+     * 从套接字接收定长度的字节数组
+     * @param socket 套接字
+     * @param length 数据长度
+     * @return 消息类对象
+     */
+    protected OperateResultExOne<byte[]> Receive(Socket socket, int length )
+    {
+        return Receive(socket,length,-1);
+    }
+
 
     /**
      * 从套接字接收指定长度的字节数据
@@ -111,18 +123,10 @@ public abstract class NetworkBase {
     {
         OperateResultExOne<TNetMessage> resultExOne = new OperateResultExOne<>();
 
-        // 超时接收的代码验证
-        HslTimeOut hslTimeOut = new HslTimeOut( );
-        hslTimeOut.DelayTime = timeOut;
-        hslTimeOut.WorkSocket = socket;
-
-        // if (timeOut > 0) ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), hslTimeOut );
-
         // 接收指令头
-        OperateResultExOne<byte[]> headResult = Receive( socket, netMsg.ProtocolHeadBytesLength() );
+        OperateResultExOne<byte[]> headResult = Receive( socket, netMsg.ProtocolHeadBytesLength(), timeOut );
         if (!headResult.IsSuccess)
         {
-            hslTimeOut.IsSuccessful = true;
             resultExOne.CopyErrorFromOther( headResult );
             return resultExOne;
         }
@@ -131,10 +135,9 @@ public abstract class NetworkBase {
         if (!netMsg.CheckHeadBytesLegal(Utilities.UUID2Byte(Token)))
         {
             // 令牌校验失败
-            hslTimeOut.IsSuccessful = true;
             CloseSocket(socket);
-            if(LogNet != null) LogNet.WriteError( toString( ), StringResources.TokenCheckFailed );
-            resultExOne.Message = StringResources.TokenCheckFailed;
+            if(LogNet != null) LogNet.WriteError( toString( ), StringResources.Language.TokenCheckFailed() );
+            resultExOne.Message = StringResources.Language.TokenCheckFailed();
             return resultExOne;
         }
 
@@ -146,10 +149,9 @@ public abstract class NetworkBase {
         }
         else
         {
-            OperateResultExOne<byte[]> contentResult = Receive( socket, contentLength );
+            OperateResultExOne<byte[]> contentResult = Receive( socket, contentLength, timeOut );
             if (!contentResult.IsSuccess)
             {
-                hslTimeOut.IsSuccessful = true;
                 resultExOne.CopyErrorFromOther( contentResult );
                 return resultExOne;
             }
@@ -159,7 +161,6 @@ public abstract class NetworkBase {
 
         // 防止没有实例化造成后续的操作失败
         if (netMsg.getContentBytes() == null){ netMsg.setContentBytes( new byte[0]);}
-        hslTimeOut.IsSuccessful = true;
         resultExOne.Content = netMsg;
         resultExOne.IsSuccess = true;
         return resultExOne;
@@ -302,7 +303,7 @@ public abstract class NetworkBase {
 
     /**
      * 返回对象的字符串表示形式
-     * @return
+     * @return 字符串
      */
     @Override
     public String toString(){

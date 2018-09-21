@@ -7,6 +7,33 @@ import HslCommunication.StringResources;
  */
 public class OperateResult {
 
+
+    /**
+     * 默认的无参构造方法
+     */
+    public OperateResult(){
+
+    }
+
+    /**
+     * 使用指定的消息实例化默认的对象
+     * @param msg 错误的消息
+     */
+    public OperateResult(String msg){
+        this.Message = msg;
+    }
+
+    /**
+     * 使用指定的错误号和消息实例化默认的对象
+     * @param err 错误码
+     * @param msg 错误消息
+     */
+    public OperateResult(int err,String msg){
+        this.ErrorCode = err;
+        this.Message = msg;
+    }
+
+
     /**
      * 指示本次访问是否成功
      */
@@ -16,7 +43,7 @@ public class OperateResult {
     /**
      * 具体的错误描述
      */
-    public String Message = StringResources.UnknownError;
+    public String Message = StringResources.Language.UnknownError();
 
 
     /**
@@ -56,32 +83,6 @@ public class OperateResult {
         OperateResult result = new OperateResult();
         result.IsSuccess = true;
         result.Message = "success";
-        return result;
-    }
-
-
-    /**
-     * 创建一个特定错误的结果类对象
-     *
-     * @param message 错误消息
-     * @return 结果类对象
-     */
-    public static OperateResult CreateFailedResult(String message) {
-        OperateResult result = new OperateResult();
-        result.Message = message;
-        return result;
-    }
-
-    /**
-     * 创建一个特定错误的结果类对象
-     * @param errorCode 错误码
-     * @param message 错误消息
-     * @return 结果类对象
-     */
-    public static OperateResult CreateFailedResult(int errorCode, String message) {
-        OperateResult result = new OperateResult();
-        result.ErrorCode = errorCode;
-        result.Message = message;
         return result;
     }
 

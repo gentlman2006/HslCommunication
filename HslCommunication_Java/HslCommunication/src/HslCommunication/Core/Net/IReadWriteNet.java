@@ -205,6 +205,16 @@ public interface IReadWriteNet {
      */
     OperateResult Write(String address, String value);
 
+
+    /**
+     * 写入字符串信息，编码为ASCII
+     * @param address 起始地址
+     * @param value 写入值
+     * @param length 写入的字符串的长度
+     * @return 带有成功标识的结果类对象
+     */
+    OperateResult Write(String address, String value, int length);
+
     /**
      * 写入自定义类型的数据，该类型必须继承自IDataTransfer接口
      * @param address 起始地址

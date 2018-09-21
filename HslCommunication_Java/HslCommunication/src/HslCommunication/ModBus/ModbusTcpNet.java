@@ -278,7 +278,7 @@ public class ModbusTcpNet extends NetworkDeviceBase<ModbusTcpMessage, ReverseWor
             }
             default: {
                 command = new OperateResultExOne<byte[]>();
-                command.Message = StringResources.ModbusTcpFunctionCodeNotSupport;
+                command.Message = StringResources.Language.ModbusTcpFunctionCodeNotSupport();
                 break;
             }
         }
@@ -530,14 +530,13 @@ public class ModbusTcpNet extends NetworkDeviceBase<ModbusTcpMessage, ReverseWor
     }
 
 
-    /// <summary>
-    /// 返回表示当前对象的字符串
-    /// </summary>
-    /// <returns>字符串信息</returns>
-
+    /**
+     * 返回表示当前对象的字符串
+     * @return 字符串信息
+     */
     @Override
     public String toString() {
-        return "ModbusTcpNet";
+        return "ModbusTcpNet[" + getIpAddress() + ":"+getPort()+"]";
     }
 
 }

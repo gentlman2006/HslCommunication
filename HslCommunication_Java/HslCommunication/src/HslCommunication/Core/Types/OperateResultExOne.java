@@ -7,12 +7,36 @@ package HslCommunication.Core.Types;
  */
 public class OperateResultExOne<T> extends  OperateResult
 {
+
+    /**
+     * 默认的无参构造方法
+     */
+    public OperateResultExOne(){
+        super();
+    }
+
+    /**
+     * 使用指定的消息实例化默认的对象
+     * @param msg 错误消息
+     */
+    public OperateResultExOne(String msg){
+        super(msg);
+    }
+
+    /**
+     * 使用指定的错误号和消息实例化默认的对象
+     * @param err 错误码
+     * @param msg 错误消息
+     */
+    public OperateResultExOne(int err,String msg){
+        super(err,msg);
+    }
+
+
     /**
      * 泛型参数对象
      */
     public T Content = null;
-
-
 
 
     /**

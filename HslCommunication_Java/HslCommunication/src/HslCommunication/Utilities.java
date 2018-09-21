@@ -250,8 +250,8 @@ public class Utilities {
 
     /**
      * 将字符串数据转换成字节数组，主要转换由C#的字符串的数据
-     * @param str
-     * @return
+     * @param str 字符串信息
+     * @return 转化后的字节数组
      */
     public static byte[] string2Byte(String str) {
         if (str == null) {
@@ -264,26 +264,22 @@ public class Utilities {
             byteArray = str.getBytes();
         }
 
-
-        if(byteArray.length >=2){
-            if(byteArray[0] == -1 && byteArray[1] == -2){
+        if (byteArray.length >= 2) {
+            if (byteArray[0] == -1 && byteArray[1] == -2) {
                 byte[] newArray = new byte[byteArray.length - 2];
-                System.arraycopy(byteArray,2,newArray,0,newArray.length);
+                System.arraycopy(byteArray, 2, newArray, 0, newArray.length);
                 byteArray = newArray;
-            }
-            else if(byteArray[0] == -2 && byteArray[1] == -1)
-            {
-                for(int i=0;i<byteArray.length;i++)
-                {
-                    byte temp=byteArray[i];
-                    byteArray[i]=byteArray[i+1];
-                    byteArray[i+1] =temp;
+            } else if (byteArray[0] == -2 && byteArray[1] == -1) {
+                for (int i = 0; i < byteArray.length; i++) {
+                    byte temp = byteArray[i];
+                    byteArray[i] = byteArray[i + 1];
+                    byteArray[i + 1] = temp;
                     i++;
                 }
 
 
                 byte[] newArray = new byte[byteArray.length - 2];
-                System.arraycopy(byteArray,2,newArray,0,newArray.length);
+                System.arraycopy(byteArray, 2, newArray, 0, newArray.length);
                 byteArray = newArray;
             }
         }
@@ -316,7 +312,6 @@ public class Utilities {
         }
         return str;
     }
-
 
     /**
      * 将byte[]数组的数据进行翻转

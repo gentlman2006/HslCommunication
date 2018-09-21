@@ -9,6 +9,34 @@ package HslCommunication.Core.Types;
  */
 public class OperateResultExThree<T1,T2,T3> extends OperateResult
 {
+
+
+    /**
+     * 默认的无参构造方法
+     */
+    public OperateResultExThree(){
+        super();
+    }
+
+    /**
+     * 使用指定的消息实例化默认的对象
+     * @param msg 错误消息
+     */
+    public OperateResultExThree(String msg){
+        super(msg);
+    }
+
+    /**
+     * 使用指定的错误号和消息实例化默认的对象
+     * @param err 错误码
+     * @param msg 错误消息
+     */
+    public OperateResultExThree(int err,String msg){
+        super(err,msg);
+    }
+
+
+
     /**
      * 泛型对象1
      */

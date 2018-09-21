@@ -358,7 +358,7 @@ public class OmronFinsNet extends NetworkDeviceBase<FinsMessage,ReverseWordTrans
         buffer[3] = read.Content2[4];
         int status = Utilities.getInt(buffer, 0);
         if (status != 0) {
-            return OperateResult.CreateFailedResult(status, "初始化失败，具体原因请根据错误码查找");
+            return new OperateResult(status, "初始化失败，具体原因请根据错误码查找");
         }
 
         // 提取PLC的节点地址

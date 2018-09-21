@@ -15,12 +15,16 @@ import java.net.Socket;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * 双模式的客户端基类，
+ * @param <TNetMessage> 消息类的类型
+ * @param <TTransform> 转换类的类型
+ */
 public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform extends IByteTransform> extends NetworkBase
 {
-
-    /// <summary>
-    /// 默认的无参构造函数
-    /// </summary>
+    /**
+     * 默认的无参构造函数
+     */
     public NetworkDoubleBase( )
     {
         queueLock = new ReentrantLock();                               // 实例化数据访问锁
@@ -221,7 +225,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
         {
             CoreSocket = rSocket.Content;                 // 创建成功
             result.IsSuccess = true;
-            if(LogNet != null) LogNet.WriteDebug( toString( ), StringResources.NetEngineStart );
+            if(LogNet != null) LogNet.WriteDebug( toString( ), StringResources.Language.NetEngineStart() );
         }
 
         return result;
@@ -290,7 +294,7 @@ public class NetworkDoubleBase<TNetMessage extends INetMessage  ,TTransform exte
 
         queueLock.unlock();
 
-        if(LogNet != null ) LogNet.WriteDebug( toString( ), StringResources.NetEngineClose );
+        if(LogNet != null ) LogNet.WriteDebug( toString( ), StringResources.Language.NetEngineClose() );
         return result;
     }
 

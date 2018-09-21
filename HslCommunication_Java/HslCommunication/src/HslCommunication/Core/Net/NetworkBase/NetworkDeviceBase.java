@@ -7,6 +7,7 @@ import HslCommunication.Core.Transfer.IByteTransform;
 import HslCommunication.Core.Types.IDataTransfer;
 import HslCommunication.Core.Types.OperateResult;
 import HslCommunication.Core.Types.OperateResultExOne;
+import HslCommunication.Utilities;
 
 
 /**
@@ -385,6 +386,48 @@ public class NetworkDeviceBase<TNetMessage extends INetMessage,TTransform extend
     public OperateResult Write(String address, String value) {
         byte[] temp = getByteTransform().TransByte(value, "US-ASCII");
         if (WordLength == 1) temp = SoftBasic.ArrayExpandToLengthEven(temp);
+        return Write(address, temp);
+    }
+
+
+    /**
+     * 向设备中写入字符串，编码格式为ASCII
+     * @param address 起始地址
+     * @param value 写入值
+     * @param length 写入的字符串的长度
+     * @return 返回读取结果
+     */
+    public OperateResult Write(String address, String value, int length) {
+        byte[] temp = getByteTransform().TransByte(value, "US-ASCII");
+        temp = SoftBasic.ArrayExpandToLength(temp, length);
+        if (WordLength == 1) temp = SoftBasic.ArrayExpandToLengthEven(temp);
+        return Write(address, temp);
+    }
+
+
+
+    /**
+     * 向设备中写入字符串，编码格式为Unicode
+     * @param address 要写入的数据地址
+     * @param value 要写入的实际数据
+     * @return 写入结果
+     */
+    public OperateResult WriteUnicodeString(String address, String value) {
+        byte[] temp = Utilities.string2Byte(value);
+        return Write(address, temp);
+    }
+
+
+    /**
+     * 向设备中写入字符串，超出截断，不够补0，编码格式为Unicode
+     * @param address 要写入的数据地址
+     * @param value 要写入的实际数据
+     * @param length 指定的字符串长度，必须大于0
+     * @return 写入结果
+     */
+    public OperateResult WriteUnicodeString(String address, String value, int length) {
+        byte[] temp = Utilities.string2Byte(value);
+        temp = SoftBasic.ArrayExpandToLength(temp, length * 2);
         return Write(address, temp);
     }
 
