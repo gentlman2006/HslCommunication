@@ -1,4 +1,5 @@
-from HslCommunication import MelsecMcNet
+from HslCommunication import SiemensS7Net
+from HslCommunication import SiemensPLCS
 
 def printReadResult(result):
     if result.IsSuccess:
@@ -12,8 +13,8 @@ def printWriteResult(result):
         print("falied  " + result.Message)
 
 if __name__ == "__main__":
-    melsecNet = MelsecMcNet("192.168.8.12",6002)
-    if melsecNet.ConnectServer().IsSuccess == False:
-        print("connect falied  ")
+    siemens = SiemensS7Net(SiemensPLCS.S1200, "192.168.8.12")
+    if siemens.ConnectServer().IsSuccess == False:
+        print("connect falied")
     else:
-        printReadResult(melsecNet.ReadInt32("D100"))
+        printReadResult(siemens.ReadInt16("M100"))

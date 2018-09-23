@@ -38,6 +38,9 @@ class StringResources:
 	@staticmethod
 	def SuccessText():
 		return "Success"
+	@staticmethod
+	def NotSupportedDataType():
+		return "输入的类型不支持，请重新输入"
 	# Modbus相关
 	@staticmethod
 	def ModbusTcpFunctionCodeNotSupport():
@@ -66,11 +69,19 @@ class StringResources:
 	@staticmethod
 	def ModbusAddressMustMoreThanOne():
 		return "地址值在起始地址为1的情况下，必须大于1"
-	
+	@staticmethod
+	def MelsecPleaseReferToManulDocument():
+		return "请查看三菱的通讯手册来查看报警的具体信息"
+	@staticmethod
+	def MelsecReadBitInfo():
+		return "读取位变量数组只能针对位软元件，如果读取字软元件，请调用Read方法"
 
 
 class OperateResult:
 	'''结果对象类，可以携带额外的数据信息'''
+	def __init__(self, err = 0, msg = ""):
+		self.ErrorCode = err
+		self.Message = msg
 	# 是否成功的标志
 	IsSuccess = False
 	# 操作返回的错误消息
@@ -176,7 +187,7 @@ class S7Message (INetMessage):
 	def CheckHeadBytesLegal(self,token):
 		'''令牌检查是否成功'''
 		if self.HeadBytes != None:
-			if( self.HeadBytes[0] == 0x03 and self.HeadBytes[1] == 0x00 ):
+			if self.HeadBytes[0] == 0x03 and self.HeadBytes[1] == 0x00:
 				return True
 			else:
 				return False
@@ -868,6 +879,7 @@ class SoftBasic:
 		return buffer
 	@staticmethod
 	def BoolArrayToByte( array ):
+		'''从bool数组变量变成byte数组'''
 		if (array == None) : return None
 
 		length = 0
@@ -936,6 +948,15 @@ class SoftBasic:
 			buffer = bytearray(len(value)+1)
 			buffer[0:len(value)] = value
 			return value
+	@staticmethod
+	def StringToUnicodeBytes( value ):
+		'''获取字符串的unicode编码字符'''
+		if value == None: return bytearray(0)
+
+		buffer = value.encode('utf-16')
+		if len(buffer) > 1 and buffer[0] == 255 and buffer[1] == 254:
+			buffer = buffer[2:len(buffer)]
+		return buffer
 
 class HslSecurity:
 	@staticmethod
@@ -1092,9 +1113,7 @@ class HslProtocol:
 		if data == None: 
 			return HslProtocol.CommandBytesBase( HslProtocol.ProtocolUserString(), customer, token, None )
 		else:
-			buffer = data.encode('utf-16')
-			if buffer[0] == 255 and buffer[1] == 254:
-				buffer = buffer[2:len(buffer)]
+			buffer = SoftBasic.StringToUnicodeBytes(data)
 			return HslProtocol.CommandBytesBase( HslProtocol.ProtocolUserString(), customer, token, buffer )
 
 
@@ -1248,7 +1267,7 @@ class NetworkDoubleBase(NetworkBase):
 			# 初始化
 			initi = self.InitializationOnConnect( result.Content )
 			if initi.IsSuccess == False:
-				if result.Content !=None : result.Content.Close( )
+				if result.Content !=None : result.Content.close( )
 				result.IsSuccess = initi.IsSuccess
 				result.CopyErrorFromOther( initi )
 		return result
@@ -1481,9 +1500,21 @@ class NetworkDeviceBase(NetworkDoubleBase):
 			return self.Write( address, self.byteTransform.DoubleArrayTransByte(value) )
 		else:
 			return self.WriteDouble( address, [value] )
-	def WriteString( self, address, value ):
+	def WriteString( self, address, value, length = None ):
 		'''向设备中写入string数据，编码为ascii，返回是否写入成功'''
-		return self.Write( address, self.byteTransform.StringTransByte( value, 'ascii' ) )
+		if length == None:
+			return self.Write( address, self.byteTransform.StringTransByte( value, 'ascii' ) )
+		else:
+			return self.Write( address, SoftBasic.ArrayExpandToLength(self.byteTransform.StringTransByte( value, 'ascii' ), length))
+	def WriteUnicodeString( self, address, value, length = None):
+		'''向设备中写入string数据，编码为unicode，返回是否写入成功'''
+		if length == None:
+			temp = SoftBasic.StringToUnicodeBytes(value)
+			return self.Write( address, temp )
+		else:
+			temp = SoftBasic.StringToUnicodeBytes(value)
+			temp = SoftBasic.ArrayExpandToLength( temp, length * 2 )
+			return self.Write( address, temp )
 
 class ModbusInfo:
 	'''Modbus协议相关的一些信息'''
@@ -2186,16 +2217,11 @@ class MelsecMcNet(NetworkDeviceBase):
 
 		# 核心交互
 		read = self.ReadFromCoreServer( command.Content )
-		if read.IsSuccess == False :
-			return OperateResult.CreateFromFailedResult( read )
+		if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
 
 		# 错误代码验证
 		errorCode = read.Content[9] * 256 + read.Content[10]
-		if errorCode != 0 : 
-			result = OperateResult()
-			result.ErrorCode = errorCode
-			read.Message = "请翻查三菱通讯手册来查看具体的信息。"
-			return result
+		if errorCode != 0 : return OperateResult(err=errorCode, msg=StringResources.MelsecPleaseReferToManulDocument())
 
 		# 数据解析，需要传入是否使用位的参数
 		return MelsecMcNet.ExtractActualData( read.Content, command.Content[13] == 1 )
@@ -2215,7 +2241,7 @@ class MelsecMcNet(NetworkDeviceBase):
 
 			# 位读取校验
 			if analysis.Content1.DataType == 0x00 : 
-				return OperateResult.CreateFailedResult("读取位变量数组只能针对位软元件，如果读取字软元件，请调用Read方法")
+				return OperateResult( msg = StringResources.MelsecReadBitInfo() )
 
 			# 核心交互
 			read = self.Read( address, length )
@@ -2242,20 +2268,10 @@ class MelsecMcNet(NetworkDeviceBase):
 
 		# 错误码校验
 		errorCode = read.Content[9] * 256 + read.Content[10]
-		if errorCode != 0 : 
-			result = OperateResult()
-			result.ErrorCode = errorCode
-			read.Message = "请翻查三菱通讯手册来查看具体的信息。"
-			return result
+		if errorCode != 0 : return OperateResult(err=errorCode, msg=StringResources.MelsecPleaseReferToManulDocument())
 
 		# 成功
 		return OperateResult.CreateSuccessResult( )
-	def WriteString( self, address, value, length ):
-		'''写入string类型的数据'''
-		temp = self.byteTransform.TransByte( value, 'ascii' )
-		temp = SoftBasic.ArrayExpandToLength( temp, length )
-		temp = SoftBasic.ArrayExpandToLengthEven( temp )
-		return self.Write( address, temp )
 	def WriteBool( self, address, values ):
 		'''向PLC中位软元件写入bool数组或是值，返回值说明，比如你写入M100,values[0]对应M100'''
 		if type(values) == list:
@@ -2266,6 +2282,234 @@ class MelsecMcNet(NetworkDeviceBase):
 			return self.Write(address, buffer)
 		else:
 			return self.WriteBool(address,[values])
+
+class MelsecMcAsciiNet(NetworkDeviceBase):
+	'''三菱PLC通讯类，采用Qna兼容3E帧协议实现，需要在PLC侧先的以太网模块先进行配置，必须为ASCII通讯格式'''
+	NetworkNumber = 0
+	NetworkStationNumber = 0
+	def __init__(self,ipAddress= "127.0.0.1",port = 0):
+		'''实例化一个三菱的Qna兼容3E帧协议的通讯对象'''
+		self.iNetMessage = MelsecQnA3EBinaryMessage()
+		self.byteTransform = RegularByteTransform()
+		self.ipAddress = ipAddress
+		self.port = port
+		self.WordLength = 1
+	@staticmethod
+	def BuildReadCommand( address, length, networkNumber = 0, networkStationNumber = 0 ):
+		'''根据类型地址长度确认需要读取的报文'''
+		analysis = MelsecHelper.McAnalysisAddress( address )
+		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult( analysis )
+
+		# 默认信息----注意：高低字节交错
+		_PLCCommand = bytearray(42)
+		_PLCCommand[ 0] = 0x35                                                               # 副标题
+		_PLCCommand[ 1] = 0x30
+		_PLCCommand[ 2] = 0x30
+		_PLCCommand[ 3] = 0x30
+		_PLCCommand[ 4] = MelsecHelper.BuildBytesFromData( networkNumber )[0]                # 网络号
+		_PLCCommand[ 5] = MelsecHelper.BuildBytesFromData( networkNumber )[1]
+		_PLCCommand[ 6] = 0x46                                                               # PLC编号
+		_PLCCommand[ 7] = 0x46
+		_PLCCommand[ 8] = 0x30                                                               # 目标模块IO编号
+		_PLCCommand[ 9] = 0x33
+		_PLCCommand[10] = 0x46
+		_PLCCommand[11] = 0x46
+		_PLCCommand[12] = MelsecHelper.BuildBytesFromData( networkStationNumber )[0]         # 目标模块站号
+		_PLCCommand[13] = MelsecHelper.BuildBytesFromData( networkStationNumber )[1]
+		_PLCCommand[14] = 0x30                                                               # 请求数据长度
+		_PLCCommand[15] = 0x30
+		_PLCCommand[16] = 0x31
+		_PLCCommand[17] = 0x38
+		_PLCCommand[18] = 0x30                                                               # CPU监视定时器
+		_PLCCommand[19] = 0x30
+		_PLCCommand[20] = 0x31
+		_PLCCommand[21] = 0x30
+		_PLCCommand[22] = 0x30                                                               # 批量读取数据命令
+		_PLCCommand[23] = 0x34
+		_PLCCommand[24] = 0x30
+		_PLCCommand[25] = 0x31
+		_PLCCommand[26] = 0x30                                                               # 以点为单位还是字为单位成批读取
+		_PLCCommand[27] = 0x30
+		_PLCCommand[28] = 0x30
+		_PLCCommand[29] = 0x30 if analysis.Content1.DataType == 0 else 0x31
+		_PLCCommand[30] = analysis.Content1.AsciiCode.encode('ascii')[0]                     # 软元件类型
+		_PLCCommand[31] = analysis.Content1.AsciiCode.encode('ascii')[1]
+		_PLCCommand[32] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[0]           # 起始地址的地位
+		_PLCCommand[33] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[1]
+		_PLCCommand[34] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[2]
+		_PLCCommand[35] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[3]
+		_PLCCommand[36] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[4]
+		_PLCCommand[37] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[5]
+		_PLCCommand[38] = MelsecHelper.BuildBytesFromData( length, 4 )[0]                                            # 软元件点数
+		_PLCCommand[39] = MelsecHelper.BuildBytesFromData( length, 4 )[1]
+		_PLCCommand[40] = MelsecHelper.BuildBytesFromData( length, 4 )[2]
+		_PLCCommand[41] = MelsecHelper.BuildBytesFromData( length, 4 )[3]
+
+		return OperateResult.CreateSuccessResult( _PLCCommand )
+	@staticmethod
+	def BuildWriteCommand( address, value, networkNumber = 0, networkStationNumber = 0 ):
+		'''根据类型地址以及需要写入的数据来生成报文'''
+		analysis = MelsecHelper.McAnalysisAddress( address )
+		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult( analysis )
+
+		# 预处理指令
+		if analysis.Content1.DataType == 0x01:
+			# 位写入
+			buffer = bytearray(len(value))
+			for i in range(len(buffer)):
+				buffer[i] = 0x30 if value[i] == 0x00 else 0x31
+			value = buffer
+		else:
+			# 字写入
+			buffer = bytearray(len(value) * 2)
+			for i in range(len(value) // 2):
+				tmp = value[i*2]+ value[i*2+1]*256
+				buffer[4*i:4*i+4] = MelsecHelper.BuildBytesFromData( tmp, 4 )
+			value = buffer
+
+		# 默认信息----注意：高低字节交错
+
+		_PLCCommand = bytearray(42 + len(value.Length))
+
+		_PLCCommand[ 0] = 0x35                                                                              # 副标题
+		_PLCCommand[ 1] = 0x30
+		_PLCCommand[ 2] = 0x30
+		_PLCCommand[ 3] = 0x30
+		_PLCCommand[ 4] = MelsecHelper.BuildBytesFromData( networkNumber )[0]                               # 网络号
+		_PLCCommand[ 5] = MelsecHelper.BuildBytesFromData( networkNumber )[1]
+		_PLCCommand[ 6] = 0x46                                                                              # PLC编号
+		_PLCCommand[ 7] = 0x46
+		_PLCCommand[ 8] = 0x30                                                                              # 目标模块IO编号
+		_PLCCommand[ 9] = 0x33
+		_PLCCommand[10] = 0x46
+		_PLCCommand[11] = 0x46
+		_PLCCommand[12] = MelsecHelper.BuildBytesFromData( networkStationNumber )[0]                        # 目标模块站号
+		_PLCCommand[13] = MelsecHelper.BuildBytesFromData( networkStationNumber )[1]
+		_PLCCommand[14] = MelsecHelper.BuildBytesFromData( len(_PLCCommand) - 18, 4 )[0]           # 请求数据长度
+		_PLCCommand[15] = MelsecHelper.BuildBytesFromData( len(_PLCCommand) - 18, 4 )[1]
+		_PLCCommand[16] = MelsecHelper.BuildBytesFromData( len(_PLCCommand) - 18, 4 )[2]
+		_PLCCommand[17] = MelsecHelper.BuildBytesFromData( len(_PLCCommand) - 18, 4 )[3]
+		_PLCCommand[18] = 0x30                                                                              # CPU监视定时器
+		_PLCCommand[19] = 0x30
+		_PLCCommand[20] = 0x31
+		_PLCCommand[21] = 0x30
+		_PLCCommand[22] = 0x31                                                                              # 批量写入的命令
+		_PLCCommand[23] = 0x34
+		_PLCCommand[24] = 0x30
+		_PLCCommand[25] = 0x31
+		_PLCCommand[26] = 0x30                                                                              # 子命令
+		_PLCCommand[27] = 0x30
+		_PLCCommand[28] = 0x30
+		_PLCCommand[29] = 0x30 if analysis.Content1.DataType == 0 else 0x31
+		_PLCCommand[30] = analysis.Content1.AsciiCode.encode('ascii')[0]                         # 软元件类型
+		_PLCCommand[31] = analysis.Content1.AsciiCode.encode('ascii')[1]
+		_PLCCommand[32] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[0]     # 起始地址的地位
+		_PLCCommand[33] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[1]
+		_PLCCommand[34] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[2]
+		_PLCCommand[35] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[3]
+		_PLCCommand[36] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[4]
+		_PLCCommand[37] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[5]
+
+		# 判断是否进行位操作
+		if (analysis.Content1.DataType == 1):
+			_PLCCommand[38] = MelsecHelper.BuildBytesFromData( len(value), 4 )[0]                    # 软元件点数
+			_PLCCommand[39] = MelsecHelper.BuildBytesFromData( len(value), 4 )[1]
+			_PLCCommand[40] = MelsecHelper.BuildBytesFromData( len(value), 4 )[2]
+			_PLCCommand[41] = MelsecHelper.BuildBytesFromData( len(value), 4 )[3]
+		else:
+			_PLCCommand[38] = MelsecHelper.BuildBytesFromData( len(value) // 4, 4 )[0]              # 软元件点数
+			_PLCCommand[39] = MelsecHelper.BuildBytesFromData( len(value) // 4, 4 )[1]
+			_PLCCommand[40] = MelsecHelper.BuildBytesFromData( len(value) // 4, 4 )[2]
+			_PLCCommand[41] = MelsecHelper.BuildBytesFromData( len(value) // 4, 4 )[3]
+		_PLCCommand[42:] = value
+
+		return OperateResult.CreateSuccessResult( _PLCCommand )
+
+	@staticmethod
+	def ExtractActualData( response, isBit ):
+		if isBit == True:
+			# 位读取
+			Content = bytearray(len(response) - 22)
+			for i in range(22,len(response)):
+				Content[i - 22] = 0x00 if response[i] == 0x30 else 0x01
+
+			return OperateResult.CreateSuccessResult( Content )
+		else:
+			# 字读取
+			Content = bytearray((len(response) - 22) // 2)
+			for i in range(len(Content)//2):
+				tmp = int(response[i * 4 + 22:i * 4 + 26].decode('ascii'),16)
+				Content[i * 2:i * 2+2] = struct.pack('<H',tmp)
+
+			return OperateResult.CreateSuccessResult( Content )
+	def Read( self, address, length ):
+		'''从三菱PLC中读取想要的数据，返回读取结果'''
+		# 获取指令
+		command = MelsecMcAsciiNet.BuildReadCommand( address, length, self.NetworkNumber, self.NetworkStationNumber )
+		if command.IsSuccess == False : return OperateResult.CreateFailedResult( command )
+
+		# 核心交互
+		read = self.ReadFromCoreServer( command.Content )
+		if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
+
+		# 错误代码验证
+		errorCode = int( read.Content[18:22].decode('ascii'), 16 )
+		if errorCode != 0 : return OperateResult( err= errorCode, msg = StringResources.MelsecPleaseReferToManulDocument() )
+
+		# 数据解析，需要传入是否使用位的参数
+		return MelsecMcAsciiNet.ExtractActualData( read.Content, command.Content[29] == 0x31 )
+	def ReadBool( self, address, length = None ):
+		if length == None:
+			read = self.ReadBool( address, 1 )
+			if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
+
+			return OperateResult.CreateSuccessResult( read.Content[0] )
+		else:
+			# 解析地址
+			analysis = MelsecHelper.McAnalysisAddress( address )
+			if analysis.IsSuccess == False : return OperateResult.CreateFailedResult( analysis )
+
+			# 位读取校验
+			if analysis.Content1.DataType == 0x00 : return OperateResult( msg = StringResources.MelsecReadBitInfo )
+
+			# 核心交互
+			read = self.Read( address, length )
+			if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
+
+			# 转化bool数组
+			content = []
+			for i in range(len(read.Content)):
+				if read.Content[i] == 0x01:
+					content.append(True)
+				else:
+					content.append(False)
+			return OperateResult.CreateSuccessResult( content )
+	def Write( self, address, value ):
+		'''向PLC写入数据，数据格式为原始的字节类型'''
+		# 解析指令
+		command = MelsecMcAsciiNet.BuildWriteCommand( address, value, self.NetworkNumber, self.NetworkStationNumber )
+		if command.IsSuccess == False : return command
+
+		# 核心交互
+		read = self.ReadFromCoreServer( command.Content )
+		if read.IsSuccess == False : return read
+
+		# 错误码验证
+		errorCode = int( read.Content[18, 22].decode('ascii'), 16 )
+		if errorCode != 0 : return OperateResult( err = errorCode, msg = StringResources.MelsecPleaseReferToManulDocument() )
+
+		# 写入成功
+		return OperateResult.CreateSuccessResult( )
+	def WriteBool( self, address, values ):
+		'''向PLC中位软元件写入bool数组，返回值说明，比如你写入M100,values[0]对应M100'''
+		if type(values) == list:
+			buffer = bytearray(len(values))
+			for i in range(len(buffer)):
+				buffer[i] = 0x01 if values[i] == True else 0x00
+			return self.Write( address, buffer )
+		else:
+			return self.WriteBool( address, [values] )
+        
 
 # 西门子的数据类
 class SiemensPLCS(Enum):
@@ -2344,7 +2588,7 @@ class SiemensS7Net(NetworkDeviceBase):
 				result.Content3 = 1
 				result.Content2 = SiemensS7Net.CalculateAddressStarted( address[1:] )
 			else:
-				result.Message = "不支持的数据类型"
+				result.Message = StringResources.NotSupportedDataType()
 				result.Content1 = 0
 				result.Content2 = 0
 				result.Content3 = 0
@@ -2473,12 +2717,8 @@ class SiemensS7Net(NetworkDeviceBase):
 	def BuildWriteByteCommand( address, data ):
 		'''生成一个写入字节数据的指令'''
 		if data == None : data = bytearray(0)
-		result = OperateResult( )
-
 		analysis = SiemensS7Net.AnalysisAddress( address )
-		if analysis.IsSuccess == False :
-			result.CopyErrorFromOther( analysis )
-			return result
+		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult(analysis)
 
 		_PLCCommand = bytearray(35 + len(data))
 		_PLCCommand[0] = 0x03
@@ -2535,17 +2775,11 @@ class SiemensS7Net(NetworkDeviceBase):
 
 		_PLCCommand[35:] = data
 
-		result.Content = _PLCCommand
-		result.IsSuccess = True
-		return result
+		return OperateResult.CreateSuccessResult(_PLCCommand)
 	@staticmethod
 	def BuildWriteBitCommand( address, data ):
-		result = OperateResult( )
-
 		analysis = SiemensS7Net.AnalysisAddress( address )
-		if analysis.IsSuccess == False:
-			result.CopyErrorFromOther( analysis )
-			return result
+		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult(analysis)
 
 		buffer = bytearray(1)
 		if data == True : buffer[0] = 0x01
@@ -2604,11 +2838,10 @@ class SiemensS7Net(NetworkDeviceBase):
 
 		_PLCCommand[35:] = buffer
 
-		result.Content = _PLCCommand
-		result.IsSuccess = True
-		return result
+		return OperateResult.CreateSuccessResult(_PLCCommand)
 	def InitializationOnConnect( self, socket ):
 		'''连接上服务器后需要进行的二次握手操作'''
+		# msg = SoftBasic.ByteToHexString(self.plcHead1, ' ')
 		# 第一次握手
 		read_first = self.ReadFromCoreServerBase( socket, self.plcHead1 )
 		if read_first.IsSuccess == False : return read_first
@@ -2740,21 +2973,329 @@ class SiemensS7Net(NetworkDeviceBase):
 		if command.IsSuccess == False : return command
 
 		return self.__WriteBase( command.Content )
-	def WriteString( self, address, value, length = None ):
-		'''向PLC中写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII'''
-		temp = self.byteTransform.TransByte( value, 'ascii' )
-		if length != None :
-			temp = SoftBasic.ArrayExpandToLength(temp,length)
-		return self.Write( address, temp )
 	def WriteByte( self, address, value ):
 		'''向PLC中写入byte数据，返回值说明'''
 		return self.Write( address, [value] )
 class SiemensFetchWriteNet(NetworkDeviceBase):
+	'''使用了Fetch/Write协议来和西门子进行通讯，该种方法需要在PLC侧进行一些配置'''
 	def __init__( self, ipAddress = '127.0.0.1', port = 1000 ):
 		''' 实例化一个西门子的Fetch/Write协议的通讯对象，可以指定ip地址及端口号'''
 		self.ipAddress = ipAddress
 		self.port = port
 		self.WordLength = 2
+	@staticmethod
+	def CalculateAddressStarted( address = "M100" ):
+		'''计算特殊的地址信息'''
+		if address.find( '.' ) < 0:
+			return int( address )
+		else:
+			temp = address.split( '.' )
+			return int( temp[0] )
+	@staticmethod
+	def AnalysisAddress( address = "M100" ):
+		'''解析数据地址，解析出地址类型，起始地址，DB块的地址'''
+		result = OperateResult( )
+		try:
+			result.Content3 = 0
+			if address[0] == 'I':
+				result.Content1 = 0x03
+				result.Content2 = SiemensFetchWriteNet.CalculateAddressStarted( address[1:] )
+			elif address[0] == 'Q':
+				result.Content1 = 0x04
+				result.Content2 = SiemensFetchWriteNet.CalculateAddressStarted( address[1:] )
+			elif address[0] == 'M':
+				result.Content1 = 0x02
+				result.Content2 = SiemensFetchWriteNet.CalculateAddressStarted( address[1:] )
+			elif address[0] == 'D' or address.startswith("DB"):
+				result.Content1 = 0x01
+				adds = address.split( '.' )
+				if address[1] == 'B':
+					result.Content3 = int( adds[0][2:] )
+				else:
+					result.Content3 = int( adds[0][1:] )
+
+				if result.Content3 > 255:
+					result.Message = "DB块数据无法大于255"
+					return result
+
+				result.Content2 = SiemensFetchWriteNet.CalculateAddressStarted( address[ address.find( '.' ) + 1:] )
+			elif address[0] == 'T':
+				result.Content1 = 0x07
+				result.Content2 = SiemensFetchWriteNet.CalculateAddressStarted( address[1:] )
+			elif address[0] == 'C':
+				result.Content1 = 0x06
+				result.Content2 = SiemensFetchWriteNet.CalculateAddressStarted( address[1:])
+			else:
+				result.Message = StringResources.NotSupportedDataType()
+				result.Content1 = 0
+				result.Content2 = 0
+				result.Content3 = 0
+				return result
+		except Exception as ex:
+			result.Message = str(ex)
+			return result
+
+		result.IsSuccess = True
+		return result
+	@staticmethod
+	def BuildReadCommand( address, count ):
+		'''生成一个读取字数据指令头的通用方法'''
+		result = OperateResult( )
+
+		analysis = SiemensFetchWriteNet.AnalysisAddress( address )
+		if analysis.IsSuccess == False :
+			result.CopyErrorFromOther( analysis )
+			return result
+
+		_PLCCommand = bytearray(16)
+		_PLCCommand[0] = 0x53
+		_PLCCommand[1] = 0x35
+		_PLCCommand[2] = 0x10
+		_PLCCommand[3] = 0x01
+		_PLCCommand[4] = 0x03
+		_PLCCommand[5] = 0x05
+		_PLCCommand[6] = 0x03
+		_PLCCommand[7] = 0x08
+
+		# 指定数据区
+		_PLCCommand[8] = analysis.Content1
+		_PLCCommand[9] = analysis.Content3
+
+		# 指定数据地址
+		_PLCCommand[10] =analysis.Content2 // 256
+		_PLCCommand[11] = analysis.Content2 % 256
+
+		if analysis.Content1 == 0x01 or analysis.Content1 == 0x06 or analysis.Content1 == 0x07:
+			if count % 2 != 0:
+				result.Message = "读取的数据长度必须为偶数"
+				return result
+			else:
+				# 指定数据长度
+				_PLCCommand[12] = count // 2 // 256
+				_PLCCommand[13] = count // 2 % 256
+		else:
+			# 指定数据长度
+			_PLCCommand[12] = count // 256
+			_PLCCommand[13] = count % 256
+
+		_PLCCommand[14] = 0xff
+		_PLCCommand[15] = 0x02
+
+		result.Content = _PLCCommand
+		result.IsSuccess = True
+		return result
+	@staticmethod
+	def BuildWriteCommand( address, data ):
+		'''生成一个写入字节数据的指令'''
+		if data == None : data = bytearray(0)
+		result = OperateResult( )
+
+		analysis = SiemensFetchWriteNet.AnalysisAddress( address )
+		if analysis.IsSuccess == False:
+			result.CopyErrorFromOther( analysis )
+			return result
+
+		_PLCCommand = bytearray(16 + len(data))
+		_PLCCommand[0] = 0x53
+		_PLCCommand[1] = 0x35
+		_PLCCommand[2] = 0x10
+		_PLCCommand[3] = 0x01
+		_PLCCommand[4] = 0x03
+		_PLCCommand[5] = 0x03
+		_PLCCommand[6] = 0x03
+		_PLCCommand[7] = 0x08
+
+		# 指定数据区
+		_PLCCommand[8] = analysis.Content1
+		_PLCCommand[9] = analysis.Content3
+
+		# 指定数据地址
+		_PLCCommand[10] = analysis.Content2 // 256
+		_PLCCommand[11] = analysis.Content2 % 256
+
+		if analysis.Content1 == 0x01 or analysis.Content1 == 0x06 or analysis.Content1 == 0x07:
+			if data.Length % 2 != 0:
+				result.Message = "写入的数据长度必须为偶数"
+				return result
+			else:
+				# 指定数据长度
+				_PLCCommand[12] = data.Length // 2 // 256
+				_PLCCommand[13] = data.Length // 2 % 256
+		else:
+			# 指定数据长度
+			_PLCCommand[12] = data.Length / 256
+			_PLCCommand[13] = data.Length % 256
+		_PLCCommand[14] = 0xff
+		_PLCCommand[15] = 0x02
+
+		# 放置数据
+		_PLCCommand[16:16+len(data)] = data
+
+		result.Content = _PLCCommand
+		result.IsSuccess = True
+		return result
+	def Read( self, address, length ):
+		'''从PLC读取数据，地址格式为I100，Q100，DB20.100，M100，T100，C100，以字节为单位'''
+		# 指令解析 -> Instruction parsing
+		command = SiemensFetchWriteNet.BuildReadCommand( address, length )
+		if command.IsSuccess == False : return command
+
+		# 核心交互 -> Core Interactions
+		read = self.ReadFromCoreServer( command.Content )
+		if read.IsSuccess == False : return read
+
+		# 错误码验证 -> Error code Verification
+		if read.Content[8] != 0x00 : return OperateResult(read.Content[8],"发生了异常，具体信息查找Fetch/Write协议文档")
+
+		# 读取正确 -> Read Right
+		buffer = bytearray(len(read.Content) - 16)
+		buffer[0:len(buffer)] = read.Content[16:16+len(buffer)]
+		return OperateResult.CreateSuccessResult( buffer )
+	def ReadByte( self, address ):
+		'''读取指定地址的byte数据'''
+		return self.GetByteResultFromBytes( self.Read( address, 1 ) )
+	def Write( self, address, value ):
+		'''将数据写入到PLC数据，地址格式为I100，Q100，DB20.100，M100，以字节为单位'''
+		# 指令解析 -> Instruction parsing
+		command = SiemensFetchWriteNet.BuildWriteCommand( address, value )
+		if command.IsSuccess == False : return command
+
+		# 核心交互 -> Core Interactions
+		write = self.ReadFromCoreServer( command.Content )
+		if write.IsSuccess == False : return write
+
+		# 错误码验证 -> Error code Verification
+		if (write.Content[8] != 0x00) : OperateResult(err = write.Content[8], msg = "西门子PLC写入失败！")
+
+		# 写入成功 -> Write Right
+		return OperateResult.CreateSuccessResult( )
+	def WriteBool( self, address, values):
+		'''向PLC中写入byte数据，返回是否写入成功 -> Writes byte data to the PLC and returns whether the write succeeded'''
+		if type(values) == list:
+			return self.Write( address, SoftBasic.BoolArrayToByte( values ) )
+		else:
+			return self.WriteBool( address, [ values ] )
+
+# Omron PLC 通讯类
+class OmronFinsDataType:
+	'''欧姆龙的Fins协议的数据类型'''
+	BitCode = 0
+	WordCode = 0
+	def __init__(self, bitCode = 0, wordCode = 0):
+		'''实例化一个Fins的数据类型'''
+		self.BitCode = bitCode
+		self.WordCode = wordCode
+	@staticmethod
+	def DM():
+		'''DM Area'''
+		return OmronFinsDataType( 0x02, 0x82 )
+	@staticmethod
+	def CIO():
+		'''CIO Area'''
+		return OmronFinsDataType( 0x30, 0xB0 )
+	@staticmethod
+	def WR():
+		'''Work Area'''
+		return OmronFinsDataType( 0x31, 0xB1 )
+	@staticmethod
+	def HR():
+		'''Holding Bit Area'''
+		return OmronFinsDataType( 0x32, 0xB2 )
+	@staticmethod
+	def AR():
+		'''Auxiliary Bit Area'''
+		return OmronFinsDataType( 0x33, 0xB3 )
+
+class OmronFinsNet(NetworkDoubleBase):
+	'''欧姆龙PLC通讯类，采用Fins-Tcp通信协议实现'''
+	def __init__(self,ipAddress="127.0.0.1",port = 1000):
+		'''实例化一个欧姆龙PLC Fins帧协议的通讯对象'''
+		self.ipAddress = ipAddress
+		self.port = port
+	ICF = 0
+	RSV = 0
+	GCT = 0
+	DNA = 0
+	DA1 = 0
+	DA2 = 0
+	SNA = 0
+	SA1 = 0
+	SA2 = 0
+	SID = 0
+	def SetSA1(self, value):
+		'''设置SA1的方法'''
+		self.SA1 = value
+		self.handSingle[19] = value
+	def AnalysisAddress( self, address, isBit ):
+		result = OperateResult( )
+		try:
+			if address[0] == 'D' or address[0] == 'd':
+				# DM区数据
+				result.Content1 = OmronFinsDataType.DM
+			elif address[0] == 'C' or address[0] == 'c':
+				# CIO区数据
+				result.Content1 = OmronFinsDataType.CIO
+			elif address[0] == 'W' or address[0] == 'w':
+				# WR区
+				result.Content1 = OmronFinsDataType.WR
+			elif address[0] == 'H' or address[0] == 'h':
+				# HR区
+				result.Content1 = OmronFinsDataType.HR
+			elif address[0] == 'A' or address[0] == 'a':
+				# AR区
+				result.Content1 = OmronFinsDataType.AR
+			else:
+				raise RuntimeError( StringResources.NotSupportedDataType() )
+
+			if isBit == True:
+				# 位操作
+				splits = address[1:].split('.')
+				addr = int( splits[0] )
+				result.Content2 = bytearray(3)
+				result.Content2[0] = struct.pack('<H', addr )[1]
+				result.Content2[1] = struct.pack('<H', addr )[0]
+
+				if len(splits) > 1:
+					result.Content2[2] = int(splits[1])
+					if result.Content2[2] > 15:
+						raise RuntimeError( "欧姆龙位地址必须0-15之间" )
+			else:
+				# 字操作
+				addr = int( address[1:] )
+				result.Content2 = bytearray(3)
+				result.Content2[0] = struct.pack('<H', addr )[1]
+				result.Content2[1] = struct.pack('<H', addr )[0]
+		except Exception as ex:
+			result.Message = str(ex)
+			return result
+
+		result.IsSuccess = True
+		return result
+	def ResponseValidAnalysis(self, response, isRead ):
+		# 数据有效性分析
+		if len(response) >= 16:
+			# 提取错误码
+			buffer = bytearray(4)
+			buffer[0] = response[15]
+			buffer[1] = response[14]
+			buffer[2] = response[13]
+			buffer[3] = response[12]
+
+			err = struct.unpack( '<i' , buffer )[0]
+			if err > 0 : return OperateResult( err = err, msg = GetStatusDescription( err ) )
+
+			if response.Length >= 30:
+				err = response[28] * 256 + response[29]
+				if err > 0 : return OperateResult( err = err, msg = "欧姆龙数据接收出错" )
+
+				if isRead == False : return OperateResult.CreateSuccessResult( bytearray(0) )
+				# 读取操作
+				content = bytearray(len(response) - 30)
+				if len(content) > 0 :
+					content[0:len(content)] = response[30:]
+				return OperateResult.CreateSuccessResult( content )
+
+		return OperateResult( msg = "欧姆龙数据接收出错" )
 
 
 # NetSimplifyClient类

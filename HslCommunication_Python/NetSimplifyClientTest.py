@@ -4,7 +4,7 @@ if __name__ == "__main__":
     # NetSimplifyClient测试
     netSimplifyClient = NetSimplifyClient("127.0.0.1",12345)
     # netSimplifyClient.Token = uuid.UUID('66a469ad-a595-48ed-abe1-912f7085dbcd')
-    # netSimplifyClient.ConnectServer()
+    netSimplifyClient.ConnectServer()
 
     read = netSimplifyClient.ReadStringFromServer(1,'123')
     if read.IsSuccess:
