@@ -472,11 +472,7 @@ public class SiemensS7Net extends NetworkDeviceBase<S7Message, ReverseBytesTrans
                 result.Content3 = 1;
                 result.Content2 = CalculateAddressStarted( address.substring( 1 ) );
             } else {
-                result.Message = StringResources.Language.NotSupportedDataType();
-                result.Content1 = 0;
-                result.Content2 = 0;
-                result.Content3 = 0;
-                return result;
+                return new OperateResultExThree<Byte, Integer, Integer>(StringResources.Language.NotSupportedDataType());
             }
         } catch (Exception ex) {
             result.Message = ex.getMessage();

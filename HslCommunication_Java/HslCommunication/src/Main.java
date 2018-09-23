@@ -38,8 +38,12 @@ public class Main {
 
             //System.out.println(Arrays.toString("123".split("\\." )));
             //ModbusTcpTets();
-            MelsecMcNet melsec_net = new MelsecMcNet("192.168.8.12", 6001);
-            System.out.println(melsec_net.ReadInt16("D100").Content);
+            //MelsecMcNet melsec_net = new MelsecMcNet("192.168.8.12", 6001);
+            //System.out.println(melsec_net.ReadInt16("D100").Content);
+
+            ModbusTcpNet modbusTcpNet = new ModbusTcpNet("127.0.0.1",502,(byte)1);
+            System.out.println(modbusTcpNet.ReadInt16("100").Content);
+
         }
         catch (Exception ex){
             System.out.println(ex.getMessage());

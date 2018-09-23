@@ -1,12 +1,12 @@
 package HslCommunication.Profinet.Omron;
 
-import HslCommunication.BasicFramework.SoftBasic;
 import HslCommunication.Core.IMessage.FinsMessage;
 import HslCommunication.Core.Net.NetworkBase.NetworkDeviceBase;
 import HslCommunication.Core.Transfer.ReverseWordTransform;
 import HslCommunication.Core.Types.OperateResult;
 import HslCommunication.Core.Types.OperateResultExOne;
 import HslCommunication.Core.Types.OperateResultExTwo;
+import HslCommunication.StringResources;
 import HslCommunication.Utilities;
 
 import java.net.Socket;
@@ -105,126 +105,6 @@ public class OmronFinsNet extends NetworkDeviceBase<FinsMessage,ReverseWordTrans
     public byte SID = 0x00;
 
 
-    /**
-     * 解析数据地址，Omron手册第188页
-     * @param address 数据地址
-     * @param isBit 是否是位地址
-     * @return 结果类对象
-     */
-    private OperateResultExTwo<OmronFinsDataType, byte[]> AnalysisAddress(String address, boolean isBit) {
-        OperateResultExTwo<OmronFinsDataType, byte[]> result = new OperateResultExTwo<OmronFinsDataType, byte[]>();
-        try {
-            switch (address.charAt(0)) {
-                case 'D':
-                case 'd': {
-                    // DM区数据
-                    result.Content1 = OmronFinsDataType.DM;
-                    break;
-                }
-                case 'C':
-                case 'c': {
-                    // CIO区数据
-                    result.Content1 = OmronFinsDataType.CIO;
-                    break;
-                }
-                case 'W':
-                case 'w': {
-                    // WR区
-                    result.Content1 = OmronFinsDataType.WR;
-                    break;
-                }
-                case 'H':
-                case 'h': {
-                    // HR区
-                    result.Content1 = OmronFinsDataType.HR;
-                    break;
-                }
-                case 'A':
-                case 'a': {
-                    // AR区
-                    result.Content1 = OmronFinsDataType.AR;
-                    break;
-                }
-                default:
-                    throw new Exception("输入的类型不支持，请重新输入");
-            }
-
-            if (isBit) {
-                // 位操作
-                String[] splits = address.substring(1).split("\\.");
-                int addr = Integer.parseInt(splits[0]);
-                result.Content2 = new byte[3];
-                result.Content2[0] = Utilities.getBytes(addr)[1];
-                result.Content2[1] = Utilities.getBytes(addr)[0];
-
-                if (splits.length > 1) {
-                    result.Content2[2] = Byte.parseByte(splits[1]);
-                    if (result.Content2[2] > 15) {
-                        throw new Exception("输入的位地址只能在0-15之间。");
-                    }
-                }
-            } else {
-                // 字操作
-                int addr = Integer.parseInt(address.substring(1));
-                result.Content2 = new byte[3];
-                result.Content2[0] = Utilities.getBytes(addr)[1];
-                result.Content2[1] = Utilities.getBytes(addr)[0];
-            }
-        } catch (Exception ex) {
-            result.Message = "地址格式填写错误：" + ex.getMessage();
-            return result;
-        }
-
-        result.IsSuccess = true;
-        return result;
-    }
-
-
-    private OperateResultExOne<byte[]> ResponseValidAnalysis(byte[] response, boolean isRead) {
-        // 数据有效性分析
-        if (response.length >= 16) {
-            // 提取错误码
-            byte[] buffer = new byte[4];
-            buffer[0] = response[15];
-            buffer[1] = response[14];
-            buffer[2] = response[13];
-            buffer[3] = response[12];
-            int err = Utilities.getInt(buffer, 0);
-            if (err > 0) {
-                OperateResultExOne<byte[]> result = new OperateResultExOne<>();
-                result.Message = OmronInfo.GetStatusDescription(err);
-                result.ErrorCode = err;
-                return result;
-            }
-
-            if (response.length >= 30) {
-                err = response[28] * 256 + response[29];
-                if (err > 0) {
-                    OperateResultExOne<byte[]> result = new OperateResultExOne<>();
-                    result.Message = "结束码错误，为：" + err;
-                    result.ErrorCode = err;
-                    return result;
-                }
-
-                if (!isRead) {
-                    // 写入操作
-                    return OperateResultExOne.CreateSuccessResult(new byte[0]);
-                } else {
-                    // 读取操作
-                    byte[] content = new byte[response.length - 30];
-                    if (content.length > 0) {
-                        System.arraycopy(response, 30, content, 0, content.length);
-                    }
-                    return OperateResultExOne.CreateSuccessResult(content);
-                }
-            }
-        }
-
-        OperateResultExOne<byte[]> result = new OperateResultExOne<>();
-        result.Message = "数据长度接收错误";
-        return result;
-    }
-
 
     /**
      * 将普通的指令打包成完整的指令
@@ -266,12 +146,11 @@ public class OmronFinsNet extends NetworkDeviceBase<FinsMessage,ReverseWordTrans
      * @return 带有成功标志的指令数据
      */
     private OperateResultExOne<byte[]> BuildReadCommand(String address, int length, boolean isBit) {
-        OperateResultExOne<byte[]> result = new OperateResultExOne<byte[]>();
         OperateResultExTwo<OmronFinsDataType, byte[]> analysis = AnalysisAddress(address, isBit);
         if (!analysis.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(analysis);
 
         byte[] _PLCCommand = new byte[8];
-        _PLCCommand[0] = 0x01;    // 读取存储区数据
+        _PLCCommand[0] = 0x01;
         _PLCCommand[1] = 0x01;
         if (isBit) {
             _PLCCommand[2] = analysis.Content1.getBitCode();
@@ -280,17 +159,10 @@ public class OmronFinsNet extends NetworkDeviceBase<FinsMessage,ReverseWordTrans
         }
 
         System.arraycopy(analysis.Content2, 0, _PLCCommand, 3, analysis.Content2.length);
-        _PLCCommand[6] = (byte) (length / 256);                       // 长度
+        _PLCCommand[6] = (byte) (length / 256);
         _PLCCommand[7] = (byte) (length % 256);
 
-        try {
-            result.Content = PackCommand(_PLCCommand);
-            result.IsSuccess = true;
-        } catch (Exception ex) {
-            if (LogNet != null) LogNet.WriteException(toString(), ex);
-            result.Message = ex.getMessage();
-        }
-        return result;
+        return OperateResultExOne.CreateSuccessResult( PackCommand( _PLCCommand ) );
     }
 
 
@@ -302,7 +174,6 @@ public class OmronFinsNet extends NetworkDeviceBase<FinsMessage,ReverseWordTrans
      * @return 结果
      */
     private OperateResultExOne<byte[]> BuildWriteCommand(String address, byte[] value, boolean isBit) {
-        OperateResultExOne<byte[]> result = new OperateResultExOne<byte[]>();
         OperateResultExTwo<OmronFinsDataType, byte[]> analysis = AnalysisAddress(address, isBit);
         if (!analysis.IsSuccess) return OperateResultExOne.<byte[]>CreateFailedResult(analysis);
 
@@ -318,24 +189,16 @@ public class OmronFinsNet extends NetworkDeviceBase<FinsMessage,ReverseWordTrans
         System.arraycopy(analysis.Content2, 0, _PLCCommand, 3, analysis.Content2.length);
 
         if (isBit) {
-            _PLCCommand[6] = (byte) (value.length / 256);                       // 长度
+            _PLCCommand[6] = (byte) (value.length / 256);
             _PLCCommand[7] = (byte) (value.length % 256);
         } else {
-            _PLCCommand[6] = (byte) (value.length / 2 / 256);                       // 长度
+            _PLCCommand[6] = (byte) (value.length / 2 / 256);
             _PLCCommand[7] = (byte) (value.length / 2 % 256);
         }
 
         System.arraycopy(value, 0, _PLCCommand, 8, value.length);
 
-
-        try {
-            result.Content = PackCommand(_PLCCommand);
-            result.IsSuccess = true;
-        } catch (Exception ex) {
-            if (LogNet != null) LogNet.WriteException(toString(), ex);
-            result.Message = ex.getMessage();
-        }
-        return result;
+        return OperateResultExOne.CreateSuccessResult( PackCommand( _PLCCommand ) );
     }
 
 
@@ -357,14 +220,11 @@ public class OmronFinsNet extends NetworkDeviceBase<FinsMessage,ReverseWordTrans
         buffer[2] = read.Content2[5];
         buffer[3] = read.Content2[4];
         int status = Utilities.getInt(buffer, 0);
-        if (status != 0) {
-            return new OperateResult(status, "初始化失败，具体原因请根据错误码查找");
-        }
+        if (status != 0) return new OperateResult( status, GetStatusDescription( status ) );
 
         // 提取PLC的节点地址
-        if (read.Content2.length >= 16) {
-            DA1 = read.Content2[15];
-        }
+        if (read.Content2.length >= 16) DA1 = read.Content2[15];
+
         return OperateResult.CreateSuccessResult();
     }
 
@@ -462,46 +322,6 @@ public class OmronFinsNet extends NetworkDeviceBase<FinsMessage,ReverseWordTrans
         return OperateResult.CreateSuccessResult();
     }
 
-    /**
-     * 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为ASCII
-     * @param address 要写入的数据地址
-     * @param value 要写入的实际数据
-     * @param length 指定的字符串长度，必须大于0
-     * @return 返回读取结果
-     */
-    public OperateResult Write(String address, String value, int length) {
-        byte[] temp = getByteTransform().TransByte(value, "ASCII");
-        temp = SoftBasic.ArrayExpandToLength(temp, length);
-        temp = SoftBasic.ArrayExpandToLengthEven(temp);
-        return Write(address, temp);
-    }
-
-
-    /**
-     * 向PLC中字软元件写入字符串，编码格式为Unicode
-     * @param address 要写入的数据地址
-     * @param value 要写入的实际数据
-     * @return 返回读取结果
-     */
-    public OperateResult WriteUnicodeString(String address, String value) {
-        byte[] temp = Utilities.string2Byte(value);
-        return Write(address, temp);
-    }
-
-    /**
-     * 向PLC中字软元件写入指定长度的字符串,超出截断，不够补0，编码格式为Unicode
-     * @param address 要写入的数据地址
-     * @param value 要写入的实际数据
-     * @param length 指定的字符串长度，必须大于0
-     * @return 返回读取结果
-     */
-    public OperateResult WriteUnicodeString(String address, String value, int length) {
-        byte[] temp = Utilities.string2Byte(value);
-        temp = SoftBasic.ArrayExpandToLength(temp, length * 2);
-        return Write(address, temp);
-    }
-
-
 
     /**
      * 向PLC中位软元件写入bool数组，返回值说明，比如你写入D100,values[0]对应D100.0
@@ -528,7 +348,7 @@ public class OmronFinsNet extends NetworkDeviceBase<FinsMessage,ReverseWordTrans
             buffer[i] = values[i] ? (byte) 0x01 : (byte) 0x00;
         }
 
-        //获取指令
+        // 获取指令
         OperateResultExOne<byte[]> command = BuildWriteCommand(address, buffer, true);
         if (!command.IsSuccess) return command;
 
@@ -567,4 +387,143 @@ public class OmronFinsNet extends NetworkDeviceBase<FinsMessage,ReverseWordTrans
         return "OmronFinsNet";
     }
 
+
+
+
+    /**
+     * 解析数据地址，Omron手册第188页
+     * @param address 数据地址
+     * @param isBit 是否是位地址
+     * @return 结果类对象
+     */
+    public static OperateResultExTwo<OmronFinsDataType, byte[]> AnalysisAddress(String address, boolean isBit) {
+        OperateResultExTwo<OmronFinsDataType, byte[]> result = new OperateResultExTwo<OmronFinsDataType, byte[]>();
+        try {
+            switch (address.charAt(0)) {
+                case 'D':
+                case 'd': {
+                    // DM区数据
+                    result.Content1 = OmronFinsDataType.DM;
+                    break;
+                }
+                case 'C':
+                case 'c': {
+                    // CIO区数据
+                    result.Content1 = OmronFinsDataType.CIO;
+                    break;
+                }
+                case 'W':
+                case 'w': {
+                    // WR区
+                    result.Content1 = OmronFinsDataType.WR;
+                    break;
+                }
+                case 'H':
+                case 'h': {
+                    // HR区
+                    result.Content1 = OmronFinsDataType.HR;
+                    break;
+                }
+                case 'A':
+                case 'a': {
+                    // AR区
+                    result.Content1 = OmronFinsDataType.AR;
+                    break;
+                }
+                default:
+                    throw new Exception(StringResources.Language.NotSupportedDataType());
+            }
+
+            if (isBit) {
+                // 位操作
+                String[] splits = address.substring(1).split("\\.");
+                int addr = Integer.parseInt(splits[0]);
+                result.Content2 = new byte[3];
+                result.Content2[0] = Utilities.getBytes(addr)[1];
+                result.Content2[1] = Utilities.getBytes(addr)[0];
+
+                if (splits.length > 1) {
+                    result.Content2[2] = Byte.parseByte(splits[1]);
+                    if (result.Content2[2] > 15) {
+                        throw new Exception(StringResources.Language.OmronAddressMustBeZeroToFiveteen());
+                    }
+                }
+            } else {
+                // 字操作
+                int addr = Integer.parseInt(address.substring(1));
+                result.Content2 = new byte[3];
+                result.Content2[0] = Utilities.getBytes(addr)[1];
+                result.Content2[1] = Utilities.getBytes(addr)[0];
+            }
+        } catch (Exception ex) {
+            result.Message = ex.getMessage();
+            return result;
+        }
+
+        result.IsSuccess = true;
+        return result;
+    }
+
+    /**
+     * 对于PLC的反馈数据，进行验证
+     * @param response PLC反馈数据
+     * @param isRead 是否处于读取状态
+     * @return 成功的数据结果
+     */
+    public static OperateResultExOne<byte[]> ResponseValidAnalysis(byte[] response, boolean isRead) {
+        // 数据有效性分析
+        if (response.length >= 16) {
+            // 提取错误码
+            byte[] buffer = new byte[4];
+            buffer[0] = response[15];
+            buffer[1] = response[14];
+            buffer[2] = response[13];
+            buffer[3] = response[12];
+
+            int err = Utilities.getInt(buffer, 0);
+            if (err > 0) return new OperateResultExOne<byte[]>(err, GetStatusDescription(err));
+
+            if (response.length >= 30) {
+                err = response[28] * 256 + response[29];
+                if (err > 0)  return new OperateResultExOne<byte[]>(err,StringResources.Language.OmronReceiveDataError());
+
+                if (!isRead) {
+                    // 写入操作
+                    return OperateResultExOne.CreateSuccessResult(new byte[0]);
+                } else {
+                    // 读取操作
+                    byte[] content = new byte[response.length - 30];
+                    if (content.length > 0) {
+                        System.arraycopy(response, 30, content, 0, content.length);
+                    }
+                    return OperateResultExOne.CreateSuccessResult(content);
+                }
+            }
+        }
+
+        return new OperateResultExOne<byte[]>( StringResources.Language.OmronReceiveDataError() );
+    }
+
+    /**
+     * 获取错误信息的字符串描述文本
+     * @param err 错误码
+     * @return 文本描述
+     */
+    public static String GetStatusDescription( int err )
+    {
+        switch (err)
+        {
+            case 0: return StringResources.Language.OmronStatus0();
+            case 1: return StringResources.Language.OmronStatus1();
+            case 2: return StringResources.Language.OmronStatus2();
+            case 3: return StringResources.Language.OmronStatus3();
+            case 20: return StringResources.Language.OmronStatus20();
+            case 21: return StringResources.Language.OmronStatus21();
+            case 22: return StringResources.Language.OmronStatus22();
+            case 23: return StringResources.Language.OmronStatus23();
+            case 24: return StringResources.Language.OmronStatus24();
+            case 25: return StringResources.Language.OmronStatus25();
+            default: return StringResources.Language.UnknownError();
+        }
+    }
 }

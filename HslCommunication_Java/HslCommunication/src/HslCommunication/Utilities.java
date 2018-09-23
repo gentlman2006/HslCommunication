@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 
@@ -180,11 +182,24 @@ public class Utilities {
     /**
      * 将字节数组转换成string数据
      * @param bytes 字节数组
-     * @param charsetName 起始位置
+     * @param charsetName 字符编码
      * @return string值
      */
     public static String getString(byte[] bytes, String charsetName) {
         return new String(bytes, Charset.forName(charsetName));
+    }
+
+
+    /**
+     * 将字节数组转换成string数据
+     * @param bytes 字节数组
+     * @param index 起始位置
+     * @param length 数据长度
+     * @param charsetName 字符编码
+     * @return string值
+     */
+    public static String getString(byte[] bytes,int index, int length, String charsetName) {
+        return new String(bytes,index,length,Charset.forName(charsetName));
     }
 
 
@@ -336,8 +351,8 @@ public class Utilities {
 
     /**
      * 将字节数组转换成十六进制的字符串形式
-     * @param bytes
-     * @return
+     * @param bytes 原始的字节数组
+     * @return 字符串信息
      */
     public static String bytes2HexString(byte[] bytes) {
         char[] buf = new char[bytes.length * 2];
@@ -348,5 +363,17 @@ public class Utilities {
         }
 
         return new String(buf);
+    }
+
+    /**
+     * 获取指定时间的指定格式的字符串
+     * @param date 指定的时间
+     * @param format 指定的格式
+     * @return 最后字符串信息
+     */
+    public static String getStringDateShort(Date date,String format) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        String dateString = formatter.format(date);
+        return dateString;
     }
 }
