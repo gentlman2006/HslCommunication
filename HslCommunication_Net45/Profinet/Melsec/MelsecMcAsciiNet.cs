@@ -112,7 +112,7 @@ namespace HslCommunication.Profinet.Melsec
         /// </example>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
-            //获取指令
+            // 获取指令
             var command = BuildReadCommand( address, length, NetworkNumber, NetworkStationNumber );
             if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
@@ -481,14 +481,7 @@ namespace HslCommunication.Profinet.Melsec
                 byte[] Content = new byte[response.Length - 22];
                 for (int i = 22; i < response.Length; i++)
                 {
-                    if (response[i] == 0x30)
-                    {
-                        Content[i - 22] = 0x00;
-                    }
-                    else
-                    {
-                        Content[i - 22] = 0x01;
-                    }
+                    Content[i - 22] = response[i] == 0x30 ? (byte)0x00 : (byte)0x01;
                 }
 
                 return OperateResult.CreateSuccessResult( Content );
