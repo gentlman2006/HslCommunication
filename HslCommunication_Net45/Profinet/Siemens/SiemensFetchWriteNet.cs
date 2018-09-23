@@ -344,14 +344,8 @@ namespace HslCommunication.Profinet.Siemens
         /// <returns>带结果对象的报文数据 -> Message data with a result object</returns>
         public static OperateResult<byte[]> BuildReadCommand( string address, ushort count )
         {
-            var result = new OperateResult<byte[]>( );
-
             OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             byte[] _PLCCommand = new byte[16];
             _PLCCommand[0] = 0x53;
@@ -377,8 +371,7 @@ namespace HslCommunication.Profinet.Siemens
             {
                 if (count % 2 != 0)
                 {
-                    result.Message = StringResources.Language.SiemensReadLengthMustBeEvenNumber;
-                    return result;
+                    return new OperateResult<byte[]>( StringResources.Language.SiemensReadLengthMustBeEvenNumber );
                 }
                 else
                 {
@@ -397,9 +390,7 @@ namespace HslCommunication.Profinet.Siemens
             _PLCCommand[14] = 0xff;
             _PLCCommand[15] = 0x02;
 
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( _PLCCommand );
         }
         
         /// <summary>
@@ -411,14 +402,9 @@ namespace HslCommunication.Profinet.Siemens
         public static OperateResult<byte[]> BuildWriteCommand( string address, byte[] data )
         {
             if (data == null) data = new byte[0];
-            var result = new OperateResult<byte[]>( );
 
             OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
-            if (!analysis.IsSuccess)
-            {
-                result.CopyErrorFromOther( analysis );
-                return result;
-            }
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
             
             byte[] _PLCCommand = new byte[16 + data.Length];
             _PLCCommand[0] = 0x53;
@@ -442,8 +428,7 @@ namespace HslCommunication.Profinet.Siemens
             {
                 if (data.Length % 2 != 0)
                 {
-                    result.Message = StringResources.Language.SiemensReadLengthMustBeEvenNumber;
-                    return result;
+                    return new OperateResult<byte[]>( StringResources.Language.SiemensReadLengthMustBeEvenNumber );
                 }
                 else
                 {
@@ -464,9 +449,7 @@ namespace HslCommunication.Profinet.Siemens
             // 放置数据 -> Placing data
             Array.Copy( data, 0, _PLCCommand, 16, data.Length );
 
-            result.Content = _PLCCommand;
-            result.IsSuccess = true;
-            return result;
+            return OperateResult.CreateSuccessResult( _PLCCommand );
         }
         
         #endregion

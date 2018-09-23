@@ -167,7 +167,6 @@ namespace HslCommunication.Profinet.Omron
         /// <returns>带有成功标志的报文数据</returns>
         public OperateResult<byte[]> BuildReadCommand( string address, ushort length ,bool isBit)
         {
-            var result = new OperateResult<byte[]>( );
             var analysis = AnalysisAddress( address, isBit );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
@@ -186,17 +185,7 @@ namespace HslCommunication.Profinet.Omron
             _PLCCommand[6] = (byte)(length / 256);                       // 长度
             _PLCCommand[7] = (byte)(length % 256);
 
-            try
-            {
-                result.Content = PackCommand( _PLCCommand );
-                result.IsSuccess = true;
-            }
-            catch(Exception ex)
-            {
-                LogNet?.WriteException( ToString( ), ex );
-                result.Message = ex.Message;
-            }
-            return result;
+            return OperateResult.CreateSuccessResult( PackCommand( _PLCCommand ) );
         }
 
 
@@ -210,7 +199,6 @@ namespace HslCommunication.Profinet.Omron
         /// <returns>带有成功标志的报文数据</returns>
         public OperateResult<byte[]> BuildWriteCommand( string address, byte[] value, bool isBit )
         {
-            var result = new OperateResult<byte[]>( );
             var analysis = AnalysisAddress( address, isBit );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
@@ -240,17 +228,8 @@ namespace HslCommunication.Profinet.Omron
             }
 
             value.CopyTo( _PLCCommand, 8 );
-            
-            try
-            {
-                result.Content = PackCommand( _PLCCommand );
-                result.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                result.Message = ex.Message;
-            }
-            return result;
+
+            return OperateResult.CreateSuccessResult( PackCommand( _PLCCommand ) );
         }
 
 

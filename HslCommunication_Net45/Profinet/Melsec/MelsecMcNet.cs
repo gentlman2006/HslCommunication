@@ -74,7 +74,6 @@ namespace HslCommunication.Profinet.Melsec
 
         #endregion
 
-
         #region Read Support
 
         /// <summary>
@@ -391,7 +390,6 @@ namespace HslCommunication.Profinet.Melsec
                 value = MelsecHelper.TransBoolArrayToByteData( value );
             }
 
-
             byte[] _PLCCommand = new byte[21 + value.Length];
             _PLCCommand[0]  = 0x50;                                          // 副标题
             _PLCCommand[1]  = 0x00;
@@ -473,8 +471,7 @@ namespace HslCommunication.Profinet.Melsec
                 return OperateResult.CreateSuccessResult( Content );
             }
         }
-
-
+        
         #endregion
     }
 }
