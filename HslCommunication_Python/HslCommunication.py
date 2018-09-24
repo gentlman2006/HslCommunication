@@ -4,6 +4,9 @@ import socket
 import struct
 import threading
 import gzip
+import datetime
+import random
+from time import sleep
 from enum import Enum
 
 class StringResources:
@@ -75,7 +78,36 @@ class StringResources:
 	@staticmethod
 	def MelsecReadBitInfo():
 		return "读取位变量数组只能针对位软元件，如果读取字软元件，请调用Read方法"
-
+	@staticmethod
+	def OmronStatus0():
+		return "通讯正常"
+	@staticmethod
+	def OmronStatus1():
+		return "消息头不是FINS"
+	@staticmethod
+	def OmronStatus2():
+		return "数据长度太长"
+	@staticmethod
+	def OmronStatus3():
+		return "该命令不支持"
+	@staticmethod
+	def OmronStatus20():
+		return "超过连接上限"
+	@staticmethod
+	def OmronStatus21():
+		return "指定的节点已经处于连接中"
+	@staticmethod
+	def OmronStatus22():
+		return "尝试去连接一个受保护的网络节点，该节点还未配置到PLC中"
+	@staticmethod
+	def OmronStatus23():
+		return "当前客户端的网络节点超过正常范围"
+	@staticmethod
+	def OmronStatus24():
+		return "当前客户端的网络节点已经被使用"
+	@staticmethod
+	def OmronStatus25():
+		return "所有的网络节点已经被使用"
 
 class OperateResult:
 	'''结果对象类，可以携带额外的数据信息'''
@@ -98,14 +130,7 @@ class OperateResult:
 			self.ErrorCode = result.ErrorCode
 			self.Message = result.Message
 	@staticmethod
-	def CreateFailedResult( msg, err = 0):
-		'''创建一个失败的结果对象'''
-		failed = OperateResult()
-		failed.Message = msg
-		failed.ErrorCode = err
-		return failed
-	@staticmethod
-	def CreateFromFailedResult( result ):
+	def CreateFailedResult( result ):
 		'''创建一个失败的结果对象'''
 		failed = OperateResult()
 		failed.ErrorCode = result.ErrorCode
@@ -714,9 +739,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransBool(result.Content , 0 ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 	@staticmethod
 	def GetByteResultFromBytes( result, byteTransform ):
 		'''将指定的OperateResult类型转化'''
@@ -724,9 +749,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransByte(result.Content , 0 ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 	@staticmethod
 	def GetInt16ResultFromBytes( result, byteTransform ):
 		'''将指定的OperateResult类型转化'''
@@ -734,9 +759,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransInt16(result.Content , 0 ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 	@staticmethod
 	def GetUInt16ResultFromBytes( result, byteTransform ):
 		'''将指定的OperateResult类型转化'''
@@ -744,9 +769,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransUInt16(result.Content , 0 ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 	@staticmethod
 	def GetInt32ResultFromBytes( result, byteTransform ):
 		'''将指定的OperateResult类型转化'''
@@ -754,9 +779,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransInt32(result.Content , 0 ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 	@staticmethod
 	def GetUInt32ResultFromBytes( result, byteTransform ):
 		'''将指定的OperateResult类型转化'''
@@ -764,9 +789,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransUInt32(result.Content , 0 ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 	@staticmethod
 	def GetInt64ResultFromBytes( result, byteTransform ):
 		'''将指定的OperateResult类型转化'''
@@ -774,9 +799,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransInt64(result.Content , 0 ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 	@staticmethod
 	def GetUInt64ResultFromBytes( result, byteTransform ):
 		'''将指定的OperateResult类型转化'''
@@ -784,9 +809,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransUInt64(result.Content , 0 ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 	@staticmethod
 	def GetSingleResultFromBytes( result, byteTransform ):
 		'''将指定的OperateResult类型转化'''
@@ -794,9 +819,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransSingle(result.Content , 0 ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 	@staticmethod
 	def GetDoubleResultFromBytes( result, byteTransform ):
 		'''将指定的OperateResult类型转化'''
@@ -804,9 +829,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransDouble(result.Content , 0 ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 	@staticmethod
 	def GetStringResultFromBytes( result, byteTransform ):
 		'''将指定的OperateResult类型转化'''
@@ -814,9 +839,9 @@ class ByteTransformHelper:
 			if result.IsSuccess:
 				return OperateResult.CreateSuccessResult(byteTransform.TransString(result.Content , 0, len(result.Content), 'ascii' ))
 			else:
-				return OperateResult.CreateFromFailedResult(result)
+				return OperateResult.CreateFailedResult(result)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult("数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
+			return OperateResult( msg = "数据转化失败，源数据：" + SoftBasic.ByteToHexString( result.Content ) + " 消息：" + str(ex))
 
 
 class DeviceAddressBase:
@@ -849,7 +874,10 @@ class SoftBasic:
 		str_list = []
 		for byte in inBytes:
 			str_list.append('{:02X}'.format(byte))
-		return segment.join(str_list)
+		if segment != None: 
+			return segment.join(str_list)
+		else:
+			return ''.join(str_list)
 	@staticmethod
 	def ByteToBoolArray( InBytes, length ):
 		'''从字节数组中提取bool数组变量信息'''
@@ -957,6 +985,10 @@ class SoftBasic:
 		if len(buffer) > 1 and buffer[0] == 255 and buffer[1] == 254:
 			buffer = buffer[2:len(buffer)]
 		return buffer
+	@staticmethod
+	def GetUniqueStringByGuidAndRandom():
+		'''获取一串唯一的随机字符串，长度为20，由Guid码和4位数的随机数组成，保证字符串的唯一性'''
+		return SoftBasic.ByteToHexString(SoftBasic.TokenToBytes(uuid.uuid1()), None) + str(random.randint(12, 20))
 
 class HslSecurity:
 	@staticmethod
@@ -1141,7 +1173,7 @@ class NetworkBase:
 			socket.send(data)
 			return OperateResult.CreateSuccessResult()
 		except Exception as e:
-			return OperateResult.CreateFailedResult(str(e))
+			return OperateResult( msg = str(e))
 
 	def CreateSocketAndConnect(self,ipAddress,port,timeout = 10000):
 		'''创建一个新的socket对象并连接到远程的地址，默认超时时间为10秒钟'''
@@ -1150,7 +1182,7 @@ class NetworkBase:
 			socketTmp.connect((ipAddress,port))
 			return OperateResult.CreateSuccessResult(socketTmp)
 		except Exception as e:
-			return OperateResult.CreateFailedResult(str(e))
+			return OperateResult( msg = str(e))
 	def ReceiveMessage( self, socket, timeOut, netMsg ):
 		'''接收一条完整的数据，使用异步接收完成，包含了指令头信息'''
 		result = OperateResult()
@@ -1241,7 +1273,7 @@ class NetworkDoubleBase(NetworkBase):
 			# 如果是异形模式
 			if self.isUseSpecifiedSocket :
 				if self.isSocketError:
-					return OperateResult.CreateFailedResult( '连接不可用' )
+					return OperateResult( msg = '连接不可用' )
 				else:
 					return OperateResult.CreateSuccessResult( self.CoreSocket )
 			else:
@@ -1250,7 +1282,7 @@ class NetworkDoubleBase(NetworkBase):
 					connect = self.ConnectServer( )
 					if connect.IsSuccess == False:
 						self.isSocketError = True
-						return OperateResult.CreateFailedResult( connect.Message )
+						return OperateResult( msg = connect.Message )
 					else:
 						self.isSocketError = False
 						return OperateResult.CreateSuccessResult( self.CoreSocket )
@@ -1275,7 +1307,7 @@ class NetworkDoubleBase(NetworkBase):
 	def ReadFromCoreSocketServer( self, socket, send ):
 		'''在其他指定的套接字上，使用报文来通讯，传入需要发送的消息，返回一条完整的数据指令'''
 		read = self.ReadFromCoreServerBase( socket, send )
-		if read.IsSuccess == False: return OperateResult.CreateFromFailedResult( read )
+		if read.IsSuccess == False: return OperateResult.CreateFailedResult( read )
 
 		# 拼接结果数据
 		Content = bytearray(len(read.Content1) + len(read.Content2))
@@ -1320,7 +1352,7 @@ class NetworkDoubleBase(NetworkBase):
 		sendResult = self.Send( socket, send )
 		if sendResult.IsSuccess == False:
 			if socket!= None : socket.close( )
-			return OperateResult.CreateFromFailedResult( sendResult )
+			return OperateResult.CreateFailedResult( sendResult )
 
 		# 接收超时时间大于0时才允许接收远程的数据
 		if (self.receiveTimeOut >= 0):
@@ -1328,7 +1360,7 @@ class NetworkDoubleBase(NetworkBase):
 			resultReceive = self.ReceiveMessage(socket, 10000, self.iNetMessage)
 			if resultReceive.IsSuccess == False:
 				socket.close( )
-				return OperateResult.CreateFailedResult( "Receive data timeout: " + str(self.receiveTimeOut ) + " Msg:"+ resultReceive.Message)
+				return OperateResult( msg = "Receive data timeout: " + str(self.receiveTimeOut ) + " Msg:"+ resultReceive.Message)
 			return OperateResult.CreateSuccessResult( resultReceive.Content.HeadBytes, resultReceive.Content.ContentBytes )
 		else:
 			return OperateResult.CreateSuccessResult( bytearray(0), bytearray(0) )
@@ -1384,7 +1416,7 @@ class NetworkDeviceBase(NetworkDoubleBase):
 		else:
 			read = self.Read(address,length*self.WordLength)
 			if read.IsSuccess == False:
-				return OperateResult.CreateFromFailedResult(read)
+				return OperateResult.CreateFailedResult(read)
 			return OperateResult.CreateSuccessResult(self.byteTransform.TransInt16Array(read.Content,0,length))
 	def ReadUInt16( self, address, length = None ):
 		'''读取设备的ushort数据类型的数据'''
@@ -1393,7 +1425,7 @@ class NetworkDeviceBase(NetworkDoubleBase):
 		else:
 			read = self.Read(address,length*self.WordLength)
 			if read.IsSuccess == False:
-				return OperateResult.CreateFromFailedResult(read)
+				return OperateResult.CreateFailedResult(read)
 			return OperateResult.CreateSuccessResult(self.byteTransform.TransUInt16Array(read.Content,0,length))
 	def ReadInt32( self, address, length = None ):
 		'''读取设备的int类型的数据'''
@@ -1402,7 +1434,7 @@ class NetworkDeviceBase(NetworkDoubleBase):
 		else:
 			read = self.Read(address,2*length*self.WordLength)
 			if read.IsSuccess == False:
-				return OperateResult.CreateFromFailedResult(read)
+				return OperateResult.CreateFailedResult(read)
 			return OperateResult.CreateSuccessResult(self.byteTransform.TransInt32Array(read.Content,0,length))
 	def ReadUInt32( self, address, length = None ):
 		'''读取设备的uint数据类型的数据'''
@@ -1411,7 +1443,7 @@ class NetworkDeviceBase(NetworkDoubleBase):
 		else:
 			read = self.Read(address,2*length*self.WordLength)
 			if read.IsSuccess == False:
-				return OperateResult.CreateFromFailedResult(read)
+				return OperateResult.CreateFailedResult(read)
 			return OperateResult.CreateSuccessResult(self.byteTransform.TransUInt32Array(read.Content,0,length))
 	def ReadFloat( self, address, length = None ):
 		'''读取设备的float类型的数据'''
@@ -1420,7 +1452,7 @@ class NetworkDeviceBase(NetworkDoubleBase):
 		else:
 			read = self.Read(address,2*length*self.WordLength)
 			if read.IsSuccess == False:
-				return OperateResult.CreateFromFailedResult(read)
+				return OperateResult.CreateFailedResult(read)
 			return OperateResult.CreateSuccessResult(self.byteTransform.TransSingleArray(read.Content,0,length))
 	def ReadInt64( self, address, length = None ):
 		'''读取设备的long类型的数组'''
@@ -1429,7 +1461,7 @@ class NetworkDeviceBase(NetworkDoubleBase):
 		else:
 			read = self.Read(address,4*length*self.WordLength)
 			if read.IsSuccess == False:
-				return OperateResult.CreateFromFailedResult(read)
+				return OperateResult.CreateFailedResult(read)
 			return OperateResult.CreateSuccessResult(self.byteTransform.TransInt64Array(read.Content,0,length))
 	def ReadUInt64( self, address, length = None ):
 		'''读取设备的long类型的数组'''
@@ -1438,7 +1470,7 @@ class NetworkDeviceBase(NetworkDoubleBase):
 		else:
 			read = self.Read(address,4*length*self.WordLength)
 			if read.IsSuccess == False:
-				return OperateResult.CreateFromFailedResult(read)
+				return OperateResult.CreateFailedResult(read)
 			return OperateResult.CreateSuccessResult(self.byteTransform.TransUInt64Array(read.Content,0,length))
 	def ReadDouble( self, address, length = None ):
 		'''读取设备的long类型的数组'''
@@ -1447,7 +1479,7 @@ class NetworkDeviceBase(NetworkDoubleBase):
 		else:
 			read = self.Read(address,4*length*self.WordLength)
 			if read.IsSuccess == False:
-				return OperateResult.CreateFromFailedResult(read)
+				return OperateResult.CreateFailedResult(read)
 			return OperateResult.CreateSuccessResult(self.byteTransform.TransDoubleArray(read.Content,0,length))
 	def ReadString( self, address, length ):
 		return self.GetStringResultFromBytes( self.Read( address, length ) )
@@ -1594,7 +1626,7 @@ class ModbusInfo:
 					mAddress.Address = mAddress.Address - 1
 			return OperateResult.CreateSuccessResult(mAddress)
 		except Exception as ex:
-			return OperateResult.CreateFailedResult(str(ex))
+			return OperateResult( msg = str(ex))
 			
 	
 
@@ -1757,7 +1789,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 		'''生成一个读取线圈的指令头'''
 		# 分析地址
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
-		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		if analysis.IsSuccess == False: return OperateResult.CreateFailedResult(analysis)
 		# 获取消息号
 		messageId = self.softIncrementCount.GetCurrentValue()
 		#生成最终的指令
@@ -1767,7 +1799,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 		'''生成一个读取离散信息的指令头'''
 		# 分析地址
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
-		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		if analysis.IsSuccess == False: return OperateResult.CreateFailedResult(analysis)
 		# 获取消息号
 		messageId = self.softIncrementCount.GetCurrentValue()
 		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateReadDiscrete(self.station,length), messageId)
@@ -1775,7 +1807,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 	def BuildReadRegisterCommand(self, address, length):
 		'''创建一个读取寄存器的字节对象'''
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
-		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		if analysis.IsSuccess == False: return OperateResult.CreateFailedResult(analysis)
 		# 获取消息号
 		messageId = self.softIncrementCount.GetCurrentValue()
 		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateReadRegister(self.station,length), messageId)
@@ -1783,7 +1815,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 	def BuildReadInputRegisterCommand(self, address, length):
 		'''创建一个读取寄存器的字节对象'''
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
-		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		if analysis.IsSuccess == False: return OperateResult.CreateFailedResult(analysis)
 		# 获取消息号
 		messageId = self.softIncrementCount.GetCurrentValue()
 		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateReadInputRegister(self.station,length), messageId)
@@ -1791,7 +1823,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 	def BuildWriteOneCoilCommand(self, address,value):
 		'''生成一个写入单线圈的指令头'''
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
-		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		if analysis.IsSuccess == False: return OperateResult.CreateFailedResult(analysis)
 		# 获取消息号
 		messageId = self.softIncrementCount.GetCurrentValue()
 		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteOneCoil(self.station,value), messageId)
@@ -1799,7 +1831,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 	def BuildWriteOneRegisterCommand(self, address, values):
 		'''生成一个写入单个寄存器的报文'''
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
-		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		if analysis.IsSuccess == False: return OperateResult.CreateFailedResult(analysis)
 		# 获取消息号
 		messageId = self.softIncrementCount.GetCurrentValue()
 		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteOneRegister(self.station,values), messageId)
@@ -1807,7 +1839,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 	def BuildWriteCoilCommand(self, address, values):
 		'''生成批量写入单个线圈的报文信息，需要传入bool数组信息'''
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
-		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		if analysis.IsSuccess == False: return OperateResult.CreateFailedResult(analysis)
 		# 获取消息号
 		messageId = self.softIncrementCount.GetCurrentValue()
 		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteCoil(self.station,values), messageId)
@@ -1815,7 +1847,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 	def BuildWriteRegisterCommand(self, address, values):
 		'''生成批量写入寄存器的报文信息，需要传入byte数组'''
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
-		if analysis.IsSuccess == False: return OperateResult.CreateFromFailedResult(analysis)
+		if analysis.IsSuccess == False: return OperateResult.CreateFailedResult(analysis)
 		# 获取消息号
 		messageId = self.softIncrementCount.GetCurrentValue()
 		buffer = ModbusInfo.PackCommandToTcp(analysis.Content.CreateWriteRegister(self.station,values), messageId)
@@ -1849,8 +1881,8 @@ class ModbusTcpNet(NetworkDeviceBase):
 		elif code == ModbusInfo.ReadInputRegister():
 			command = self.BuildReadInputRegisterCommand( address, length )
 		else:
-			command = OperateResult.CreateFailedResult( StringResources.ModbusTcpFunctionCodeNotSupport() )
-		if command.IsSuccess == False : return OperateResult.CreateFromFailedResult( command )
+			command = OperateResult( msg = StringResources.ModbusTcpFunctionCodeNotSupport() )
+		if command.IsSuccess == False : return OperateResult.CreateFailedResult( command )
 
 		resultBytes = self.CheckModbusTcpResponse( command.Content )
 		if resultBytes.IsSuccess == True:
@@ -1863,7 +1895,7 @@ class ModbusTcpNet(NetworkDeviceBase):
 	def ReadModBusAddressBase( self, address, length = 1 ):
 		'''读取服务器的数据，需要指定不同的功能码'''
 		command = self.BuildReadModbusAddressCommand( address, length )
-		if command.IsSuccess == False: return OperateResult.CreateFromFailedResult(command)
+		if command.IsSuccess == False: return OperateResult.CreateFailedResult(command)
 
 		resultBytes = self.CheckModbusTcpResponse( command.Content )
 		if resultBytes.IsSuccess == True:
@@ -1877,28 +1909,28 @@ class ModbusTcpNet(NetworkDeviceBase):
 		'''批量的读取线圈，需要指定起始地址，读取长度可选'''
 		if length == None:
 			read = self.ReadCoil( address, 1 )
-			if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
+			if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
 			return OperateResult.CreateSuccessResult( read.Content[0] )
 		else:
 			read = self.ReadModBusBase( ModbusInfo.ReadCoil(), address, length )
-			if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
+			if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
 
 			return OperateResult.CreateSuccessResult( SoftBasic.ByteToBoolArray( read.Content, length ) )
 	def ReadDiscrete( self, address, length = None):
 		'''批量的读取输入点，需要指定起始地址，可选读取长度'''
 		if length == None:
 			read = self.ReadDiscrete( address, 1 )
-			if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
+			if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
 			return OperateResult.CreateSuccessResult( read.Content[0] )
 		else:
 			read = self.ReadModBusBase( ModbusInfo.ReadDiscrete(), address, length )
-			if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
+			if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
 			
 			return OperateResult.CreateSuccessResult( SoftBasic.ByteToBoolArray( read.Content, length ) )
 	def Read( self, address, length ):
 		'''从Modbus服务器批量读取寄存器的信息，需要指定起始地址，读取长度'''
 		analysis = ModbusInfo.AnalysisReadAddress( address, self.isAddressStartWithZero )
-		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult( analysis )
+		if analysis.IsSuccess == False : return OperateResult.CreateFailedResult( analysis )
 		return self.ReadModBusAddressBase( analysis.Content, length )
 	def WriteOneRegister( self, address, value ):
 		'''写一个寄存器数据'''
@@ -2103,7 +2135,7 @@ class MelsecMcNet(NetworkDeviceBase):
 	def BuildReadCommand(address,length,networkNumber = 0,networkStationNumber = 0):
 		'''根据类型地址长度确认需要读取的指令头'''
 		analysis = MelsecHelper.McAnalysisAddress( address )
-		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult( analysis )
+		if analysis.IsSuccess == False : return OperateResult.CreateFailedResult( analysis )
 
 		_PLCCommand = bytearray(21)
 		_PLCCommand[0]  = 0x50                                   # 副标题
@@ -2133,7 +2165,7 @@ class MelsecMcNet(NetworkDeviceBase):
 	def BuildWriteCommand( address, value, networkNumber = 0, networkStationNumber = 0 ):
 		'''根据类型地址以及需要写入的数据来生成指令头'''
 		analysis = MelsecHelper.McAnalysisAddress( address )
-		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult( analysis )
+		if analysis.IsSuccess == False : return OperateResult.CreateFailedResult( analysis )
 		
 		length = -1
 		if analysis.Content1.DataType == 1:
@@ -2213,11 +2245,11 @@ class MelsecMcNet(NetworkDeviceBase):
 		# 获取指令
 		command = MelsecMcNet.BuildReadCommand( address, length, self.NetworkNumber, self.NetworkStationNumber )
 		if command.IsSuccess == False :
-			return OperateResult.CreateFromFailedResult( command )
+			return OperateResult.CreateFailedResult( command )
 
 		# 核心交互
 		read = self.ReadFromCoreServer( command.Content )
-		if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
+		if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
 
 		# 错误代码验证
 		errorCode = read.Content[9] * 256 + read.Content[10]
@@ -2230,14 +2262,14 @@ class MelsecMcNet(NetworkDeviceBase):
 		if length == None:
 			read = self.ReadBool(address,1)
 			if read.IsSuccess == False:
-				return OperateResult.CreateFromFailedResult(read)
+				return OperateResult.CreateFailedResult(read)
 			else:
 				return OperateResult.CreateSuccessResult(read.Content[0])
 		else:
 			# 解析地址
 			analysis = MelsecHelper.McAnalysisAddress( address )
 			if analysis.IsSuccess == False : 
-				return OperateResult.CreateFromFailedResult( analysis )
+				return OperateResult.CreateFailedResult( analysis )
 
 			# 位读取校验
 			if analysis.Content1.DataType == 0x00 : 
@@ -2246,7 +2278,7 @@ class MelsecMcNet(NetworkDeviceBase):
 			# 核心交互
 			read = self.Read( address, length )
 			if read.IsSuccess == False : 
-				return OperateResult.CreateFromFailedResult( read )
+				return OperateResult.CreateFailedResult( read )
 
 			# 转化bool数组
 			content = []
@@ -2298,7 +2330,7 @@ class MelsecMcAsciiNet(NetworkDeviceBase):
 	def BuildReadCommand( address, length, networkNumber = 0, networkStationNumber = 0 ):
 		'''根据类型地址长度确认需要读取的报文'''
 		analysis = MelsecHelper.McAnalysisAddress( address )
-		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult( analysis )
+		if analysis.IsSuccess == False : return OperateResult.CreateFailedResult( analysis )
 
 		# 默认信息----注意：高低字节交错
 		_PLCCommand = bytearray(42)
@@ -2350,7 +2382,7 @@ class MelsecMcAsciiNet(NetworkDeviceBase):
 	def BuildWriteCommand( address, value, networkNumber = 0, networkStationNumber = 0 ):
 		'''根据类型地址以及需要写入的数据来生成报文'''
 		analysis = MelsecHelper.McAnalysisAddress( address )
-		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult( analysis )
+		if analysis.IsSuccess == False : return OperateResult.CreateFailedResult( analysis )
 
 		# 预处理指令
 		if analysis.Content1.DataType == 0x01:
@@ -2659,7 +2691,7 @@ class SiemensS7Net(NetworkDeviceBase):
 	def BuildBitReadCommand( address ):
 		'''生成一个位读取数据指令头的通用方法'''
 		analysis = SiemensS7Net.AnalysisAddress( address )
-		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult( analysis )
+		if analysis.IsSuccess == False : return OperateResult.CreateFailedResult( analysis )
 
 		_PLCCommand = bytearray(31)
 		# 报文头
@@ -2718,7 +2750,7 @@ class SiemensS7Net(NetworkDeviceBase):
 		'''生成一个写入字节数据的指令'''
 		if data == None : data = bytearray(0)
 		analysis = SiemensS7Net.AnalysisAddress( address )
-		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult(analysis)
+		if analysis.IsSuccess == False : return OperateResult.CreateFailedResult(analysis)
 
 		_PLCCommand = bytearray(35 + len(data))
 		_PLCCommand[0] = 0x03
@@ -2779,7 +2811,7 @@ class SiemensS7Net(NetworkDeviceBase):
 	@staticmethod
 	def BuildWriteBitCommand( address, data ):
 		analysis = SiemensS7Net.AnalysisAddress( address )
-		if analysis.IsSuccess == False : return OperateResult.CreateFromFailedResult(analysis)
+		if analysis.IsSuccess == False : return OperateResult.CreateFailedResult(analysis)
 
 		buffer = bytearray(1)
 		if data == True : buffer[0] = 0x01
@@ -2855,7 +2887,7 @@ class SiemensS7Net(NetworkDeviceBase):
 	def ReadOrderNumber( self ):
 		'''从PLC读取订货号信息'''
 		read = self.ReadFromCoreServer( self.plcOrderNumber )
-		if read.IsSuccess == False : return OperateResult.CreateFromFailedResult( read )
+		if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
 
 		return OperateResult.CreateSuccessResult( read.Content[71:92].decode('ascii') )
 	def __ReadBase( self, address, length ):
@@ -2898,13 +2930,13 @@ class SiemensS7Net(NetworkDeviceBase):
 			addressResult = []
 			for i in range(length):
 				tmp = SiemensS7Net.AnalysisAddress( address[i] )
-				if tmp.IsSuccess == False : return OperateResult.CreateFromFailedResult( addressResult[i] )
+				if tmp.IsSuccess == False : return OperateResult.CreateFailedResult( addressResult[i] )
 
 				addressResult.append( tmp )
 			return self.__ReadBase( addressResult, length )
 		else:
 			addressResult = SiemensS7Net.AnalysisAddress( address )
-			if addressResult.IsSuccess == False : return OperateResult.CreateFromFailedResult( addressResult )
+			if addressResult.IsSuccess == False : return OperateResult.CreateFailedResult( addressResult )
 
 			bytesContent = bytearray()
 			alreadyFinished = 0
@@ -2924,7 +2956,7 @@ class SiemensS7Net(NetworkDeviceBase):
 		'''从PLC读取数据，地址格式为I100，Q100，DB20.100，M100，以位为单位'''
 		# 指令生成
 		command = SiemensS7Net.BuildBitReadCommand( address )
-		if command.IsSuccess == False : return OperateResult.CreateFromFailedResult( command )
+		if command.IsSuccess == False : return OperateResult.CreateFailedResult( command )
 
 		# 核心交互
 		read = self.ReadFromCoreServer( command.Content )
@@ -2957,7 +2989,7 @@ class SiemensS7Net(NetworkDeviceBase):
 
 		if write.Content[write.Content.Length - 1] != 0xFF :
 			# 写入异常
-			return OperateResult.CreateFailedResult("写入数据异常",write.Content[write.Content.Length - 1])
+			return OperateResult( msg = "写入数据异常", err = write.Content[write.Content.Length - 1])
 		else:
 			return OperateResult.CreateSuccessResult( )
 	def Write( self, address, value ):
@@ -3226,7 +3258,10 @@ class OmronFinsNet(NetworkDoubleBase):
 		'''设置SA1的方法'''
 		self.SA1 = value
 		self.handSingle[19] = value
-	def AnalysisAddress( self, address, isBit ):
+	handSingle = bytearray([0x46, 0x49, 0x4E, 0x53,0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01])
+       
+	@staticmethod
+	def AnalysisAddress( address, isBit ):
 		result = OperateResult( )
 		try:
 			if address[0] == 'D' or address[0] == 'd':
@@ -3271,7 +3306,8 @@ class OmronFinsNet(NetworkDoubleBase):
 
 		result.IsSuccess = True
 		return result
-	def ResponseValidAnalysis(self, response, isRead ):
+	@staticmethod
+	def ResponseValidAnalysis( response, isRead ):
 		# 数据有效性分析
 		if len(response) >= 16:
 			# 提取错误码
@@ -3282,7 +3318,7 @@ class OmronFinsNet(NetworkDoubleBase):
 			buffer[3] = response[12]
 
 			err = struct.unpack( '<i' , buffer )[0]
-			if err > 0 : return OperateResult( err = err, msg = GetStatusDescription( err ) )
+			if err > 0 : return OperateResult( err = err, msg = OmronFinsNet.GetStatusDescription( err ) )
 
 			if response.Length >= 30:
 				err = response[28] * 256 + response[29]
@@ -3296,7 +3332,187 @@ class OmronFinsNet(NetworkDoubleBase):
 				return OperateResult.CreateSuccessResult( content )
 
 		return OperateResult( msg = "欧姆龙数据接收出错" )
+	@staticmethod
+	def GetStatusDescription( err ):
+		'''获取错误信息的字符串描述文本'''
+		if err == 0: return StringResources.OmronStatus0()
+		elif err == 1: return StringResources.OmronStatus1()
+		elif err == 2: return StringResources.OmronStatus2()
+		elif err == 3: return StringResources.OmronStatus3()
+		elif err == 20: return StringResources.OmronStatus20()
+		elif err == 21: return StringResources.OmronStatus21()
+		elif err == 22: return StringResources.OmronStatus22()
+		elif err == 23: return StringResources.OmronStatus23()
+		elif err == 24: return StringResources.OmronStatus24()
+		elif err == 25: return StringResources.OmronStatus25()
+		else: return StringResources.UnknownError()
+	def PackCommand( self, cmd ):
+		'''将普通的指令打包成完整的指令'''
+		buffer = bytearray(26 + len(cmd))
+		buffer[0:4] = self.handSingle[0:4]
 
+		tmp = struct.pack('>i', len(buffer) - 8 )
+		buffer[4:8] = tmp
+		buffer[11] = 0x02
+		buffer[16] = self.ICF
+		buffer[17] = self.RSV
+		buffer[18] = self.GCT
+		buffer[19] = self.DNA
+		buffer[20] = self.DA1
+		buffer[21] = self.DA2
+		buffer[22] = self.SNA
+		buffer[23] = self.SA1
+		buffer[24] = self.SA2
+		buffer[25] = self.SID
+		buffer[26:] = cmd
+		return buffer
+	def BuildReadCommand( self, address, length , isBit):
+		'''根据类型地址长度确认需要读取的指令头'''
+		analysis = OmronFinsNet.AnalysisAddress( address, isBit )
+		if analysis.IsSuccess == False : return OperateResult.CreateFailedResult( analysis )
+
+		_PLCCommand = bytearray(8)
+		_PLCCommand[0] = 0x01
+		_PLCCommand[1] = 0x01
+		if isBit == True:
+			_PLCCommand[2] = analysis.Content1.BitCode
+		else:
+			_PLCCommand[2] = analysis.Content1.WordCode
+
+		_PLCCommand[3:6] = analysis.Content2
+		_PLCCommand[6] = length / 256
+		_PLCCommand[7] = length % 256
+
+		return OperateResult.CreateSuccessResult( self.PackCommand( _PLCCommand ) )
+	def BuildWriteCommand( self, address, value, isBit ):
+		'''根据类型地址以及需要写入的数据来生成指令头'''
+		analysis = self.AnalysisAddress( address, isBit )
+		if analysis.IsSuccess == False : return OperateResult.CreateFailedResult( analysis )
+
+		_PLCCommand = bytearray(8 + len(value))
+		_PLCCommand[0] = 0x01
+		_PLCCommand[1] = 0x02
+
+		if isBit == True:
+			_PLCCommand[2] = analysis.Content1.BitCode
+		else:
+			_PLCCommand[2] = analysis.Content1.WordCode
+
+		_PLCCommand[3:6] = analysis.Content2
+		if isBit == True:
+			_PLCCommand[6] = len(value) // 256
+			_PLCCommand[7] = len(value) % 256
+		else:
+			_PLCCommand[6] = len(value) // 2 // 256
+			_PLCCommand[7] = len(value) // 2 % 256
+
+		_PLCCommand[8:] = value
+		return OperateResult.CreateSuccessResult( self.PackCommand( _PLCCommand ) )
+	def InitializationOnConnect( self, socket ):
+		'''在连接上欧姆龙PLC后，需要进行一步握手协议'''
+		# 握手信号
+		read = self.ReadFromCoreServerBase( socket, self.handSingle )
+		if read.IsSuccess == False : return read
+
+		# 检查返回的状态
+		buffer = bytearray(4)
+		buffer[0] = read.Content2[7]
+		buffer[1] = read.Content2[6]
+		buffer[2] = read.Content2[5]
+		buffer[3] = read.Content2[4]
+
+		status = struct.unpack( '<i',buffer )[0]
+		if status != 0 : return OperateResult( err = status, msg = OmronFinsNet.GetStatusDescription( status ) )
+
+		# 提取PLC的节点地址
+		if read.Content2.Length >= 16 : self.DA1 = read.Content2[15]
+
+		return OperateResult.CreateSuccessResult( )
+	def Read( self, address, length ):
+		'''从欧姆龙PLC中读取想要的数据，返回读取结果，读取单位为字'''
+		# 获取指令
+		command = self.BuildReadCommand( address, length, False )
+		if command.IsSuccess == False : return OperateResult.CreateFailedResult( command )
+
+		# 核心数据交互
+		read = self.ReadFromCoreServer( command.Content )
+		if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
+
+		# 数据有效性分析
+		valid = OmronFinsNet.ResponseValidAnalysis( read.Content, True )
+		if valid.IsSuccess == False : return OperateResult.CreateFailedResult( valid )
+
+		# 读取到了正确的数据
+		return OperateResult.CreateSuccessResult( valid.Content )
+	def ReadBool( self, address, length = None ):
+		'''从欧姆龙PLC中批量读取位软元件，返回读取结果'''
+		if length == None:
+			read = self.ReadBool( address, 1 )
+			if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
+
+			return OperateResult.CreateSuccessResult( read.Content[0] )
+		else:
+			# 获取指令
+			command = self.BuildReadCommand( address, length, True )
+			if command.IsSuccess == False : return OperateResult.CreateFailedResult( command )
+
+			# 核心数据交互
+			read = self.ReadFromCoreServer( command.Content )
+			if read.IsSuccess == False : return OperateResult.CreateFailedResult( read )
+
+			# 数据有效性分析
+			valid = OmronFinsNet.ResponseValidAnalysis( read.Content, True )
+			if valid.IsSuccess == False : return OperateResult.CreateFailedResult( valid )
+
+			# 返回正确的数据信息
+			content = []
+			for i in range(len(read.Content)):
+				if read.Content[i] == 0x01:
+					content.append(True)
+				else:
+					content.append(False)
+			return OperateResult.CreateSuccessResult( content )
+	def Write( self, address, value ):
+		'''向PLC中位软元件写入bool数组，返回值说明，比如你写入D100,values[0]对应D100.0'''
+		# 获取指令
+		command = self.BuildWriteCommand( address, value, False )
+		if command.IsSuccess == False : return command
+
+		# 核心数据交互
+		read = self.ReadFromCoreServer( command.Content )
+		if read.IsSuccess == False : return read
+
+		# 数据有效性分析
+		valid = OmronFinsNet.ResponseValidAnalysis( read.Content, False )
+		if valid.IsSuccess == False : return valid
+
+		# 成功
+		return OperateResult.CreateSuccessResult( )
+	def WriteBool( self, address, values ):
+		'''向PLC中位软元件写入bool数组，返回值说明，比如你写入D100,values[0]对应D100.0'''
+		if type(values) == list:
+			# 获取指令
+			content = bytearray(len(values))
+			for i in range(len(values)):
+				if values[i] == True:
+					content[i] = 0x01
+				else:
+					content[i] = 0x00
+			command = self.BuildWriteCommand( address, content, True )
+			if command.IsSuccess == False : return command
+
+			# 核心数据交互
+			read = self.ReadFromCoreServer( command.Content )
+			if read.IsSuccess == False : return read
+
+			# 数据有效性分析
+			valid = OmronFinsNet.ResponseValidAnalysis( read.Content, False )
+			if valid.IsSuccess == False : return valid
+
+			# 写入成功
+			return OperateResult.CreateSuccessResult( )
+		else:
+			return self.WriteBool( address, [values] )
 
 # NetSimplifyClient类
 class NetSimplifyClient(NetworkDoubleBase):
@@ -3315,7 +3531,7 @@ class NetSimplifyClient(NetworkDoubleBase):
 		'''客户端向服务器进行请求，请求字符串数据'''
 		read = self.__ReadFromServerBase(  HslProtocol.CommandString( customer, self.Token, send))
 		if read.IsSuccess == False:
-			return OperateResult.CreateFromFailedResult( read )
+			return OperateResult.CreateFailedResult( read )
 		
 		return OperateResult.CreateSuccessResult( read.Content.decode('utf-16') )
 
@@ -3334,6 +3550,224 @@ class NetSimplifyClient(NetworkDoubleBase):
 
 		contentBytes = HslProtocol.CommandAnalysis( headBytes, contentBytes )
 		return OperateResult.CreateSuccessResult( contentBytes )
+
+
+class AppSession:
+	'''网络会话信息'''
+	IpAddress = "127.0.0.1"
+	Port = 12345
+	LoginAlias = ""
+	HeartTime = None
+	ClientType = ""
+	ClientUniqueID = ""
+	BytesHead = bytearray(32)
+	BytesContent = bytearray(0)
+	KeyGroup = ""
+	WorkSocket = socket.socket()
+	HybirdLockSend = threading.Lock()
+	def __init__( self ):
+		self.ClientUniqueID = SoftBasic.GetUniqueStringByGuidAndRandom()
+		self.HeartTime = datetime.datetime.now()
+	def Clear( self ):
+		self.BytesHead = bytearray(HslProtocol.HeadByteLength())
+		self.BytesContent = None
+
+class NetworkXBase(NetworkBase):
+	'''多功能网络类的基类'''
+	ThreadBack = None
+	def __init__(self):
+		return
+	def SendBytesAsync( self, session, content ):
+		'''发送数据的方法'''
+		if content == None : return
+			
+		session.HybirdLockSend.acquire()
+		self.Send( session.WorkSocket, content )
+		session.HybirdLockSend.release()
+	def ThreadBackground( self, session ):
+		while True:
+			if session.WorkSocket == None : break
+			readHeadBytes = self.Receive(session.WorkSocket,HslProtocol.HeadByteLength())
+			if readHeadBytes.IsSuccess == False :
+				self.SocketReceiveException( session )
+				return
+
+			length = struct.unpack( '<i', readHeadBytes.Content[28:32])[0]
+			readContent = self.Receive(session.WorkSocket,length)
+			if readContent.IsSuccess == False :
+				self.SocketReceiveException( session )
+				return
+
+			if self.CheckRemoteToken( readHeadBytes.Content ):
+				head = readHeadBytes.Content
+				content = HslProtocol.CommandAnalysis(head,readContent.Content)
+				protocol = struct.unpack('<i', head[0:4])[0]
+				customer = struct.unpack('<i', head[4:8])[0]
+
+				self.DataProcessingCenter(session,protocol,customer,content)
+			else:
+				self.AppSessionRemoteClose( session )
+	def BeginReceiveBackground( self, session ):
+		ThreadBack = threading.Thread(target=self.ThreadBackground,args=[session])
+		ThreadBack.start()
+	def DataProcessingCenter( self, session, protocol, customer, content ):
+		'''数据处理中心，应该继承重写'''
+		return
+	def CheckRemoteToken( self, headBytes ):
+		'''检查当前的头子节信息的令牌是否是正确的'''
+		return SoftBasic.IsTwoBytesEquel( headBytes,12, SoftBasic.TokenToBytes(self.Token), 0, 16 )
+	def SocketReceiveException( self, session ):
+		'''接收出错的时候进行处理'''
+		return
+	def AppSessionRemoteClose( self, session ):
+		'''当远端的客户端关闭连接时触发'''
+		return
+	def SendBaseAndCheckReceive( self, socket, headcode, customer, send ):
+		'''[自校验] 发送字节数据并确认对方接收完成数据，如果结果异常，则结束通讯'''
+		# 数据处理
+		send = HslProtocol.CommandBytesBase( headcode, customer, self.Token, send )
+
+		sendResult = self.Send( socket, send )
+		if sendResult.IsSuccess == False:  return sendResult
+
+		# 检查对方接收完成
+		checkResult = self.ReceiveLong( socket )
+		if checkResult.IsSuccess == False: return checkResult
+
+		# 检查长度接收
+		if checkResult.Content != len(send):
+			self.CloseSocket(socket)
+			return OperateResult( msg = "接收的数据数据长度验证失败")
+
+		return checkResult
+	def SendBytesAndCheckReceive( self, socket, customer, send ):
+		'''[自校验] 发送字节数据并确认对方接收完成数据，如果结果异常，则结束通讯'''
+		return self.SendBaseAndCheckReceive( socket, HslProtocol.ProtocolUserBytes(), customer, send )
+	def SendStringAndCheckReceive( self, socket, customer, send ):
+		'''[自校验] 直接发送字符串数据并确认对方接收完成数据，如果结果异常，则结束通讯'''
+		data = SoftBasic.StringToUnicodeBytes(send)
+
+		return self.SendBaseAndCheckReceive( socket, HslProtocol.ProtocolUserString(), customer, data )
+	def ReceiveAndCheckBytes( self, socket, timeout ):
+		'''[自校验] 接收一条完整的同步数据，包含头子节和内容字节，基础的数据，如果结果异常，则结束通讯'''
+		# 30秒超时接收验证
+		# if (timeout > 0) ThreadPool.QueueUserWorkItem( new WaitCallback( ThreadPoolCheckTimeOut ), hslTimeOut );
+
+		# 接收头指令
+		headResult = self.Receive(socket, HslProtocol.HeadByteLength())
+		if headResult.IsSuccess == False:
+			return OperateResult.CreateFailedResult(headResult)
+
+		# 检查令牌
+		if self.CheckRemoteToken(headResult.Content) == False:
+			self.CloseSocket(socket)
+			return OperateResult( msg = StringResources.TokenCheckFailed() )
+
+		contentLength = struct.unpack( '<i', headResult.Content[(HslProtocol.HeadByteLength() - 4):])[0]
+		# 接收内容
+		contentResult = self.Receive(socket, contentLength)
+		if contentResult.IsSuccess == False:
+			return OperateResult.CreateFailedResult( contentResult )
+
+		# 返回成功信息
+		checkResult = self.SendLong(socket, HslProtocol.HeadByteLength() + contentLength)
+		if checkResult.IsSuccess == False:
+			return OperateResult.CreateFailedResult( checkResult )
+
+		head = headResult.Content
+		content = contentResult.Content
+		content = HslProtocol.CommandAnalysis(head, content)
+		return OperateResult.CreateSuccessResult(head, content)
+	def ReceiveStringContentFromSocket( self, socket ):
+		'''[自校验] 从网络中接收一个字符串数据，如果结果异常，则结束通讯'''
+		receive = self.ReceiveAndCheckBytes(socket, 10000)
+		if receive.IsSuccess == False: return OperateResult.CreateFailedResult(receive)
+
+		# 检查是否是字符串信息
+		if struct.unpack('<i',receive.Content1[0:4])[0] != HslProtocol.ProtocolUserString():
+			self.CloseSocket(socket)
+			return OperateResult( msg = "ReceiveStringContentFromSocket异常" )
+
+		if receive.Content2 == None: receive.Content2 = bytearray(0)
+		# 分析数据
+		return OperateResult.CreateSuccessResult(struct.unpack('<i', receive.Content1[4:8])[0], receive.Content2.decode('utf-16'))
+	def ReceiveBytesContentFromSocket( self, socket ):
+		'''[自校验] 从网络中接收一串字节数据，如果结果异常，则结束通讯'''
+		receive = self.ReceiveAndCheckBytes( socket, 10000 )
+		if receive.IsSuccess == False: return OperateResult.CreateFailedResult(receive)
+
+		# 检查是否是字节信息
+		if struct.unpack('<i', receive.Content1[0:4])[0] != HslProtocol.ProtocolUserBytes():
+			self.CloseSocket(socket)
+			return OperateResult( msg = "字节内容检查失败" )
 		
+		# 分析数据
+		return OperateResult.CreateSuccessResult( struct.unpack('<i', receive.Content1[4:8])[0], receive.Content2 )
+	def ReceiveLong( self, socket ):
+		'''从网络中接收Long数据'''
+		read = self.Receive(socket, 8)
+		if read.IsSuccess == False: return OperateResult.CreateFailedResult(read)
 
+		return OperateResult.CreateSuccessResult(struct.unpack('<Q', read.Content)[0])
+	def SendLong( self, socket, value ):
+		'''将Long数据发送到套接字'''
+		return self.Send( socket, struct.pack( '<Q', value ) )
+	def CloseSocket(self, socket):
+		'''关闭网络'''
+		if socket != None:
+			socket.close()
 
+class NetPushClient(NetworkXBase):
+	'''发布订阅类的客户端，使用指定的关键订阅相关的数据推送信息'''
+	IpAddress = "127.0.0.1"
+	Port = 12345
+	keyWord = "A"
+	ReConnectTime = 10
+	action = None
+	def __init__( self, ipAddress, port, key):
+		'''实例化一个发布订阅类的客户端，需要指定ip地址，端口，及订阅关键字'''
+		self.IpAddress = ipAddress
+		self.Port = port
+		self.keyWord = key
+	def DataProcessingCenter( self, session, protocol, customer, content ):
+		if protocol == HslProtocol.ProtocolUserString():
+			if self.action != None: self.action( self.keyWord, content.decode('utf-16') )
+	def SocketReceiveException( self, session ):
+		# 发生异常的时候需要进行重新连接
+		while True:
+			print('wait 10s to reconnect server')
+			sleep( self.ReConnectTime )
+
+			if self.CreatePush( ).IsSuccess == True:
+				break
+	def CreatePush( self, pushCallBack = None ):
+		'''创建数据推送服务'''
+		if pushCallBack == None:
+			if self.CoreSocket != None: self.CoreSocket.close( )
+			connect = self.CreateSocketAndConnect( self.IpAddress, self.Port, 5000 )
+			if connect.IsSuccess == False: return connect
+
+			send = self.SendStringAndCheckReceive( connect.Content, 0, self.keyWord )
+			if send.IsSuccess == False: return send
+
+			receive = self.ReceiveStringContentFromSocket( connect.Content )
+			if receive.IsSuccess == False : return receive
+
+			if receive.Content1 != 0: return OperateResult( msg = receive.Content2 )
+
+			appSession = AppSession( )
+			self.CoreSocket = connect.Content
+			appSession.WorkSocket = connect.Content
+			self.BeginReceiveBackground( appSession )
+
+			return OperateResult.CreateSuccessResult( )
+		else:
+			self.action = pushCallBack
+			return self.CreatePush( )
+	def ClosePush( self ):
+		'''关闭消息推送的界面'''
+		self.action = None
+		if self.CoreSocket != None:
+			self.Send(self.CoreSocket, struct.pack('<i', 100 ) )
+
+		self.CloseSocket(self.CoreSocket)
