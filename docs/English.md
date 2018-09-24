@@ -16,8 +16,10 @@
 ![Build status](https://img.shields.io/badge/Build-Success-green.svg) [![NuGet Status](https://img.shields.io/nuget/v/HslCommunication.svg)](https://www.nuget.org/packages/HslCommunication/) ![NuGet Download](https://img.shields.io/nuget/dt/HslCommunication.svg) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8) [![NetFramework](https://img.shields.io/badge/Language-C%23%207.0-orange.svg)](https://blogs.msdn.microsoft.com/dotnet/2016/08/24/whats-new-in-csharp-7-0/) [![Visual Studio](https://img.shields.io/badge/Visual%20Studio-2017-red.svg)](https://www.visualstudio.com/zh-hans/) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
 
 # HslCommunication.jar
-![Build status](https://img.shields.io/badge/Build-Success-green.svg) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![NetFramework](https://img.shields.io/badge/Language-java-orange.svg) ![JDK status](https://img.shields.io/badge/JDK-1.8.0-green.svg) ![IDE status](https://img.shields.io/badge/Intellij%20Idea-2018.1-red.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
+![Build status](https://img.shields.io/badge/Build-Success-green.svg) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![NetFramework](https://img.shields.io/badge/Language-java-orange.svg) ![JDK status](https://img.shields.io/badge/JDK-1.8.0-green.svg) ![IDE status](https://img.shields.io/badge/Intellij%20Idea-2018.4-red.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
 
+# HslCommunication.py
+![Build status](https://img.shields.io/badge/Build-Success-green.svg) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![NetFramework](https://img.shields.io/badge/Language-python-orange.svg) ![py status](https://img.shields.io/badge/python-3.6-green.svg) ![IDE status](https://img.shields.io/badge/Visual%20Studio-Code-red.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
 ## CopyRight
 (C) 2018 Richard.Hu, All Rights Reserved
 
@@ -43,7 +45,8 @@ Install-Package HslCommunication
 * Email: hsl200909@163.com
 
 ## Project Target
-The goal of this project is to develop a .Net and java. Most software systems will include the basic class library functions, implement some common data communications, log records, etc., as well as version classes, network communications, and PLC data access classes. And to achieve seamless integration of C# and java communications.
+The goal of this project is to develop a .Net and java. Most software systems will include the basic class library functions, implement some common data communications, 
+log records, etc., as well as version classes, network communications, and PLC data access classes. And to achieve seamless integration of C# and java communications.
 
 
 ## HslCommunication.dll Summary
@@ -59,6 +62,26 @@ retaining the vast majority of client function code, convenient and PLC, device 
 and C # Program for data interaction, this jar component is suitable for Android development, 
 easy to build a. NET Server + Windows Client + ASP. NET client + EE client + Java Client + Android client, 
 may support Python in the future, the current Java function code is as follows:
+
+* How to communicate with melsec plc
+* How to communicate with siemens plc
+* How to communicate with omron plc
+* How to communicate with modbus-tcp device
+* **NetSimplify**
+* **NetComplex**
+* **NetPushClient**
+
+## HslCommunication.py Summary 
+This component provides the Python version, the version of the. NET castrated version, the removal of all the server function code, retaining a part of the client function code, 
+convenient and PLC, the device for data interaction, and C # Program for data interaction, for cross-platform operation, the main functions are as follows:
+
+* How to communicate with melsec plc
+* How to communicate with siemens plc
+* How to communicate with omron plc
+* How to communicate with modbus-tcp device
+* **NetSimplify**
+* **NetComplex**
+* **NetPushClient**
 
 ## Support
 If this library really helps you, you can support me by AliPay. Please choose the amount according to your actual ability.

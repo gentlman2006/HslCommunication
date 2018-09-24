@@ -16,8 +16,10 @@
 ![Build status](https://img.shields.io/badge/Build-Success-green.svg) [![NuGet Status](https://img.shields.io/nuget/v/HslCommunication.svg)](https://www.nuget.org/packages/HslCommunication/) ![NuGet Download](https://img.shields.io/nuget/dt/HslCommunication.svg) [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](http://shang.qq.com/wpa/qunwpa?idkey=2278cb9c2e0c04fc305c43e41acff940499a34007dfca9e83a7291e726f9c4e8) [![NetFramework](https://img.shields.io/badge/Language-C%23%207.0-orange.svg)](https://blogs.msdn.microsoft.com/dotnet/2016/08/24/whats-new-in-csharp-7-0/) [![Visual Studio](https://img.shields.io/badge/Visual%20Studio-2017-red.svg)](https://www.visualstudio.com/zh-hans/) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
 
 # HslCommunication.jar
-![Build status](https://img.shields.io/badge/Build-Success-green.svg) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![NetFramework](https://img.shields.io/badge/Language-java-orange.svg) ![JDK status](https://img.shields.io/badge/JDK-1.8.0-green.svg) ![IDE status](https://img.shields.io/badge/Intellij%20Idea-2018.1-red.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
+![Build status](https://img.shields.io/badge/Build-Success-green.svg) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![NetFramework](https://img.shields.io/badge/Language-java-orange.svg) ![JDK status](https://img.shields.io/badge/JDK-1.8.0-green.svg) ![IDE status](https://img.shields.io/badge/Intellij%20Idea-2018.4-red.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
 
+# HslCommunication.py
+![Build status](https://img.shields.io/badge/Build-Success-green.svg) ![License status](https://img.shields.io/badge/License-LGPL3.0-yellow.svg) ![NetFramework](https://img.shields.io/badge/Language-python-orange.svg) ![py status](https://img.shields.io/badge/python-3.6-green.svg) ![IDE status](https://img.shields.io/badge/Visual%20Studio-Code-red.svg) ![copyright status](https://img.shields.io/badge/CopyRight-Richard.Hu-brightgreen.svg) 
 ## CopyRight
 本组件版权归Richard.Hu所有
 
@@ -41,7 +43,7 @@ Install-Package HslCommunication
 * IDE: **Visual Studio 2017** 必须这个版本及以上，不然会语法报错
 * .Net Framework环境下：支持.Net 3.5及以上环境，功能最完善。
 * .Net Standard环境下：.Net 2.0以上，目前仅仅实现PLC读写，modbus tcp读写，日志记录。
-* java环境下：**Intellij Idea 2018.1**
+* java环境下：**Intellij Idea 2018.4**
 * python: **Visual Studio Code**
 
 ## Contact
@@ -80,10 +82,22 @@ Install-Package HslCommunication
 
 
 ## HslCommunication.jar Summary 
-本组件提供java版本，为.net版本的阉割版，除去了所有的服务器功能代码，保留了绝大多数的客户端功能代码，方便的和PLC，设备进行数据交互，和C#程序进行数据交互，本jar组件适用用安卓开发，方便搭建一个.net 服务器 + windows 客户端 + asp.net 客户端 + j2ee 客户端 + java 客户端 + android 客户端，未来可能支持python，目前的java功能代码如下：
+本组件提供java版本，为.net版本的阉割版，除去了所有的服务器功能代码，保留了部分的客户端功能代码，方便的和PLC，设备进行数据交互，和C#程序进行数据交互，本jar组件适用用安卓开发，方便搭建一个.net 服务器 + windows 客户端 + asp.net 客户端 + j2ee 客户端 + java 客户端 + android 客户端，目前的java功能代码如下：
 
 * [三菱PLC的数据交互](https://www.cnblogs.com/dathlin/p/9176069.html)
 * [西门子PLC的数据交互](https://www.cnblogs.com/dathlin/p/9196129.html)
+* 欧姆龙PLC的数据交互
+* Modbus Tcp 客户端开发
+* 同步网络通讯功能 **NetSimplify**
+* 异步网络通讯功能 **NetComplex**
+* 数据订阅推送 **NetPush**
+
+## HslCommunication.py Summary 
+本组件提供python版本，为.net版本的阉割版，除去了所有的服务器功能代码，保留了部分的客户端功能代码，方便的和PLC，设备进行数据交互，和C#程序进行数据交互，适用于跨平台运行，主要功能如下：
+
+* 三菱PLC的数据交互
+* 西门子PLC的数据交互
+* 欧姆龙PLC的数据交互
 * Modbus Tcp 客户端开发
 * 同步网络通讯功能 **NetSimplify**
 * 异步网络通讯功能 **NetComplex**
