@@ -317,7 +317,7 @@ namespace HslCommunication.Profinet.Omron
         /// </example>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
-            //获取指令
+            // 获取指令
             var command = BuildReadCommand( address, length, false );
             if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );
 
@@ -381,7 +381,7 @@ namespace HslCommunication.Profinet.Omron
         /// </example>
         public OperateResult<bool[]> ReadBool( string address, ushort length )
         {
-            //获取指令
+            // 获取指令
             var command = BuildReadCommand( address, length, true );
             if (!command.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( command );
 
@@ -412,14 +412,9 @@ namespace HslCommunication.Profinet.Omron
         public OperateResult<bool> ReadBool( string address )
         {
             OperateResult<bool[]> read = ReadBool( address, 1 );
-            if (read.IsSuccess)
-            {
-                return OperateResult.CreateSuccessResult( read.Content[0] );
-            }
-            else
-            {
-                return OperateResult.CreateFailedResult<bool>( read );
-            }
+            if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool>( read );
+
+            return OperateResult.CreateSuccessResult( read.Content[0] );
         }
 
 
@@ -477,7 +472,7 @@ namespace HslCommunication.Profinet.Omron
         /// </example>
         public override OperateResult Write( string address, byte[] value )
         {
-            //获取指令
+            // 获取指令
             var command = BuildWriteCommand( address, value, false );
             if (!command.IsSuccess) return command;
 
@@ -525,9 +520,7 @@ namespace HslCommunication.Profinet.Omron
         /// </example>
         public OperateResult Write( string address, bool[] values )
         {
-            OperateResult result = new OperateResult( );
-
-            //获取指令
+            // 获取指令
             var command = BuildWriteCommand( address, values.Select( m => m ? (byte)0x01 : (byte)0x00 ).ToArray( ), true );
             if (!command.IsSuccess) return command;
 

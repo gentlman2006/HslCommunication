@@ -151,20 +151,12 @@ public class NetworkXBase extends NetworkBase
         // 数据处理
         send = HslProtocol.CommandBytes( headcode, customer, Token, send );
 
-
         OperateResult sendResult = Send( socket, send );
-        if(!sendResult.IsSuccess)
-        {
-            return sendResult;
-        }
+        if(!sendResult.IsSuccess) return sendResult;
 
         // 检查对方接收完成
         OperateResultExOne<Long> checkResult = ReceiveLong( socket );
-        if(!checkResult.IsSuccess)
-        {
-            return checkResult;
-        }
-
+        if(!checkResult.IsSuccess) return checkResult;
 
         // 检查长度接收
         if (checkResult.Content != send.length)
@@ -368,27 +360,17 @@ public class NetworkXBase extends NetworkBase
         // 检查令牌
         if (!CheckRemoteToken(headResult.Content)) {
             CloseSocket(socket);
-            OperateResultExTwo<byte[], byte[]> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.Message = StringResources.Language.TokenCheckFailed();
-            return resultExTwo;
+            return new OperateResultExTwo<>(StringResources.Language.TokenCheckFailed());
         }
 
         int contentLength = Utilities.getInt(headResult.Content, HslProtocol.HeadByteLength - 4);
         // 接收内容
         OperateResultExOne<byte[]> contentResult = Receive(socket, contentLength);
-        if (!contentResult.IsSuccess) {
-            OperateResultExTwo<byte[], byte[]> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.CopyErrorFromOther(contentResult);
-            return resultExTwo;
-        }
+        if (!contentResult.IsSuccess) return OperateResultExTwo.CreateFailedResult(contentResult);
 
         // 返回成功信息
         OperateResult checkResult = SendLong(socket, HslProtocol.HeadByteLength + contentLength);
-        if (!checkResult.IsSuccess) {
-            OperateResultExTwo<byte[], byte[]> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.CopyErrorFromOther(checkResult);
-            return resultExTwo;
-        }
+        if (!checkResult.IsSuccess)  return OperateResultExTwo.CreateFailedResult(checkResult);
 
         byte[] head = headResult.Content;
         byte[] content = contentResult.Content;
@@ -402,28 +384,20 @@ public class NetworkXBase extends NetworkBase
      * @param socket 套接字
      * @return 接收的结果数据
      */
-    protected OperateResultExTwo<Integer, String> ReceiveStringContentFromSocket( Socket socket )
-    {
-        OperateResultExTwo<byte[], byte[]> receive = ReceiveAndCheckBytes( socket, 10000 );
-        if (!receive.IsSuccess) {
-            OperateResultExTwo<Integer, String> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.CopyErrorFromOther(receive);
-            return resultExTwo;
-        }
+    protected OperateResultExTwo<Integer, String> ReceiveStringContentFromSocket( Socket socket ) {
+        OperateResultExTwo<byte[], byte[]> receive = ReceiveAndCheckBytes(socket, 10000);
+        if (!receive.IsSuccess) return OperateResultExTwo.CreateFailedResult(receive);
 
         // 检查是否是字符串信息
-        if (Utilities.getInt( receive.Content1, 0 ) != HslProtocol.ProtocolUserString)
-        {
-            if(LogNet!=null) LogNet.WriteError( toString( ), StringResources.Language.CommandHeadCodeCheckFailed() );
+        if (Utilities.getInt(receive.Content1, 0) != HslProtocol.ProtocolUserString) {
+            if (LogNet != null) LogNet.WriteError(toString(), StringResources.Language.CommandHeadCodeCheckFailed());
             CloseSocket(socket);
-            OperateResultExTwo<Integer, String> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.Message = StringResources.Language.CommandHeadCodeCheckFailed();
-            return resultExTwo;
+            return new OperateResultExTwo<>(StringResources.Language.CommandHeadCodeCheckFailed());
         }
 
         if (receive.Content2 == null) receive.Content2 = new byte[0];
         // 分析数据
-        return OperateResultExTwo.CreateSuccessResult( Utilities.getInt( receive.Content1, 4 ), Utilities.byte2String( receive.Content2 ) );
+        return OperateResultExTwo.CreateSuccessResult(Utilities.getInt(receive.Content1, 4), Utilities.byte2String(receive.Content2));
     }
 
 
@@ -437,11 +411,7 @@ public class NetworkXBase extends NetworkBase
     protected OperateResultExTwo<Integer, byte[]> ReceiveBytesContentFromSocket( Socket socket )
     {
         OperateResultExTwo<byte[], byte[]> receive = ReceiveAndCheckBytes( socket, 10000 );
-        if (!receive.IsSuccess){
-            OperateResultExTwo<Integer, byte[]> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.CopyErrorFromOther(receive);
-            return resultExTwo;
-        }
+        if (!receive.IsSuccess) return OperateResultExTwo.CreateFailedResult(receive);
 
         // 检查是否是字节信息
         if (Utilities.getInt( receive.Content1, 0 ) != HslProtocol.ProtocolUserBytes)
@@ -449,9 +419,7 @@ public class NetworkXBase extends NetworkBase
             if(LogNet!=null) LogNet.WriteError( toString( ), StringResources.Language.CommandHeadCodeCheckFailed() );
             CloseSocket(socket);
 
-            OperateResultExTwo<Integer, byte[]> resultExTwo = new OperateResultExTwo<>();
-            resultExTwo.Message = StringResources.Language.CommandHeadCodeCheckFailed();
-            return resultExTwo;
+            return new OperateResultExTwo<>(StringResources.Language.CommandHeadCodeCheckFailed());
         }
 
         // 分析数据
@@ -593,14 +561,10 @@ public class NetworkXBase extends NetworkBase
      * @param folder 文件夹名称
      * @return 结果数据
      */
-    protected String PreprocessFolderName( String folder )
-    {
-        if (folder.endsWith( "\\" ))
-        {
-            return folder.substring( 0, folder.length() - 1 );
-        }
-            else
-        {
+    protected String PreprocessFolderName( String folder ) {
+        if (folder.endsWith("\\")) {
+            return folder.substring(0, folder.length() - 1);
+        } else {
             return folder;
         }
     }
@@ -619,19 +583,11 @@ public class NetworkXBase extends NetworkBase
      * @param socket 套接字信息
      * @return 返回的结果
      */
-    private OperateResultExOne<Long> ReceiveLong( Socket socket )
-    {
-        OperateResultExOne<byte[]> read = Receive( socket, 8 );
-        if (read.IsSuccess)
-        {
-            return OperateResultExOne.CreateSuccessResult( Utilities.getLong( read.Content, 0 ) );
-        }
-        else
-        {
-            OperateResultExOne<Long> resultExOne = new OperateResultExOne<>();
-            resultExOne.Message = read.Message;
-            return resultExOne;
-        }
+    private OperateResultExOne<Long> ReceiveLong( Socket socket ) {
+        OperateResultExOne<byte[]> read = Receive(socket, 8);
+        if (!read.IsSuccess) return OperateResultExOne.CreateFailedResult(read);
+
+        return OperateResultExOne.CreateSuccessResult(Utilities.getLong(read.Content, 0));
     }
 
     /**

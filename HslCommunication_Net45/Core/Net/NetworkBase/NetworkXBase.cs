@@ -354,12 +354,9 @@ namespace HslCommunication.Core.Net
             // 数据处理
             send = HslProtocol.CommandBytes( headcode, customer, Token, send );
             
-
+            // 发送数据
             OperateResult sendResult = Send( socket, send );
-            if(!sendResult.IsSuccess)
-            {
-                return sendResult;
-            }
+            if(!sendResult.IsSuccess) return sendResult;
             
             // 检查对方接收完成
             OperateResult<long> checkResult = ReceiveLong( socket );
@@ -428,10 +425,7 @@ namespace HslCommunication.Core.Net
             {
                 socket?.Close( );
                 LogNet?.WriteException( ToString( ), ex );
-                return new OperateResult( )
-                {
-                    Message = ex.Message
-                };
+                return new OperateResult( ex.Message );
             }
         }
 
@@ -462,18 +456,10 @@ namespace HslCommunication.Core.Net
             {
                 // 如果文件不存在
                 OperateResult stringResult = SendStringAndCheckReceive( socket, 0, "" );
-                if (!stringResult.IsSuccess)
-                {
-                    return stringResult;
-                }
-                else
-                {
-                    socket?.Close( );
-                    return new OperateResult( )
-                    {
-                        Message = StringResources.Language.FileNotExist
-                    };
-                }
+                if (!stringResult.IsSuccess) return stringResult;
+
+                socket?.Close( );
+                return new OperateResult( StringResources.Language.FileNotExist );
             }
 
             // 文件存在的情况
@@ -487,10 +473,7 @@ namespace HslCommunication.Core.Net
             
             // 先发送文件的信息到对方
             OperateResult sendResult = SendStringAndCheckReceive( socket, 1, json.ToString( ) );
-            if (!sendResult.IsSuccess)
-            {
-                return sendResult;
-            }
+            if (!sendResult.IsSuccess) return sendResult;
             
             // 最后发送
             return SendFileStreamToSocket( socket, filename, info.Length, sendReport );
@@ -570,10 +553,7 @@ namespace HslCommunication.Core.Net
             if (!CheckRemoteToken( headResult.Content ))
             {
                 socket?.Close( );
-                return new OperateResult<byte[], byte[]>( )
-                {
-                    Message = StringResources.Language.TokenCheckFailed
-                };
+                return new OperateResult<byte[], byte[]>( StringResources.Language.TokenCheckFailed );
             }
 
             int contentLength = BitConverter.ToInt32( headResult.Content, HslProtocol.HeadByteLength - 4 );
@@ -606,10 +586,7 @@ namespace HslCommunication.Core.Net
             {
                 LogNet?.WriteError( ToString( ), StringResources.Language.CommandHeadCodeCheckFailed );
                 socket?.Close( );
-                return new OperateResult<int, string>( )
-                {
-                    Message = StringResources.Language.CommandHeadCodeCheckFailed
-                };
+                return new OperateResult<int, string>( StringResources.Language.CommandHeadCodeCheckFailed );
             }
 
             if (receive.Content2 == null) receive.Content2 = new byte[0];
@@ -634,10 +611,7 @@ namespace HslCommunication.Core.Net
             {
                 LogNet?.WriteError( ToString( ), StringResources.Language.CommandHeadCodeCheckFailed );
                 socket?.Close( );
-                return new OperateResult<int, byte[]>( )
-                {
-                    Message = StringResources.Language.CommandHeadCodeCheckFailed
-                };
+                return new OperateResult<int, byte[]>( StringResources.Language.CommandHeadCodeCheckFailed );
             }
 
             // 分析数据
@@ -661,10 +635,7 @@ namespace HslCommunication.Core.Net
             {
                 socket?.Close( );
                 LogNet?.WriteWarn( ToString( ), StringResources.Language.FileRemoteNotExist );
-                return new OperateResult<FileBaseInfo>( )
-                {
-                    Message = StringResources.Language.FileNotExist
-                };
+                return new OperateResult<FileBaseInfo>( StringResources.Language.FileNotExist );
             }
 
             OperateResult<FileBaseInfo> result = new OperateResult<FileBaseInfo>
