@@ -2561,8 +2561,8 @@ class SiemensS7Net(NetworkDeviceBase):
 	def __init__(self, siemens, ipAddress = "127.0.0.1"):
 		'''实例化一个西门子的S7协议的通讯对象并指定Ip地址'''
 		self.WordLength = 2
-		self.IpAddress = ipAddress
-		self.Port = 102
+		self.ipAddress = ipAddress
+		self.port = 102
 		self.CurrentPlc = siemens
 		self.iNetMessage = S7Message()
 		self.byteTransform = ReverseBytesTransform()
@@ -2802,8 +2802,8 @@ class SiemensS7Net(NetworkDeviceBase):
 		_PLCCommand[31] = 0x00
 		_PLCCommand[32] = 0x04
 		# 按位计算的长度
-		_PLCCommand[33] = data.Length * 8 // 256
-		_PLCCommand[34] = data.Length * 8 % 256
+		_PLCCommand[33] = len(data) * 8 // 256
+		_PLCCommand[34] = len(data) * 8 % 256
 
 		_PLCCommand[35:] = data
 
@@ -2903,7 +2903,7 @@ class SiemensS7Net(NetworkDeviceBase):
 		for i in range(len(length)):
 			receiveCount += length[i]
 
-		if read.Content.Length >= 21 and read.Content[20] == length.Length :
+		if len(read.Content) >= 21 and read.Content[20] == len(length) :
 			buffer = bytearray(receiveCount)
 			kk = 0
 			ll = 0
@@ -2987,7 +2987,7 @@ class SiemensS7Net(NetworkDeviceBase):
 		write = self.ReadFromCoreServer( entireValue )
 		if write.IsSuccess == False : return write
 
-		if write.Content[write.Content.Length - 1] != 0xFF :
+		if write.Content[len(write.Content) - 1] != 0xFF :
 			# 写入异常
 			return OperateResult( msg = "写入数据异常", err = write.Content[write.Content.Length - 1])
 		else:

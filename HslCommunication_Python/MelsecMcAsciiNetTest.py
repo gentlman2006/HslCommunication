@@ -1,4 +1,4 @@
-from HslCommunication import MelsecMcNet
+from HslCommunication import MelsecMcAsciiNet
 from HslCommunication import SoftBasic
 
 def printReadResult(result):
@@ -14,7 +14,7 @@ def printWriteResult(result):
 
 if __name__ == "__main__":
     print(SoftBasic.GetUniqueStringByGuidAndRandom())
-    melsecNet = MelsecMcNet("192.168.8.12",6002)
+    melsecNet = MelsecMcAsciiNet("192.168.8.12",6002)
     if melsecNet.ConnectServer().IsSuccess == False:
         print("connect falied  ")
     else:
