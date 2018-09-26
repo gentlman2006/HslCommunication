@@ -3915,7 +3915,7 @@ class NetPushClient(NetworkXBase):
 	def SocketReceiveException( self, session ):
 		# 发生异常的时候需要进行重新连接
 		while True:
-			print('wait 10s to reconnect server')
+			print('NetPushClient wait 10s to reconnect server')
 			sleep( self.ReConnectTime )
 
 			if self.CreatePush( ).IsSuccess == True:
