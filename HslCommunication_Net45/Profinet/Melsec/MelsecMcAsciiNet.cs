@@ -201,9 +201,9 @@ namespace HslCommunication.Profinet.Melsec
             // 核心交互
             var read = Read( address, length );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read );
-            
+
             // 转化bool数组
-            return OperateResult.CreateSuccessResult( read.Content.Select( m => m == 0x01 ).ToArray( ) );
+            return OperateResult.CreateSuccessResult( read.Content.Select( m => m == 0x01 ).Take( length ).ToArray( ) );
         }
 
 

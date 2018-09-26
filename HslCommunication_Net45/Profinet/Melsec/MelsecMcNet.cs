@@ -221,7 +221,7 @@ namespace HslCommunication.Profinet.Melsec
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read );
 
             // 转化bool数组
-            return OperateResult.CreateSuccessResult( read.Content.Select( m => m == 0x01 ).ToArray() );
+            return OperateResult.CreateSuccessResult( read.Content.Select( m => m == 0x01 ).Take( length ).ToArray( ) );
         }
 
 
