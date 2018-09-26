@@ -1,3 +1,26 @@
+'''
+MIT License
+
+Copyright (c) 2017-2018 Richard.Hu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+'''
 from HslCommunication import MelsecMcNet
 from HslCommunication import SoftBasic
 
@@ -18,55 +41,55 @@ if __name__ == "__main__":
     if melsecNet.ConnectServer().IsSuccess == False:
         print("connect falied  ")
     else:
-        # 读写bool数值
+        # bool read write test
         melsecNet.WriteBool("M200",True)
         printReadResult(melsecNet.ReadBool("M200"))
 
-        # 读写bool数组
+        # bool array read write test
         melsecNet.WriteBool("M300",[True,False,True,True,False])
         printReadResult(melsecNet.ReadBool("M300",5))
 
-        # 读写int16数值
+        # int16 read write test
         melsecNet.WriteInt16("D200", 12358)
         printReadResult(melsecNet.ReadInt16("D200"))
 
-        # 读写int16数值
+        # int16 read write test
         melsecNet.WriteInt16("D201", -12358)
         printReadResult(melsecNet.ReadInt16("D201"))
 
-        # 读写uint16数值
+        # uint16 read write test
         melsecNet.WriteUInt16("D202", 52358)
         printReadResult(melsecNet.ReadUInt16("D202"))
 
-        # 读写int32数值
+        # int32 read write test
         melsecNet.WriteInt32("D210", 12345678)
         printReadResult(melsecNet.ReadInt32("D210"))
 
-        # 读写int32数值
+        # int32 read write test
         melsecNet.WriteInt32("D212", -12345678)
         printReadResult(melsecNet.ReadInt32("D212"))
 
-        # 读写uint32数值
+        # uint32 read write test
         melsecNet.WriteUInt32("D214", 123456789)
         printReadResult(melsecNet.ReadInt32("D214"))
 
-        # 读写int64数值
+        # int64 read write test
         melsecNet.WriteInt64("D220", 12345678901234)
         printReadResult(melsecNet.ReadInt64("D220"))
 
-        # 读写float数值
+        # float read write test
         melsecNet.WriteFloat("D230", 123.456)
         printReadResult(melsecNet.ReadFloat("D230"))
 
-        # 读写double数值
+        # double read write test
         melsecNet.WriteDouble("D240", 123.456789)
         printReadResult(melsecNet.ReadDouble("D240"))
 
-        # 读写字符串
+        # string read write test
         melsecNet.WriteString("D250", '123456')
         printReadResult(melsecNet.ReadString("D250",3))
 
-        # 读写int数组
+        # int16 array read write test
         melsecNet.WriteInt16("D260", [123,456,789,-1234])
         printReadResult(melsecNet.ReadInt16("D260",4))
 

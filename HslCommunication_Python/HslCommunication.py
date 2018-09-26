@@ -1,3 +1,171 @@
+'''
+                   GNU LESSER GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2017 - 2018 Richard.Hu <http://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+
+  This version of the GNU Lesser General Public License incorporates
+the terms and conditions of version 3 of the GNU General Public
+License, supplemented by the additional permissions listed below.
+
+  0. Additional Definitions.
+
+  As used herein, "this License" refers to version 3 of the GNU Lesser
+General Public License, and the "GNU GPL" refers to version 3 of the GNU
+General Public License.
+
+  "The Library" refers to a covered work governed by this License,
+other than an Application or a Combined Work as defined below.
+
+  An "Application" is any work that makes use of an interface provided
+by the Library, but which is not otherwise based on the Library.
+Defining a subclass of a class defined by the Library is deemed a mode
+of using an interface provided by the Library.
+
+  A "Combined Work" is a work produced by combining or linking an
+Application with the Library.  The particular version of the Library
+with which the Combined Work was made is also called the "Linked
+Version".
+
+  The "Minimal Corresponding Source" for a Combined Work means the
+Corresponding Source for the Combined Work, excluding any source code
+for portions of the Combined Work that, considered in isolation, are
+based on the Application, and not on the Linked Version.
+
+  The "Corresponding Application Code" for a Combined Work means the
+object code and/or source code for the Application, including any data
+and utility programs needed for reproducing the Combined Work from the
+Application, but excluding the System Libraries of the Combined Work.
+
+  1. Exception to Section 3 of the GNU GPL.
+
+  You may convey a covered work under sections 3 and 4 of this License
+without being bound by section 3 of the GNU GPL.
+
+  2. Conveying Modified Versions.
+
+  If you modify a copy of the Library, and, in your modifications, a
+facility refers to a function or data to be supplied by an Application
+that uses the facility (other than as an argument passed when the
+facility is invoked), then you may convey a copy of the modified
+version:
+
+   a) under this License, provided that you make a good faith effort to
+   ensure that, in the event an Application does not supply the
+   function or data, the facility still operates, and performs
+   whatever part of its purpose remains meaningful, or
+
+   b) under the GNU GPL, with none of the additional permissions of
+   this License applicable to that copy.
+
+  3. Object Code Incorporating Material from Library Header Files.
+
+  The object code form of an Application may incorporate material from
+a header file that is part of the Library.  You may convey such object
+code under terms of your choice, provided that, if the incorporated
+material is not limited to numerical parameters, data structure
+layouts and accessors, or small macros, inline functions and templates
+(ten or fewer lines in length), you do both of the following:
+
+   a) Give prominent notice with each copy of the object code that the
+   Library is used in it and that the Library and its use are
+   covered by this License.
+
+   b) Accompany the object code with a copy of the GNU GPL and this license
+   document.
+
+  4. Combined Works.
+
+  You may convey a Combined Work under terms of your choice that,
+taken together, effectively do not restrict modification of the
+portions of the Library contained in the Combined Work and reverse
+engineering for debugging such modifications, if you also do each of
+the following:
+
+   a) Give prominent notice with each copy of the Combined Work that
+   the Library is used in it and that the Library and its use are
+   covered by this License.
+
+   b) Accompany the Combined Work with a copy of the GNU GPL and this license
+   document.
+
+   c) For a Combined Work that displays copyright notices during
+   execution, include the copyright notice for the Library among
+   these notices, as well as a reference directing the user to the
+   copies of the GNU GPL and this license document.
+
+   d) Do one of the following:
+
+       0) Convey the Minimal Corresponding Source under the terms of this
+       License, and the Corresponding Application Code in a form
+       suitable for, and under terms that permit, the user to
+       recombine or relink the Application with a modified version of
+       the Linked Version to produce a modified Combined Work, in the
+       manner specified by section 6 of the GNU GPL for conveying
+       Corresponding Source.
+
+       1) Use a suitable shared library mechanism for linking with the
+       Library.  A suitable mechanism is one that (a) uses at run time
+       a copy of the Library already present on the user's computer
+       system, and (b) will operate properly with a modified version
+       of the Library that is interface-compatible with the Linked
+       Version.
+
+   e) Provide Installation Information, but only if you would otherwise
+   be required to provide such information under section 6 of the
+   GNU GPL, and only to the extent that such information is
+   necessary to install and execute a modified version of the
+   Combined Work produced by recombining or relinking the
+   Application with a modified version of the Linked Version. (If
+   you use option 4d0, the Installation Information must accompany
+   the Minimal Corresponding Source and Corresponding Application
+   Code. If you use option 4d1, you must provide the Installation
+   Information in the manner specified by section 6 of the GNU GPL
+   for conveying Corresponding Source.)
+
+  5. Combined Libraries.
+
+  You may place library facilities that are a work based on the
+Library side by side in a single library together with other library
+facilities that are not Applications and are not covered by this
+License, and convey such a combined library under terms of your
+choice, if you do both of the following:
+
+   a) Accompany the combined library with a copy of the same work based
+   on the Library, uncombined with any other library facilities,
+   conveyed under the terms of this License.
+
+   b) Give prominent notice with the combined library that part of it
+   is a work based on the Library, and explaining where to find the
+   accompanying uncombined form of the same work.
+
+  6. Revised Versions of the GNU Lesser General Public License.
+
+  The Free Software Foundation may publish revised and/or new versions
+of the GNU Lesser General Public License from time to time. Such new
+versions will be similar in spirit to the present version, but may
+differ in detail to address new problems or concerns.
+
+  Each version is given a distinguishing version number. If the
+Library as you received it specifies that a certain numbered version
+of the GNU Lesser General Public License "or any later version"
+applies to it, you have the option of following the terms and
+conditions either of that published version or of any later version
+published by the Free Software Foundation. If the Library as you
+received it does not specify a version number of the GNU Lesser
+General Public License, you may choose any version of the GNU Lesser
+General Public License ever published by the Free Software Foundation.
+
+  If the Library as you received it specifies that a proxy can decide
+whether future versions of the GNU Lesser General Public License shall
+apply, that proxy's public statement of acceptance of any version is
+permanent authorization for you to choose that version for the
+Library.
+
+'''
 import string
 import uuid
 import socket
@@ -234,6 +402,26 @@ class MelsecQnA3EBinaryMessage(INetMessage):
 		'''令牌检查是否成功'''
 		if self.HeadBytes != None:
 			if self.HeadBytes[0] == 0xD0 and self.HeadBytes[1] == 0x00:
+				return True
+			else:
+				return False
+		else:
+			return False
+class MelsecQnA3EAsciiMessage(INetMessage):
+	'''三菱的Qna兼容3E帧的ASCII协议解析规则'''
+	def ProtocolHeadBytesLength(self):
+		'''协议头数据长度，也即是第一次接收的数据长度'''
+		return 18
+	def GetContentLengthByHeadBytes(self):
+		'''二次接收的数据长度'''
+		if self.HeadBytes != None:
+			return int(self.HeadBytes[14:18].decode('ascii'),16)
+		else:
+			return 0
+	def CheckHeadBytesLegal(self,token):
+		'''令牌检查是否成功'''
+		if self.HeadBytes != None:
+			if self.HeadBytes[0] == ord('D') and self.HeadBytes[1] == ord('0') and self.HeadBytes[2] == ord('0') and self.HeadBytes[3] == ord('0'):
 				return True
 			else:
 				return False
@@ -2096,7 +2284,7 @@ class MelsecHelper:
 		if length == None:
 			return ('{:02X}'.format(value)).encode('ascii')
 		else:
-			return (('{:0'+ length +'X}').format(value)).encode('ascii')
+			return (('{:0'+ str(length) +'X}').format(value)).encode('ascii')
 	@staticmethod
 	def BuildBytesFromAddress( address, dataType ):
 		'''从三菱的地址中构建MC协议的6字节的ASCII格式的地址'''
@@ -2170,15 +2358,15 @@ class MelsecMcNet(NetworkDeviceBase):
 		length = -1
 		if analysis.Content1.DataType == 1:
 			# 按照位写入的操作，数据需要重新计算
-			length2 =  value.Length // 2 + 1
+			length2 =  len(value) // 2 + 1
 			if len(value) % 2 == 0 : 
-				length2 = value.Length / 2
+				length2 = len(value) // 2
 			buffer = bytearray(length2)
 
 			for i in range(length2):
 				if value[i * 2 + 0] != 0x00 :
 					buffer[i] += 0x10
-				if (i * 2 + 1) < value.Length :
+				if (i * 2 + 1) < len(value) :
 					if value[i * 2 + 1] != 0x00 :
 						buffer[i] += 0x01
 			length = len(value)
@@ -2282,7 +2470,7 @@ class MelsecMcNet(NetworkDeviceBase):
 
 			# 转化bool数组
 			content = []
-			for i in range(len(read.Content)):
+			for i in range(length):
 				if read.Content[i] == 0x01:
 					content.append(True)
 				else:
@@ -2321,7 +2509,7 @@ class MelsecMcAsciiNet(NetworkDeviceBase):
 	NetworkStationNumber = 0
 	def __init__(self,ipAddress= "127.0.0.1",port = 0):
 		'''实例化一个三菱的Qna兼容3E帧协议的通讯对象'''
-		self.iNetMessage = MelsecQnA3EBinaryMessage()
+		self.iNetMessage = MelsecQnA3EAsciiMessage()
 		self.byteTransform = RegularByteTransform()
 		self.ipAddress = ipAddress
 		self.port = port
@@ -2366,16 +2554,8 @@ class MelsecMcAsciiNet(NetworkDeviceBase):
 		_PLCCommand[29] = 0x30 if analysis.Content1.DataType == 0 else 0x31
 		_PLCCommand[30] = analysis.Content1.AsciiCode.encode('ascii')[0]                     # 软元件类型
 		_PLCCommand[31] = analysis.Content1.AsciiCode.encode('ascii')[1]
-		_PLCCommand[32] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[0]           # 起始地址的地位
-		_PLCCommand[33] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[1]
-		_PLCCommand[34] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[2]
-		_PLCCommand[35] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[3]
-		_PLCCommand[36] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[4]
-		_PLCCommand[37] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )[5]
-		_PLCCommand[38] = MelsecHelper.BuildBytesFromData( length, 4 )[0]                                            # 软元件点数
-		_PLCCommand[39] = MelsecHelper.BuildBytesFromData( length, 4 )[1]
-		_PLCCommand[40] = MelsecHelper.BuildBytesFromData( length, 4 )[2]
-		_PLCCommand[41] = MelsecHelper.BuildBytesFromData( length, 4 )[3]
+		_PLCCommand[32:38] = MelsecHelper.BuildBytesFromAddress( analysis.Content2, analysis.Content1 )           # 起始地址的地位
+		_PLCCommand[38:42] = MelsecHelper.BuildBytesFromData( length, 4 )                    # 软元件点数
 
 		return OperateResult.CreateSuccessResult( _PLCCommand )
 	@staticmethod
@@ -2401,7 +2581,7 @@ class MelsecMcAsciiNet(NetworkDeviceBase):
 
 		# 默认信息----注意：高低字节交错
 
-		_PLCCommand = bytearray(42 + len(value.Length))
+		_PLCCommand = bytearray(42 + len(value))
 
 		_PLCCommand[ 0] = 0x35                                                                              # 副标题
 		_PLCCommand[ 1] = 0x30
@@ -2527,7 +2707,7 @@ class MelsecMcAsciiNet(NetworkDeviceBase):
 		if read.IsSuccess == False : return read
 
 		# 错误码验证
-		errorCode = int( read.Content[18, 22].decode('ascii'), 16 )
+		errorCode = int( read.Content[18:22].decode('ascii'), 16 )
 		if errorCode != 0 : return OperateResult( err = errorCode, msg = StringResources.MelsecPleaseReferToManulDocument() )
 
 		# 写入成功
@@ -2964,9 +3144,9 @@ class SiemensS7Net(NetworkDeviceBase):
 
 		# 分析结果
 		receiveCount = 1
-		if read.Content.Length >= 21 and read.Content[20] == 1 :
+		if len(read.Content) >= 21 and read.Content[20] == 1 :
 			buffer = bytearray(receiveCount)
-			if 22 < read.Content.Length :
+			if 22 < len(read.Content) :
 				if read.Content[21] == 0xFF and read.Content[22] == 0x03:
 					# 有数据
 					buffer[0] = read.Content[25]
