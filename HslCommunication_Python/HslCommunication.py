@@ -3335,7 +3335,7 @@ class SiemensFetchWriteNet(NetworkDeviceBase):
 				_PLCCommand[13] = data.Length // 2 % 256
 		else:
 			# 指定数据长度
-			_PLCCommand[12] = data.Length / 256
+			_PLCCommand[12] = data.Length // 256
 			_PLCCommand[13] = data.Length % 256
 		_PLCCommand[14] = 0xff
 		_PLCCommand[15] = 0x02

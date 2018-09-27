@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 from HslCommunication import MelsecMcAsciiNet
-from HslCommunication import SoftBasic
 
 def printReadResult(result):
     if result.IsSuccess:
@@ -36,7 +35,6 @@ def printWriteResult(result):
         print("falied  " + result.Message)
 
 if __name__ == "__main__":
-    print(SoftBasic.GetUniqueStringByGuidAndRandom())
     melsecNet = MelsecMcAsciiNet("192.168.8.12",6002)
     if melsecNet.ConnectServer().IsSuccess == False:
         print("connect falied  ")

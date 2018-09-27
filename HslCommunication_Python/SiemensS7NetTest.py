@@ -23,6 +23,7 @@ SOFTWARE.
 '''
 from HslCommunication import SiemensS7Net
 from HslCommunication import SiemensPLCS
+from HslCommunication import SoftBasic
 
 def printReadResult(result):
     if result.IsSuccess:
@@ -92,5 +93,35 @@ if __name__ == "__main__":
         siemens.WriteInt16("M160", [123,456,789,-1234])
         printReadResult(siemens.ReadInt16("M160",4))
 
+        # read block
+        read = siemens.Read("M100",10)
+        if read.IsSuccess:
+            m100 = read.Content[0]
+            m101 = read.Content[1]
+            m102 = read.Content[2]
+            m103 = read.Content[3]
+            m104 = read.Content[4]
+            m105 = read.Content[5]
+            m106 = read.Content[6]
+            m107 = read.Content[7]
+            m108 = read.Content[8]
+            m109 = read.Content[9]
+        else:
+            print(read.Message)
+
+        read = siemens.Read("M100",20)
+        if read.IsSuccess:
+            count = siemens.byteTransform.TransInt32(read.Content,0)
+            temp = siemens.byteTransform.TransSingle(read.Content,4)
+            name1 = siemens.byteTransform.TransInt16(read.Content,8)
+            barcode = read.Content[10:20].decode('ascii')
+
+        read = siemens.ReadFromCoreServer(SoftBasic.HexStringToBytes("03 00 00 24 02 F0 80 32 01 00 00 00 01 00 0E 00 05 05 01 12 0A 10 02 00 01 00 00 83 00 03 20 00 04 00 08 3B"))
+        if read.IsSuccess:
+            # 显示服务器返回的报文
+            print(read.Content)
+        else:
+            # 读取错误
+            print(read.Message)
 
         siemens.ConnectClose()
