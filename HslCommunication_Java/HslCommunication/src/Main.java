@@ -41,9 +41,20 @@ public class Main {
             //MelsecMcNet melsec_net = new MelsecMcNet("192.168.8.12", 6001);
             //System.out.println(melsec_net.ReadInt16("D100").Content);
 
-            ModbusTcpNet modbusTcpNet = new ModbusTcpNet("127.0.0.1",502,(byte)1);
-            System.out.println(modbusTcpNet.ReadInt16("100").Content);
+            SiemensS7Net siemensS7Net = new SiemensS7Net(SiemensPLCS.S1200,"192.168.8.12");
+            OperateResult write = siemensS7Net.Write("M200",(short)200);
 
+            if(!write.IsSuccess){
+                System.out.println("Write failed:"+write.Message);
+            }
+
+            OperateResultExOne<Short> read = siemensS7Net.ReadInt16("M200");
+            if(read.IsSuccess){
+                System.out.println("Value:"+read.Content.toString());
+            }
+            else {
+                System.out.println("Read failed:"+read.Message);
+            }
         }
         catch (Exception ex){
             System.out.println(ex.getMessage());

@@ -295,7 +295,7 @@ public class SiemensS7Net extends NetworkDeviceBase<S7Message, ReverseBytesTrans
         OperateResultExOne<byte[]> write = ReadFromCoreServer(entireValue);
         if (!write.IsSuccess) return write;
 
-        if (write.Content[write.Content.length - 1] != 0xFF) {
+        if (write.Content[write.Content.length - 1] != (byte) 0xFF) {
             return new OperateResult(write.Content[write.Content.length - 1], StringResources.Language.SiemensWriteError() + write.Content[write.Content.length - 1]);
         } else {
             return OperateResult.CreateSuccessResult();
