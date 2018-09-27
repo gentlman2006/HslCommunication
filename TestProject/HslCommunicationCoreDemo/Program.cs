@@ -3,6 +3,8 @@ using HslCommunication.Profinet.Melsec;
 using HslCommunication.ModBus;
 using HslCommunication;
 using HslCommunication.Profinet.AllenBradley;
+using HslCommunication.Profinet.Siemens;
+using System.Threading.Tasks;
 
 namespace HslCommunicationCoreDemo
 {
@@ -13,6 +15,10 @@ namespace HslCommunicationCoreDemo
             Console.WriteLine("Hello World!");
 
             Console.WriteLine( System.Globalization.CultureInfo.CurrentCulture.ToString() );
+
+
+            SiemensS7Net siemens = new SiemensS7Net( SiemensPLCS.S1200, "192.168.8.12" );
+
             Console.ReadLine( );
         }
 
