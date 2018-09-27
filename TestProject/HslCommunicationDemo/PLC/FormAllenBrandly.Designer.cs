@@ -45,6 +45,7 @@
             this.label17 = new System.Windows.Forms.Label();
             this.textBox12 = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.userCurve1 = new HslCommunication.Controls.UserCurve();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBox11 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -97,7 +98,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.userCurve1 = new HslCommunication.Controls.UserCurve();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -132,7 +132,7 @@
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(197, 45);
             this.label22.TabIndex = 7;
-            this.label22.Text = "变量的标签名，需要在PLC做映射";
+            this.label22.Text = "变量的标签名";
             // 
             // label21
             // 
@@ -285,6 +285,17 @@
             this.label15.Size = new System.Drawing.Size(44, 17);
             this.label15.TabIndex = 4;
             this.label15.Text = "地址：";
+            // 
+            // userCurve1
+            // 
+            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.userCurve1.Location = new System.Drawing.Point(13, 82);
+            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userCurve1.Name = "userCurve1";
+            this.userCurve1.Size = new System.Drawing.Size(400, 189);
+            this.userCurve1.TabIndex = 0;
+            this.userCurve1.ValueMaxLeft = 200F;
+            this.userCurve1.ValueMaxRight = 200F;
             // 
             // groupBox4
             // 
@@ -818,17 +829,6 @@
             this.label20.Size = new System.Drawing.Size(108, 17);
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
-            // 
-            // userCurve1
-            // 
-            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.userCurve1.Location = new System.Drawing.Point(13, 82);
-            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userCurve1.Name = "userCurve1";
-            this.userCurve1.Size = new System.Drawing.Size(400, 189);
-            this.userCurve1.TabIndex = 0;
-            this.userCurve1.ValueMaxLeft = 200F;
-            this.userCurve1.ValueMaxRight = 200F;
             // 
             // FormAllenBrandly
             // 

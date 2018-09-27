@@ -431,6 +431,15 @@ namespace HslCommunication
     ///             <item>其他大量的细节的代码优化，重构。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-09-27" version="5.3.3" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>DeviceNet层添加异步的API，支持async+await调用。</item>
+    ///             <item>java修复西门子的写入成功却提示失败的bug。</item>
+    ///             <item>java代码重构，和C#基本保持一致。</item>
+    ///             <item>python版本发布，支持三菱，西门子，欧姆龙，modbus，数据订阅，同步访问。</item>
+    ///             <item>其他的代码优化，重构精简。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc
