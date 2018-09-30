@@ -18,6 +18,73 @@ namespace HslCommunication.Profinet.Melsec
         #region Melsec Mc
 
         /// <summary>
+        /// 解析A1E协议数据地址
+        /// </summary>
+        /// <param name="address">数据地址</param>
+        /// <returns></returns>
+        public static OperateResult<MelsecA1EDataType, ushort> McA1EAnalysisAddress(string address)
+        {
+            var result = new OperateResult<MelsecA1EDataType, ushort>();
+            try
+            {
+                switch (address[0])
+                {
+                    case 'X':
+                    case 'x':
+                        {
+                            result.Content1 = MelsecA1EDataType.X;
+                            result.Content2 = Convert.ToUInt16(address.Substring(1), MelsecA1EDataType.X.FromBase);
+                            break;
+                        }
+                    case 'Y':
+                    case 'y':
+                        {
+                            result.Content1 = MelsecA1EDataType.Y;
+                            result.Content2 = Convert.ToUInt16(address.Substring(1), MelsecA1EDataType.Y.FromBase);
+                            break;
+                        }
+                    case 'M':
+                    case 'm':
+                        {
+                            result.Content1 = MelsecA1EDataType.M;
+                            result.Content2 = Convert.ToUInt16(address.Substring(1), MelsecA1EDataType.M.FromBase);
+                            break;
+                        }
+                    case 'S':
+                    case 's':
+                        {
+                            result.Content1 = MelsecA1EDataType.S;
+                            result.Content2 = Convert.ToUInt16(address.Substring(1), MelsecA1EDataType.S.FromBase);
+                            break;
+                        }
+                    case 'D':
+                    case 'd':
+                        {
+                            result.Content1 = MelsecA1EDataType.D;
+                            result.Content2 = Convert.ToUInt16(address.Substring(1), MelsecA1EDataType.D.FromBase);
+                            break;
+                        }
+                    case 'R':
+                    case 'r':
+                        {
+                            result.Content1 = MelsecA1EDataType.R;
+                            result.Content2 = Convert.ToUInt16(address.Substring(1), MelsecA1EDataType.R.FromBase);
+                            break;
+                        }
+                    default: throw new Exception(StringResources.Language.NotSupportedDataType);
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Message = ex.Message;
+                return result;
+            }
+
+            result.IsSuccess = true;
+            return result;
+        }
+
+        /// <summary>
         /// 解析数据地址
         /// </summary>
         /// <param name="address">数据地址</param>
