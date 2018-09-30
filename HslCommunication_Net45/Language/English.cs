@@ -41,6 +41,8 @@ namespace HslCommunication.Language
         public override string MailServerCenter => "Mail Center System";
         public override string MailSendTail => "Mail Service system issued automatically, do not reply";
         public override string IpAddresError => "IP address input exception, format is incorrect";
+        public override string Send => "Send";
+        public override string Receive => "Receive";
 
         /***********************************************************************************
          * 

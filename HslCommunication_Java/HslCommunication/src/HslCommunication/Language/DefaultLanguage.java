@@ -35,6 +35,8 @@ public class DefaultLanguage
     public String MailServerCenter (){ return "邮件发送系统"; }
     public String MailSendTail (){ return "邮件服务系统自动发出，请勿回复！"; }
     public String IpAddresError (){ return "Ip地址输入异常，格式不正确"; }
+    public String Send (){ return "发送";}
+    public String Receive(){ return "接收";}
 
     /***********************************************************************************
      *

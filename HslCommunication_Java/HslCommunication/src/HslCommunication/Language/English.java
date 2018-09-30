@@ -59,6 +59,10 @@ public class English extends DefaultLanguage {
     public String MailSendTail (){ return "Mail Service system issued automatically, do not reply"; }
     @Override
     public String IpAddresError (){ return "IP address input exception, format is incorrect"; }
+    @Override
+    public String Send (){ return "Send";}
+    @Override
+    public String Receive(){ return "Receive";}
 
     /***********************************************************************************
      *

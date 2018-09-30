@@ -41,6 +41,8 @@ namespace HslCommunication.Language
         public virtual string MailServerCenter => "邮件发送系统";
         public virtual string MailSendTail => "邮件服务系统自动发出，请勿回复！";
         public virtual string IpAddresError => "Ip地址输入异常，格式不正确";
+        public virtual string Send => "发送";
+        public virtual string Receive => "接收";
 
         /***********************************************************************************
          * 
