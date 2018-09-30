@@ -205,7 +205,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="length">长度</param>
         /// <param name="plcNumber">PLC编号</param>
         /// <returns>带有成功标志的指令数据</returns>
-        private static OperateResult<byte[]> BuildReadCommand(string address, ushort length, byte plcNumber)
+        public static OperateResult<byte[]> BuildReadCommand(string address, ushort length, byte plcNumber)
         {
             var analysis = MelsecHelper.McA1EAnalysisAddress(address);
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>(analysis);
@@ -236,8 +236,8 @@ namespace HslCommunication.Profinet.Melsec
         /// <param name="address">起始地址</param>
         /// <param name="value">数据值</param>
         /// <param name="plcNumber">PLC编号</param>
-        /// <returns></returns>
-        private static OperateResult<byte[]> BuildWriteCommand(string address, byte[] value, byte plcNumber)
+        /// <returns>带有成功标志的指令数据</returns>
+        public static OperateResult<byte[]> BuildWriteCommand(string address, byte[] value, byte plcNumber)
         {
             var analysis = MelsecHelper.McA1EAnalysisAddress(address);
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>(analysis);

@@ -2525,10 +2525,7 @@ class MelsecA1ENet(NetworkDeviceBase):
 			return OperateResult.CreateSuccessResult( Content )
 		else:
 			# 字读取
-			Content = bytearray(len(response) - 2)
-			Content[0:] = response[2:]
-
-			return OperateResult.CreateSuccessResult( Content )
+			return OperateResult.CreateSuccessResult( response[2:] )
 	def Read( self, address, length ):
 		'''从三菱PLC中读取想要的数据，返回读取结果'''
 		# 获取指令
