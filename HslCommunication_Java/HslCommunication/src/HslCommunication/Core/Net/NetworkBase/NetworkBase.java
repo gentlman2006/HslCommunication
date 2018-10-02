@@ -145,7 +145,7 @@ public abstract class NetworkBase {
         int contentLength = netMsg.GetContentLengthByHeadBytes( );
         if (contentLength == 0)
         {
-            netMsg.setHeadBytes( new byte[0] );
+            netMsg.setContentBytes( new byte[0] );
         }
         else
         {

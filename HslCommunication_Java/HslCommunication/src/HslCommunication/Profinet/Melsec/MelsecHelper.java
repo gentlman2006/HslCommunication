@@ -7,6 +7,65 @@ import HslCommunication.Utilities;
  * 所有三菱通讯类的通用辅助工具类，包含了一些通用的静态方法，可以使用本类来获取一些原始的报文信息。详细的操作参见例子
  */
 public class MelsecHelper {
+
+    /**
+     * 解析A1E协议数据地址
+     * @param address 数据地址
+     * @return 解析值
+     */
+    public static OperateResultExTwo<MelsecA1EDataType, Short> McA1EAnalysisAddress( String address )
+    {
+        OperateResultExTwo<MelsecA1EDataType, Short> result = new OperateResultExTwo<MelsecA1EDataType, Short>();
+        try {
+            switch (address.charAt(0)) {
+                case 'X':
+                case 'x': {
+                    result.Content1 = MelsecA1EDataType.X;
+                    result.Content2 = Short.parseShort(address.substring(1), MelsecA1EDataType.X.getFromBase());
+                    break;
+                }
+                case 'Y':
+                case 'y': {
+                    result.Content1 = MelsecA1EDataType.Y;
+                    result.Content2 = Short.parseShort(address.substring(1), MelsecA1EDataType.Y.getFromBase());
+                    break;
+                }
+                case 'M':
+                case 'm': {
+                    result.Content1 = MelsecA1EDataType.M;
+                    result.Content2 = Short.parseShort(address.substring(1), MelsecA1EDataType.M.getFromBase());
+                    break;
+                }
+                case 'S':
+                case 's': {
+                    result.Content1 = MelsecA1EDataType.S;
+                    result.Content2 = Short.parseShort(address.substring(1), MelsecA1EDataType.S.getFromBase());
+                    break;
+                }
+                case 'D':
+                case 'd': {
+                    result.Content1 = MelsecA1EDataType.D;
+                    result.Content2 = Short.parseShort(address.substring(1), MelsecA1EDataType.D.getFromBase());
+                    break;
+                }
+                case 'R':
+                case 'r': {
+                    result.Content1 = MelsecA1EDataType.R;
+                    result.Content2 = Short.parseShort(address.substring(1), MelsecA1EDataType.R.getFromBase());
+                    break;
+                }
+                default:
+                    throw new Exception("输入的类型不支持，请重新输入");
+            }
+        } catch (Exception ex) {
+            result.Message = "地址格式填写错误：" + ex.getMessage();
+            return result;
+        }
+
+        result.IsSuccess = true;
+        return result;
+    }
+
     /**
      * 解析数据地址
      * @param address 数据地址
