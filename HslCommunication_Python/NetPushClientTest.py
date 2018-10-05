@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 '''
-警告：以下代码只能在测试PLC中运行，禁止使用生产现场的PLC来测试，否则，后果自负
-Warning: The following code can only be run in the Test plc, prohibit the use of the production site PLC to test, otherwise, the consequences
+说明：这个类可以用来接收C#的服务器推送的数据，java的类也可以接收推送的数据。
+Description: This class can be used to receive push data from a server in C #, and Java classes can also receive push Data.
 '''
 from HslCommunication import NetPushClient
 

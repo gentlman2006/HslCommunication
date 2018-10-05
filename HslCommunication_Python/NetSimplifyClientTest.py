@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 '''
-警告：以下代码只能在测试PLC中运行，禁止使用生产现场的PLC来测试，否则，后果自负
-Warning: The following code can only be run in the Test plc, prohibit the use of the production site PLC to test, otherwise, the consequences
+说明：这个类可以用来和C#的服务器通讯，进行数据交互，同理，java的类也可以和C#进行数据交互。
+Description: This class can be used to communicate with C # servers for data interaction, and similarly, Java classes can interact with C # Data.
 '''
 from HslCommunication import NetSimplifyClient
 
