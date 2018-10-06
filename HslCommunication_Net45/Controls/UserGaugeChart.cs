@@ -141,12 +141,12 @@ namespace HslCommunication.Controls
             g.RotateTransform( (float)(-(value_paint - ValueStart) / (ValueMax - ValueStart) * (180 - 2 * angle)) );
             g.RotateTransform( 90 - angle );
 
-            if (value_alarm_min > value_start && value_alarm_min <= value_max)
+            if (value_alarm_min > ValueStart && value_alarm_min <= ValueMax)
             {
                 g.DrawArc( pen_gauge_alarm, circular_larger, angle - 180, (float)((ValueAlarmMin - ValueStart) / (ValueMax - ValueStart) * (180 - 2 * angle)) );
             }
 
-            if (value_alarm_max >= value_start && value_alarm_max < value_max)
+            if (value_alarm_max >= ValueStart && value_alarm_max < ValueMax)
             {
                 float angle_max = (float)((value_alarm_max - ValueStart) / (ValueMax - ValueStart) * (180 - 2 * angle));
                 g.DrawArc( pen_gauge_alarm, circular_larger, -180 + angle + angle_max, 180 - 2 * angle - angle_max );
@@ -359,15 +359,18 @@ namespace HslCommunication.Controls
         {
             get
             {
-                return value_start;
+                if (value_max <= value_start)
+                {
+                    return value_start + 1;
+                }
+                else
+                {
+                    return value_start;
+                }
             }
             set
             {
                 value_start = value;
-                if (value_max <= value_start)
-                {
-                    value_max = value_start + 1;
-                }
                 Invalidate( );
             }
         }
@@ -383,15 +386,18 @@ namespace HslCommunication.Controls
         {
             get
             {
-                return value_max;
+                if (value_max <= value_start)
+                {
+                    return value_start + 1;
+                }
+                else
+                {
+                    return value_max;
+                }
             }
             set
             {
                 value_max = value;
-                if (value_max <= value_start)
-                {
-                    value_max = value_start + 1;
-                }
                 Invalidate( );
             }
         }

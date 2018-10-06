@@ -113,10 +113,14 @@
             this.userGaugeChart1.Location = new System.Drawing.Point(12, 13);
             this.userGaugeChart1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userGaugeChart1.Name = "userGaugeChart1";
+            this.userGaugeChart1.SegmentCount = 5;
             this.userGaugeChart1.Size = new System.Drawing.Size(320, 183);
             this.userGaugeChart1.TabIndex = 29;
             this.userGaugeChart1.UnitText = "km/h";
-            this.userGaugeChart1.Value = 50D;
+            this.userGaugeChart1.Value = -100D;
+            this.userGaugeChart1.ValueAlarmMin = -180D;
+            this.userGaugeChart1.ValueMax = -100D;
+            this.userGaugeChart1.ValueStart = -200D;
             // 
             // FormGauge
             // 

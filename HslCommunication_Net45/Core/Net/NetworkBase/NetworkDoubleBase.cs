@@ -461,7 +461,6 @@ namespace HslCommunication.Core.Net
         public OperateResult<byte[]> ReadFromCoreServer( byte[] send )
         {
             var result = new OperateResult<byte[]>( );
-            // string tmp1 = BasicFramework.SoftBasic.ByteToHexString( send, '-' );
 
             InteractiveLock.Enter( );
 
@@ -484,8 +483,6 @@ namespace HslCommunication.Core.Net
                 result.IsSuccess = read.IsSuccess;
                 result.Content = read.Content;
                 result.Message = StringResources.Language.SuccessText;
-                //string tmp2 = BasicFramework.SoftBasic.ByteToHexString( result.Content, '-' );
-
             }
             else
             {
@@ -510,7 +507,8 @@ namespace HslCommunication.Core.Net
         /// </remarks>
         protected OperateResult<byte[], byte[]> ReadFromCoreServerBase(Socket socket, byte[] send )
         {
-            // LogNet?.WriteDebug( ToString( ), "Command: " + BasicFramework.SoftBasic.ByteToHexString( send ) );
+            LogNet?.WriteDebug( ToString( ), StringResources.Language.Send + " : " + BasicFramework.SoftBasic.ByteToHexString( send, ' ' ) );
+
             TNetMessage netMsg = new TNetMessage
             {
                 SendBytes = send
@@ -534,10 +532,17 @@ namespace HslCommunication.Core.Net
                     socket?.Close( );
                     return new OperateResult<byte[], byte[]>( StringResources.Language.ReceiveDataTimeout + receiveTimeOut );
                 }
+
+                LogNet?.WriteDebug( ToString( ), StringResources.Language.Receive + " : " +
+                    BasicFramework.SoftBasic.ByteToHexString( BasicFramework.SoftBasic.SpliceTwoByteArray( resultReceive.Content.HeadBytes,
+                    resultReceive.Content.ContentBytes ), ' ' ) );
+
+                // Success
                 return OperateResult.CreateSuccessResult( resultReceive.Content.HeadBytes, resultReceive.Content.ContentBytes );
             }
             else
             {
+                // Not need receive
                 return OperateResult.CreateSuccessResult( new byte[0], new byte[0] );
             }
         }

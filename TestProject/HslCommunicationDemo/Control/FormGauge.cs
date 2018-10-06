@@ -44,7 +44,7 @@ namespace HslCommunicationDemo
 
         private void TimerTick_Tick( object sender, EventArgs e )
         {
-            userGaugeChart1.Value = Math.Round( random.NextDouble( ) * 100, 1 );
+            userGaugeChart1.Value = Math.Round( random.NextDouble( ) * 100 - 200, 1 );
             userGaugeChart2.Value = Math.Round( random.NextDouble( ) * 120, 1 );
             userGaugeChart3.Value = Math.Round( random.NextDouble( ) * 100, 1 );
             userGaugeChart4.Value = Math.Round( random.NextDouble( ) * 100, 1 );
