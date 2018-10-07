@@ -5,6 +5,9 @@ using System.Text;
 using HslCommunication.Core.Net;
 using HslCommunication.Core.IMessage;
 using HslCommunication.Core;
+#if !NET35
+using System.Threading.Tasks;
+#endif
 
 namespace HslCommunication.Enthernet
 {
@@ -91,6 +94,32 @@ namespace HslCommunication.Enthernet
             contentBytes = HslProtocol.CommandAnalysis( headBytes, contentBytes );
             return OperateResult.CreateSuccessResult( contentBytes );
         }
+
+#if !NET35
+
+        /// <summary>
+        /// 客户端向服务器进行异步请求，请求字符串数据
+        /// </summary>
+        /// <param name="customer">用户的指令头</param>
+        /// <param name="send">发送数据</param>
+        public Task<OperateResult<string>> ReadFromServerAsync( NetHandle customer, string send = null )
+        {
+            return Task.Run( ( ) => ReadFromServer( customer, send ) );
+        }
+
+        /// <summary>
+        /// 客户端向服务器进行异步请求，请求字节数据
+        /// </summary>
+        /// <param name="customer">用户的指令头</param>
+        /// <param name="send">发送的字节内容</param>
+        /// <returns>带返回消息的结果对象</returns>
+        public Task<OperateResult<byte[]>> ReadFromServerAsync( NetHandle customer, byte[] send )
+        {
+            return Task.Run( ( ) => ReadFromServer( customer, send ) );
+        }
+
+
+#endif
 
 
         #region Object Override
