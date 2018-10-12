@@ -87,7 +87,6 @@ namespace HslCommunication.Serial
 
 
 
-
         /// <summary>
         /// 打开一个新的串行端口连接
         /// </summary>
@@ -96,6 +95,7 @@ namespace HslCommunication.Serial
             if (!SP_ReadData.IsOpen)
             {
                 SP_ReadData.Open( );
+                InitializationOnOpen( );
             }
         }
 
@@ -106,6 +106,7 @@ namespace HslCommunication.Serial
         {
             if(SP_ReadData.IsOpen)
             {
+                ExtraOnClose( );
                 SP_ReadData.Close( );
             }
         }
@@ -173,6 +174,28 @@ namespace HslCommunication.Serial
         protected virtual bool CheckReceiveBytes(byte[] rBytes )
         {
             return true;
+        }
+
+        #endregion
+
+        #region Initialization And Extra
+
+        /// <summary>
+        /// 在打开端口时的初始化方法，按照协议的需求进行必要的重写
+        /// </summary>
+        /// <returns>是否初始化成功</returns>
+        protected virtual OperateResult InitializationOnOpen( )
+        {
+            return OperateResult.CreateSuccessResult( );
+        }
+
+        /// <summary>
+        /// 在将要和服务器进行断开的情况下额外的操作，需要根据对应协议进行重写
+        /// </summary>
+        /// <returns>当断开连接时额外的操作结果</returns>
+        protected virtual OperateResult ExtraOnClose( )
+        {
+            return OperateResult.CreateSuccessResult( );
         }
 
         #endregion
