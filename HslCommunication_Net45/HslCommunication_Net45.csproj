@@ -89,6 +89,7 @@
     <Compile Include="BasicFramework\SoftAuthorize.cs" />
     <Compile Include="BasicFramework\SoftBaseClass.cs" />
     <Compile Include="BasicFramework\SoftBasic.cs" />
+    <Compile Include="BasicFramework\SoftBuffer.cs" />
     <Compile Include="BasicFramework\SoftCache.cs" />
     <Compile Include="BasicFramework\SoftException.cs" />
     <Compile Include="BasicFramework\SoftMail.cs" />

@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicFramework\SoftBasicTest.cs" />
+    <Compile Include="BasicFramework\SoftBufferTest.cs" />
     <Compile Include="BasicFramework\SoftSecurityTest.cs" />
     <Compile Include="BasicFramework\SoftZippedTest.cs" />
     <Compile Include="Core\Transfer\ReverseWordTransformTest4.cs" />

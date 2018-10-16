@@ -30,6 +30,7 @@
     <Compile Include="..\HslCommunication_Net45\Algorithms\Fourier\FFTHelper.cs" Link="Algorithms\Fourier\FFTHelper.cs" />
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftBaseClass.cs" Link="BasicFramework\SoftBaseClass.cs" />
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftBasic.cs" Link="BasicFramework\SoftBasic.cs" />
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftBuffer.cs" Link="BasicFramework\SoftBuffer.cs" />
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftCache.cs" Link="BasicFramework\SoftCache.cs" />
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftException.cs" Link="BasicFramework\SoftException.cs" />
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftMail.cs" Link="BasicFramework\SoftMail.cs" />

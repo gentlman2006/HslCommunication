@@ -108,6 +108,9 @@
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftBasic.cs">
       <Link>BasicFramework\SoftBasic.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftBuffer.cs">
+      <Link>BasicFramework\SoftBuffer.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftCache.cs">
       <Link>BasicFramework\SoftCache.cs</Link>
     </Compile>
