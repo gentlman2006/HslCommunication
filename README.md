@@ -95,8 +95,8 @@ Install-Package HslCommunication
 ## HslCommunication.py Summary 
 本组件提供python版本，为.net版本的阉割版，除去了所有的服务器功能代码，保留了部分的客户端功能代码，方便的和PLC，设备进行数据交互，和C#程序进行数据交互，适用于跨平台运行，主要功能如下：
 
-* 三菱PLC的数据交互
-* 西门子PLC的数据交互
+* [三菱PLC的数据交互](https://www.cnblogs.com/dathlin/p/9745147.html)
+* [西门子PLC的数据交互](https://www.cnblogs.com/dathlin/p/9713921.html)
 * 欧姆龙PLC的数据交互
 * Modbus Tcp 客户端开发
 * 同步网络通讯功能 **NetSimplify**
@@ -112,6 +112,7 @@ Install-Package HslCommunication
 * **FileNetServer项目** 基于本组件开发的一个文件管理引擎，实现服务器端文件存储，支持客户端进行文件上传，下载，删除，查看文件信息等等。
 * **HslCommunicationDemo项目** 基于本组件开发的一个西门子，三菱，欧姆龙，Modbus-Tcp，SimplifyNet，ComplexNet，FileNet等的通讯测试工具，方便的进行读写测试，不需要额外的编写代码。
 * **SharpNodeSettings项目** 数据网关项目，基于可配置的文件创建的数据中心，支持redis公开和opc ua公开。[https://github.com/dathlin/SharpNodeSettings](https://github.com/dathlin/SharpNodeSettings)
+* **MES** 系统，初步的mes系统的界面，目前仍然在开发中。[http://118.24.36.220:8081/](http://118.24.36.220:8081/)
 
 ## Contribution
 热烈欢迎对本项目的代码提出改进意见，可以发起Pull Request，对于代码量贡献较多的小伙伴，会有额外的组件使用权，并在特别感谢里写明。
