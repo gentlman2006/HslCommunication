@@ -520,6 +520,9 @@
     <Compile Include="..\HslCommunication_Net45\Profinet\Siemens\SiemensPLCS.cs">
       <Link>Profinet\Siemens\SiemensPLCS.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Siemens\SiemensPPI.cs">
+      <Link>Profinet\Siemens\SiemensPPI.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Siemens\SiemensS7Net.cs">
       <Link>Profinet\Siemens\SiemensS7Net.cs</Link>
     </Compile>

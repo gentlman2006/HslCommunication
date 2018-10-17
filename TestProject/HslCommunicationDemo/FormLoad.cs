@@ -571,5 +571,17 @@ namespace HslCommunicationDemo
             System.Threading.Thread.Sleep( 200 );
             Show( );
         }
+
+        private void button36_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            System.Threading.Thread.Sleep( 200 );
+            using (FormSiemensPPI form = new FormSiemensPPI( ))
+            {
+                form.ShowDialog( );
+            }
+            System.Threading.Thread.Sleep( 200 );
+            Show( );
+        }
     }
 }

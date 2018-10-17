@@ -29,6 +29,7 @@
         private void InitializeComponent( )
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button36 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -98,6 +99,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button36);
             this.groupBox1.Controls.Add(this.button10);
             this.groupBox1.Controls.Add(this.button5);
             this.groupBox1.Controls.Add(this.button3);
@@ -107,10 +109,21 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox1.Size = new System.Drawing.Size(186, 225);
+            this.groupBox1.Size = new System.Drawing.Size(186, 274);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Siemens PLC";
+            // 
+            // button36
+            // 
+            this.button36.Location = new System.Drawing.Point(18, 224);
+            this.button36.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button36.Name = "button36";
+            this.button36.Size = new System.Drawing.Size(150, 32);
+            this.button36.TabIndex = 5;
+            this.button36.Text = "PPI";
+            this.button36.UseVisualStyleBackColor = true;
+            this.button36.Click += new System.EventHandler(this.button36_Click);
             // 
             // button10
             // 
@@ -177,7 +190,7 @@
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox2.Size = new System.Drawing.Size(185, 225);
+            this.groupBox2.Size = new System.Drawing.Size(185, 274);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Modbus";
@@ -236,7 +249,7 @@
             this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox3.Size = new System.Drawing.Size(183, 225);
+            this.groupBox3.Size = new System.Drawing.Size(183, 274);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Melsec PLC";
@@ -326,11 +339,11 @@
             this.groupBox4.Controls.Add(this.button12);
             this.groupBox4.Controls.Add(this.button9);
             this.groupBox4.Controls.Add(this.button8);
-            this.groupBox4.Location = new System.Drawing.Point(9, 308);
+            this.groupBox4.Location = new System.Drawing.Point(9, 356);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox4.Size = new System.Drawing.Size(183, 325);
+            this.groupBox4.Size = new System.Drawing.Size(183, 315);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Hsl Support";
@@ -449,7 +462,7 @@
             this.groupBox5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox5.Size = new System.Drawing.Size(185, 104);
+            this.groupBox5.Size = new System.Drawing.Size(185, 126);
             this.groupBox5.TabIndex = 11;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Omron";
@@ -471,11 +484,11 @@
             this.groupBox6.Controls.Add(this.button18);
             this.groupBox6.Controls.Add(this.button17);
             this.groupBox6.Controls.Add(this.button16);
-            this.groupBox6.Location = new System.Drawing.Point(204, 308);
+            this.groupBox6.Location = new System.Drawing.Point(203, 356);
             this.groupBox6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox6.Size = new System.Drawing.Size(185, 324);
+            this.groupBox6.Size = new System.Drawing.Size(185, 315);
             this.groupBox6.TabIndex = 12;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Controls";
@@ -538,11 +551,11 @@
             // groupBox7
             // 
             this.groupBox7.Controls.Add(this.button23);
-            this.groupBox7.Location = new System.Drawing.Point(395, 308);
+            this.groupBox7.Location = new System.Drawing.Point(395, 356);
             this.groupBox7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox7.Size = new System.Drawing.Size(185, 324);
+            this.groupBox7.Size = new System.Drawing.Size(185, 315);
             this.groupBox7.TabIndex = 14;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Robot";
@@ -567,11 +580,11 @@
             this.groupBox8.Controls.Add(this.button26);
             this.groupBox8.Controls.Add(this.button25);
             this.groupBox8.Controls.Add(this.button24);
-            this.groupBox8.Location = new System.Drawing.Point(586, 308);
+            this.groupBox8.Location = new System.Drawing.Point(586, 356);
             this.groupBox8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox8.Size = new System.Drawing.Size(185, 324);
+            this.groupBox8.Size = new System.Drawing.Size(185, 315);
             this.groupBox8.TabIndex = 15;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Others";
@@ -677,11 +690,11 @@
             // groupBox9
             // 
             this.groupBox9.Controls.Add(this.button33);
-            this.groupBox9.Location = new System.Drawing.Point(586, 186);
+            this.groupBox9.Location = new System.Drawing.Point(586, 208);
             this.groupBox9.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox9.Size = new System.Drawing.Size(185, 113);
+            this.groupBox9.Size = new System.Drawing.Size(185, 140);
             this.groupBox9.TabIndex = 18;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "AB PLC";
@@ -704,7 +717,7 @@
             this.groupBox10.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox10.Size = new System.Drawing.Size(185, 104);
+            this.groupBox10.Size = new System.Drawing.Size(185, 126);
             this.groupBox10.TabIndex = 19;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Panasonic";
@@ -747,7 +760,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(975, 645);
+            this.ClientSize = new System.Drawing.Size(980, 684);
             this.Controls.Add(this.linkLabel6);
             this.Controls.Add(this.linkLabel5);
             this.Controls.Add(this.groupBox10);
@@ -848,6 +861,7 @@
         private System.Windows.Forms.Button button35;
         private System.Windows.Forms.LinkLabel linkLabel5;
         private System.Windows.Forms.LinkLabel linkLabel6;
+        private System.Windows.Forms.Button button36;
     }
 }
 

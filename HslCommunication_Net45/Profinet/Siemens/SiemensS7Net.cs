@@ -571,7 +571,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">字符串地址 -> String address</param>
         /// <returns>实际值 -> Actual value</returns>
-        private static int CalculateAddressStarted( string address )
+        public static int CalculateAddressStarted( string address )
         {
             if (address.IndexOf( '.' ) < 0)
             {
