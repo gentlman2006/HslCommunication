@@ -42,9 +42,7 @@ namespace HslCommunicationDemo
             comboBox1.SelectedIndex = 0;
 
 
-
-            comboBox2.SelectedIndex = 0;
-            comboBox2.SelectedIndexChanged += ComboBox2_SelectedIndexChanged;
+            
 
             comboBox3.DataSource = SerialPort.GetPortNames( );
             try
@@ -137,20 +135,6 @@ namespace HslCommunicationDemo
             }
         }
 
-        private void ComboBox2_SelectedIndexChanged( object sender, EventArgs e )
-        {
-            if (panasonicMewtocol != null)
-            {
-                switch (comboBox2.SelectedIndex)
-                {
-                    case 0: panasonicMewtocol.ByteTransform.DataFormat = HslCommunication.Core.DataFormat.ABCD; break;
-                    case 1: panasonicMewtocol.ByteTransform.DataFormat = HslCommunication.Core.DataFormat.BADC; break;
-                    case 2: panasonicMewtocol.ByteTransform.DataFormat = HslCommunication.Core.DataFormat.CDAB; break;
-                    case 3: panasonicMewtocol.ByteTransform.DataFormat = HslCommunication.Core.DataFormat.DCBA; break;
-                    default: break;
-                }
-            }
-        }
 
 
         private void FormSiemens_FormClosing( object sender, FormClosingEventArgs e )
@@ -229,10 +213,7 @@ namespace HslCommunicationDemo
             panasonicMewtocol?.Close( );
             panasonicMewtocol = new PanasonicMewtocol( station );
 
-
-            ComboBox2_SelectedIndexChanged( null, new EventArgs( ) );
-
-
+            
             try
             {
                 panasonicMewtocol.SerialPortInni( sp =>

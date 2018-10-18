@@ -10,7 +10,7 @@ namespace HslCommunication.Profinet.Panasonic
     /// <summary>
     /// 松下PLC的数据交互协议，采用Mewtocol协议通讯
     /// </summary>
-    public class PanasonicMewtocol : SerialDeviceBase<ReverseWordTransform>
+    public class PanasonicMewtocol : SerialDeviceBase<RegularByteTransform>
     {
         #region Constructor
 
@@ -21,6 +21,7 @@ namespace HslCommunication.Profinet.Panasonic
         public PanasonicMewtocol( byte station = 238 )
         {
             this.Station = station;
+            this.ByteTransform.DataFormat = DataFormat.DCBA;
         }
 
         #endregion
