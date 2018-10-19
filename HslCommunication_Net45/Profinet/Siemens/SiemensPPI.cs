@@ -10,19 +10,38 @@ using System.Threading.Tasks;
 namespace HslCommunication.Profinet.Siemens
 {
     /// <summary>
-    /// 西门子的PPI协议
+    /// 西门子的PPI协议，适用于s7-200plc
     /// </summary>
     /// <remarks>
     /// 适用于西门子200的通信
     /// </remarks>
     public class SiemensPPI : SerialDeviceBase<HslCommunication.Core.RegularByteTransform>
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化一个西门子的PPI协议对象
+        /// </summary>
+        public SiemensPPI( )
+        {
+            WordLength = 2;
+        }
+
+        #endregion
+
+
         /// <summary>
         /// 西门子PLC的站号信息
         /// </summary>
         public byte Station { get => station; set => station = value; }
 
 
+        /// <summary>
+        /// 从西门子的PLC中读取数据信息，地址为"M100","AI100","I0","Q0","V100","S100"等，详细请参照API文档
+        /// </summary>
+        /// <param name="address">西门子的地址数据信息</param>
+        /// <param name="length">数据长度</param>
+        /// <returns>带返回结果的结果对象</returns>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
             // 解析指令
@@ -57,6 +76,12 @@ namespace HslCommunication.Profinet.Siemens
             }
         }
 
+        /// <summary>
+        /// 从西门子的PLC中读取bool数据信息，地址为"M100.0","AI100.1","I0.3","Q0.6","V100.4","S100"等，详细请参照API文档
+        /// </summary>
+        /// <param name="address">西门子的地址数据信息</param>
+        /// <param name="length">数据长度</param>
+        /// <returns>带返回结果的结果对象</returns>
         public OperateResult<bool[]> ReadBool( string address, ushort length )
         {
             // 解析指令
@@ -92,6 +117,12 @@ namespace HslCommunication.Profinet.Siemens
             }
         }
 
+        /// <summary>
+        /// 从西门子的PLC中读取bool数据信息，地址为"M100.0","AI100.1","I0.3","Q0.6","V100.4","S100"等，详细请参照API文档
+        /// </summary>
+        /// <param name="address">西门子的地址数据信息</param>
+        /// <param name="length">数据长度</param>
+        /// <returns>带返回结果的结果对象</returns>
         public OperateResult<bool> ReadBool( string address )
         {
             OperateResult<bool[]> read = ReadBool( address, 1 );
@@ -100,6 +131,12 @@ namespace HslCommunication.Profinet.Siemens
             return OperateResult.CreateSuccessResult( read.Content[0] );
         }
 
+
+        /// <summary>
+        /// 将字节数据写入到西门子PLC中，地址为"M100.0","AI100.1","I0.3","Q0.6","V100.4","S100"等，详细请参照API文档
+        /// </summary>
+        /// <param name="address">西门子的地址数据信息</param>
+        /// <param name="value">数据长度</param>
         public override OperateResult Write( string address, byte[] value )
         {
             // 解析指令
@@ -121,6 +158,11 @@ namespace HslCommunication.Profinet.Siemens
             return OperateResult.CreateSuccessResult( );
         }
 
+        /// <summary>
+        /// 将bool数据写入到西门子PLC中，地址为"M100.0","AI100.1","I0.3","Q0.6","V100.4","S100"等，详细请参照API文档
+        /// </summary>
+        /// <param name="address">西门子的地址数据信息</param>
+        /// <param name="value">数据长度</param>
         public OperateResult WriteBool(string address, bool[] value )
         {
             // 解析指令
@@ -142,6 +184,11 @@ namespace HslCommunication.Profinet.Siemens
             return OperateResult.CreateSuccessResult( );
         }
 
+        /// <summary>
+        /// 将bool数据写入到西门子PLC中，地址为"M100.0","AI100.1","I0.3","Q0.6","V100.4","S100"等，详细请参照API文档
+        /// </summary>
+        /// <param name="address">西门子的地址数据信息</param>
+        /// <param name="value">数据长度</param>
         public OperateResult WriteBool( string address, bool value )
         {
             return WriteBool( address, new bool[] { value } );
@@ -149,7 +196,11 @@ namespace HslCommunication.Profinet.Siemens
 
         #region Byte Read Write
 
-
+        /// <summary>
+        /// 从西门子的PLC中读取byte数据信息，地址为"M100.0","AI100.1","I0.3","Q0.6","V100.4","S100"等，详细请参照API文档
+        /// </summary>
+        /// <param name="address">西门子的地址数据信息</param>
+        /// <returns>带返回结果的结果对象</returns>
         public OperateResult<byte> ReadByte( string address )
         {
             OperateResult<byte[]> read = Read( address, 1 );
@@ -158,6 +209,11 @@ namespace HslCommunication.Profinet.Siemens
             return OperateResult.CreateSuccessResult( read.Content[0] );
         }
 
+        /// <summary>
+        /// 将byte数据写入到西门子PLC中，地址为"M100.0","AI100.1","I0.3","Q0.6","V100.4","S100"等，详细请参照API文档
+        /// </summary>
+        /// <param name="address">西门子的地址数据信息</param>
+        /// <param name="value">数据长度</param>
         public OperateResult WriteByte(string address, byte value )
         {
             return Write( address, new byte[] { value } );
