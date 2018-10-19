@@ -5,6 +5,7 @@ using HslCommunication;
 using HslCommunication.Profinet.AllenBradley;
 using HslCommunication.Profinet.Siemens;
 using System.Threading.Tasks;
+using HslCommunication.Enthernet;
 
 namespace HslCommunicationCoreDemo
 {
@@ -17,7 +18,19 @@ namespace HslCommunicationCoreDemo
             Console.WriteLine( System.Globalization.CultureInfo.CurrentCulture.ToString() );
 
 
-            SiemensS7Net siemens = new SiemensS7Net( SiemensPLCS.S1200, "192.168.8.12" );
+            NetSimplifyClient AccountSimplifyClient = new NetSimplifyClient( "127.0.0.1", 23456 );
+            OperateResult<NetHandle,string> read = AccountSimplifyClient.ReadCustomerFromServer( 1, "" );
+            if (read.IsSuccess)
+            {
+                Console.WriteLine( "Handle:" + read.Content1 );
+                Console.WriteLine( read.Content2 );
+            }
+            else
+            {
+                Console.WriteLine( "失败：" + read.Message );
+            }
+
+
 
             Console.ReadLine( );
         }
