@@ -440,6 +440,19 @@ namespace HslCommunication
     ///             <item>其他的代码优化，重构精简。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-10-27" version="5.4.0" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>python和java的代码优化，完善，添加三菱A-1E类。</item>
+    ///             <item>修复仪表盘控件，最大值小于0会产生的特殊Bug。</item>
+    ///             <item>NetSimplifyClient: 提供高级.net的异步版本方法。</item>
+    ///             <item>serialBase: 新增初始化和结束的保护方法，允许重写实现额外的操作。</item>
+    ///             <item>softBuffer: 添加一个线程安全的buffer内存读写。</item>
+    ///             <item>添加西门子ppi协议类，针对s7-200，需要最终测试。</item>
+    ///             <item>Panasonic: 修复松下plc的读取读取数据异常。</item>
+    ///             <item>修复fx协议批量读取bool时意外的Bug。</item>
+    ///             <item>NetSimplifyClient: 新增带用户int数据返回的读取接口。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc
