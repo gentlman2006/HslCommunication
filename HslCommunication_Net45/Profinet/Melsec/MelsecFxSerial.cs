@@ -59,7 +59,7 @@ namespace HslCommunication.Profinet.Melsec
         /// 从三菱PLC中读取想要的数据，返回读取结果
         /// </summary>
         /// <param name="address">读取地址，格式为"M100","D100","W1A0"</param>
-        /// <param name="length">读取的数据长度，字最大值960，位最大值7168</param>
+        /// <param name="length">读取的数据长度</param>
         /// <returns>带成功标志的结果数据对象</returns>
         /// <remarks>
         /// 地址支持的列表如下：
@@ -117,7 +117,7 @@ namespace HslCommunication.Profinet.Melsec
 
 
         /// <summary>
-        /// 从三菱PLC中批量读取位软元件，返回读取结果
+        /// 从三菱PLC中批量读取位软元件，返回读取结果，该读取地址最好从0，16，32...等开始读取，这样可以读取比较长得数据数组
         /// </summary>
         /// <param name="address">起始地址</param>
         /// <param name="length">读取的长度</param>
@@ -182,7 +182,7 @@ namespace HslCommunication.Profinet.Melsec
             OperateResult<byte[]> read = ReadBase( command.Content1 );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read );
 
-            // 结果严重
+            // 反馈检查
             OperateResult ackResult = CheckPlcReadResponse( read.Content );
             if (!ackResult.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( ackResult );
 
@@ -388,7 +388,7 @@ namespace HslCommunication.Profinet.Melsec
             if (!addressResult.IsSuccess) return OperateResult.CreateFailedResult<byte[], int>( addressResult );
 
             // 计算下实际需要读取的数据长度
-            ushort length2 = (ushort)((addressResult.Content1 + length - 1) / 8 - addressResult.Content1 / 8 + 1);
+            ushort length2 = (ushort)((addressResult.Content2 + length - 1) / 8 - (addressResult.Content2 / 8) + 1);
 
             ushort startAddress = addressResult.Content1;
             byte[] _PLCCommand = new byte[11];
@@ -403,7 +403,7 @@ namespace HslCommunication.Profinet.Melsec
             _PLCCommand[8] = 0x03;                                                    // ETX
             MelsecHelper.FxCalculateCRC( _PLCCommand ).CopyTo( _PLCCommand, 9 );      // CRC
 
-            return OperateResult.CreateSuccessResult( _PLCCommand, (int)addressResult.Content2 );
+            return OperateResult.CreateSuccessResult( _PLCCommand, (int)addressResult.Content3 );
         }
 
         /// <summary>
@@ -630,11 +630,11 @@ namespace HslCommunication.Profinet.Melsec
         /// 返回读取的地址及长度信息，以及当前的偏置信息
         /// </summary><param name="address">读取的地址信息</param>
         /// <returns>带起始地址的结果对象</returns>
-        private static OperateResult<ushort, ushort> FxCalculateBoolStartAddress( string address )
+        private static OperateResult<ushort, ushort, ushort> FxCalculateBoolStartAddress( string address )
         {
             // 初步解析
             var analysis = FxAnalysisAddress( address );
-            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<ushort, ushort>( analysis );
+            if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<ushort, ushort, ushort>( analysis );
 
             // 二次解析
             ushort startAddress = analysis.Content2;
@@ -671,10 +671,10 @@ namespace HslCommunication.Profinet.Melsec
             }
             else
             {
-                return new OperateResult<ushort, ushort>( StringResources.Language.MelsecCurrentTypeNotSupportedBitOperate );
+                return new OperateResult<ushort, ushort, ushort>( StringResources.Language.MelsecCurrentTypeNotSupportedBitOperate );
             }
 
-            return OperateResult.CreateSuccessResult( startAddress, (ushort)(analysis.Content2 % 8) );
+            return OperateResult.CreateSuccessResult( startAddress, analysis.Content2, ( ushort)(analysis.Content2 % 8) );
         }
         
         #endregion
