@@ -7,8 +7,12 @@ using HslCommunication.Core;
 namespace HslCommunication.BasicFramework
 {
     /// <summary>
-    /// 一个线程安全的缓存数据块，支持动态修改，添加，并获取快照
+    /// 一个线程安全的缓存数据块，支持批量动态修改，添加，并获取快照
     /// </summary>
+    /// <remarks>
+    /// 这个类可以实现什么功能呢，就是你有一个大的数组，作为你的应用程序的中间数据池，允许你往byte[]数组里存放指定长度的子byte[]数组，也允许从里面拿数据，
+    /// 这些操作都是线程安全的，当然，本类扩展了一些额外的方法支持，也可以直接赋值或获取基本的数据类型对象。
+    /// </remarks>
     public class SoftBuffer
     {
         #region Constructor
@@ -30,7 +34,9 @@ namespace HslCommunication.BasicFramework
         public SoftBuffer(int capacity )
         {
             buffer = new byte[capacity];
+            this.capacity = capacity;
             hybirdLock = new SimpleHybirdLock( );
+            byteTransform = new RegularByteTransform( );
         }
 
         #endregion
@@ -182,7 +188,285 @@ namespace HslCommunication.BasicFramework
             SetValue( new int[] { value }, index );
         }
 
+        /// <summary>
+        /// 设置uint类型的数据到缓存区
+        /// </summary>
+        /// <param name="values">uint数组</param>
+        /// <param name="index">索引位置</param>
+        public void SetValue(uint[] values, int index )
+        {
+            SetBytes( byteTransform.TransByte( values ), index );
+        }
 
+        /// <summary>
+        /// 设置uint类型的数据到缓存区
+        /// </summary>
+        /// <param name="value">uint数值</param>
+        /// <param name="index">索引位置</param>
+        public void SetValue( uint value, int index )
+        {
+            SetValue( new uint[] { value }, index );
+        }
+
+        /// <summary>
+        /// 设置float类型的数据到缓存区
+        /// </summary>
+        /// <param name="values">float数组</param>
+        /// <param name="index">索引位置</param>
+        public void SetValue( float[] values, int index )
+        {
+            SetBytes( byteTransform.TransByte( values ), index );
+        }
+
+        /// <summary>
+        /// 设置float类型的数据到缓存区
+        /// </summary>
+        /// <param name="value">float数值</param>
+        /// <param name="index">索引位置</param>
+        public void SetValue( float value, int index )
+        {
+            SetValue( new float[] { value }, index );
+        }
+
+        /// <summary>
+        /// 设置long类型的数据到缓存区
+        /// </summary>
+        /// <param name="values">long数组</param>
+        /// <param name="index">索引位置</param>
+        public void SetValue( long[] values, int index )
+        {
+            SetBytes( byteTransform.TransByte( values ), index );
+        }
+
+        /// <summary>
+        /// 设置long类型的数据到缓存区
+        /// </summary>
+        /// <param name="value">long数值</param>
+        /// <param name="index">索引位置</param>
+        public void SetValue( long value, int index )
+        {
+            SetValue( new long[] { value }, index );
+        }
+
+        /// <summary>
+        /// 设置ulong类型的数据到缓存区
+        /// </summary>
+        /// <param name="values">ulong数组</param>
+        /// <param name="index">索引位置</param>
+        public void SetValue( ulong[] values, int index )
+        {
+            SetBytes( byteTransform.TransByte( values ), index );
+        }
+
+        /// <summary>
+        /// 设置ulong类型的数据到缓存区
+        /// </summary>
+        /// <param name="value">ulong数值</param>
+        /// <param name="index">索引位置</param>
+        public void SetValue( ulong value, int index )
+        {
+            SetValue( new ulong[] { value }, index );
+        }
+
+        /// <summary>
+        /// 设置double类型的数据到缓存区
+        /// </summary>
+        /// <param name="values">double数组</param>
+        /// <param name="index">索引位置</param>
+        public void SetValue( double[] values, int index )
+        {
+            SetBytes( byteTransform.TransByte( values ), index );
+        }
+
+        /// <summary>
+        /// 设置double类型的数据到缓存区
+        /// </summary>
+        /// <param name="value">double数值</param>
+        /// <param name="index">索引位置</param>
+        public void SetValue( double value, int index )
+        {
+            SetValue( new double[] { value }, index );
+        }
+
+        #endregion
+
+        #region BCL Get Support
+
+        /// <summary>
+        /// 获取short类型的数组到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>short数组</returns>
+        public short[] GetInt16( int index, int length )
+        {
+            byte[] tmp = GetBytes( index, length * 2 );
+            return byteTransform.TransInt16( tmp, 0, length );
+        }
+
+        /// <summary>
+        /// 获取short类型的数据到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <returns>short数据</returns>
+        public short GetInt16( int index )
+        {
+            return GetInt16( index, 1 )[0];
+        }
+
+        /// <summary>
+        /// 获取ushort类型的数组到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>ushort数组</returns>
+        public ushort[] GetUInt16( int index, int length )
+        {
+            byte[] tmp = GetBytes( index, length * 2 );
+            return byteTransform.TransUInt16( tmp, 0, length );
+        }
+
+        /// <summary>
+        /// 获取ushort类型的数据到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <returns>ushort数据</returns>
+        public ushort GetUInt16( int index )
+        {
+            return GetUInt16( index, 1 )[0];
+        }
+
+        /// <summary>
+        /// 获取int类型的数组到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>int数组</returns>
+        public int[] GetInt32( int index, int length )
+        {
+            byte[] tmp = GetBytes( index, length * 4 );
+            return byteTransform.TransInt32( tmp, 0, length );
+        }
+
+        /// <summary>
+        /// 获取int类型的数据到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <returns>int数据</returns>
+        public int GetInt32( int index )
+        {
+            return GetInt32( index, 1 )[0];
+        }
+
+        /// <summary>
+        /// 获取uint类型的数组到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>uint数组</returns>
+        public uint[] GetUInt32( int index, int length )
+        {
+            byte[] tmp = GetBytes( index, length * 4 );
+            return byteTransform.TransUInt32( tmp, 0, length );
+        }
+
+        /// <summary>
+        /// 获取uint类型的数据到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <returns>uint数据</returns>
+        public uint GetUInt32( int index )
+        {
+            return GetUInt32( index, 1 )[0];
+        }
+
+        /// <summary>
+        /// 获取float类型的数组到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>float数组</returns>
+        public float[] GetSingle( int index, int length )
+        {
+            byte[] tmp = GetBytes( index, length * 4 );
+            return byteTransform.TransSingle( tmp, 0, length );
+        }
+
+        /// <summary>
+        /// 获取float类型的数据到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <returns>float数据</returns>
+        public float GetSingle( int index )
+        {
+            return GetSingle( index, 1 )[0];
+        }
+
+        /// <summary>
+        /// 获取long类型的数组到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>long数组</returns>
+        public long[] GetInt64( int index, int length )
+        {
+            byte[] tmp = GetBytes( index, length * 8 );
+            return byteTransform.TransInt64( tmp, 0, length );
+        }
+
+        /// <summary>
+        /// 获取long类型的数据到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <returns>long数据</returns>
+        public long GetInt64( int index )
+        {
+            return GetInt64( index, 1 )[0];
+        }
+
+        /// <summary>
+        /// 获取ulong类型的数组到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>ulong数组</returns>
+        public ulong[] GetUInt64( int index, int length )
+        {
+            byte[] tmp = GetBytes( index, length * 8 );
+            return byteTransform.TransUInt64( tmp, 0, length );
+        }
+
+        /// <summary>
+        /// 获取ulong类型的数据到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <returns>ulong数据</returns>
+        public ulong GetUInt64( int index )
+        {
+            return GetUInt64( index, 1 )[0];
+        }
+
+        /// <summary>
+        /// 获取double类型的数组到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>ulong数组</returns>
+        public double[] GetDouble( int index, int length )
+        {
+            byte[] tmp = GetBytes( index, length * 8 );
+            return byteTransform.TransDouble( tmp, 0, length );
+        }
+
+        /// <summary>
+        /// 获取double类型的数据到缓存区
+        /// </summary>
+        /// <param name="index">索引位置</param>
+        /// <returns>double数据</returns>
+        public double GetDouble( int index )
+        {
+            return GetUInt64( index, 1 )[0];
+        }
 
         #endregion
 
