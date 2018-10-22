@@ -440,7 +440,7 @@ namespace HslCommunication
     ///             <item>其他的代码优化，重构精简。</item>
     ///         </list>
     ///     </revision>
-    ///     <revision date="2018-10-27" version="5.4.0" author="Richard.Hu">
+    ///     <revision date="2018-10-20" version="5.4.0" author="Richard.Hu">
     ///         <list type="bullet">
     ///             <item>python和java的代码优化，完善，添加三菱A-1E类。</item>
     ///             <item>修复仪表盘控件，最大值小于0会产生的特殊Bug。</item>
