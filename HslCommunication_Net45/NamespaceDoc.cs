@@ -12,13 +12,13 @@ namespace HslCommunication
     /// 本组件免费开源，使用之前请认真的阅读本API文档，对于本文档中警告部分的内容务必理解，部署生产之前请详细测试，如果在测试的过程中，
     /// 发现了BUG，或是有问题的地方，欢迎联系作者进行修改，或是直接在github上进行提问。统一声明：对于操作设备造成的任何损失，作者概不负责。
     /// <br /><br />
-    /// 官方网站：<a href="http://www.hslcommunication.cn/">http://www.hslcommunication.cn/</a>
+    /// 官方网站：<a href="http://www.hslcommunication.cn/">http://www.hslcommunication.cn/</a>，包含组件的在线API地址以及一个MES DEMO的项目展示。
     /// <br /><br />
     /// <note type="important">
     /// 本组件的目标是集成一个框架，统一所有的设备读写方法，抽象成统一的接口<see cref="IReadWriteNet"/>，对于上层操作只需要关注地址，读取类型即可，另一个目标是使用本框架轻松实现C#后台+C#客户端+web浏览器+android手机的全方位功能实现。
     /// </note>
     /// <br /><br />
-    /// 本库提供了C#版本和java版本，java版本的使用和C#几乎是一模一样的。
+    /// 本库提供了C#版本和java版本和python版本，java，python版本的使用和C#几乎是一模一样的。
     /// </summary>
     /// <remarks>
     /// 本软件著作权归Richard.Hu所有，开源项目地址：<a href="https://github.com/dathlin/HslCommunication">https://github.com/dathlin/HslCommunication</a>  开源协议：LGPL-3.0
@@ -451,6 +451,11 @@ namespace HslCommunication
     ///             <item>Panasonic: 修复松下plc的读取读取数据异常。</item>
     ///             <item>修复fx协议批量读取bool时意外的Bug。</item>
     ///             <item>NetSimplifyClient: 新增带用户int数据返回的读取接口。</item>
+    ///         </list>
+    ///     </revision>
+    ///     <revision date="2018-10-24" version="5.4.1" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>新增一个温度采集模块的类，基于modbus-rtu实现，阿尔泰科技发展有限公司的DAM3601模块。</item>
     ///         </list>
     ///     </revision>
     /// </revisionHistory>
