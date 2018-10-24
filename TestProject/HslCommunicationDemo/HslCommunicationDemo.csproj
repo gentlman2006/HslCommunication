@@ -142,6 +142,12 @@
     <Compile Include="FormTcpDebug.Designer.cs">
       <DependentUpon>FormTcpDebug.cs</DependentUpon>
     </Compile>
+    <Compile Include="Instrument\FormDAM3601.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Instrument\FormDAM3601.Designer.cs">
+      <DependentUpon>FormDAM3601.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modbus\FormModbusAscii.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -311,6 +317,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormTcpDebug.resx">
       <DependentUpon>FormTcpDebug.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Instrument\FormDAM3601.resx">
+      <DependentUpon>FormDAM3601.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Modbus\FormModbusAscii.resx">
       <DependentUpon>FormModbusAscii.cs</DependentUpon>

@@ -85,6 +85,8 @@
             this.button35 = new System.Windows.Forms.Button();
             this.linkLabel5 = new System.Windows.Forms.LinkLabel();
             this.linkLabel6 = new System.Windows.Forms.LinkLabel();
+            this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.button37 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -95,6 +97,7 @@
             this.groupBox8.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBox10.SuspendLayout();
+            this.groupBox11.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -112,7 +115,7 @@
             this.groupBox1.Size = new System.Drawing.Size(186, 274);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Siemens PLC";
+            this.groupBox1.Text = "Siemens PLC(西门子 PLC)";
             // 
             // button36
             // 
@@ -252,7 +255,7 @@
             this.groupBox3.Size = new System.Drawing.Size(183, 274);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Melsec PLC";
+            this.groupBox3.Text = "Melsec PLC(三菱 PLC)";
             // 
             // button32
             // 
@@ -346,7 +349,7 @@
             this.groupBox4.Size = new System.Drawing.Size(183, 315);
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Hsl Support";
+            this.groupBox4.Text = "Hsl Support(HSL 协议)";
             // 
             // button29
             // 
@@ -465,7 +468,7 @@
             this.groupBox5.Size = new System.Drawing.Size(185, 126);
             this.groupBox5.TabIndex = 11;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Omron";
+            this.groupBox5.Text = "Omron PLC(欧姆龙 PLC)";
             // 
             // button11
             // 
@@ -491,7 +494,7 @@
             this.groupBox6.Size = new System.Drawing.Size(185, 315);
             this.groupBox6.TabIndex = 12;
             this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Controls";
+            this.groupBox6.Text = "Controls(控件)";
             // 
             // button20
             // 
@@ -558,7 +561,7 @@
             this.groupBox7.Size = new System.Drawing.Size(185, 315);
             this.groupBox7.TabIndex = 14;
             this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Robot";
+            this.groupBox7.Text = "Robot(机器人)";
             // 
             // button23
             // 
@@ -580,14 +583,14 @@
             this.groupBox8.Controls.Add(this.button26);
             this.groupBox8.Controls.Add(this.button25);
             this.groupBox8.Controls.Add(this.button24);
-            this.groupBox8.Location = new System.Drawing.Point(586, 356);
+            this.groupBox8.Location = new System.Drawing.Point(777, 356);
             this.groupBox8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox8.Size = new System.Drawing.Size(185, 315);
             this.groupBox8.TabIndex = 15;
             this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "Others";
+            this.groupBox8.Text = "Others(其他)";
             // 
             // button31
             // 
@@ -720,7 +723,7 @@
             this.groupBox10.Size = new System.Drawing.Size(185, 126);
             this.groupBox10.TabIndex = 19;
             this.groupBox10.TabStop = false;
-            this.groupBox10.Text = "Panasonic";
+            this.groupBox10.Text = "Panasonic(松下 PLC)";
             // 
             // button35
             // 
@@ -755,12 +758,36 @@
             this.linkLabel6.TabStop = true;
             this.linkLabel6.Text = "English";
             // 
+            // groupBox11
+            // 
+            this.groupBox11.Controls.Add(this.button37);
+            this.groupBox11.Location = new System.Drawing.Point(586, 356);
+            this.groupBox11.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox11.Name = "groupBox11";
+            this.groupBox11.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox11.Size = new System.Drawing.Size(185, 315);
+            this.groupBox11.TabIndex = 22;
+            this.groupBox11.TabStop = false;
+            this.groupBox11.Text = "Instrument(仪器仪表)";
+            // 
+            // button37
+            // 
+            this.button37.Location = new System.Drawing.Point(19, 24);
+            this.button37.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button37.Name = "button37";
+            this.button37.Size = new System.Drawing.Size(150, 32);
+            this.button37.TabIndex = 0;
+            this.button37.Text = "阿尔泰科技-DAM3601";
+            this.button37.UseVisualStyleBackColor = true;
+            this.button37.Click += new System.EventHandler(this.button37_Click);
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(980, 684);
+            this.Controls.Add(this.groupBox11);
             this.Controls.Add(this.linkLabel6);
             this.Controls.Add(this.linkLabel5);
             this.Controls.Add(this.groupBox10);
@@ -798,6 +825,7 @@
             this.groupBox8.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
+            this.groupBox11.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -862,6 +890,8 @@
         private System.Windows.Forms.LinkLabel linkLabel5;
         private System.Windows.Forms.LinkLabel linkLabel6;
         private System.Windows.Forms.Button button36;
+        private System.Windows.Forms.GroupBox groupBox11;
+        private System.Windows.Forms.Button button37;
     }
 }
 
