@@ -353,7 +353,7 @@ namespace HslCommunication.Profinet.Siemens
             _PLCCommand[ 3] = 0x68;
             _PLCCommand[ 4] = station;
             _PLCCommand[ 5] = 0x00;
-            _PLCCommand[ 6] = 0x6C;
+            _PLCCommand[ 6] = 0x7C;
             _PLCCommand[ 7] = 0x32;
             _PLCCommand[ 8] = 0x01;
             _PLCCommand[ 9] = 0x00;
@@ -363,7 +363,7 @@ namespace HslCommunication.Profinet.Siemens
             _PLCCommand[13] = 0x00;
             _PLCCommand[14] = 0x0E;
             _PLCCommand[15] = 0x00;
-            _PLCCommand[16] = 0x00;
+            _PLCCommand[16] = 0x05;
             _PLCCommand[17] = 0x04;
             _PLCCommand[18] = 0x01;
             _PLCCommand[19] = 0x12;
@@ -398,16 +398,15 @@ namespace HslCommunication.Profinet.Siemens
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             int length = values.Length;
-            values = BasicFramework.SoftBasic.ArrayExpandToLengthEven( values );
             // 68 21 21 68 02 00 6C 32 01 00 00 00 00 00 0E 00 00 04 01 12 0A 10
             byte[] _PLCCommand = new byte[37 + values.Length];
             _PLCCommand[ 0] = 0x68;
             _PLCCommand[ 1] = BitConverter.GetBytes( _PLCCommand.Length - 6 )[0];
             _PLCCommand[ 2] = BitConverter.GetBytes( _PLCCommand.Length - 6 )[0];
             _PLCCommand[ 3] = 0x68;
-            _PLCCommand[ 4] = 0x02;
+            _PLCCommand[ 4] = station;
             _PLCCommand[ 5] = 0x00;
-            _PLCCommand[ 6] = 0x6C;
+            _PLCCommand[ 6] = 0x7C;
             _PLCCommand[ 7] = 0x32;
             _PLCCommand[ 8] = 0x01;
             _PLCCommand[ 9] = 0x00;
@@ -417,8 +416,8 @@ namespace HslCommunication.Profinet.Siemens
             _PLCCommand[13] = 0x00;
             _PLCCommand[14] = 0x0E;
             _PLCCommand[15] = 0x00;
-            _PLCCommand[16] = 0x00;
-            _PLCCommand[17] = 0x04;
+            _PLCCommand[16] = 0x05;
+            _PLCCommand[17] = 0x05;
             _PLCCommand[18] = 0x01;
             _PLCCommand[19] = 0x12;
             _PLCCommand[20] = 0x0A;
@@ -460,16 +459,15 @@ namespace HslCommunication.Profinet.Siemens
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             byte[] bytesValue = BasicFramework.SoftBasic.BoolArrayToByte( values );
-            bytesValue = BasicFramework.SoftBasic.ArrayExpandToLengthEven( bytesValue );
             // 68 21 21 68 02 00 6C 32 01 00 00 00 00 00 0E 00 00 04 01 12 0A 10
             byte[] _PLCCommand = new byte[37 + bytesValue.Length];
             _PLCCommand[ 0] = 0x68;
             _PLCCommand[ 1] = BitConverter.GetBytes( _PLCCommand.Length - 6 )[0];
             _PLCCommand[ 2] = BitConverter.GetBytes( _PLCCommand.Length - 6 )[0];
             _PLCCommand[ 3] = 0x68;
-            _PLCCommand[ 4] = 0x02;
+            _PLCCommand[ 4] = station;
             _PLCCommand[ 5] = 0x00;
-            _PLCCommand[ 6] = 0x6C;
+            _PLCCommand[ 6] = 0x7C;
             _PLCCommand[ 7] = 0x32;
             _PLCCommand[ 8] = 0x01;
             _PLCCommand[ 9] = 0x00;
@@ -479,8 +477,8 @@ namespace HslCommunication.Profinet.Siemens
             _PLCCommand[13] = 0x00;
             _PLCCommand[14] = 0x0E;
             _PLCCommand[15] = 0x00;
-            _PLCCommand[16] = 0x00;
-            _PLCCommand[17] = 0x04;
+            _PLCCommand[16] = 0x05;
+            _PLCCommand[17] = 0x05;
             _PLCCommand[18] = 0x01;
             _PLCCommand[19] = 0x12;
             _PLCCommand[20] = 0x0A;

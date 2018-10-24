@@ -317,7 +317,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">地址</param>
         /// <param name="length">长度</param>
         /// <returns>带结果信息的字节返回数据</returns>
-        private OperateResult<byte[]> ReadModBusBase( byte code, string address, ushort length )
+        protected OperateResult<byte[]> ReadModBusBase( byte code, string address, ushort length )
         {
             OperateResult<byte[]> command = null;
             switch (code)
@@ -361,7 +361,7 @@ namespace HslCommunication.ModBus
         /// <param name="address">地址</param>
         /// <param name="length">长度</param>
         /// <returns>带结果信息的字节返回数据</returns>
-        private OperateResult<byte[]> ReadModBusBase( ModbusAddress address, ushort length )
+        protected OperateResult<byte[]> ReadModBusBase( ModbusAddress address, ushort length )
         {
             OperateResult<byte[]> command = BuildReadRegisterCommand( address, length );
             if (!command.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( command );

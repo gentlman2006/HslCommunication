@@ -224,7 +224,12 @@ namespace HslCommunication.Serial
             }
         }
 
-        private void SP_ReadData_DataReceived( object sender, SerialDataReceivedEventArgs e )
+        /// <summary>
+        /// 串口数据接收的回调方法
+        /// </summary>
+        /// <param name="sender">数据发送</param>
+        /// <param name="e">消息</param>
+        protected virtual void SP_ReadData_DataReceived( object sender, SerialDataReceivedEventArgs e )
         {
             while (true)
             {
@@ -276,10 +281,22 @@ namespace HslCommunication.Serial
 
         #region Private Member
 
-        private SerialPort SP_ReadData = null;                    // 串口交互的核心
-        private AutoResetEvent resetEvent = null;                 // 消息同步机制
-        private readonly byte[] buffer = null;                    // 接收缓冲区
-        private int receiveCount = 0;                             // 接收的数据长度
+        /// <summary>
+        /// 串口交互的核心
+        /// </summary>
+        protected SerialPort SP_ReadData = null;                  // 串口交互的核心
+        /// <summary>
+        /// 消息同步机制
+        /// </summary>
+        protected AutoResetEvent resetEvent = null;               // 消息同步机制
+        /// <summary>
+        /// 接收缓冲区
+        /// </summary>
+        protected readonly byte[] buffer = null;                  // 接收缓冲区
+        /// <summary>
+        /// 接收的数据长度
+        /// </summary>
+        protected int receiveCount = 0;                           // 接收的数据长度
         private SimpleHybirdLock hybirdLock;                      // 数据交互的锁
         private ILogNet logNet;                                   // 日志存储
         private int receiveTimeout = 5000;                        // 接收数据的超时时间

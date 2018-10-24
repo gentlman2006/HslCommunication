@@ -179,6 +179,7 @@
     <Folder Include="Profinet\Panasonic\" />
     <Folder Include="Robot\EFORT\" />
     <Folder Include="Language\" />
+    <Folder Include="Instrument\" />
   </ItemGroup>
 
 </Project>
