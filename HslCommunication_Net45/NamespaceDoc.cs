@@ -458,6 +458,11 @@ namespace HslCommunication
     ///             <item>新增一个温度采集模块的类，基于modbus-rtu实现，阿尔泰科技发展有限公司的DAM3601模块。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-10-25" version="5.4.2" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>三菱的mc协议新增支持读取ZR文件寄存器功能。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc

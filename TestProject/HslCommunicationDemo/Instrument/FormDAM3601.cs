@@ -93,6 +93,7 @@ namespace HslCommunicationDemo
 
         private void Language( int language )
         {
+            // 英文显示
             if (language == 2)
             {
                 Text = "Modbus Rtu Read Demo";
@@ -116,7 +117,7 @@ namespace HslCommunicationDemo
                 
 
 
-                groupBox1.Text = "Single Data Read test";
+                groupBox1.Text = "read test";
             
 
                 comboBox1.DataSource = new string[] { "None", "Odd", "Even" };
@@ -151,44 +152,7 @@ namespace HslCommunicationDemo
         {
             
         }
-
-        /// <summary>
-        /// 统一的读取结果的数据解析，显示
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="result"></param>
-        /// <param name="address"></param>
-        /// <param name="textBox"></param>
-        private void readResultRender<T>( OperateResult<T> result, string address, TextBox textBox )
-        {
-            if (result.IsSuccess)
-            {
-                textBox.AppendText( DateTime.Now.ToString( "[HH:mm:ss] " ) + $"[{address}] {result.Content}{Environment.NewLine}" );
-            }
-            else
-            {
-                MessageBox.Show( DateTime.Now.ToString( "[HH:mm:ss] " ) + $"[{address}] 读取失败{Environment.NewLine}原因：{result.ToMessageShowString( )}" );
-            }
-        }
-
-        /// <summary>
-        /// 统一的数据写入的结果显示
-        /// </summary>
-        /// <param name="result"></param>
-        /// <param name="address"></param>
-        private void writeResultRender( OperateResult result, string address )
-        {
-            if (result.IsSuccess)
-            {
-                MessageBox.Show( DateTime.Now.ToString( "[HH:mm:ss] " ) + $"[{address}] 写入成功" );
-            }
-            else
-            {
-                MessageBox.Show( DateTime.Now.ToString( "[HH:mm:ss] " ) + $"[{address}] 写入失败{Environment.NewLine}原因：{result.ToMessageShowString( )}" );
-            }
-        }
-
-
+        
         #region Connect And Close
 
 
@@ -279,6 +243,7 @@ namespace HslCommunicationDemo
                 return;
             }
 
+            // 显示128个数据信息
             for (int i = 0; i < allTextBox.Count; i++)
             {
                 allTextBox[i].Text = read.Content[i].ToString( );

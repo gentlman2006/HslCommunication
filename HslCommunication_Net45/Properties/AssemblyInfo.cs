@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
 [assembly: AssemblyTitle( "HslCommunication" )]
-[assembly: AssemblyDescription( "一个框架库，包含完善的网络通信及日志组件，设备通信类等等。" )]
+[assembly: AssemblyDescription( "一个工业物联网的底层架构框架，专注于底层的技术通信及跨平台，跨语言通信功能，实现各种主流的PLC数据读写，实现modbus的各种协议读写等等，支持快速搭建工业上位机软件，组态软件，SCADA软件，工厂MES系统，助力企业工业4.0腾飞，实现智能制造，智慧工厂的目标。" )]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct( "HslCommunication" )]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // 可以指定所有值，也可以使用以下所示的 "*" 预置版本号和修订号
 //通过使用 "*"，如下所示:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "5.4.1.0" )]
-[assembly: AssemblyFileVersion( "5.4.1.0" )]
+[assembly: AssemblyVersion( "5.4.2.0" )]
+[assembly: AssemblyFileVersion( "5.4.2.0" )]
