@@ -89,9 +89,9 @@ namespace HslCommunication.Profinet.Melsec
         /// </summary>
         /// <param name="address">数据地址</param>
         /// <returns>解析值</returns>
-        public static OperateResult<MelsecMcDataType, ushort> McAnalysisAddress( string address )
+        public static OperateResult<MelsecMcDataType, int> McAnalysisAddress( string address )
         {
-            var result = new OperateResult<MelsecMcDataType, ushort>( );
+            var result = new OperateResult<MelsecMcDataType, int>( );
             try
             {
                 switch (address[0])
@@ -176,9 +176,18 @@ namespace HslCommunication.Profinet.Melsec
                     case 'Z':
                     case 'z':
                         {
-                            result.Content1 = MelsecMcDataType.Z;
-                            result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.Z.FromBase );
-                            break;
+                            if (address.StartsWith( "ZR" ) || address.StartsWith( "zr" ))
+                            {
+                                result.Content1 = MelsecMcDataType.ZR;
+                                result.Content2 = Convert.ToInt32( address.Substring( 2 ), MelsecMcDataType.ZR.FromBase );
+                                break;
+                            }
+                            else
+                            {
+                                result.Content1 = MelsecMcDataType.Z;
+                                result.Content2 = Convert.ToUInt16( address.Substring( 1 ), MelsecMcDataType.Z.FromBase );
+                                break;
+                            }
                         }
                     case 'T':
                     case 't':

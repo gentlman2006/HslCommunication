@@ -99,5 +99,9 @@ namespace HslCommunication.Profinet.Melsec
         /// 计数器的值
         /// </summary>
         public readonly static MelsecMcDataType C = new MelsecMcDataType( 0xC5, 0x00, "CN", 10 );
+        /// <summary>
+        /// 文件寄存器ZR区
+        /// </summary>
+        public readonly static MelsecMcDataType ZR = new MelsecMcDataType( 0xB0, 0x00, "ZR", 16 );
     }
 }

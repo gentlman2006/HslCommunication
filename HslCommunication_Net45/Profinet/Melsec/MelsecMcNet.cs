@@ -106,6 +106,11 @@ namespace HslCommunication.Profinet.Melsec
         ///     <term>10</term>
         ///   </item>
         ///   <item>
+        ///     <term>ZR文件寄存器</term>
+        ///     <term>ZR100,ZR2A0</term>
+        ///     <term>16</term>
+        ///   </item>
+        ///   <item>
         ///     <term>变址寄存器</term>
         ///     <term>Z100,Z200</term>
         ///     <term>10</term>
@@ -210,7 +215,7 @@ namespace HslCommunication.Profinet.Melsec
         public OperateResult<bool[]> ReadBool( string address, ushort length )
         {
             // 解析地址
-            OperateResult<MelsecMcDataType, ushort> analysis = MelsecHelper.McAnalysisAddress( address );
+            OperateResult<MelsecMcDataType, int> analysis = MelsecHelper.McAnalysisAddress( address );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( analysis );
 
             // 位读取校验
@@ -339,7 +344,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带有成功标志的指令数据</returns>
         public static OperateResult<byte[]> BuildReadCommand( string address, ushort length, byte networkNumber = 0, byte networkStationNumber = 0 )
         {
-            OperateResult<MelsecMcDataType, ushort> analysis = MelsecHelper.McAnalysisAddress( address );
+            OperateResult<MelsecMcDataType, int> analysis = MelsecHelper.McAnalysisAddress( address );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
 
@@ -359,9 +364,9 @@ namespace HslCommunication.Profinet.Melsec
             _PLCCommand[12] = 0x04;
             _PLCCommand[13] = analysis.Content1.DataType;             // 以点为单位还是字为单位成批读取
             _PLCCommand[14] = 0x00;
-            _PLCCommand[15] = (byte)(analysis.Content2 % 256);        // 起始地址的地位
-            _PLCCommand[16] = (byte)(analysis.Content2 / 256);
-            _PLCCommand[17] = 0x00;
+            _PLCCommand[15] = BitConverter.GetBytes( analysis.Content2 )[0];        // 起始地址的地位
+            _PLCCommand[16] = BitConverter.GetBytes( analysis.Content2 )[1];
+            _PLCCommand[17] = BitConverter.GetBytes( analysis.Content2 )[2];
             _PLCCommand[18] = analysis.Content1.DataCode;             // 指明读取的数据
             _PLCCommand[19] = (byte)(length % 256);                   // 软元件长度的地位
             _PLCCommand[20] = (byte)(length / 256);
@@ -379,7 +384,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>解析后的指令</returns>
         public static OperateResult<byte[]> BuildWriteCommand( string address, byte[] value, byte networkNumber = 0, byte networkStationNumber = 0 )
         {
-            OperateResult<MelsecMcDataType, ushort> analysis = MelsecHelper.McAnalysisAddress( address );
+            OperateResult<MelsecMcDataType, int> analysis = MelsecHelper.McAnalysisAddress( address );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
             int length = -1;
@@ -406,9 +411,9 @@ namespace HslCommunication.Profinet.Melsec
             _PLCCommand[12] = 0x14;
             _PLCCommand[13] = analysis.Content1.DataType;                    // 以点为单位还是字为单位成批读取
             _PLCCommand[14] = 0x00;
-            _PLCCommand[15] = (byte)(analysis.Content2 % 256);               // 起始地址的地位
-            _PLCCommand[16] = (byte)(analysis.Content2 / 256);
-            _PLCCommand[17] = 0x00;
+            _PLCCommand[15] = BitConverter.GetBytes( analysis.Content2 )[0];               // 起始地址的地位
+            _PLCCommand[16] = BitConverter.GetBytes( analysis.Content2 )[1];
+            _PLCCommand[17] = BitConverter.GetBytes( analysis.Content2 )[2];
             _PLCCommand[18] = analysis.Content1.DataCode;                    // 指明写入的数据
 
             // 判断是否进行位操作

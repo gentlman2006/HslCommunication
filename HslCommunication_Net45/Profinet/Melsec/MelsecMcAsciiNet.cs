@@ -55,7 +55,7 @@ namespace HslCommunication.Profinet.Melsec
 
 
         #endregion
-        
+
         #region Read Support
 
         /// <summary>
@@ -86,6 +86,11 @@ namespace HslCommunication.Profinet.Melsec
         ///     <term>文件寄存器</term>
         ///     <term>R100,R200</term>
         ///     <term>10</term>
+        ///   </item>
+        ///   <item>
+        ///     <term>ZR文件寄存器</term>
+        ///     <term>ZR100,ZR2A0</term>
+        ///     <term>16</term>
         ///   </item>
         ///   <item>
         ///     <term>变址寄存器</term>
@@ -192,7 +197,7 @@ namespace HslCommunication.Profinet.Melsec
         public OperateResult<bool[]> ReadBool( string address, ushort length )
         {
             // 解析地址
-            OperateResult<MelsecMcDataType, ushort> analysis = MelsecHelper.McAnalysisAddress( address );
+            OperateResult<MelsecMcDataType, int> analysis = MelsecHelper.McAnalysisAddress( address );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( analysis );
 
             // 位读取校验
@@ -320,7 +325,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带有成功标志的指令数据</returns>
         public static OperateResult<byte[]> BuildReadCommand( string address, ushort length, byte networkNumber = 0, byte networkStationNumber = 0 )
         {
-            OperateResult<MelsecMcDataType,ushort> analysis = MelsecHelper.McAnalysisAddress( address );
+            OperateResult<MelsecMcDataType, int> analysis = MelsecHelper.McAnalysisAddress( address );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
 
@@ -382,7 +387,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>带有成功标志的指令数据</returns>
         public static OperateResult<byte[]> BuildWriteCommand( string address, byte[] value, byte networkNumber = 0, byte networkStationNumber = 0 )
         {
-            OperateResult<MelsecMcDataType, ushort> analysis = MelsecHelper.McAnalysisAddress( address );
+            OperateResult<MelsecMcDataType, int> analysis = MelsecHelper.McAnalysisAddress( address );
             if (!analysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( analysis );
 
 
