@@ -318,7 +318,7 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, bool value )
         {
-            return WriteTag( address, AllenBradleyHelper.CIP_Type_Bool, value ? new byte[] { 0xFF } : new byte[] { 0x00 } );
+            return WriteTag( address, AllenBradleyHelper.CIP_Type_Bool, value ? new byte[] { 0xFF, 0xFF } : new byte[] { 0x00, 0x00 } );
         }
 
 
@@ -331,7 +331,7 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <returns>返回写入结果</returns>
         public OperateResult Write( string address, byte value )
         {
-            return WriteTag( address, AllenBradleyHelper.CIP_Type_Byte, new byte[] { value } );
+            return WriteTag( address, AllenBradleyHelper.CIP_Type_Byte, new byte[] { value, 0x00 } );
         }
 
         #endregion

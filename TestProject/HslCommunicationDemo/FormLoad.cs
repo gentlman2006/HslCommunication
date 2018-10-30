@@ -102,6 +102,18 @@ namespace HslCommunicationDemo
             }
         }
 
+        private void linkLabel7_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            try
+            {
+                System.Diagnostics.Process.Start( linkLabel7.Text );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show( ex.Message );
+            }
+        }
+
         private void linkLabel4_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
         {
             try
@@ -119,6 +131,18 @@ namespace HslCommunicationDemo
             try
             {
                 System.Diagnostics.Process.Start( linkLabel3.Text );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show( ex.Message );
+            }
+        }
+
+        private void linkLabel8_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
+        {
+            try
+            {
+                System.Diagnostics.Process.Start( "http://118.24.36.220:8080/html/c136d3de-eab7-9b0f-4bdf-d891297c8018.htm" );
             }
             catch (Exception ex)
             {
@@ -595,5 +619,6 @@ namespace HslCommunicationDemo
             System.Threading.Thread.Sleep( 200 );
             Show( );
         }
+
     }
 }

@@ -7,7 +7,8 @@ using HslCommunication.Core;
 namespace HslCommunication
 {
     /// <summary>
-    /// 一个包含网络通讯库，PLC访问库，日志库，多线程处理，Modbus服务区客户端，数据转换，版本类，基础控件等工具库
+    /// 一个工业物联网的底层架构框架，专注于底层的技术通信及跨平台，跨语言通信功能，实现各种主流的PLC数据读写，实现modbus的各种协议读写等等，
+    /// 支持快速搭建工业上位机软件，组态软件，SCADA软件，工厂MES系统，助力企业工业4.0腾飞，实现智能制造，智慧工厂的目标。
     /// <br /><br />
     /// 本组件免费开源，使用之前请认真的阅读本API文档，对于本文档中警告部分的内容务必理解，部署生产之前请详细测试，如果在测试的过程中，
     /// 发现了BUG，或是有问题的地方，欢迎联系作者进行修改，或是直接在github上进行提问。统一声明：对于操作设备造成的任何损失，作者概不负责。
@@ -18,7 +19,7 @@ namespace HslCommunication
     /// 本组件的目标是集成一个框架，统一所有的设备读写方法，抽象成统一的接口<see cref="IReadWriteNet"/>，对于上层操作只需要关注地址，读取类型即可，另一个目标是使用本框架轻松实现C#后台+C#客户端+web浏览器+android手机的全方位功能实现。
     /// </note>
     /// <br /><br />
-    /// 本库提供了C#版本和java版本和python版本，java，python版本的使用和C#几乎是一模一样的。
+    /// 本库提供了C#版本和java版本和python版本，java，python版本的使用和C#几乎是一模一样的，都是可以相互通讯的。
     /// </summary>
     /// <remarks>
     /// 本软件著作权归Richard.Hu所有，开源项目地址：<a href="https://github.com/dathlin/HslCommunication">https://github.com/dathlin/HslCommunication</a>  开源协议：LGPL-3.0

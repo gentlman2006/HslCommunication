@@ -87,6 +87,9 @@
             this.linkLabel6 = new System.Windows.Forms.LinkLabel();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.button37 = new System.Windows.Forms.Button();
+            this.linkLabel7 = new System.Windows.Forms.LinkLabel();
+            this.label5 = new System.Windows.Forms.Label();
+            this.linkLabel8 = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -740,7 +743,7 @@
             // 
             this.linkLabel5.AutoSize = true;
             this.linkLabel5.LinkColor = System.Drawing.Color.Chocolate;
-            this.linkLabel5.Location = new System.Drawing.Point(381, 37);
+            this.linkLabel5.Location = new System.Drawing.Point(699, 37);
             this.linkLabel5.Name = "linkLabel5";
             this.linkLabel5.Size = new System.Drawing.Size(56, 17);
             this.linkLabel5.TabIndex = 20;
@@ -751,7 +754,7 @@
             // 
             this.linkLabel6.AutoSize = true;
             this.linkLabel6.LinkColor = System.Drawing.Color.Chocolate;
-            this.linkLabel6.Location = new System.Drawing.Point(443, 37);
+            this.linkLabel6.Location = new System.Drawing.Point(761, 37);
             this.linkLabel6.Name = "linkLabel6";
             this.linkLabel6.Size = new System.Drawing.Size(49, 17);
             this.linkLabel6.TabIndex = 21;
@@ -781,12 +784,47 @@
             this.button37.UseVisualStyleBackColor = true;
             this.button37.Click += new System.EventHandler(this.button37_Click);
             // 
+            // linkLabel7
+            // 
+            this.linkLabel7.AutoSize = true;
+            this.linkLabel7.Location = new System.Drawing.Point(431, 37);
+            this.linkLabel7.Name = "linkLabel7";
+            this.linkLabel7.Size = new System.Drawing.Size(159, 17);
+            this.linkLabel7.TabIndex = 24;
+            this.linkLabel7.TabStop = true;
+            this.linkLabel7.Text = "http://118.24.36.220:8081/";
+            this.linkLabel7.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel7_LinkClicked);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(352, 37);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(82, 17);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "mes demo：";
+            // 
+            // linkLabel8
+            // 
+            this.linkLabel8.AutoSize = true;
+            this.linkLabel8.LinkColor = System.Drawing.Color.BlueViolet;
+            this.linkLabel8.Location = new System.Drawing.Point(616, 37);
+            this.linkLabel8.Name = "linkLabel8";
+            this.linkLabel8.Size = new System.Drawing.Size(56, 17);
+            this.linkLabel8.TabIndex = 25;
+            this.linkLabel8.TabStop = true;
+            this.linkLabel8.Text = "更新日志";
+            this.linkLabel8.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel8_LinkClicked);
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(980, 684);
+            this.Controls.Add(this.linkLabel8);
+            this.Controls.Add(this.linkLabel7);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox11);
             this.Controls.Add(this.linkLabel6);
             this.Controls.Add(this.linkLabel5);
@@ -892,6 +930,9 @@
         private System.Windows.Forms.Button button36;
         private System.Windows.Forms.GroupBox groupBox11;
         private System.Windows.Forms.Button button37;
+        private System.Windows.Forms.LinkLabel linkLabel7;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.LinkLabel linkLabel8;
     }
 }
 
