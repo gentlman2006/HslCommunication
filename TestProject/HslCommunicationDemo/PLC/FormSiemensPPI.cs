@@ -39,7 +39,7 @@ namespace HslCommunicationDemo
 
         private void FormSiemens_Load( object sender, EventArgs e )
         {
-            panel2.Enabled = false;
+             panel2.Enabled = false;
             userCurve1.SetLeftCurve( "A", new float[0], Color.Tomato );
 
             Language( Program.Language );
@@ -247,9 +247,11 @@ namespace HslCommunicationDemo
 
         private void button_read_bool_Click( object sender, EventArgs e )
         {
+            //MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( SiemensPPI.BuildReadCommand( siemensPPI.Station, textBox3.Text, 1, true ).Content, ' ' ) );
             // 读取bool变量
-            readResultRender( siemensPPI.ReadBool( textBox3.Text ), textBox3.Text, textBox4 );
+             readResultRender( siemensPPI.ReadBool( textBox3.Text ), textBox3.Text, textBox4 );
         }
+
         private void button_read_byte_Click( object sender, EventArgs e )
         {
             // 读取byte变量
@@ -316,6 +318,8 @@ namespace HslCommunicationDemo
         private void button24_Click( object sender, EventArgs e )
         {
             // bool写入
+            //MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( SiemensPPI.BuildWriteCommand( siemensPPI.Station, textBox8.Text, new byte[] { 1 } ).Content, ' ' ) );
+            //return;
             try
             {
                 writeResultRender( siemensPPI.WriteBool( textBox8.Text, bool.Parse( textBox7.Text ) ), textBox8.Text );

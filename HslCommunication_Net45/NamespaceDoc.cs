@@ -464,6 +464,11 @@ namespace HslCommunication
     ///             <item>三菱的mc协议新增支持读取ZR文件寄存器功能。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-10-30" version="5.4.3" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>修复AB PLC的bool和byte写入失败的bug，感谢 北京-XLang 提供的思路。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc
