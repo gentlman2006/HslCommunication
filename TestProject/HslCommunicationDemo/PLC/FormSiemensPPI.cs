@@ -247,9 +247,9 @@ namespace HslCommunicationDemo
 
         private void button_read_bool_Click( object sender, EventArgs e )
         {
-            //MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( SiemensPPI.BuildReadCommand( siemensPPI.Station, textBox3.Text, 1, true ).Content, ' ' ) );
+            Clipboard.SetText( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( SiemensPPI.BuildReadCommand( 2, textBox3.Text, 1, true ).Content, ' ' ) );
             // 读取bool变量
-             readResultRender( siemensPPI.ReadBool( textBox3.Text ), textBox3.Text, textBox4 );
+            readResultRender( siemensPPI.ReadBool( textBox3.Text ), textBox3.Text, textBox4 );
         }
 
         private void button_read_byte_Click( object sender, EventArgs e )
@@ -341,7 +341,7 @@ namespace HslCommunicationDemo
                 //    buffer[i] = (byte)i;
                 //}
                 //writeResultRender( siemensTcpNet.Write( textBox8.Text, buffer ), textBox8.Text );
-                writeResultRender( siemensPPI.Write( textBox8.Text, byte.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( siemensPPI.WriteByte( textBox8.Text, byte.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -351,6 +351,8 @@ namespace HslCommunicationDemo
 
         private void button22_Click( object sender, EventArgs e )
         {
+            Clipboard.SetText( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( SiemensPPI.BuildWriteCommand( 2, textBox8.Text, new byte[] { 0x12, 0x34 } ).Content, ' ' ) );
+
             // short写入
             try
             {

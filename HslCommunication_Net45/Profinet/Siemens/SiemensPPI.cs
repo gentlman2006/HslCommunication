@@ -15,7 +15,7 @@ namespace HslCommunication.Profinet.Siemens
     /// <remarks>
     /// 适用于西门子200的通信
     /// </remarks>
-    public class SiemensPPI : SerialDeviceBase<HslCommunication.Core.RegularByteTransform>
+    public class SiemensPPI : SerialDeviceBase<HslCommunication.Core.ReverseBytesTransform>
     {
         #region Constructor
 
@@ -33,7 +33,19 @@ namespace HslCommunication.Profinet.Siemens
         /// <summary>
         /// 西门子PLC的站号信息
         /// </summary>
-        public byte Station { get => station; set => station = value; }
+        public byte Station { get => station;
+            set {
+                station = value;
+                executeConfirm[1] = value;
+
+                int count = 0;
+                for (int i = 1; i < 4; i++)
+                {
+                    count += executeConfirm[i];
+                }
+                executeConfirm[4] = (byte)count;
+            }
+        }
 
 
         /// <summary>
@@ -53,7 +65,7 @@ namespace HslCommunication.Profinet.Siemens
             if (!read1.IsSuccess) return read1;
 
             // 验证
-            if (read1.Content[0] != 0xE5) return new OperateResult<byte[]>( "PLC Receive Check Failed:" + read1.Content[0] );
+            if (read1.Content[0] != 0xE5) return new OperateResult<byte[]>( "PLC Receive Check Failed:" + BasicFramework.SoftBasic.ByteToHexString( read1.Content, ' ' ) );
 
             // 第二次数据交互
             OperateResult<byte[]> read2 = ReadBase( executeConfirm );
@@ -72,7 +84,8 @@ namespace HslCommunication.Profinet.Siemens
             }
             else
             {
-                return new OperateResult<byte[]>( ) { ErrorCode = read2.ErrorCode, Message = StringResources.Language.SiemensDataLengthCheckFailed };
+                //return new OperateResult<byte[]>( ) { ErrorCode = read2.ErrorCode, Message = StringResources.Language.SiemensDataLengthCheckFailed };
+                return new OperateResult<byte[]>( ) { ErrorCode = read2.ErrorCode, Message = "Failed: " + BasicFramework.SoftBasic.ByteToHexString( read2.Content, ' ' ) };
             }
         }
 
@@ -93,20 +106,20 @@ namespace HslCommunication.Profinet.Siemens
             if (!read1.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read1 );
 
             // 验证
-            if (read1.Content[0] != 0xE5) return new OperateResult<bool[]>( "PLC Receive Check Failed:" + read1.Content[0] );
+            if (read1.Content[0] != 0xE5) return new OperateResult<bool[]>( "PLC Receive Check Failed:" + BasicFramework.SoftBasic.ByteToHexString( read1.Content, ' ' ) );
 
             // 第二次数据交互
             OperateResult<byte[]> read2 = ReadBase( executeConfirm );
             if (!read2.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read2 );
 
             // 数据提取
-            if (read2.Content.Length >= 21)
+            if (read2.Content.Length >= 27)
             {
-                byte[] buffer = new byte[length];
+                byte[] buffer = new byte[read2.Content.Length - 27];
 
                 if (read2.Content[21] == 0xFF && read2.Content[22] == 0x04)
                 {
-                    Array.Copy( read2.Content, 25, buffer, 0, length );
+                    Array.Copy( read2.Content, 25, buffer, 0, buffer.Length );
                 }
 
                 return OperateResult.CreateSuccessResult( BasicFramework.SoftBasic.ByteToBoolArray( buffer, length ) );
@@ -121,7 +134,6 @@ namespace HslCommunication.Profinet.Siemens
         /// 从西门子的PLC中读取bool数据信息，地址为"M100.0","AI100.1","I0.3","Q0.6","V100.4","S100"等，详细请参照API文档
         /// </summary>
         /// <param name="address">西门子的地址数据信息</param>
-        /// <param name="length">数据长度</param>
         /// <returns>带返回结果的结果对象</returns>
         public OperateResult<bool> ReadBool( string address )
         {
@@ -175,7 +187,7 @@ namespace HslCommunication.Profinet.Siemens
 
             // 验证
             if (read1.Content[0] != 0xE5) return new OperateResult<byte[]>( "PLC Receive Check Failed:" + read1.Content[0] );
-
+            
             // 第二次数据交互
             OperateResult<byte[]> read2 = ReadBase( executeConfirm );
             if (!read2.IsSuccess) return read2;
@@ -353,7 +365,7 @@ namespace HslCommunication.Profinet.Siemens
             _PLCCommand[ 3] = 0x68;
             _PLCCommand[ 4] = station;
             _PLCCommand[ 5] = 0x00;
-            _PLCCommand[ 6] = 0x7C;
+            _PLCCommand[ 6] = 0x6C;
             _PLCCommand[ 7] = 0x32;
             _PLCCommand[ 8] = 0x01;
             _PLCCommand[ 9] = 0x00;
@@ -363,7 +375,7 @@ namespace HslCommunication.Profinet.Siemens
             _PLCCommand[13] = 0x00;
             _PLCCommand[14] = 0x0E;
             _PLCCommand[15] = 0x00;
-            _PLCCommand[16] = 0x05;
+            _PLCCommand[16] = 0x00;
             _PLCCommand[17] = 0x04;
             _PLCCommand[18] = 0x01;
             _PLCCommand[19] = 0x12;
@@ -391,7 +403,15 @@ namespace HslCommunication.Profinet.Siemens
             return OperateResult.CreateSuccessResult( _PLCCommand );
         }
 
+        
 
+        /// <summary>
+        /// 生成一个写入PLC数据信息的报文内容
+        /// </summary>
+        /// <param name="station">PLC的站号</param>
+        /// <param name="address">地址</param>
+        /// <param name="values">数据值</param>
+        /// <returns>是否写入成功</returns>
         public static OperateResult<byte[]> BuildWriteCommand( byte station, string address, byte[] values )
         {
             OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
@@ -416,7 +436,7 @@ namespace HslCommunication.Profinet.Siemens
             _PLCCommand[13] = 0x00;
             _PLCCommand[14] = 0x0E;
             _PLCCommand[15] = 0x00;
-            _PLCCommand[16] = 0x05;
+            _PLCCommand[16] = (byte)(values.Length + 4);
             _PLCCommand[17] = 0x05;
             _PLCCommand[18] = 0x01;
             _PLCCommand[19] = 0x12;
