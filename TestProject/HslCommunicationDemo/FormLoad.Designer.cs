@@ -322,7 +322,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 17);
             this.label2.TabIndex = 4;
-            this.label2.Text = "blogs：";
+            this.label2.Text = "Blogs：";
             // 
             // linkLabel2
             // 
@@ -457,9 +457,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(14, 37);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(57, 17);
+            this.label1.Size = new System.Drawing.Size(58, 17);
             this.label1.TabIndex = 9;
-            this.label1.Text = "github：";
+            this.label1.Text = "Github：";
             // 
             // groupBox5
             // 
@@ -800,9 +800,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(352, 37);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(82, 17);
+            this.label5.Size = new System.Drawing.Size(84, 17);
             this.label5.TabIndex = 23;
-            this.label5.Text = "mes demo：";
+            this.label5.Text = "MES demo：";
             // 
             // linkLabel8
             // 

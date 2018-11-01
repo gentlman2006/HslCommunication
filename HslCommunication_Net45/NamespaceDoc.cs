@@ -469,6 +469,11 @@ namespace HslCommunication
     ///             <item>修复AB PLC的bool和byte写入失败的bug，感谢 北京-XLang 提供的思路。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-11-1" version="5.5.0" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>新增西门子PPI通讯类库，支持200，200smart等串口通信，感谢 合肥-加劲 和 江阴-  ∮溪风-⊙_⌒ 的测试</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc
