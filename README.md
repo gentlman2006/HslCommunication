@@ -72,6 +72,9 @@ Install-Package HslCommunication
 ## HslCommunication.dll Summary 
 完整的项目介绍地址： [http://www.cnblogs.com/dathlin/p/7703805.html](http://www.cnblogs.com/dathlin/p/7703805.html)
 
+**HslCommunicationDemo** 通过下面的Demo界面可以大概清楚本项目支持的功能:
+![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/demo.png)
+
 * [日志记录功能](http://www.cnblogs.com/dathlin/p/7691693.html)
 * [同步网络通讯功能 **NetSimplify**](http://www.cnblogs.com/dathlin/p/7697782.html)
 * [文件管理引擎](http://www.cnblogs.com/dathlin/p/7746113.html)
@@ -79,6 +82,7 @@ Install-Package HslCommunication
 * [三菱PLC以太网访问](http://www.cnblogs.com/dathlin/p/7469679.html)
 * [三菱PLC串口访问](https://www.cnblogs.com/dathlin/p/9536467.html)
 * [西门子PLC访问](http://www.cnblogs.com/dathlin/p/8685855.html)
+* 西门子PPI访问
 * [欧姆龙PLC访问](http://www.cnblogs.com/dathlin/p/8723961.html)
 * [AB PLC访问](https://www.cnblogs.com/dathlin/p/9607929.html)
 * [邮件功能使用](http://www.cnblogs.com/dathlin/p/8463613.html)
@@ -93,7 +97,6 @@ Install-Package HslCommunication
 * [CRC16校验](http://www.cnblogs.com/dathlin/p/7821808.html)
 * [常用控件库](http://www.cnblogs.com/dathlin/p/8150516.html)
 * [连接池使用](https://www.cnblogs.com/dathlin/p/9191211.html)
-
 
 
 ## HslCommunication.jar Summary 
@@ -134,22 +137,12 @@ Install-Package HslCommunication
 
 ## Thanks
 * 混合锁及可序列化异常类，读写锁，并发模型部分代码及思路参考《CLR Via C#》，感谢作者Jeffrey Richter
-* 感谢 **CKernal** 推送的Qna兼容1E帧协议的三菱代码
-* 感谢 **ligihtdev** 打赏支持
-* 感谢 **Wzhigang** 打赏支持
-* 感谢 **Running...** 打赏支持
-* 感谢 **生意王(2940280678)** 打赏支持
-
 
 ## 创作不易，感谢打赏
 If this library really helps you, you can support me by AliPay. Please choose the amount according to your actual ability.
 企业用户打赏及需要发票的打赏请专门联系作者（将在官网显示出来），本开源项目的发展和完善需要大家共同的支持。
 
 ![打赏](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/support.png)
-
-## HslCommunicationDemo
-v5.2.3 function, support
-![Picture](https://raw.githubusercontent.com/dathlin/HslCommunication/master/imgs/demo.png)
 
 ## Controls
 This library include some controls render upside picture. u can easily use them
