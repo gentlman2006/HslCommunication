@@ -101,9 +101,6 @@ namespace HslCommunicationDemo
                 label12.Text = "length:";
                 button25.Text = "Bulk Read";
                 label13.Text = "Results:";
-                label16.Text = "Message:";
-                label14.Text = "Results:";
-                button26.Text = "Read";
 
                 label10.Text = "Address:";
                 label9.Text = "Value:";
@@ -122,7 +119,6 @@ namespace HslCommunicationDemo
                 groupBox1.Text = "Single Data Read test";
                 groupBox2.Text = "Single Data Write test";
                 groupBox3.Text = "Bulk Read test";
-                groupBox4.Text = "Message reading test, hex string needs to be filled in";
                 groupBox5.Text = "Timed reading, curve display";
                 
                 label15.Text = "Address:";
@@ -507,26 +503,7 @@ namespace HslCommunicationDemo
 
         #region 报文读取测试
 
-
-        private void button26_Click( object sender, EventArgs e )
-        {
-            try
-            {
-                OperateResult<byte[]> read = siemensPPI.ReadBase( HslCommunication.BasicFramework.SoftBasic.HexStringToBytes( textBox13.Text ) );
-                if (read.IsSuccess)
-                {
-                    textBox11.Text = "结果：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( read.Content );
-                }
-                else
-                {
-                    MessageBox.Show( "读取失败：" + read.ToMessageShowString( ) );
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show( "读取失败：" + ex.Message );
-            }
-        }
+        
 
 
         #endregion
@@ -688,5 +665,19 @@ namespace HslCommunicationDemo
         }
 
         #endregion
+
+        private void button3_Click_1( object sender, EventArgs e )
+        {
+            OperateResult start = siemensPPI.Start( );
+            if (start.IsSuccess) MessageBox.Show( "Start Success!" );
+            else MessageBox.Show( start.Message );
+        }
+
+        private void button4_Click( object sender, EventArgs e )
+        {
+            OperateResult stop = siemensPPI.Stop( );
+            if (stop.IsSuccess) MessageBox.Show( "Stop Success!" );
+            else MessageBox.Show( stop.Message );
+        }
     }
 }

@@ -10,10 +10,13 @@ using System.Threading.Tasks;
 namespace HslCommunication.Profinet.Siemens
 {
     /// <summary>
-    /// 西门子的PPI协议，适用于s7-200plc
+    /// 西门子的PPI协议，适用于s7-200plc，注意，本类库有个致命的风险需要注意，由于本类库的每次通讯分成2次操作，故而不支持多线程同时读写，当发生线程竞争的时候，会导致数据异常，
+    /// 想要解决的话，需要您在每次数据交互时添加同步锁。
     /// </summary>
     /// <remarks>
-    /// 适用于西门子200的通信
+    /// 适用于西门子200的通信，非常感谢 合肥-加劲 的测试，让本类库圆满完成。
+    /// 
+    /// 注意：M地址范围有限 0-31地址
     /// </remarks>
     public class SiemensPPI : SerialDeviceBase<HslCommunication.Core.ReverseBytesTransform>
     {
@@ -71,22 +74,18 @@ namespace HslCommunication.Profinet.Siemens
             OperateResult<byte[]> read2 = ReadBase( executeConfirm );
             if (!read2.IsSuccess) return read2;
 
-            // 数据提取
-            if (read2.Content.Length >= 21 )
-            {
-                byte[] buffer = new byte[length];
+            // 错误码判断
+            if (read2.Content.Length < 21) return new OperateResult<byte[]>( read2.ErrorCode, "Failed: " + BasicFramework.SoftBasic.ByteToHexString( read2.Content, ' ' ) );
+            if (read2.Content[17] != 0x00 || read2.Content[18] != 0x00) return new OperateResult<byte[]>( read2.Content[19], GetMsgFromStatus( read2.Content[18], read2.Content[19] ) );
+            if (read2.Content[21] != 0xFF) return new OperateResult<byte[]>( read2.Content[21], GetMsgFromStatus( read2.Content[21] ) );
 
-                if (read2.Content[21] == 0xFF && read2.Content[22] == 0x04)
-                {
-                    Array.Copy( read2.Content, 25, buffer, 0, length );
-                }
-                return OperateResult.CreateSuccessResult( buffer );
-            }
-            else
+            // 数据提取
+            byte[] buffer = new byte[length];
+            if (read2.Content[21] == 0xFF && read2.Content[22] == 0x04)
             {
-                //return new OperateResult<byte[]>( ) { ErrorCode = read2.ErrorCode, Message = StringResources.Language.SiemensDataLengthCheckFailed };
-                return new OperateResult<byte[]>( ) { ErrorCode = read2.ErrorCode, Message = "Failed: " + BasicFramework.SoftBasic.ByteToHexString( read2.Content, ' ' ) };
+                Array.Copy( read2.Content, 25, buffer, 0, length );
             }
+            return OperateResult.CreateSuccessResult( buffer );
         }
 
         /// <summary>
@@ -112,22 +111,18 @@ namespace HslCommunication.Profinet.Siemens
             OperateResult<byte[]> read2 = ReadBase( executeConfirm );
             if (!read2.IsSuccess) return OperateResult.CreateFailedResult<bool[]>( read2 );
 
+            // 错误码判断
+            if (read2.Content.Length < 21) return new OperateResult<bool[]>( read2.ErrorCode, "Failed: " + BasicFramework.SoftBasic.ByteToHexString( read2.Content, ' ' ) );
+            if (read2.Content[17] != 0x00 || read2.Content[18] != 0x00) return new OperateResult<bool[]>( read2.Content[19], GetMsgFromStatus( read2.Content[18], read2.Content[19] ) );
+            if (read2.Content[21] != 0xFF) return new OperateResult<bool[]>( read2.Content[21], GetMsgFromStatus( read2.Content[21] ) );
             // 数据提取
-            if (read2.Content.Length >= 27)
-            {
-                byte[] buffer = new byte[read2.Content.Length - 27];
 
-                if (read2.Content[21] == 0xFF && read2.Content[22] == 0x04)
-                {
-                    Array.Copy( read2.Content, 25, buffer, 0, buffer.Length );
-                }
-
-                return OperateResult.CreateSuccessResult( BasicFramework.SoftBasic.ByteToBoolArray( buffer, length ) );
-            }
-            else
+            byte[] buffer = new byte[read2.Content.Length - 27];
+            if (read2.Content[21] == 0xFF && read2.Content[22] == 0x03)
             {
-                return new OperateResult<bool[]>( ) { ErrorCode = read2.ErrorCode, Message = StringResources.Language.SiemensDataLengthCheckFailed };
+                Array.Copy( read2.Content, 25, buffer, 0, buffer.Length );
             }
+            return OperateResult.CreateSuccessResult( BasicFramework.SoftBasic.ByteToBoolArray( buffer, length ) );
         }
 
         /// <summary>
@@ -166,6 +161,10 @@ namespace HslCommunication.Profinet.Siemens
             OperateResult<byte[]> read2 = ReadBase( executeConfirm );
             if (!read2.IsSuccess) return read2;
 
+            // 错误码判断
+            if (read2.Content.Length < 21) return new OperateResult( read2.ErrorCode, "Failed: " + BasicFramework.SoftBasic.ByteToHexString( read2.Content, ' ' ) );
+            if (read2.Content[17] != 0x00 || read2.Content[18] != 0x00) return new OperateResult( read2.Content[19], GetMsgFromStatus( read2.Content[18], read2.Content[19] ) );
+            if (read2.Content[21] != 0xFF) return new OperateResult( read2.Content[21], GetMsgFromStatus( read2.Content[21] ) );
             // 数据提取
             return OperateResult.CreateSuccessResult( );
         }
@@ -192,6 +191,10 @@ namespace HslCommunication.Profinet.Siemens
             OperateResult<byte[]> read2 = ReadBase( executeConfirm );
             if (!read2.IsSuccess) return read2;
 
+            // 错误码判断
+            if (read2.Content.Length < 21) return new OperateResult( read2.ErrorCode, "Failed: " + BasicFramework.SoftBasic.ByteToHexString( read2.Content, ' ' ) );
+            if (read2.Content[17] != 0x00 || read2.Content[18] != 0x00) return new OperateResult( read2.Content[19], GetMsgFromStatus( read2.Content[18], read2.Content[19] ) );
+            if (read2.Content[21] != 0xFF) return new OperateResult( read2.Content[21], GetMsgFromStatus( read2.Content[21] ) );
             // 数据提取
             return OperateResult.CreateSuccessResult( );
         }
@@ -231,6 +234,54 @@ namespace HslCommunication.Profinet.Siemens
             return Write( address, new byte[] { value } );
         }
 
+
+        #endregion
+
+        #region Start Stop
+
+        /// <summary>
+        /// 启动西门子PLC为RUN模式
+        /// </summary>
+        /// <returns>是否启动成功</returns>
+        public OperateResult Start( )
+        {
+            byte[] cmd = new byte[] { 0x68, 0x21, 0x21, 0x68, station, 0x00, 0x6C, 0x32, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFD, 0x00, 0x00, 0x09, 0x50, 0x5F, 0x50, 0x52, 0x4F, 0x47, 0x52, 0x41, 0x4D, 0xAA, 0x16 };
+            // 第一次数据交互
+            OperateResult<byte[]> read1 = ReadBase( cmd );
+            if (!read1.IsSuccess) return read1;
+
+            // 验证
+            if (read1.Content[0] != 0xE5) return new OperateResult<byte[]>( "PLC Receive Check Failed:" + read1.Content[0] );
+
+            // 第二次数据交互
+            OperateResult<byte[]> read2 = ReadBase( executeConfirm );
+            if (!read2.IsSuccess) return read2;
+
+            // 数据提取
+            return OperateResult.CreateSuccessResult( );
+        }
+
+        /// <summary>
+        /// 停止西门子PLC，切换为Stop模式
+        /// </summary>
+        /// <returns>是否停止成功</returns>
+        public OperateResult Stop( )
+        {
+            byte[] cmd = new byte[] { 0x68, 0x1D, 0x1D, 0x68, station, 0x00, 0x6C, 0x32, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x29, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0x50, 0x5F, 0x50, 0x52, 0x4F, 0x47, 0x52, 0x41, 0x4D, 0xAA, 0x16 };
+            // 第一次数据交互
+            OperateResult<byte[]> read1 = ReadBase( cmd );
+            if (!read1.IsSuccess) return read1;
+
+            // 验证
+            if (read1.Content[0] != 0xE5) return new OperateResult<byte[]>( "PLC Receive Check Failed:" + read1.Content[0] );
+
+            // 第二次数据交互
+            OperateResult<byte[]> read2 = ReadBase( executeConfirm );
+            if (!read2.IsSuccess) return read2;
+
+            // 数据提取
+            return OperateResult.CreateSuccessResult( );
+        }
 
         #endregion
 
@@ -473,6 +524,74 @@ namespace HslCommunication.Profinet.Siemens
             return OperateResult.CreateSuccessResult( _PLCCommand );
         }
 
+        /// <summary>
+        /// 根据错误信息，获取到文本信息
+        /// </summary>
+        /// <param name="code">状态</param>
+        /// <returns>消息文本</returns>
+        public static string GetMsgFromStatus( byte code )
+        {
+            switch (code)
+            {
+                case 0xFF: return "No error";
+                case 0x01: return "Hardware fault";
+                case 0x03: return "Illegal object access";
+                case 0x05: return "Invalid address(incorrent variable address)";
+                case 0x06: return "Data type is not supported";
+                case 0x0A: return "Object does not exist or length error";
+                default: return StringResources.Language.UnknownError;
+            }
+        }
+
+        /// <summary>
+        /// 根据错误信息，获取到文本信息
+        /// </summary>
+        /// <param name="errorClass">错误类型</param>
+        /// <param name="errorCode">错误代码</param>
+        /// <returns>错误信息</returns>
+        public static string GetMsgFromStatus( byte errorClass, byte errorCode )
+        {
+            if(errorClass == 0x80 && errorCode == 0x01)
+            {
+                return "Switch in wrong position for requested operation";
+            }
+            else if (errorClass == 0x81 && errorCode == 0x04)
+            {
+                return "Miscellaneous structure error in command.  Command is not supportedby CPU";
+            }
+            else if (errorClass == 0x84 && errorCode == 0x04)
+            {
+                return "CPU is busy processing an upload or download CPU cannot process command because of system fault condition";
+            }
+            else if (errorClass == 0x85 && errorCode == 0x00)
+            {
+                return "Length fields are not correct or do not agree with the amount of data received";
+            }
+            else if (errorClass == 0xD2 )
+            {
+                return "Error in upload or download command";
+            }
+            else if (errorClass == 0xD6)
+            {
+                return "Protection error(password)";
+            }
+            else if (errorClass == 0xDC && errorCode == 0x01)
+            {
+                return "Error in time-of-day clock data";
+            }
+            else
+            {
+                return StringResources.Language.UnknownError;
+            }
+        }
+
+        /// <summary>
+        /// 创建写入PLC的bool类型数据报文指令
+        /// </summary>
+        /// <param name="station">PLC的站号信息</param>
+        /// <param name="address">地址信息</param>
+        /// <param name="values">bool[]数据值</param>
+        /// <returns>带有成功标识的结果对象</returns>
         public static OperateResult<byte[]> BuildWriteCommand( byte station, string address, bool[] values )
         {
             OperateResult<byte, int, ushort> analysis = AnalysisAddress( address );
