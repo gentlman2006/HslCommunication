@@ -100,6 +100,15 @@ namespace HslCommunication.Serial
         }
 
         /// <summary>
+        /// 获取一个值，指示串口是否处于打开状态
+        /// </summary>
+        /// <returns>是或否</returns>
+        public bool IsOpen( )
+        {
+            return SP_ReadData.IsOpen;
+        }
+
+        /// <summary>
         /// 关闭端口连接
         /// </summary>
         public void Close( )
