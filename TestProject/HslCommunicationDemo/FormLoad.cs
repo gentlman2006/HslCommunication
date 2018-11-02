@@ -620,5 +620,16 @@ namespace HslCommunicationDemo
             Show( );
         }
 
+        private void button38_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            System.Threading.Thread.Sleep( 200 );
+            using (FormMelsecLinks form = new FormMelsecLinks( ))
+            {
+                form.ShowDialog( );
+            }
+            System.Threading.Thread.Sleep( 200 );
+            Show( );
+        }
     }
 }

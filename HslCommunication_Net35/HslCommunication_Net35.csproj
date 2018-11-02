@@ -490,6 +490,9 @@
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecA1ENet.cs">
       <Link>Profinet\Melsec\MelsecA1ENet.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecFxLinks.cs">
+      <Link>Profinet\Melsec\MelsecFxLinks.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Profinet\Melsec\MelsecFxSerial.cs">
       <Link>Profinet\Melsec\MelsecFxSerial.cs</Link>
     </Compile>

@@ -175,6 +175,12 @@
     <Compile Include="Modbus\FormModbusAlien.Designer.cs">
       <DependentUpon>FormModbusAlien.cs</DependentUpon>
     </Compile>
+    <Compile Include="PLC\FormMelsecLinks.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PLC\FormMelsecLinks.Designer.cs">
+      <DependentUpon>FormMelsecLinks.cs</DependentUpon>
+    </Compile>
     <Compile Include="PLC\FormMelsecSerial.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -335,6 +341,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Modbus\FormModbusAlien.resx">
       <DependentUpon>FormModbusAlien.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PLC\FormMelsecLinks.resx">
+      <DependentUpon>FormMelsecLinks.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PLC\FormMelsecSerial.resx">
       <DependentUpon>FormMelsecSerial.cs</DependentUpon>

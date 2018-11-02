@@ -90,6 +90,7 @@
             this.linkLabel7 = new System.Windows.Forms.LinkLabel();
             this.label5 = new System.Windows.Forms.Label();
             this.linkLabel8 = new System.Windows.Forms.LinkLabel();
+            this.button38 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -247,6 +248,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.button38);
             this.groupBox3.Controls.Add(this.button32);
             this.groupBox3.Controls.Add(this.button13);
             this.groupBox3.Controls.Add(this.button7);
@@ -267,7 +269,7 @@
             this.button32.Name = "button32";
             this.button32.Size = new System.Drawing.Size(150, 32);
             this.button32.TabIndex = 4;
-            this.button32.Text = "Fx Serial【串口】";
+            this.button32.Text = "Fx Serial【编程口】";
             this.button32.UseVisualStyleBackColor = true;
             this.button32.Click += new System.EventHandler(this.button32_Click);
             // 
@@ -816,6 +818,17 @@
             this.linkLabel8.Text = "更新日志";
             this.linkLabel8.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel8_LinkClicked);
             // 
+            // button38
+            // 
+            this.button38.Location = new System.Drawing.Point(15, 184);
+            this.button38.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button38.Name = "button38";
+            this.button38.Size = new System.Drawing.Size(150, 32);
+            this.button38.TabIndex = 5;
+            this.button38.Text = "Fx Links【串口】";
+            this.button38.UseVisualStyleBackColor = true;
+            this.button38.Click += new System.EventHandler(this.button38_Click);
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -933,6 +946,7 @@
         private System.Windows.Forms.LinkLabel linkLabel7;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.LinkLabel linkLabel8;
+        private System.Windows.Forms.Button button38;
     }
 }
 

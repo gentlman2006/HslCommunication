@@ -96,6 +96,7 @@
     <Compile Include="Documentation\Samples\Serial\SoftCRC16.cs" />
     <Compile Include="Modbus\ModbusTcpTest.cs" />
     <Compile Include="Profinet\AllenBradley\AllenBradleyHelper.cs" />
+    <Compile Include="Profinet\Melsec\MelsecFxLinksTest.cs" />
     <Compile Include="Profinet\Melsec\MelsecFxSerialTest.cs" />
     <Compile Include="Profinet\Panasonic\PanasonicMewtocolTest.cs" />
     <Compile Include="UnitTest1.cs" />
