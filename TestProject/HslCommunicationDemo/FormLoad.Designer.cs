@@ -29,6 +29,7 @@
         private void InitializeComponent( )
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button39 = new System.Windows.Forms.Button();
             this.button36 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
@@ -91,7 +92,6 @@
             this.linkLabel7 = new System.Windows.Forms.LinkLabel();
             this.label5 = new System.Windows.Forms.Label();
             this.linkLabel8 = new System.Windows.Forms.LinkLabel();
-            this.button39 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -122,6 +122,17 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Siemens PLC(西门子 PLC)";
+            // 
+            // button39
+            // 
+            this.button39.Location = new System.Drawing.Point(98, 104);
+            this.button39.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button39.Name = "button39";
+            this.button39.Size = new System.Drawing.Size(70, 32);
+            this.button39.TabIndex = 6;
+            this.button39.Text = "s7-400";
+            this.button39.UseVisualStyleBackColor = true;
+            this.button39.Click += new System.EventHandler(this.button39_Click);
             // 
             // button36
             // 
@@ -271,7 +282,7 @@
             this.button38.Name = "button38";
             this.button38.Size = new System.Drawing.Size(150, 32);
             this.button38.TabIndex = 5;
-            this.button38.Text = "Fx Links【串口】";
+            this.button38.Text = "Fx Links【485】";
             this.button38.UseVisualStyleBackColor = true;
             this.button38.Click += new System.EventHandler(this.button38_Click);
             // 
@@ -830,17 +841,6 @@
             this.linkLabel8.TabStop = true;
             this.linkLabel8.Text = "更新日志";
             this.linkLabel8.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel8_LinkClicked);
-            // 
-            // button39
-            // 
-            this.button39.Location = new System.Drawing.Point(98, 104);
-            this.button39.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button39.Name = "button39";
-            this.button39.Size = new System.Drawing.Size(70, 32);
-            this.button39.TabIndex = 6;
-            this.button39.Text = "s7-400";
-            this.button39.UseVisualStyleBackColor = true;
-            this.button39.Click += new System.EventHandler(this.button39_Click);
             // 
             // FormLoad
             // 

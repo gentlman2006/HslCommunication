@@ -101,6 +101,18 @@ namespace HslCommunication.Profinet.Melsec
     /// </remarks>
     public class MelsecFxLinks : SerialDeviceBase<RegularByteTransform>
     {
+        #region Constructor
+
+        /// <summary>
+        /// 实例化默认的构造方法
+        /// </summary>
+        public MelsecFxLinks( )
+        {
+            WordLength = 1;
+        }
+
+        #endregion
+
         #region Public Member
 
         /// <summary>

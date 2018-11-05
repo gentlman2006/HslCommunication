@@ -474,6 +474,13 @@ namespace HslCommunication
     ///             <item>新增西门子PPI通讯类库，支持200，200smart等串口通信，感谢 合肥-加劲 和 江阴-  ∮溪风-⊙_⌒ 的测试</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-11-5" version="5.5.1" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>新增三菱计算机链接协议通讯库，支持485组网，有效距离达50米，感谢珠海-刀客的测试。</item>
+    ///             <item>串口协议的基类提供了检测当前串口是否处于打开的方法接口。</item>
+    ///             <item>西门子S7协议新增槽号为3的s7-400的PLC选项，等待测试。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc

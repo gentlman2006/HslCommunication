@@ -4,14 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>HslCommunication</AssemblyName>
     <RootNamespace>HslCommunication</RootNamespace>
-    <Version>5.5.0</Version>
+    <Version>5.5.1</Version>
     <Authors>Richard.Hu</Authors>
     <Company />
     <Product>HslCommunication</Product>
     <Description>一个工业物联网的底层架构框架，专注于底层的技术通信及跨平台，跨语言通信功能，实现各种主流的PLC数据读写，实现modbus的各种协议读写等等，支持快速搭建工业上位机软件，组态软件，SCADA软件，工厂MES系统，助力企业工业4.0腾飞，实现智能制造，智慧工厂的目标。</Description>
     <Copyright>Copyright © By Richard.Hu 2018</Copyright>
-    <AssemblyVersion>5.5.0.0</AssemblyVersion>
-    <FileVersion>5.5.0.0</FileVersion>
+    <AssemblyVersion>5.5.1.0</AssemblyVersion>
+    <FileVersion>5.5.1.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
