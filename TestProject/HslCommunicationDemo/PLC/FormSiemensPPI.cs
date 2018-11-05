@@ -318,7 +318,7 @@ namespace HslCommunicationDemo
             //return;
             try
             {
-                writeResultRender( siemensPPI.WriteBool( textBox8.Text, bool.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( siemensPPI.Write( textBox8.Text, bool.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -587,7 +587,7 @@ namespace HslCommunicationDemo
                 string err = read.Message;
             }
 
-            OperateResult write = siemensPPI.WriteBool( "M100.4", true );
+            OperateResult write = siemensPPI.Write( "M100.4", true );
             if (write.IsSuccess)
             {
                 // success
@@ -630,7 +630,7 @@ namespace HslCommunicationDemo
             string str_M100 = siemensPPI.ReadString( "M100", 10 ).Content;// 读取M100-M109组成的ASCII字符串数据
 
             // 写入操作，这里的M100可以替换成I100,Q100,DB20.100效果时一样的
-            siemensPPI.WriteBool( "M100.7", true );                // 写位，注意M100.0等同于M100
+            siemensPPI.Write( "M100.7", true );                // 写位，注意M100.0等同于M100
             siemensPPI.Write( "M100", (byte)0x33 );            // 写单个字节
             siemensPPI.Write( "M100", (short)12345 );          // 写双字节有符号
             siemensPPI.Write( "M100", (ushort)45678 );         // 写双字节无符号

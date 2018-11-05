@@ -174,7 +174,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">西门子的地址数据信息</param>
         /// <param name="value">数据长度</param>
-        public OperateResult WriteBool(string address, bool[] value )
+        public OperateResult Write(string address, bool[] value )
         {
             // 解析指令
             OperateResult<byte[]> command = BuildWriteCommand( station, address, value );
@@ -204,9 +204,9 @@ namespace HslCommunication.Profinet.Siemens
         /// </summary>
         /// <param name="address">西门子的地址数据信息</param>
         /// <param name="value">数据长度</param>
-        public OperateResult WriteBool( string address, bool value )
+        public OperateResult Write( string address, bool value )
         {
-            return WriteBool( address, new bool[] { value } );
+            return Write( address, new bool[] { value } );
         }
 
         #region Byte Read Write
