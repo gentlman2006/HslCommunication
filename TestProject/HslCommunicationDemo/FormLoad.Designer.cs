@@ -41,6 +41,7 @@
             this.button19 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button38 = new System.Windows.Forms.Button();
             this.button32 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
@@ -90,7 +91,7 @@
             this.linkLabel7 = new System.Windows.Forms.LinkLabel();
             this.label5 = new System.Windows.Forms.Label();
             this.linkLabel8 = new System.Windows.Forms.LinkLabel();
-            this.button38 = new System.Windows.Forms.Button();
+            this.button39 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -106,6 +107,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button39);
             this.groupBox1.Controls.Add(this.button36);
             this.groupBox1.Controls.Add(this.button10);
             this.groupBox1.Controls.Add(this.button5);
@@ -159,7 +161,7 @@
             this.button3.Location = new System.Drawing.Point(18, 104);
             this.button3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(150, 32);
+            this.button3.Size = new System.Drawing.Size(70, 32);
             this.button3.TabIndex = 2;
             this.button3.Text = "s7-300";
             this.button3.UseVisualStyleBackColor = true;
@@ -261,6 +263,17 @@
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Melsec PLC(三菱 PLC)";
+            // 
+            // button38
+            // 
+            this.button38.Location = new System.Drawing.Point(15, 184);
+            this.button38.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button38.Name = "button38";
+            this.button38.Size = new System.Drawing.Size(150, 32);
+            this.button38.TabIndex = 5;
+            this.button38.Text = "Fx Links【串口】";
+            this.button38.UseVisualStyleBackColor = true;
+            this.button38.Click += new System.EventHandler(this.button38_Click);
             // 
             // button32
             // 
@@ -818,16 +831,16 @@
             this.linkLabel8.Text = "更新日志";
             this.linkLabel8.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel8_LinkClicked);
             // 
-            // button38
+            // button39
             // 
-            this.button38.Location = new System.Drawing.Point(15, 184);
-            this.button38.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button38.Name = "button38";
-            this.button38.Size = new System.Drawing.Size(150, 32);
-            this.button38.TabIndex = 5;
-            this.button38.Text = "Fx Links【串口】";
-            this.button38.UseVisualStyleBackColor = true;
-            this.button38.Click += new System.EventHandler(this.button38_Click);
+            this.button39.Location = new System.Drawing.Point(98, 104);
+            this.button39.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button39.Name = "button39";
+            this.button39.Size = new System.Drawing.Size(70, 32);
+            this.button39.TabIndex = 6;
+            this.button39.Text = "s7-400";
+            this.button39.UseVisualStyleBackColor = true;
+            this.button39.Click += new System.EventHandler(this.button39_Click);
             // 
             // FormLoad
             // 
@@ -947,6 +960,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.LinkLabel linkLabel8;
         private System.Windows.Forms.Button button38;
+        private System.Windows.Forms.Button button39;
     }
 }
 

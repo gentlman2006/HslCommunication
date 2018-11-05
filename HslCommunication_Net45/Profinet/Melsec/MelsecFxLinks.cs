@@ -156,7 +156,7 @@ namespace HslCommunication.Profinet.Melsec
             if (read.Content[0] != 0x02) return new OperateResult<byte[]>( read.Content[0], "Read Faild:" + BasicFramework.SoftBasic.ByteToHexString( read.Content, ' ' ) );
 
             // 提取结果
-            byte[] Content = new byte[(read.Content.Length - 8) / 2];
+            byte[] Content = new byte[length * 2];
             for (int i = 0; i < Content.Length / 2; i++)
             {
                 ushort tmp = Convert.ToUInt16( Encoding.ASCII.GetString( read.Content, i * 4 + 5, 4 ), 16 );
@@ -552,7 +552,7 @@ namespace HslCommunication.Profinet.Melsec
         /// <returns>是否创建成功</returns>
         public static OperateResult<byte[]> BuildWriteByteCommand( byte station, string address, byte[] value, bool sumCheck = true, byte waitTime = 0x00 )
         {
-            OperateResult<string> addressAnalysis = FxAnalysisAddress( address, true );
+            OperateResult<string> addressAnalysis = FxAnalysisAddress( address, false );
             if (!addressAnalysis.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( addressAnalysis );
 
             StringBuilder stringBuilder = new StringBuilder( );

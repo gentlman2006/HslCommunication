@@ -78,6 +78,18 @@ namespace HslCommunicationDemo
             Show( );
         }
 
+        private void button39_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            System.Threading.Thread.Sleep( 200 );
+            using (FormSiemens form = new FormSiemens( SiemensPLCS.S400 ))
+            {
+                form.ShowDialog( );
+            }
+            System.Threading.Thread.Sleep( 200 );
+            Show( );
+        }
+
         private void button5_Click( object sender, EventArgs e )
         {
             Hide( );
@@ -631,5 +643,6 @@ namespace HslCommunicationDemo
             System.Threading.Thread.Sleep( 200 );
             Show( );
         }
+        
     }
 }
