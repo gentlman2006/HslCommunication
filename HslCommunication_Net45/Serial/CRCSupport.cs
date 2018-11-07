@@ -39,6 +39,9 @@ namespace HslCommunication.Serial
         /// <returns>返回校验成功与否</returns>
         public static bool CheckCRC16(byte[] value, byte CH, byte CL)
         {
+            if (value == null) return false;
+            if (value.Length < 2) return false;
+
             int length = value.Length;
             byte[] buf = new byte[length - 2];
             Array.Copy(value, 0, buf, 0, buf.Length);
