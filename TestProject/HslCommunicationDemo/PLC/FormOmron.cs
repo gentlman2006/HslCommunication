@@ -207,6 +207,7 @@ namespace HslCommunicationDemo
             omronFinsNet.SA1 = SA1;
             omronFinsNet.DA1 = DA1;
             omronFinsNet.DA2 = DA2;
+            omronFinsNet.ByteTransform.DataFormat = HslCommunication.Core.DataFormat.ABCD;
 
             try
             {

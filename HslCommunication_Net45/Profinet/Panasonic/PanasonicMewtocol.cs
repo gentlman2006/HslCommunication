@@ -82,11 +82,11 @@ namespace HslCommunication.Profinet.Panasonic
         #region Read Write Bool
 
         /// <summary>
-        /// X1,X10
+        /// 批量读取松下PLC的位地址
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="length"></param>
-        /// <returns></returns>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数据长度</param>
+        /// <returns>读取结果对象</returns>
         public OperateResult<bool[]> ReadBool(string address, ushort length )
         {
             // 读取数据
@@ -101,8 +101,8 @@ namespace HslCommunication.Profinet.Panasonic
         /// <summary>
         /// 读取单个的Bool数据
         /// </summary>
-        /// <param name="address"></param>
-        /// <returns></returns>
+        /// <param name="address">起始地址</param>
+        /// <returns>读取结果对象</returns>
         public OperateResult<bool> ReadBool(string address )
         {
             // 读取数据
@@ -115,10 +115,10 @@ namespace HslCommunication.Profinet.Panasonic
         /// <summary>
         /// 写入bool数据信息
         /// </summary>
-        /// <param name="address"></param>
-        /// <param name="values"></param>
+        /// <param name="address">起始地址</param>
+        /// <param name="values">数据值信息</param>
         /// <returns>返回是否成功的结果对象</returns>
-        public OperateResult WriteBool(string address, bool[] values )
+        public OperateResult Write(string address, bool[] values )
         {
             // 计算字节数据
             byte[] buffer = BasicFramework.SoftBasic.BoolArrayToByte( values );
@@ -141,9 +141,9 @@ namespace HslCommunication.Profinet.Panasonic
         /// <param name="address">起始地址</param>
         /// <param name="value">True还是False</param>
         /// <returns>返回是否成功的结果对象</returns>
-        public OperateResult WriteBool( string address, bool value )
+        public OperateResult Write( string address, bool value )
         {
-            return WriteBool( address, new bool[] { value } );
+            return Write( address, new bool[] { value } );
         }
 
         #endregion

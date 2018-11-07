@@ -325,7 +325,7 @@ namespace HslCommunicationDemo
             // bool写入
             try
             {
-                writeResultRender( panasonicMewtocol.WriteBool( textBox8.Text, bool.Parse( textBox7.Text ) ), textBox8.Text );
+                writeResultRender( panasonicMewtocol.Write( textBox8.Text, bool.Parse( textBox7.Text ) ), textBox8.Text );
             }
             catch (Exception ex)
             {
@@ -645,7 +645,7 @@ namespace HslCommunicationDemo
         private void Test2()
         {
             bool[] values = new bool[] { true, false, false, false, true, true, false, true, false, false };
-            OperateResult write = panasonicMewtocol.WriteBool( "100", values );
+            OperateResult write = panasonicMewtocol.Write( "100", values );
             if (write.IsSuccess)
             {
                 // success
