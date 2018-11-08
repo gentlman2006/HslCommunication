@@ -38,130 +38,18 @@ namespace HslCommunication.Core
             }
         }
 
-
-
         /// <summary>
-        /// 将指定的OperateResult类型转化
+        /// 结果转换操作的基础方法，需要支持类型，及转换的委托
         /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<bool> GetBoolResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
+        /// <typeparam name="TResult">结果类型</typeparam>
+        /// <param name="result">源结果</param>
+        /// <returns>转换结果</returns>
+        public static OperateResult<TResult> GetResultFromArray<TResult>( OperateResult<TResult[]> result )
         {
-            return GetResultFromBytes( result, m => byteTransform.TransBool( m, 0 ) );
+            if (!result.IsSuccess) return OperateResult.CreateFailedResult<TResult>( result );
+
+            return OperateResult.CreateSuccessResult( result.Content[0] );
         }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<byte> GetByteResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
-        {
-            return GetResultFromBytes( result, m => byteTransform.TransByte( m, 0 ) );
-        }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<short> GetInt16ResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
-        {
-            return GetResultFromBytes( result, m => byteTransform.TransInt16( m, 0 ) );
-        }
-
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<ushort> GetUInt16ResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
-        {
-            return GetResultFromBytes( result, m => byteTransform.TransUInt16( m, 0 ) );
-        }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<int> GetInt32ResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
-        {
-            return GetResultFromBytes( result, m => byteTransform.TransInt32( m, 0 ) );
-        }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<uint> GetUInt32ResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
-        {
-            return GetResultFromBytes( result, m => byteTransform.TransUInt32( m, 0 ) );
-        }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<long> GetInt64ResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
-        {
-            return GetResultFromBytes( result, m => byteTransform.TransInt64( m, 0 ) );
-        }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<ulong> GetUInt64ResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
-        {
-            return GetResultFromBytes( result, m => byteTransform.TransUInt64( m, 0 ) );
-        }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<float> GetSingleResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
-        {
-            return GetResultFromBytes( result, m => byteTransform.TransSingle( m, 0 ) );
-        }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<double> GetDoubleResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
-        {
-            return GetResultFromBytes( result, m => byteTransform.TransDouble( m, 0 ) );
-        }
-
-        /// <summary>
-        /// 将指定的OperateResult类型转化
-        /// </summary>
-        /// <param name="result">原始的类型</param>
-        /// <param name="byteTransform">数据转换方法</param>
-        /// <returns>转化后的类型</returns>
-        public static OperateResult<string> GetStringResultFromBytes( OperateResult<byte[]> result, IByteTransform byteTransform )
-        {
-            return GetResultFromBytes( result, m => byteTransform.TransString( m, 0, m.Length, Encoding.ASCII ) );
-        }
-
-
+        
     }
 }

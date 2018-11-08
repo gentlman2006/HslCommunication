@@ -146,7 +146,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </remarks>
         public OperateResult<byte> ReadByte(string address)
         {
-            return GetByteResultFromBytes( Read( address, 1 ) );
+            return ByteTransformHelper.GetResultFromArray( Read( address, 1 ) );
         }
         
         #endregion

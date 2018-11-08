@@ -14,7 +14,7 @@ using HslCommunication.Core.Net;
  *    说明：西门子通讯类，使用S7消息解析规格，和反字节转换规格来实现的
  *    
  *    继承自统一的自定义方法
- * 
+ *    其中的启动，停止的功能代码参考了开源项目：https://github.com/fbarresi/Sharp7
  * 
  *********************************************************************************/
 
@@ -84,7 +84,31 @@ namespace HslCommunication.Profinet.Siemens
             }
         }
 
+        /// <summary>
+        /// PLC的槽号，针对S7-400的PLC设置的
+        /// </summary>
+        public byte Slot
+        {
+            get => plc_slot;
+            set
+            {
+                plc_slot = value;
+                plcHead1[21] = (byte)((this.plc_rack * 0x20) + this.plc_slot);
+            }
+        }
 
+        /// <summary>
+        /// PLC的机架号，针对S7-400的PLC设置的
+        /// </summary>
+        public byte Rack
+        {
+            get => plc_rack;
+            set
+            {
+                this.plc_rack = value;
+                plcHead1[21] = (byte)((this.plc_rack * 0x20) + this.plc_slot);
+            }
+        }
 
         #endregion
 
@@ -125,6 +149,61 @@ namespace HslCommunication.Profinet.Siemens
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
             return OperateResult.CreateSuccessResult( Encoding.ASCII.GetString( read.Content, 71, 20 ) );
+        }
+
+        #endregion
+
+        #region Start Stop
+
+        /// <summary>
+        /// 对PLC进行热启动
+        /// </summary>
+        /// <returns>是否启动成功的结果对象</returns>
+        public OperateResult HotStart( )
+        {
+            OperateResult<byte[]> read = ReadFromCoreServer( S7_HOT_START );
+            if (!read.IsSuccess) return read;
+
+            if (read.Content.Length < 19) return new OperateResult( "Receive error" );
+
+            if (read.Content[19] != pduStart) return new OperateResult( "Can not start PLC" );
+            else if(read.Content[20] != pduAlreadyStarted) return new OperateResult( "Can not start PLC" );
+
+            return OperateResult.CreateSuccessResult( );
+        }
+
+        /// <summary>
+        /// 对PLC进行冷启动
+        /// </summary>
+        /// <returns>是否启动成功的结果对象</returns>
+        public OperateResult ColdStart( )
+        {
+            OperateResult<byte[]> read = ReadFromCoreServer( S7_COLD_START );
+            if (!read.IsSuccess) return read;
+
+            if (read.Content.Length < 19) return new OperateResult( "Receive error" );
+
+            if (read.Content[19] != pduStart) return new OperateResult( "Can not start PLC" );
+            else if (read.Content[20] != pduAlreadyStarted) return new OperateResult( "Can not start PLC" );
+
+            return OperateResult.CreateSuccessResult( );
+        }
+
+        /// <summary>
+        /// 对PLC进行停止
+        /// </summary>
+        /// <returns>是否启动成功的结果对象</returns>
+        public OperateResult Stop( )
+        {
+            OperateResult<byte[]> read = ReadFromCoreServer( S7_STOP );
+            if (!read.IsSuccess) return read;
+            
+            if(read.Content.Length < 19 ) return new OperateResult( "Receive error" );
+
+            if (read.Content[19] != pduStop) return new OperateResult( "Can not stop PLC" );
+            else if (read.Content[20] != pduAlreadyStopped) return new OperateResult( "Can not stop PLC" );
+
+            return OperateResult.CreateSuccessResult( );
         }
 
         #endregion
@@ -374,7 +453,7 @@ namespace HslCommunication.Profinet.Siemens
         /// </example>
         public OperateResult<bool> ReadBool( string address )
         {
-            return GetBoolResultFromBytes( ReadBitFromPLC( address ) );
+            return ByteTransformHelper.GetResultFromBytes( ReadBitFromPLC( address ), m => m[0] != 0x00 );
         }
 
 
@@ -388,7 +467,7 @@ namespace HslCommunication.Profinet.Siemens
         /// <example>参考<see cref="Read(string, ushort)"/>的注释</example>
         public OperateResult<byte> ReadByte( string address )
         {
-            return GetByteResultFromBytes( Read( address, 1 ) );
+            return ByteTransformHelper.GetResultFromArray( Read( address, 1 ) );
         }
 
 
@@ -549,6 +628,36 @@ namespace HslCommunication.Profinet.Siemens
             0x03,0x00,0x00,0x19,0x02,0xF0,0x80,0x32,0x01,0x00,0x00,0xCC,0xC1,0x00,0x08,0x00,
             0x00,0xF0,0x00,0x00,0x01,0x00,0x01,0x03,0xC0
         };
+        
+        byte[] S7_STOP = {
+            0x03, 0x00, 0x00, 0x21, 0x02, 0xf0, 0x80, 0x32, 0x01, 0x00, 0x00, 0x0e, 0x00, 0x00, 0x10, 0x00,
+            0x00, 0x29, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09, 0x50, 0x5f, 0x50, 0x52, 0x4f, 0x47, 0x52, 0x41,
+            0x4d
+        };
+        
+        byte[] S7_HOT_START = {
+            0x03, 0x00, 0x00, 0x25, 0x02, 0xf0, 0x80, 0x32, 0x01, 0x00, 0x00, 0x0c, 0x00, 0x00, 0x14, 0x00,
+            0x00, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xfd, 0x00, 0x00, 0x09, 0x50, 0x5f, 0x50, 0x52,
+            0x4f, 0x47, 0x52, 0x41, 0x4d
+        };
+        
+        byte[] S7_COLD_START = {
+            0x03, 0x00, 0x00, 0x27, 0x02, 0xf0, 0x80, 0x32, 0x01, 0x00, 0x00, 0x0f, 0x00, 0x00, 0x16, 0x00,
+            0x00, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xfd, 0x00, 0x02, 0x43, 0x20, 0x09, 0x50, 0x5f,
+            0x50, 0x52, 0x4f, 0x47, 0x52, 0x41, 0x4d
+        };
+
+        #endregion
+
+        #region Private Member
+
+        private byte plc_rack = 0x00;
+        private byte plc_slot = 0x00;
+
+        const byte pduStart = 0x28;            // CPU start
+        const byte pduStop = 0x29;             // CPU stop
+        const byte pduAlreadyStarted = 0x02;   // CPU already in run mode
+        const byte pduAlreadyStopped = 0x07;   // CPU already in stop mode
 
         #endregion
 

@@ -104,20 +104,40 @@ namespace HslCommunication.Profinet.AllenBradley
         /// 创建一个读取的报文指令
         /// </summary>
         /// <param name="address">tag名的地址</param>
+        /// <param name="length">数组信息，如果不是数组，就都为1</param>
         /// <returns>包含结果对象的报文信息</returns>
-        public OperateResult<byte[]> BuildReadCommand( string[] address )
+        public OperateResult<byte[]> BuildReadCommand( string[] address, int[] length )
         {
+            if (address == null || length == null) return new OperateResult<byte[]>( "address or length is null" );
+            if (address.Length != length.Length) return new OperateResult<byte[]>( "address and length is not same array" );
+
             List<byte[]> cips = new List<byte[]>( );
-            foreach (var add in address)
+            for (int i = 0; i < address.Length; i++)
             {
-                cips.Add( AllenBradleyHelper.PackRequsetRead( add ) );
+                cips.Add( AllenBradleyHelper.PackRequsetRead( address[i], length[i] ) );
             }
             byte[] commandSpecificData = AllenBradleyHelper.PackCommandSpecificData( cips.ToArray( ) );
             
             return OperateResult.CreateSuccessResult( AllenBradleyHelper.PackRequestHeader( 0x6F, SessionHandle, commandSpecificData ) );
         }
 
+        /// <summary>
+        /// 创建一个读取的报文指令
+        /// </summary>
+        /// <param name="address">tag名的地址</param>
+        /// <returns>包含结果对象的报文信息</returns>
+        public OperateResult<byte[]> BuildReadCommand( string[] address )
+        {
+            if (address == null ) return new OperateResult<byte[]>( "address or length is null" );
 
+            int[] length = new int[address.Length];
+            for (int i = 0; i < address.Length; i++)
+            {
+                length[i] = 1;
+            }
+
+            return BuildReadCommand( address, length );
+        }
 
         /// <summary>
         /// 创建一个写入的报文指令
@@ -146,7 +166,7 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <returns>带有结果对象的结果数据</returns>
         public override OperateResult<byte[]> Read( string address, ushort length )
         {
-            return Read( new string[] { address } );
+            return Read( new string[] { address }, new int[] { length } );
         }
 
         /// <summary>
@@ -156,8 +176,27 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <returns>带有结果对象的结果数据</returns>
         public OperateResult<byte[]> Read( string[] address )
         {
+            if (address == null) return new OperateResult<byte[]>( "address can not be null" );
+
+            int[] length = new int[address.Length];
+            for (int i = 0; i < length.Length; i++)
+            {
+                length[i] = 1;
+            }
+
+            return Read( address, length );
+        }
+
+        /// <summary>
+        /// 批量读取数据信息，数据长度无效
+        /// </summary>
+        /// <param name="address">节点的地址格式</param>
+        /// <param name="length">每个地址的数组长度</param>
+        /// <returns>带有结果对象的结果数据</returns>
+        public OperateResult<byte[]> Read( string[] address, int[] length )
+        {
             // 指令生成
-            OperateResult<byte[]> command = BuildReadCommand( address );
+            OperateResult<byte[]> command = BuildReadCommand( address, length );
             if (!command.IsSuccess) return command;
 
             // 核心交互
@@ -210,6 +249,130 @@ namespace HslCommunication.Profinet.AllenBradley
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte>( read );
 
             return OperateResult.CreateSuccessResult( ByteTransform.TransByte( read.Content, 0 ) );
+        }
+
+        #endregion
+
+        #region Device Override
+
+        /// <summary>
+        /// 读取设备的short类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="ReadInt16Array" title="Int16类型示例" />
+        /// </example>
+        public override OperateResult<short[]> ReadInt16( string address, ushort length )
+        {
+            return ByteTransformHelper.GetResultFromBytes( Read( address, length ), m => ByteTransform.TransInt16( m, 0, length ) );
+        }
+
+        /// <summary>
+        /// 读取设备的ushort类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="ReadUInt16Array" title="UInt16类型示例" />
+        /// </example>
+        public override OperateResult<ushort[]> ReadUInt16( string address, ushort length )
+        {
+            return ByteTransformHelper.GetResultFromBytes( Read( address, length ), m => ByteTransform.TransUInt16( m, 0, length ) );
+        }
+
+        /// <summary>
+        /// 读取设备的int类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="ReadInt32Array" title="Int32类型示例" />
+        /// </example>
+        public override OperateResult<int[]> ReadInt32( string address, ushort length )
+        {
+            return ByteTransformHelper.GetResultFromBytes( Read( address, length ), m => ByteTransform.TransInt32( m, 0, length ) );
+        }
+
+        /// <summary>
+        /// 读取设备的uint类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="ReadUInt32Array" title="UInt32类型示例" />
+        /// </example>
+        public override OperateResult<uint[]> ReadUInt32( string address, ushort length )
+        {
+            return ByteTransformHelper.GetResultFromBytes( Read( address, length ), m => ByteTransform.TransUInt32( m, 0, length ) );
+        }
+
+        /// <summary>
+        /// 读取设备的float类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="ReadFloatArray" title="Float类型示例" />
+        /// </example>
+        public override OperateResult<float[]> ReadFloat( string address, ushort length )
+        {
+            return ByteTransformHelper.GetResultFromBytes( Read( address, length ), m => ByteTransform.TransSingle( m, 0, length ) );
+        }
+
+        /// <summary>
+        /// 读取设备的long类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="ReadInt64Array" title="Int64类型示例" />
+        /// </example>
+        public override OperateResult<long[]> ReadInt64( string address, ushort length )
+        {
+            return ByteTransformHelper.GetResultFromBytes( Read( address, length ), m => ByteTransform.TransInt64( m, 0, length ) );
+        }
+
+        /// <summary>
+        /// 读取设备的ulong类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="ReadUInt64Array" title="UInt64类型示例" />
+        /// </example>
+        public override OperateResult<ulong[]> ReadUInt64( string address, ushort length )
+        {
+            return ByteTransformHelper.GetResultFromBytes( Read( address, length ), m => ByteTransform.TransUInt64( m, 0, length ) );
+        }
+
+        /// <summary>
+        /// 读取设备的double类型的数组
+        /// </summary>
+        /// <param name="address">起始地址</param>
+        /// <param name="length">数组长度</param>
+        /// <returns>带成功标志的结果数据对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="ReadDoubleArray" title="Double类型示例" />
+        /// </example>
+        public override OperateResult<double[]> ReadDouble( string address, ushort length )
+        {
+            return ByteTransformHelper.GetResultFromBytes( Read( address, length ), m => ByteTransform.TransDouble( m, 0, length ) );
         }
 
         #endregion

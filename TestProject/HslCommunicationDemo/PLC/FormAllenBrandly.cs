@@ -454,7 +454,7 @@ namespace HslCommunicationDemo
                 OperateResult<byte[]> read = null;
                 if (!textBox6.Text.Contains( ";" ))
                 {
-                    MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( new string[] { textBox6.Text } ).Content , ' ') );
+                    MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( new string[] { textBox6.Text }, new int[] { int.Parse(textBox9.Text) } ).Content , ' ') );
                     read = allenBradleyNet.Read( textBox6.Text, 0 );
                 }
                 else

@@ -163,10 +163,9 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<short> ReadInt16( string address )
         {
-            return ByteTransformHelper.GetInt16ResultFromBytes( Read( address, WordLength ), byteTransform );
+            return ByteTransformHelper.GetResultFromArray( ReadInt16( address, 1 ) );
         }
-
-
+        
         /// <summary>
         /// 读取设备的short类型的数组
         /// </summary>
@@ -175,9 +174,7 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<short[]> ReadInt16( string address, ushort length )
         {
-            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength) );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult<short[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransInt16( read.Content, 0, length ) );
+            return ByteTransformHelper.GetResultFromBytes( Read( address, (ushort)(length * WordLength) ), m => ByteTransform.TransInt16( m, 0, length ) );
         }
 
         /// <summary>
@@ -187,10 +184,9 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ushort> ReadUInt16( string address )
         {
-            return ByteTransformHelper.GetUInt16ResultFromBytes( Read( address, WordLength ), byteTransform );
+            return ByteTransformHelper.GetResultFromArray( ReadUInt16( address, 1 ) );
         }
-
-
+        
         /// <summary>
         /// 读取设备的ushort类型的数组
         /// </summary>
@@ -199,13 +195,9 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ushort[]> ReadUInt16( string address, ushort length )
         {
-            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength) );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult<ushort[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt16( read.Content, 0, length ) );
+            return ByteTransformHelper.GetResultFromBytes( Read( address, (ushort)(length * WordLength) ), m => ByteTransform.TransUInt16( m, 0, length ) );
         }
-
-
-
+        
         /// <summary>
         /// 读取设备的int类型的数据
         /// </summary>
@@ -213,10 +205,9 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<int> ReadInt32( string address )
         {
-            return ByteTransformHelper.GetInt32ResultFromBytes( Read( address, (ushort)(2 * WordLength) ), byteTransform );
+            return ByteTransformHelper.GetResultFromArray( ReadInt32( address, 1 ) );
         }
-
-
+        
         /// <summary>
         /// 读取设备的int类型的数组
         /// </summary>
@@ -225,13 +216,9 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<int[]> ReadInt32( string address, ushort length )
         {
-            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 2) );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult<int[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransInt32( read.Content, 0, length ) );
+            return ByteTransformHelper.GetResultFromBytes( Read( address, (ushort)(length * WordLength * 2) ), m => ByteTransform.TransInt32( m, 0, length ) );
         }
-
-
-
+        
         /// <summary>
         /// 读取设备的uint类型的数据
         /// </summary>
@@ -239,10 +226,9 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<uint> ReadUInt32( string address )
         {
-            return ByteTransformHelper.GetUInt32ResultFromBytes( Read( address, (ushort)(2 * WordLength) ), byteTransform );
+            return ByteTransformHelper.GetResultFromArray( ReadUInt32( address, 1 ) );
         }
-
-
+        
         /// <summary>
         /// 读取设备的uint类型的数组
         /// </summary>
@@ -251,9 +237,7 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<uint[]> ReadUInt32( string address, ushort length )
         {
-            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 2) );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult<uint[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt32( read.Content, 0, length ) );
+            return ByteTransformHelper.GetResultFromBytes( Read( address, (ushort)(length * WordLength * 2) ), m => ByteTransform.TransUInt32( m, 0, length ) );
         }
 
         /// <summary>
@@ -263,7 +247,7 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<float> ReadFloat( string address )
         {
-            return ByteTransformHelper.GetSingleResultFromBytes( Read( address, (ushort)(2 * WordLength) ), byteTransform );
+            return ByteTransformHelper.GetResultFromArray( ReadFloat( address, 1 ) );
         }
 
 
@@ -275,9 +259,7 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<float[]> ReadFloat( string address, ushort length )
         {
-            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 2) );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult<float[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransSingle( read.Content, 0, length ) );
+            return ByteTransformHelper.GetResultFromBytes( Read( address, (ushort)(length * WordLength * 2) ), m => ByteTransform.TransSingle( m, 0, length ) );
         }
 
         /// <summary>
@@ -287,7 +269,7 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<long> ReadInt64( string address )
         {
-            return ByteTransformHelper.GetInt64ResultFromBytes( Read( address, (ushort)(4 * WordLength) ), byteTransform );
+            return ByteTransformHelper.GetResultFromArray( ReadInt64( address, 1 ) );
         }
 
         /// <summary>
@@ -298,9 +280,7 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<long[]> ReadInt64( string address, ushort length )
         {
-            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 4) );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult<long[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransInt64( read.Content, 0, length ) );
+            return ByteTransformHelper.GetResultFromBytes( Read( address, (ushort)(length * WordLength * 4) ), m => ByteTransform.TransInt64( m, 0, length ) );
         }
 
         /// <summary>
@@ -310,7 +290,7 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ulong> ReadUInt64( string address )
         {
-            return ByteTransformHelper.GetUInt64ResultFromBytes( Read( address, (ushort)(4 * WordLength) ), byteTransform );
+            return ByteTransformHelper.GetResultFromArray( ReadUInt64( address, 1 ) );
         }
 
         /// <summary>
@@ -321,12 +301,9 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<ulong[]> ReadUInt64( string address, ushort length )
         {
-            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 4) );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult<ulong[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransUInt64( read.Content, 0, length ) );
+            return ByteTransformHelper.GetResultFromBytes( Read( address, (ushort)(length * WordLength * 4) ), m => ByteTransform.TransUInt64( m, 0, length ) );
         }
-
-
+        
         /// <summary>
         /// 读取设备的double类型的数据
         /// </summary>
@@ -334,10 +311,9 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<double> ReadDouble( string address )
         {
-            return ByteTransformHelper.GetDoubleResultFromBytes( Read( address, (ushort)(4 * WordLength) ), byteTransform );
+            return ByteTransformHelper.GetResultFromArray( ReadDouble( address, 1 ) );
         }
-
-
+        
         /// <summary>
         /// 读取设备的double类型的数组
         /// </summary>
@@ -346,14 +322,9 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<double[]> ReadDouble( string address, ushort length )
         {
-            OperateResult<byte[]> read = Read( address, (ushort)(length * WordLength * 4) );
-            if (!read.IsSuccess) return OperateResult.CreateFailedResult<double[]>( read );
-            return OperateResult.CreateSuccessResult( ByteTransform.TransDouble( read.Content, 0, length ) );
+            return ByteTransformHelper.GetResultFromBytes( Read( address, (ushort)(length * WordLength * 4) ), m => ByteTransform.TransDouble( m, 0, length ) );
         }
-
-
-
-
+        
         /// <summary>
         /// 读取设备的字符串数据，编码为ASCII
         /// </summary>
@@ -362,11 +333,9 @@ namespace HslCommunication.Serial
         /// <returns>带成功标志的结果数据对象</returns>
         public OperateResult<string> ReadString( string address, ushort length )
         {
-            return ByteTransformHelper.GetStringResultFromBytes( Read( address, length ), byteTransform );
+            return ByteTransformHelper.GetResultFromBytes( Read( address, length ), m => ByteTransform.TransString( m, 0, m.Length, Encoding.ASCII ) );
         }
-
-
-
+        
         #endregion
 
         #region Write Int16

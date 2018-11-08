@@ -17,7 +17,7 @@ namespace HslCommunication_Net45.Test.Profinet.AllenBradley
         {
             byte[] corrent = new byte[] { 0x4c, 0x05, 0x91, 0x08, 0x53, 0x74, 0x61, 0x72, 0x74, 0x5f, 0x69, 0x6e, 0x01, 0x00 };
 
-            byte[] buffer = AllenBradleyHelper.PackRequsetRead( "Start_in" );
+            byte[] buffer = AllenBradleyHelper.PackRequsetRead( "Start_in" , 1 );
             if (!HslCommunication.BasicFramework.SoftBasic.IsTwoBytesEquel( buffer, corrent ))
             {
                 Assert.Fail( "指令失败：" + HslCommunication.BasicFramework.SoftBasic.ByteToHexString( buffer ) );

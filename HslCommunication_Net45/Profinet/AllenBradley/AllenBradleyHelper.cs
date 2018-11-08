@@ -91,8 +91,9 @@ namespace HslCommunication.Profinet.AllenBradley
         /// 打包生成一个请求读取数据的节点信息，CIP指令信息
         /// </summary>
         /// <param name="address">地址</param>
+        /// <param name="length">指代数组的长度</param>
         /// <returns>CIP的指令信息</returns>
-        public static byte[] PackRequsetRead(string address )
+        public static byte[] PackRequsetRead(string address, int length )
         {
             byte[] buffer = new byte[1024];
             int offect = 0;
@@ -111,7 +112,7 @@ namespace HslCommunication.Profinet.AllenBradley
             }
 
             buffer[1] = (byte)((offect - 2) / 2);
-            buffer[offect++] = 0x01;
+            buffer[offect++] = (byte)length;
             buffer[offect++] = 0x00;
 
             byte[] data = new byte[offect];

@@ -18,11 +18,13 @@ namespace HslCommunicationDemo
         public FormSiemens( SiemensPLCS siemensPLCS )
         {
             InitializeComponent( );
+            siemensPLCSelected = siemensPLCS;
             siemensTcpNet = new SiemensS7Net( siemensPLCS );
         }
 
 
         private SiemensS7Net siemensTcpNet = null;
+        private SiemensPLCS siemensPLCSelected = SiemensPLCS.S1200;
 
         private void linkLabel1_LinkClicked( object sender, LinkLabelLinkClickedEventArgs e )
         {
@@ -50,6 +52,11 @@ namespace HslCommunicationDemo
                 label20.Visible = false;
             }
 
+            if (siemensPLCSelected == SiemensPLCS.S400)
+            {
+                textBox15.Text = "0";
+                textBox16.Text = "3";
+            }
         }
 
         private void Language( int language )
@@ -174,9 +181,15 @@ namespace HslCommunicationDemo
             }
 
             siemensTcpNet.IpAddress = textBox1.Text;
-
             try
             {
+                if (siemensPLCSelected == SiemensPLCS.S400)
+                {
+                    siemensTcpNet.Rack = byte.Parse( textBox15.Text );
+                    siemensTcpNet.Slot = byte.Parse( textBox16.Text );
+                }
+
+
                 OperateResult connect = siemensTcpNet.ConnectServer( );
                 if (connect.IsSuccess)
                 {
@@ -664,5 +677,46 @@ namespace HslCommunicationDemo
 
         #endregion
 
+        private void button4_Click( object sender, EventArgs e )
+        {
+            // 热启动
+            OperateResult result = siemensTcpNet.HotStart( );
+            if (result.IsSuccess)
+            {
+                MessageBox.Show( "Success" );
+            }
+            else
+            {
+                MessageBox.Show( "Failed: " + result.Message );
+            }
+        }
+
+        private void button5_Click( object sender, EventArgs e )
+        {
+            // 冷启动
+            OperateResult result = siemensTcpNet.ColdStart( );
+            if (result.IsSuccess)
+            {
+                MessageBox.Show( "Success" );
+            }
+            else
+            {
+                MessageBox.Show( "Failed: " + result.Message );
+            }
+        }
+
+        private void button6_Click( object sender, EventArgs e )
+        {
+            // 停止
+            OperateResult result = siemensTcpNet.Stop( );
+            if (result.IsSuccess)
+            {
+                MessageBox.Show( "Success" );
+            }
+            else
+            {
+                MessageBox.Show( "Failed: " + result.Message );
+            }
+        }
     }
 }
