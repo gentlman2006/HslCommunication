@@ -93,7 +93,7 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <param name="address">地址</param>
         /// <param name="length">指代数组的长度</param>
         /// <returns>CIP的指令信息</returns>
-        public static byte[] PackRequsetRead(string address, int length )
+        public static byte[] PackRequsetRead( string address, int length )
         {
             byte[] buffer = new byte[1024];
             int offect = 0;
@@ -112,8 +112,8 @@ namespace HslCommunication.Profinet.AllenBradley
             }
 
             buffer[1] = (byte)((offect - 2) / 2);
-            buffer[offect++] = (byte)length;
-            buffer[offect++] = 0x00;
+            buffer[offect++] = BitConverter.GetBytes( length )[0];
+            buffer[offect++] = BitConverter.GetBytes( length )[1];
 
             byte[] data = new byte[offect];
             Array.Copy( buffer, 0, data, 0, offect );
@@ -151,8 +151,8 @@ namespace HslCommunication.Profinet.AllenBradley
             buffer[offect++] = BitConverter.GetBytes( typeCode )[0];     // 数据类型
             buffer[offect++] = BitConverter.GetBytes( typeCode )[1];
 
-            buffer[offect++] = (byte)length;                             // 固定
-            buffer[offect++] = 0x00;
+            buffer[offect++] = BitConverter.GetBytes( length )[0];       // 固定
+            buffer[offect++] = BitConverter.GetBytes( length )[1];
 
             value.CopyTo( buffer, offect );                              // 数值
             offect += value.Length;
