@@ -126,8 +126,9 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <param name="address">地址信息</param>
         /// <param name="typeCode">数据类型</param>
         /// <param name="value">字节值</param>
+        /// <param name="length">如果节点为数组，就是数组长度</param>
         /// <returns>CIP的指令信息</returns>
-        public static byte[] PackRequestWrite( string address, ushort typeCode, byte[] value )
+        public static byte[] PackRequestWrite( string address, ushort typeCode, byte[] value, int length = 1 )
         {
             byte[] buffer = new byte[1024];
             int offect = 0;
@@ -150,7 +151,7 @@ namespace HslCommunication.Profinet.AllenBradley
             buffer[offect++] = BitConverter.GetBytes( typeCode )[0];     // 数据类型
             buffer[offect++] = BitConverter.GetBytes( typeCode )[1];
 
-            buffer[offect++] = 0x01;                                     // 固定
+            buffer[offect++] = (byte)length;                             // 固定
             buffer[offect++] = 0x00;
 
             value.CopyTo( buffer, offect );                              // 数值

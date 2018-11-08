@@ -19,7 +19,7 @@ using System.Text;
 namespace HslCommunication.Profinet.AllenBradley
 {
     /// <summary>
-    /// AB PLC的数据通讯类，支持读写PLC的节点数据 ->
+    /// AB PLC的数据通讯类，支持读写PLC的节点数据，支持单个节点的读写，以及数组节点的读写操作。 ->
     /// AB PLC Data communication class, support read and write PLC node data
     /// </summary>
     public class AllenBradleyNet : NetworkDeviceBase<AllenBradleyMessage, RegularByteTransform>
@@ -145,10 +145,11 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <param name="address">起始地址</param>
         /// <param name="typeCode">类型数据</param>
         /// <param name="data">数据</param>
+        /// <param name="length">如果是数组，就为数组长度</param>
         /// <returns>包含结果对象的报文信息</returns>
-        public OperateResult<byte[]> BuildWriteCommand( string address, ushort typeCode, byte[] data )
+        public OperateResult<byte[]> BuildWriteCommand( string address, ushort typeCode, byte[] data, int length = 1 )
         {
-            byte[] cip = AllenBradleyHelper.PackRequestWrite( address, typeCode, data );
+            byte[] cip = AllenBradleyHelper.PackRequestWrite( address, typeCode, data, length );
             byte[] commandSpecificData = AllenBradleyHelper.PackCommandSpecificData(  cip );
             
             return OperateResult.CreateSuccessResult( AllenBradleyHelper.PackRequestHeader( 0x6F, SessionHandle, commandSpecificData ) );
@@ -385,10 +386,11 @@ namespace HslCommunication.Profinet.AllenBradley
         /// <param name="address">节点地址数据</param>
         /// <param name="typeCode">类型代码，详细参见<see cref="AllenBradleyHelper"/>上的常用字段</param>
         /// <param name="value">实际的数据值</param>
+        /// <param name="length">如果节点是数组，就是数组长度</param>
         /// <returns>是否写入成功</returns>
-        public OperateResult WriteTag( string address, ushort typeCode, byte[] value )
+        public OperateResult WriteTag( string address, ushort typeCode, byte[] value, int length = 1 )
         {
-            OperateResult<byte[]> command = BuildWriteCommand( address, typeCode, value );
+            OperateResult<byte[]> command = BuildWriteCommand( address, typeCode, value, length );
             if (!command.IsSuccess) return command;
 
             // 核心交互
@@ -408,59 +410,80 @@ namespace HslCommunication.Profinet.AllenBradley
         #region Write Override
 
         /// <summary>
-        /// 向设备中写入short数据，返回是否写入成功
+        /// 向设备中写入short数组，返回是否写入成功
         /// </summary>
         /// <param name="address">数据地址</param>
-        /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public override OperateResult Write( string address, short value )
+        /// <param name="values">实际数据</param>
+        /// <returns>是否写入成功的结果对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt16Array" title="Int16类型示例" />
+        /// </example>
+        public override OperateResult Write( string address, short[] values )
         {
-            return WriteTag( address, AllenBradleyHelper.CIP_Type_Word, ByteTransform.TransByte( value ) );
+            return WriteTag( address, AllenBradleyHelper.CIP_Type_Word, ByteTransform.TransByte( values ), values.Length );
         }
 
         /// <summary>
-        /// 向设备中写入ushort数据，返回是否写入成功
+        /// 向设备中写入ushort数组，返回是否写入成功
+        /// </summary>
+        /// <param name="address">要写入的数据地址</param>
+        /// <param name="values">要写入的实际数据</param>
+        /// <returns>是否写入成功的结果对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt16Array" title="UInt16类型示例" />
+        /// </example>
+        public override OperateResult Write( string address, ushort[] values )
+        {
+            return WriteTag( address, AllenBradleyHelper.CIP_Type_Word, ByteTransform.TransByte( values ), values.Length );
+        }
+        
+        /// <summary>
+        /// 向设备中写入int数组，返回是否写入成功
         /// </summary>
         /// <param name="address">数据地址</param>
-        /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public override OperateResult Write( string address, ushort value )
+        /// <param name="values">实际数据</param>
+        /// <returns>是否写入成功的结果对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteInt32Array" title="Int32类型示例" />
+        /// </example>
+        public override OperateResult Write( string address, int[] values )
         {
-            return WriteTag( address, AllenBradleyHelper.CIP_Type_Word, ByteTransform.TransByte( value ) );
+            return WriteTag( address, AllenBradleyHelper.CIP_Type_DWord, ByteTransform.TransByte( values ), values.Length );
         }
 
         /// <summary>
-        /// 向设备中写入int数据，返回是否写入成功
+        /// 向设备中写入uint数组，返回是否写入成功
         /// </summary>
         /// <param name="address">数据地址</param>
-        /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public override OperateResult Write( string address, int value )
+        /// <param name="values">实际数据</param>
+        /// <returns>是否写入成功的结果对象</returns>
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteUInt32Array" title="UInt32类型示例" />
+        /// </example>
+        public override OperateResult Write( string address, uint[] values )
         {
-            return WriteTag( address, AllenBradleyHelper.CIP_Type_DWord, ByteTransform.TransByte( value ) );
+            return WriteTag( address, AllenBradleyHelper.CIP_Type_DWord, ByteTransform.TransByte( values ), values.Length );
         }
 
         /// <summary>
-        /// 向设备中写入uint数据，返回是否写入成功
+        /// 向设备中写入float数组，返回是否写入成功
         /// </summary>
         /// <param name="address">数据地址</param>
-        /// <param name="value">实际数据</param>
+        /// <param name="values">实际数据</param>
         /// <returns>返回写入结果</returns>
-        public override OperateResult Write( string address, uint value )
+        /// <example>
+        /// 以下为三菱的连接对象示例，其他的设备读写情况参照下面的代码：
+        /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDeviceBase.cs" region="WriteFloatArray" title="Float类型示例" />
+        /// </example>
+        public override OperateResult Write( string address, float[] values )
         {
-            return WriteTag( address, AllenBradleyHelper.CIP_Type_DWord, ByteTransform.TransByte( value ) );
+            return WriteTag( address, AllenBradleyHelper.CIP_Type_Real, ByteTransform.TransByte( values ), values.Length );
         }
-
-        /// <summary>
-        /// 向设备中写入float数据，返回是否写入成功
-        /// </summary>
-        /// <param name="address">数据地址</param>
-        /// <param name="value">实际数据</param>
-        /// <returns>返回写入结果</returns>
-        public override OperateResult Write( string address, float value )
-        {
-            return WriteTag( address, AllenBradleyHelper.CIP_Type_Real, ByteTransform.TransByte( value ) );
-        }
+        
 
         /// <summary>
         /// 向设备中写入string数据，返回是否写入成功，该string类型是针对PLC的DINT类型，长度自动扩充到8

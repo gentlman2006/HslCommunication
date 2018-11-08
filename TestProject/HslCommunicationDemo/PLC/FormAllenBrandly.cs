@@ -451,15 +451,19 @@ namespace HslCommunicationDemo
         {
             try
             {
+            //    OperateResult write = allenBradleyNet.Write( "Array", new short[] { 101, 102, 103, 104, 105, 106 } );
+
+            //    OperateResult<short[]> readResult = allenBradleyNet.ReadInt16( "Array", 6 );
+
                 OperateResult<byte[]> read = null;
                 if (!textBox6.Text.Contains( ";" ))
                 {
-                    MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( new string[] { textBox6.Text }, new int[] { int.Parse(textBox9.Text) } ).Content , ' ') );
-                    read = allenBradleyNet.Read( textBox6.Text, 0 );
+                    //MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( new string[] { textBox6.Text }, new int[] { int.Parse(textBox9.Text) } ).Content , ' ') );
+                    read = allenBradleyNet.Read( textBox6.Text, ushort.Parse( textBox9.Text ) );
                 }
                 else
                 {
-                    MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( textBox6.Text.Split( ';' ) ).Content, ' ' ) );
+                    //MessageBox.Show( HslCommunication.BasicFramework.SoftBasic.ByteToHexString( allenBradleyNet.BuildReadCommand( textBox6.Text.Split( ';' ) ).Content, ' ' ) );
                     read = allenBradleyNet.Read( textBox6.Text.Split(';' ));
                 }
 

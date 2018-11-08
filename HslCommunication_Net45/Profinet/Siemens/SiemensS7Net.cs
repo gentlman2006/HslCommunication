@@ -72,7 +72,7 @@ namespace HslCommunication.Profinet.Siemens
             {
                 case SiemensPLCS.S1200: plcHead1[21] = 0; break;
                 case SiemensPLCS.S300: plcHead1[21] = 2; break;
-                case SiemensPLCS.S400: plcHead1[21] = 3; break;
+                case SiemensPLCS.S400: plcHead1[21] = 3; plcHead1[17] = 0x00; break;
                 case SiemensPLCS.S1500: plcHead1[21] = 0; break;
                 case SiemensPLCS.S200Smart:
                     {
