@@ -24,7 +24,7 @@ namespace HslCommunication.Serial
         {
             SP_ReadData = new SerialPort( );
             resetEvent = new AutoResetEvent( false );
-            buffer = new byte[2048];
+            buffer = new byte[4096];
             hybirdLock = new SimpleHybirdLock( );
         }
 

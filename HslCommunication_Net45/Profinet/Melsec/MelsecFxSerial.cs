@@ -231,7 +231,7 @@ namespace HslCommunication.Profinet.Melsec
             // 核心交互
             OperateResult<byte[]> read = ReadBase( command.Content );
             if (!read.IsSuccess) return read;
-            
+
             // 结果验证
             OperateResult checkResult = CheckPlcWriteResponse( read.Content );
             if (!checkResult.IsSuccess) return checkResult;
