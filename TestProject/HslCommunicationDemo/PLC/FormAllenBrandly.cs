@@ -453,7 +453,7 @@ namespace HslCommunicationDemo
             {
             //    OperateResult write = allenBradleyNet.Write( "Array", new short[] { 101, 102, 103, 104, 105, 106 } );
 
-            //    OperateResult<short[]> readResult = allenBradleyNet.ReadInt16( "Array", 6 );
+            //    OperateResult<short[]> readResult = allenBradleyNet.ReadInt16( "Array", 300 );
 
                 OperateResult<byte[]> read = null;
                 if (!textBox6.Text.Contains( ";" ))
