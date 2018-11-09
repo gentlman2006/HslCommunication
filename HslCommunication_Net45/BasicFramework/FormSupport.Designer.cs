@@ -44,27 +44,27 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(32, 392);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(548, 17);
+            this.label1.Size = new System.Drawing.Size(608, 17);
             this.label1.TabIndex = 1;
-            this.label1.Text = "如果这个组件真的帮到了你，那么非常感谢您的支持，个人打赏，请视个人能力选择金额，感谢支持。";
+            this.label1.Text = "如果这个组件真的帮到了你或你们公司，那么非常感谢您的支持，个人打赏，请视个人能力选择金额，感谢支持。";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(32, 474);
+            this.label3.Location = new System.Drawing.Point(32, 484);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(591, 17);
             this.label3.TabIndex = 3;
-            this.label3.Text = "如果您的公司使用了本产品，那么非常感谢对本产品的信任，企业打赏或是赞助请专门联系VIP群，或是作者。";
+            this.label3.Text = "如果您的公司使用了本产品，那么非常感谢对本产品的信任，企业赞助或是合作请专门联系VIP群，或是作者。";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(371, 516);
+            this.label4.Location = new System.Drawing.Point(340, 518);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(327, 17);
+            this.label4.Size = new System.Drawing.Size(363, 17);
             this.label4.TabIndex = 4;
-            this.label4.Text = "作者：Richard.Hu 上图为支付宝账户的收钱码，金额自定义";
+            this.label4.Text = "作者：Richard.Hu 上图为支付宝和微信账户的收钱码，金额自定义";
             // 
             // label5
             // 
@@ -123,7 +123,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "FormSupport";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "感谢支持";
+            this.Text = "开源不易，如果您使用了本类库，感谢赞助";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

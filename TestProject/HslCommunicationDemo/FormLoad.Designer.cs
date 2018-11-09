@@ -359,7 +359,7 @@
             this.linkLabel2.Size = new System.Drawing.Size(116, 17);
             this.linkLabel2.TabIndex = 6;
             this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "创作不易，感谢打赏";
+            this.linkLabel2.Text = "开源不易，感谢赞助";
             this.linkLabel2.Click += new System.EventHandler(this.linkLabel2_Click);
             // 
             // groupBox4

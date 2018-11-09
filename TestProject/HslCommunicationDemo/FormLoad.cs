@@ -361,7 +361,7 @@ namespace HslCommunicationDemo
             if(language == 1)
             {
                 label20.Text = "作者: Richard.Hu";
-                linkLabel2.Text = "创作不易，感谢打赏";
+                linkLabel2.Text = "开源不易，感谢赞助";
                 label3.Text = "库版本：" + HslCommunication.BasicFramework.SoftBasic.FrameworkVersion.ToString( );
                 button19.Text = "异形 Modbus Tcp";
                 button24.Text = "串口调试助手";
