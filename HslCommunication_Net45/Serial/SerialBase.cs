@@ -135,6 +135,8 @@ namespace HslCommunication.Serial
             {
                 isReceiveTimeout = false;                         // 是否接收超时的标志位
                 isReceiveComplete = false;                        // 是否接收完成的标志位
+                isComError = false;                               // 是否异常的标志
+                ComErrorMsg = string.Empty;
                 if (send == null) send = new byte[0];
 
                 SP_ReadData.Write( send, 0, send.Length );
@@ -142,7 +144,11 @@ namespace HslCommunication.Serial
                 resetEvent.WaitOne( );
                 isReceiveComplete = true;
 
-                if (isReceiveTimeout)
+                if (isComError)
+                {
+                    result = new OperateResult<byte[]>( ComErrorMsg );
+                }
+                else if (isReceiveTimeout)
                 {
                     result = new OperateResult<byte[]>( StringResources.Language.ReceiveDataTimeout + ReceiveTimeout );
                 }
@@ -243,10 +249,19 @@ namespace HslCommunication.Serial
             while (true)
             {
                 Thread.Sleep( 20 );
-                if (SP_ReadData.BytesToRead < 1) break;
 
-                // 继续接收数据
-                receiveCount += SP_ReadData.Read( buffer, receiveCount, SP_ReadData.BytesToRead );
+                try
+                {
+                    if (SP_ReadData.BytesToRead < 1) break;
+                    // 继续接收数据
+                    receiveCount += SP_ReadData.Read( buffer, receiveCount, SP_ReadData.BytesToRead );
+                }
+                catch(Exception ex)
+                {
+                    isComError = true;
+                    ComErrorMsg = ex.Message;
+                    break;
+                }
             }
             resetEvent.Set( );
         }
@@ -306,6 +321,14 @@ namespace HslCommunication.Serial
         /// 接收的数据长度
         /// </summary>
         protected int receiveCount = 0;                           // 接收的数据长度
+        /// <summary>
+        /// 当前的COM组件是否发生了异常
+        /// </summary>
+        protected bool isComError = false;                        // 当前的COM组件是否发生了异常
+        /// <summary>
+        /// 当前的COM组件异常的消息
+        /// </summary>
+        protected string ComErrorMsg = string.Empty;              // 当前的COM组件异常的消息
         private SimpleHybirdLock hybirdLock;                      // 数据交互的锁
         private ILogNet logNet;                                   // 日志存储
         private int receiveTimeout = 5000;                        // 接收数据的超时时间

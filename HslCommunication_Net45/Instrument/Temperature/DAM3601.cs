@@ -103,16 +103,24 @@ namespace HslCommunication.Instrument.Temperature
         {
             while (true)
             {
-                Thread.Sleep( 20 );
-                if (SP_ReadData.BytesToRead < 1) continue;
+                Thread.Sleep( 40 );
 
-                // 继续接收数据
-                receiveCount += SP_ReadData.Read( buffer, receiveCount, SP_ReadData.BytesToRead );
+                try
+                {
+                    if (SP_ReadData.BytesToRead < 1) continue;
+                    // 继续接收数据
+                    receiveCount += SP_ReadData.Read( buffer, receiveCount, SP_ReadData.BytesToRead );
 
-                // CRC校验成功及退出
-                byte[] data = new byte[receiveCount];
-                Array.Copy( buffer, 0, data, 0, receiveCount );
-                if (SoftCRC16.CheckCRC16( data )) break;
+                    // CRC校验成功及退出
+                    byte[] data = new byte[receiveCount];
+                    Array.Copy( buffer, 0, data, 0, receiveCount );
+                    if (SoftCRC16.CheckCRC16( data )) break;
+                }
+                catch(Exception ex)
+                {
+                    isComError = true;
+                    ComErrorMsg = ex.Message;
+                }
             }
             resetEvent.Set( );
         }
