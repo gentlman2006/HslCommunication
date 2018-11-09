@@ -481,6 +481,17 @@ namespace HslCommunication
     ///             <item>西门子S7协议新增槽号为3的s7-400的PLC选项，等待测试。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-11-9" version="5.5.2" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>西门子PPI写入bool方法名重载到了Write方法里。</item>
+    ///             <item>松下写入bool方法名重载到了Write方法里。</item>
+    ///             <item>修复CRC16验证码在某些特殊情况下的溢出bug。</item>
+    ///             <item>西门子类添加槽号和机架号属性，只针对400PLC有效，初步测试可读写。</item>
+    ///             <item>ab plc支持对数组的读写操作，支持数组长度为0-246，超过246即失败。</item>
+    ///             <item>三菱的编程口协议修复某些特殊情况读取失败，却提示成功的bug。</item>
+    ///             <item>串口基类提高缓存空间到4096，并在数据交互时捕获COM口的异常。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc

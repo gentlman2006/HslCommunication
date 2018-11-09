@@ -120,6 +120,7 @@ namespace HslCommunication.Instrument.Temperature
                 {
                     isComError = true;
                     ComErrorMsg = ex.Message;
+                    break;
                 }
             }
             resetEvent.Set( );
