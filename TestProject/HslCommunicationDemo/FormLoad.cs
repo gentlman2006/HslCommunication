@@ -632,5 +632,17 @@ namespace HslCommunicationDemo
         {
             OpenWebside( "http://118.24.36.220:8080/html/c136d3de-eab7-9b0f-4bdf-d891297c8018.htm" );
         }
+
+        private void button40_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            System.Threading.Thread.Sleep( 200 );
+            using (FormRedisClient form = new FormRedisClient( ))
+            {
+                form.ShowDialog( );
+            }
+            System.Threading.Thread.Sleep( 200 );
+            Show( );
+        }
     }
 }

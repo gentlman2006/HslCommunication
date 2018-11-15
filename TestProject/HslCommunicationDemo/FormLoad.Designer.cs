@@ -90,6 +90,8 @@
             this.englishToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.日志ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.verisonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.button40 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -102,6 +104,7 @@
             this.groupBox10.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.groupBox12.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -513,7 +516,7 @@
             this.groupBox7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox7.Size = new System.Drawing.Size(185, 315);
+            this.groupBox7.Size = new System.Drawing.Size(185, 175);
             this.groupBox7.TabIndex = 14;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Robot(机器人)";
@@ -738,14 +741,14 @@
             // mesDemoToolStripMenuItem
             // 
             this.mesDemoToolStripMenuItem.Name = "mesDemoToolStripMenuItem";
-            this.mesDemoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mesDemoToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
             this.mesDemoToolStripMenuItem.Text = "Mes Demo";
             this.mesDemoToolStripMenuItem.Click += new System.EventHandler(this.mesDemoToolStripMenuItem_Click);
             // 
             // gitToolStripMenuItem
             // 
             this.gitToolStripMenuItem.Name = "gitToolStripMenuItem";
-            this.gitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.gitToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
             this.gitToolStripMenuItem.Text = "Git";
             this.gitToolStripMenuItem.Click += new System.EventHandler(this.gitToolStripMenuItem_Click);
             // 
@@ -789,12 +792,36 @@
             this.verisonToolStripMenuItem.Size = new System.Drawing.Size(64, 21);
             this.verisonToolStripMenuItem.Text = "Verison";
             // 
+            // groupBox12
+            // 
+            this.groupBox12.Controls.Add(this.button40);
+            this.groupBox12.Location = new System.Drawing.Point(395, 539);
+            this.groupBox12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox12.Name = "groupBox12";
+            this.groupBox12.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox12.Size = new System.Drawing.Size(185, 132);
+            this.groupBox12.TabIndex = 27;
+            this.groupBox12.TabStop = false;
+            this.groupBox12.Text = "Redis";
+            // 
+            // button40
+            // 
+            this.button40.Location = new System.Drawing.Point(19, 24);
+            this.button40.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button40.Name = "button40";
+            this.button40.Size = new System.Drawing.Size(150, 32);
+            this.button40.TabIndex = 0;
+            this.button40.Text = "RedisClient";
+            this.button40.UseVisualStyleBackColor = true;
+            this.button40.Click += new System.EventHandler(this.button40_Click);
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(980, 684);
+            this.Controls.Add(this.groupBox12);
             this.Controls.Add(this.groupBox11);
             this.Controls.Add(this.groupBox10);
             this.Controls.Add(this.groupBox9);
@@ -827,6 +854,7 @@
             this.groupBox11.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.groupBox12.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -896,6 +924,8 @@
         private System.Windows.Forms.ToolStripMenuItem englishToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 日志ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem verisonToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox12;
+        private System.Windows.Forms.Button button40;
     }
 }
 

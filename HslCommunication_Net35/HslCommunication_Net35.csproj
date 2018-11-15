@@ -395,6 +395,9 @@
     <Compile Include="..\HslCommunication_Net45\Enthernet\PushNet\PushGroupClient.cs">
       <Link>Enthernet\PushNet\PushGroupClient.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\Redis\RedisClient.cs">
+      <Link>Enthernet\Redis\RedisClient.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Enthernet\SimplifyNet\NetSimplifyClient.cs">
       <Link>Enthernet\SimplifyNet\NetSimplifyClient.cs</Link>
     </Compile>

@@ -432,7 +432,7 @@ namespace HslCommunication.Core.Net
         /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\NetworkDoubleBase.cs" region="ReadFromCoreServerExample1" title="ReadFromCoreServer示例" />
         /// </example>
         /// <returns>接收的完整的报文信息</returns>
-        public OperateResult<byte[]> ReadFromCoreServer( Socket socket, byte[] send )
+        public virtual OperateResult<byte[]> ReadFromCoreServer( Socket socket, byte[] send )
         {
             OperateResult<byte[],byte[]> read = ReadFromCoreServerBase( socket, send );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( read );

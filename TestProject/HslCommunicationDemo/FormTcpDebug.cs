@@ -203,9 +203,13 @@ namespace HslCommunicationDemo
             }
             else
             {
-                send = Encoding.ASCII.GetBytes( textBox5.Text );
+                send = Encoding.ASCII.GetBytes( textBox5.Text.Replace( "\\n", "\r\n" ) );
             }
-            
+
+            if (checkBox2.Checked)
+            {
+                send = HslCommunication.BasicFramework.SoftBasic.SpliceTwoByteArray( send, new byte[] { 0x0A } );
+            }
 
             if (checkBox3.Checked)
             {

@@ -104,6 +104,7 @@
     <Compile Include="..\HslCommunication_Net45\Enthernet\PushNet\NetPushClient.cs" Link="Enthernet\PushNet\NetPushClient.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\PushNet\NetPushServer.cs" Link="Enthernet\PushNet\NetPushServer.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\PushNet\PushGroupClient.cs" Link="Enthernet\PushNet\PushGroupClient.cs" />
+    <Compile Include="..\HslCommunication_Net45\Enthernet\Redis\RedisClient.cs" Link="Enthernet\Redis\RedisClient.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\SimplifyNet\NetSimplifyClient.cs" Link="Enthernet\SimplifyNet\NetSimplifyClient.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\SimplifyNet\NetSimplifyServer.cs" Link="Enthernet\SimplifyNet\NetSimplifyServer.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" Link="Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" />
@@ -172,6 +173,7 @@
     <Folder Include="Enthernet\SimplifyNet\" />
     <Folder Include="Enthernet\SoftUpdateNet\" />
     <Folder Include="Enthernet\UdpNet\" />
+    <Folder Include="Enthernet\Redis\" />
     <Folder Include="LogNet\Core\" />
     <Folder Include="LogNet\Logs\" />
     <Folder Include="LogNet\View\" />
