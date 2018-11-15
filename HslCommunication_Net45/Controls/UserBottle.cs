@@ -10,8 +10,14 @@ using System.Drawing.Drawing2D;
 
 namespace HslCommunication.Controls
 {
+    /// <summary>
+    /// 瓶子控件
+    /// </summary>
     public partial class UserBottle : UserControl
     {
+        /// <summary>
+        /// 实例化一个新的控件对象
+        /// </summary>
         public UserBottle( )
         {
             InitializeComponent( );
