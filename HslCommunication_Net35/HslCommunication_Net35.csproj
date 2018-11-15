@@ -141,6 +141,14 @@
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftZipped.cs">
       <Link>BasicFramework\SoftZipped.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserBottle.cs">
+      <Link>Controls\UserBottle.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserBottle.designer.cs">
+      <Link>Controls\UserBottle.designer.cs</Link>
+      <DependentUpon>UserBottle.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Controls\UserButton.cs">
       <Link>Controls\UserButton.cs</Link>
       <SubType>UserControl</SubType>
@@ -580,6 +588,10 @@
     <EmbeddedResource Include="..\HslCommunication_Net45\BasicFramework\FormSupport.resx">
       <Link>BasicFramework\FormSupport.resx</Link>
       <DependentUpon>FormSupport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserBottle.resx">
+      <Link>Controls\UserBottle.resx</Link>
+      <DependentUpon>UserBottle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserButton.resx">
       <Link>Controls\UserButton.resx</Link>

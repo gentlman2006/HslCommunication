@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\SharpList.cs" />
     <Compile Include="Algorithms\ConnectPool\ConnectPool.cs" />
     <Compile Include="Algorithms\ConnectPool\IConnector.cs" />
     <Compile Include="Algorithms\Fourier\FFTHelper.cs" />
@@ -101,6 +102,12 @@
     <Compile Include="BasicFramework\SoftSqlOperate.cs" />
     <Compile Include="BasicFramework\SoftVersion.cs" />
     <Compile Include="BasicFramework\SoftZipped.cs" />
+    <Compile Include="Controls\UserBottle.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UserBottle.Designer.cs">
+      <DependentUpon>UserBottle.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UserButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -298,6 +305,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BasicFramework\FormSupport.resx">
       <DependentUpon>FormSupport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserBottle.resx">
+      <DependentUpon>UserBottle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserButton.resx">
       <DependentUpon>UserButton.cs</DependentUpon>

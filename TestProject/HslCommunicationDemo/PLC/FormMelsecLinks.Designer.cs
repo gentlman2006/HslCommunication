@@ -70,6 +70,8 @@
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.label24 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.button14 = new System.Windows.Forms.Button();
@@ -109,8 +111,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -567,6 +567,26 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "单数据写入测试";
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(101, 192);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(82, 28);
+            this.button4.TabIndex = 22;
+            this.button4.Text = "停止PLC";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(13, 192);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(82, 28);
+            this.button3.TabIndex = 21;
+            this.button3.Text = "启动PLC";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            // 
             // label24
             // 
             this.label24.AutoSize = true;
@@ -942,9 +962,9 @@
             this.label5.ForeColor = System.Drawing.Color.Red;
             this.label5.Location = new System.Drawing.Point(540, 9);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(50, 17);
+            this.label5.Size = new System.Drawing.Size(74, 17);
             this.label5.TabIndex = 5;
-            this.label5.Text = "FX 串口";
+            this.label5.Text = "FX 专用协议";
             // 
             // label20
             // 
@@ -955,26 +975,6 @@
             this.label20.Size = new System.Drawing.Size(108, 17);
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(13, 192);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(82, 28);
-            this.button3.TabIndex = 21;
-            this.button3.Text = "启动PLC";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(101, 192);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(82, 28);
-            this.button4.TabIndex = 22;
-            this.button4.Text = "停止PLC";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // FormMelsecLinks
             // 

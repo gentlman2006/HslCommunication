@@ -294,8 +294,8 @@ namespace HslCommunication.Enthernet
         /// <summary>
         /// 移除客户端的数据信息
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="clientID"></param>
+        /// <param name="key">指定的客户端</param>
+        /// <param name="clientID">指定的客户端唯一的id信息</param>
         private void RemoveGroupOnlien( string key, string clientID )
         {
             PushGroupClient push = GetPushGroupClient( key );

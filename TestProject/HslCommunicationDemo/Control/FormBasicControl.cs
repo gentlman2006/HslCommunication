@@ -78,7 +78,14 @@ namespace HslCommunicationDemo
             userVerticalProgress7.Value = value;
             userVerticalProgress8.Value = value;
 
-
+            if (userBottle1.Value > 0)
+            {
+                userBottle1.Value--;
+                if(userBottle1.Value== 0)
+                {
+                    userBottle1.IsOpen = false;
+                }
+            }
         }
 
         private Timer timerTick = null;
