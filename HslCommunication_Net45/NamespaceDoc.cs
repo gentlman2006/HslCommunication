@@ -492,6 +492,14 @@ namespace HslCommunication
     ///             <item>串口基类提高缓存空间到4096，并在数据交互时捕获COM口的异常。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-11-16" version="5.6.0" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>修复欧姆龙的数据格式错误，修改为CDAB。</item>
+    ///             <item>新增一个瓶子的控件。</item>
+    ///             <item>新增一个管道的控件。</item>
+    ///             <item>初步新增一个redis的类，初步实现了读写关键字。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc

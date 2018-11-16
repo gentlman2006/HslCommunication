@@ -33,6 +33,7 @@ namespace HslCommunication.Profinet.Omron
         public OmronFinsNet( )
         {
             WordLength = 1;
+            ByteTransform.DataFormat = DataFormat.CDAB;
         }
 
         /// <summary>
@@ -45,6 +46,7 @@ namespace HslCommunication.Profinet.Omron
             WordLength = 1;
             IpAddress = ipAddress;
             Port = port;
+            ByteTransform.DataFormat = DataFormat.CDAB;
         }
 
         #endregion
