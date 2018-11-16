@@ -150,6 +150,12 @@
     <Compile Include="Controls\UserPieChart.Designer.cs">
       <DependentUpon>UserPieChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UserPipe.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UserPipe.Designer.cs">
+      <DependentUpon>UserPipe.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UserSwitch.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -330,6 +336,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserPieChart.resx">
       <DependentUpon>UserPieChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserPipe.resx">
+      <DependentUpon>UserPipe.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserSwitch.resx">
       <DependentUpon>UserSwitch.cs</DependentUpon>

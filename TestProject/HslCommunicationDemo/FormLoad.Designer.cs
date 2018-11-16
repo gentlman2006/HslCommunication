@@ -92,6 +92,7 @@
             this.verisonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.button40 = new System.Windows.Forms.Button();
+            this.button41 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -452,6 +453,7 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.button41);
             this.groupBox6.Controls.Add(this.button20);
             this.groupBox6.Controls.Add(this.button18);
             this.groupBox6.Controls.Add(this.button17);
@@ -815,6 +817,17 @@
             this.button40.UseVisualStyleBackColor = true;
             this.button40.Click += new System.EventHandler(this.button40_Click);
             // 
+            // button41
+            // 
+            this.button41.Location = new System.Drawing.Point(19, 184);
+            this.button41.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button41.Name = "button41";
+            this.button41.Size = new System.Drawing.Size(150, 32);
+            this.button41.TabIndex = 4;
+            this.button41.Text = "Pipe (管道组态)";
+            this.button41.UseVisualStyleBackColor = true;
+            this.button41.Click += new System.EventHandler(this.button41_Click);
+            // 
             // FormLoad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -926,6 +939,7 @@
         private System.Windows.Forms.ToolStripMenuItem verisonToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBox12;
         private System.Windows.Forms.Button button40;
+        private System.Windows.Forms.Button button41;
     }
 }
 

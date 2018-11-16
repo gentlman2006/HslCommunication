@@ -154,7 +154,7 @@ namespace HslCommunicationDemo
             int count = int.Parse( textBox6.Text );
             for (int i = 0; i < count; i++)
             {
-                OperateResult write = redisClient.SetKey( textBox5.Text, textBox4.Text );
+                OperateResult write = redisClient.WriteKey( textBox5.Text, textBox4.Text );
                 if (write.IsSuccess)
                 {
                     textBox7.Text = (DateTime.Now - start).TotalMilliseconds.ToString( "F2" );
@@ -195,7 +195,7 @@ namespace HslCommunicationDemo
             int count = int.Parse( textBox9.Text );
             for (int i = 0; i < count; i++)
             {
-                OperateResult<string> read = redisClient.GetKey( textBox11.Text);
+                OperateResult<string> read = redisClient.ReadKey( textBox11.Text);
                 if (read.IsSuccess)
                 {
                     textBox10.Text = read.Content;

@@ -205,6 +205,14 @@
       <Link>Controls\UserPieChart.designer.cs</Link>
       <DependentUpon>UserPieChart.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserPipe.cs">
+      <Link>Controls\UserPipe.cs</Link>
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Controls\UserPipe.designer.cs">
+      <Link>Controls\UserPipe.designer.cs</Link>
+      <DependentUpon>UserPipe.cs</DependentUpon>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Controls\UserSwitch.cs">
       <Link>Controls\UserSwitch.cs</Link>
       <SubType>UserControl</SubType>
@@ -623,6 +631,10 @@
     <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserPieChart.resx">
       <Link>Controls\UserPieChart.resx</Link>
       <DependentUpon>UserPieChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserPipe.resx">
+      <Link>Controls\UserPipe.resx</Link>
+      <DependentUpon>UserPipe.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="..\HslCommunication_Net45\Controls\UserSwitch.resx">
       <Link>Controls\UserSwitch.resx</Link>

@@ -98,11 +98,11 @@ namespace HslCommunication.Controls
         {
             get
             {
-                return bottleTag;
+                return headTag;
             }
             set
             {
-                bottleTag = value;
+                headTag = value;
                 Invalidate( );
             }
         }
@@ -114,7 +114,14 @@ namespace HslCommunication.Controls
         private StringFormat stringFormat = new StringFormat( );
         private string headTag = "原料1";
 
-        private void UserBottle_Paint( object sender, PaintEventArgs e )
+
+        protected override void WndProc( ref Message m )
+        {
+            if (m.Msg == 0x14) return;
+            base.WndProc( ref m );
+        }
+
+        protected override void OnPaint( PaintEventArgs e )
         {
             Graphics g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
@@ -200,6 +207,11 @@ namespace HslCommunication.Controls
             {
                 g.DrawString( headTag, Font, Brushes.DimGray, new Rectangle( -10, 0, Width + 20, 20 ), stringFormat );
             }
+        }
+
+        private void UserBottle_Paint( object sender, PaintEventArgs e )
+        {
+            
         }
     }
 }

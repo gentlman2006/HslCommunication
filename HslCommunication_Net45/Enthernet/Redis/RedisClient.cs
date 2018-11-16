@@ -168,7 +168,13 @@ namespace HslCommunication.Enthernet.Redis
 
         #region Public Method
 
-        public OperateResult SetKey(string key, string value )
+        /// <summary>
+        /// 针对服务器里的
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <param name="value">数据值</param>
+        /// <returns>是否写入成功</returns>
+        public OperateResult WriteKey(string key, string value )
         {
             byte[] command = PackCommand( new string[] { "SET", key, value } );
 
@@ -181,7 +187,12 @@ namespace HslCommunication.Enthernet.Redis
             return OperateResult.CreateSuccessResult( );
         }
 
-        public OperateResult<string> GetKey(string key )
+        /// <summary>
+        /// 读取服务器的键值数据
+        /// </summary>
+        /// <param name="key">关键字</param>
+        /// <returns>读取的结果成功对象</returns>
+        public OperateResult<string> ReadKey(string key )
         {
             byte[] command = PackCommand( new string[] { "GET", key } );
 

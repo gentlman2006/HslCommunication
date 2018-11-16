@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HslCommunication.Profinet.Siemens;
+using HslCommunicationDemo.Control;
 
 namespace HslCommunicationDemo
 {
@@ -638,6 +639,18 @@ namespace HslCommunicationDemo
             Hide( );
             System.Threading.Thread.Sleep( 200 );
             using (FormRedisClient form = new FormRedisClient( ))
+            {
+                form.ShowDialog( );
+            }
+            System.Threading.Thread.Sleep( 200 );
+            Show( );
+        }
+
+        private void button41_Click( object sender, EventArgs e )
+        {
+            Hide( );
+            System.Threading.Thread.Sleep( 200 );
+            using (FormPipe form = new FormPipe( ))
             {
                 form.ShowDialog( );
             }
