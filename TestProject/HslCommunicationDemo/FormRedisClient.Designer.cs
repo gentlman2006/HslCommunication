@@ -45,6 +45,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.button7 = new System.Windows.Forms.Button();
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.textBox9 = new System.Windows.Forms.TextBox();
@@ -63,7 +64,10 @@
             this.label9 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
+            this.button11 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -231,6 +235,10 @@
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.button11);
+            this.panel2.Controls.Add(this.button10);
+            this.panel2.Controls.Add(this.button9);
+            this.panel2.Controls.Add(this.button8);
             this.panel2.Controls.Add(this.button7);
             this.panel2.Controls.Add(this.textBox8);
             this.panel2.Controls.Add(this.label8);
@@ -255,19 +263,28 @@
             this.panel2.Size = new System.Drawing.Size(977, 518);
             this.panel2.TabIndex = 13;
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(863, 234);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(91, 28);
+            this.button7.TabIndex = 26;
+            this.button7.Text = "清空";
+            this.button7.UseVisualStyleBackColor = true;
+            // 
             // textBox8
             // 
-            this.textBox8.Location = new System.Drawing.Point(571, 238);
+            this.textBox8.Location = new System.Drawing.Point(769, 237);
             this.textBox8.Name = "textBox8";
             this.textBox8.ReadOnly = true;
-            this.textBox8.Size = new System.Drawing.Size(141, 23);
+            this.textBox8.Size = new System.Drawing.Size(88, 23);
             this.textBox8.TabIndex = 25;
             this.textBox8.Text = "0";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(517, 241);
+            this.label8.Location = new System.Drawing.Point(719, 241);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(44, 17);
             this.label8.TabIndex = 24;
@@ -275,16 +292,16 @@
             // 
             // textBox9
             // 
-            this.textBox9.Location = new System.Drawing.Point(356, 238);
+            this.textBox9.Location = new System.Drawing.Point(633, 238);
             this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(141, 23);
+            this.textBox9.Size = new System.Drawing.Size(80, 23);
             this.textBox9.TabIndex = 23;
             this.textBox9.Text = "1";
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(302, 241);
+            this.label12.Location = new System.Drawing.Point(583, 241);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(44, 17);
             this.label12.TabIndex = 22;
@@ -292,7 +309,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(190, 235);
+            this.button4.Location = new System.Drawing.Point(270, 235);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(91, 28);
             this.button4.TabIndex = 21;
@@ -305,6 +322,7 @@
             this.textBox10.Location = new System.Drawing.Point(62, 266);
             this.textBox10.Multiline = true;
             this.textBox10.Name = "textBox10";
+            this.textBox10.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox10.Size = new System.Drawing.Size(892, 244);
             this.textBox10.TabIndex = 18;
             // 
@@ -321,7 +339,7 @@
             // 
             this.textBox11.Location = new System.Drawing.Point(62, 237);
             this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(101, 23);
+            this.textBox11.Size = new System.Drawing.Size(202, 23);
             this.textBox11.TabIndex = 19;
             this.textBox11.Text = "A";
             // 
@@ -336,17 +354,17 @@
             // 
             // textBox7
             // 
-            this.textBox7.Location = new System.Drawing.Point(456, 183);
+            this.textBox7.Location = new System.Drawing.Point(367, 183);
             this.textBox7.Name = "textBox7";
             this.textBox7.ReadOnly = true;
-            this.textBox7.Size = new System.Drawing.Size(141, 23);
+            this.textBox7.Size = new System.Drawing.Size(66, 23);
             this.textBox7.TabIndex = 16;
             this.textBox7.Text = "0";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(402, 186);
+            this.label11.Location = new System.Drawing.Point(317, 186);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(44, 17);
             this.label11.TabIndex = 15;
@@ -354,16 +372,16 @@
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(241, 183);
+            this.textBox6.Location = new System.Drawing.Point(220, 183);
             this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(141, 23);
+            this.textBox6.Size = new System.Drawing.Size(76, 23);
             this.textBox6.TabIndex = 14;
             this.textBox6.Text = "1";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(187, 186);
+            this.label10.Location = new System.Drawing.Point(173, 186);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(44, 17);
             this.label10.TabIndex = 13;
@@ -384,6 +402,7 @@
             this.textBox4.Location = new System.Drawing.Point(62, 36);
             this.textBox4.Multiline = true;
             this.textBox4.Name = "textBox4";
+            this.textBox4.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox4.Size = new System.Drawing.Size(892, 138);
             this.textBox4.TabIndex = 8;
             // 
@@ -400,7 +419,7 @@
             // 
             this.textBox5.Location = new System.Drawing.Point(62, 7);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(101, 23);
+            this.textBox5.Size = new System.Drawing.Size(141, 23);
             this.textBox5.TabIndex = 9;
             this.textBox5.Text = "A";
             // 
@@ -413,14 +432,45 @@
             this.label7.TabIndex = 7;
             this.label7.Text = "关键字：";
             // 
-            // button7
+            // button8
             // 
-            this.button7.Location = new System.Drawing.Point(863, 234);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(91, 28);
-            this.button7.TabIndex = 26;
-            this.button7.Text = "清空";
-            this.button7.UseVisualStyleBackColor = true;
+            this.button8.Location = new System.Drawing.Point(367, 234);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(91, 28);
+            this.button8.TabIndex = 27;
+            this.button8.Text = "自定义命令";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(454, 180);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(91, 28);
+            this.button9.TabIndex = 28;
+            this.button9.Text = "列表添加";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(551, 180);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(91, 28);
+            this.button10.TabIndex = 29;
+            this.button10.Text = "列表收缩";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(648, 180);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(91, 28);
+            this.button11.TabIndex = 30;
+            this.button11.Text = "列表长度";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
             // FormRedisClient
             // 
@@ -487,5 +537,9 @@
         private System.Windows.Forms.TextBox textBox11;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button button11;
     }
 }

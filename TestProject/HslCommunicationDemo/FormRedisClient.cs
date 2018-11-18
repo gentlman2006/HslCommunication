@@ -24,7 +24,6 @@ namespace HslCommunicationDemo
         private void FormClient_Load( object sender, EventArgs e )
         {
             panel2.Enabled = false;
-            textBox3.Text = Guid.Empty.ToString( );
             button2.Enabled = false;
 
             Language( Program.Language );
@@ -49,7 +48,7 @@ namespace HslCommunicationDemo
                 label3.Text = "端口号：";
                 button1.Text = "连接";
                 button2.Text = "断开连接";
-                label6.Text = "令牌：";
+                label6.Text = "密码：";
                 button5.Text = "启动短连接";
                 button6.Text = "压力测试";
                 label7.Text = "指令头：";
@@ -60,7 +59,7 @@ namespace HslCommunicationDemo
                 label11.Text = "耗时：";
                 button4.Text = "读取";
                 label12.Text = "接收：";
-                label5.Text = "Hsl协议";
+                label5.Text = "Redis协议";
                 label20.Text = "作者：Richard Hu";
             }
             else
@@ -72,7 +71,7 @@ namespace HslCommunicationDemo
                 label3.Text = "Port:";
                 button1.Text = "Connect";
                 button2.Text = "Disconnect";
-                label6.Text = "Token:";
+                label6.Text = "Password:";
                 button5.Text = "Start a short connection";
                 button6.Text = "Pressure test";
                 label7.Text = "Command:";
@@ -83,19 +82,19 @@ namespace HslCommunicationDemo
                 label11.Text = "Take:";
                 button4.Text = "Read";
                 label12.Text = "Receive:";
-                label5.Text = "Hsl protocol";
+                label5.Text = "Redis protocol";
                 label20.Text = "Author:Richard Hu";
             }
         }
 
-        private RedisClient redisClient = new RedisClient( );
+        private RedisClient redisClient = new RedisClient( "" );
 
         private void button1_Click( object sender, EventArgs e )
         {
             // 连接
+            redisClient = new RedisClient( textBox3.Text );
             redisClient.IpAddress = textBox1.Text;
             redisClient.Port = int.Parse( textBox2.Text );
-            redisClient.Token = new Guid( textBox3.Text );
             OperateResult connect = redisClient.ConnectServer( );
 
             if(connect.IsSuccess)
@@ -202,11 +201,76 @@ namespace HslCommunicationDemo
                 }
                 else
                 {
-                    textBox10.Text = Program.Language == 1 ? "读取失败：" : "Read Failed:" + read.ToMessageShowString( );
+                    textBox10.Text = Program.Language == 1 ? "读取失败：" + read.Message : "Read Failed:" + read.Message;
                 }
 
             }
             textBox8.Text = (DateTime.Now - start).TotalMilliseconds.ToString( "F2" );
+        }
+
+        private void button8_Click( object sender, EventArgs e )
+        {
+            //OperateResult<string[]> read2 = redisClient.ListRange( "1:RobotData", 0, 1 );
+
+            //return;
+            // 读关键字
+            DateTime start = DateTime.Now;
+            int count = int.Parse( textBox9.Text );
+            for (int i = 0; i < count; i++)
+            {
+                OperateResult<string> read = redisClient.ReadCustomer( textBox11.Text );
+                if (read.IsSuccess)
+                {
+                    textBox10.Text = read.Content;
+                }
+                else
+                {
+                    textBox10.Text = Program.Language == 1 ? "读取失败：" + read.Message : "Read Failed:" + read.Message;
+                }
+
+            }
+            textBox8.Text = (DateTime.Now - start).TotalMilliseconds.ToString( "F2" );
+        }
+
+
+        private Random random = new Random( );
+        private void button9_Click( object sender, EventArgs e )
+        {
+            OperateResult result = redisClient.ListLeftPush( "B", random.Next( 1000 ).ToString( ));
+            if (result.IsSuccess)
+            {
+                MessageBox.Show( "成功" );
+            }
+            else
+            {
+                MessageBox.Show( result.Message );
+            }
+        }
+
+        private void button10_Click( object sender, EventArgs e )
+        {
+            OperateResult result = redisClient.ListTrim( "B", 0, 2 );
+            if (result.IsSuccess)
+            {
+                MessageBox.Show( "成功" );
+            }
+            else
+            {
+                MessageBox.Show( result.Message );
+            }
+        }
+
+        private void button11_Click( object sender, EventArgs e )
+        {
+            OperateResult<int> result = redisClient.GetListLength( "B" );
+            if (result.IsSuccess)
+            {
+                MessageBox.Show( "成功：" + result.Content );
+            }
+            else
+            {
+                MessageBox.Show( result.Message );
+            }
         }
     }
 
