@@ -273,7 +273,7 @@ namespace HslCommunication.Profinet.AllenBradley
                         case 0x05: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley05 };
                         case 0x06:
                             {
-                                if (response[offect + 2] != 0xD2 && response[offect + 2] != 0xCC)
+                                if (response[offect + 2] == 0xD2 || response[offect + 2] == 0xCC)
                                     return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley06 };
                                 break;
                             }
@@ -285,6 +285,7 @@ namespace HslCommunication.Profinet.AllenBradley
                         case 0x00: break;
                         default: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.UnknownError };
                     }
+
                     if (isRead)
                     {
                         for (int j = offectStart + 6; j < offectEnd; j++)
@@ -304,7 +305,7 @@ namespace HslCommunication.Profinet.AllenBradley
                     case 0x05: return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley05 };
                     case 0x06:
                         {
-                            if (response[offect + 2] != 0xD2 && response[offect + 2] != 0xCC)
+                            if (response[offect + 2] == 0xD2 || response[offect + 2] == 0xCC)
                                 return new OperateResult<byte[]>( ) { ErrorCode = err, Message = StringResources.Language.AllenBradley06 };
                             break;
                         }

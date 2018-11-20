@@ -45,6 +45,10 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.button11 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
@@ -64,10 +68,6 @@
             this.label9 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button11 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -263,6 +263,46 @@
             this.panel2.Size = new System.Drawing.Size(977, 518);
             this.panel2.TabIndex = 13;
             // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(648, 180);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(91, 28);
+            this.button11.TabIndex = 30;
+            this.button11.Text = "列表长度";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(551, 180);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(91, 28);
+            this.button10.TabIndex = 29;
+            this.button10.Text = "列表收缩";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(454, 180);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(91, 28);
+            this.button9.TabIndex = 28;
+            this.button9.Text = "列表添加";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(367, 234);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(91, 28);
+            this.button8.TabIndex = 27;
+            this.button8.Text = "自定义命令";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
             // button7
             // 
             this.button7.Location = new System.Drawing.Point(863, 234);
@@ -431,46 +471,6 @@
             this.label7.Size = new System.Drawing.Size(56, 17);
             this.label7.TabIndex = 7;
             this.label7.Text = "关键字：";
-            // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(367, 234);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(91, 28);
-            this.button8.TabIndex = 27;
-            this.button8.Text = "自定义命令";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
-            // 
-            // button9
-            // 
-            this.button9.Location = new System.Drawing.Point(454, 180);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(91, 28);
-            this.button9.TabIndex = 28;
-            this.button9.Text = "列表添加";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
-            // 
-            // button10
-            // 
-            this.button10.Location = new System.Drawing.Point(551, 180);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(91, 28);
-            this.button10.TabIndex = 29;
-            this.button10.Text = "列表收缩";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
-            // 
-            // button11
-            // 
-            this.button11.Location = new System.Drawing.Point(648, 180);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(91, 28);
-            this.button11.TabIndex = 30;
-            this.button11.Text = "列表长度";
-            this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
             // FormRedisClient
             // 

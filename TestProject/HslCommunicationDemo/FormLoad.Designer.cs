@@ -58,6 +58,7 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.button41 = new System.Windows.Forms.Button();
             this.button20 = new System.Windows.Forms.Button();
             this.button18 = new System.Windows.Forms.Button();
             this.button17 = new System.Windows.Forms.Button();
@@ -92,7 +93,7 @@
             this.verisonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.button40 = new System.Windows.Forms.Button();
-            this.button41 = new System.Windows.Forms.Button();
+            this.button42 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -467,6 +468,17 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Controls(控件)";
             // 
+            // button41
+            // 
+            this.button41.Location = new System.Drawing.Point(19, 184);
+            this.button41.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button41.Name = "button41";
+            this.button41.Size = new System.Drawing.Size(150, 32);
+            this.button41.TabIndex = 4;
+            this.button41.Text = "Pipe (管道组态)";
+            this.button41.UseVisualStyleBackColor = true;
+            this.button41.Click += new System.EventHandler(this.button41_Click);
+            // 
             // button20
             // 
             this.button20.Location = new System.Drawing.Point(19, 143);
@@ -518,7 +530,7 @@
             this.groupBox7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox7.Size = new System.Drawing.Size(185, 175);
+            this.groupBox7.Size = new System.Drawing.Size(185, 156);
             this.groupBox7.TabIndex = 14;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Robot(机器人)";
@@ -796,12 +808,13 @@
             // 
             // groupBox12
             // 
+            this.groupBox12.Controls.Add(this.button42);
             this.groupBox12.Controls.Add(this.button40);
-            this.groupBox12.Location = new System.Drawing.Point(395, 539);
+            this.groupBox12.Location = new System.Drawing.Point(395, 520);
             this.groupBox12.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox12.Name = "groupBox12";
             this.groupBox12.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox12.Size = new System.Drawing.Size(185, 132);
+            this.groupBox12.Size = new System.Drawing.Size(185, 151);
             this.groupBox12.TabIndex = 27;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Redis";
@@ -817,16 +830,16 @@
             this.button40.UseVisualStyleBackColor = true;
             this.button40.Click += new System.EventHandler(this.button40_Click);
             // 
-            // button41
+            // button42
             // 
-            this.button41.Location = new System.Drawing.Point(19, 184);
-            this.button41.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button41.Name = "button41";
-            this.button41.Size = new System.Drawing.Size(150, 32);
-            this.button41.TabIndex = 4;
-            this.button41.Text = "Pipe (管道组态)";
-            this.button41.UseVisualStyleBackColor = true;
-            this.button41.Click += new System.EventHandler(this.button41_Click);
+            this.button42.Location = new System.Drawing.Point(19, 64);
+            this.button42.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button42.Name = "button42";
+            this.button42.Size = new System.Drawing.Size(150, 32);
+            this.button42.TabIndex = 1;
+            this.button42.Text = "Redis Browser";
+            this.button42.UseVisualStyleBackColor = true;
+            this.button42.Click += new System.EventHandler(this.button42_Click);
             // 
             // FormLoad
             // 
@@ -940,6 +953,7 @@
         private System.Windows.Forms.GroupBox groupBox12;
         private System.Windows.Forms.Button button40;
         private System.Windows.Forms.Button button41;
+        private System.Windows.Forms.Button button42;
     }
 }
 

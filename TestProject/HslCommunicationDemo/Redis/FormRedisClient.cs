@@ -210,7 +210,7 @@ namespace HslCommunicationDemo
 
         private void button8_Click( object sender, EventArgs e )
         {
-            //OperateResult<string[]> read2 = redisClient.ListRange( "1:RobotData", 0, 1 );
+            //OperateResult<string[]> read2 = redisClient.ReadHashKey( "A", new string[] { "123", "456", "789" } );
 
             //return;
             // 读关键字
