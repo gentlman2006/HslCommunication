@@ -39,6 +39,10 @@ namespace HslCommunicationDemo.Redis
             }
 
             panel3.Enabled = false;
+            panel4.Dock = DockStyle.Fill;
+            panel4.Visible = false;
+            panel5.Dock = DockStyle.Fill;
+            panel5.Visible = false;
         }
 
 
@@ -166,15 +170,17 @@ namespace HslCommunicationDemo.Redis
 
         private void treeView1_AfterSelect( object sender, TreeViewEventArgs e )
         {
-            DateTime start = DateTime.Now;
             // 点击了数据信息
             if (e.Node.ImageKey == "Enum_582")
             {
+                panel4.Visible = true;
+                panel4.BringToFront( );
                 textBox4.Text = e.Node.Tag.ToString( );
+                DateTime start = DateTime.Now;
                 OperateResult<string> read = redisClient.ReadKey( e.Node.Tag.ToString( ) );
 
-                label5.Text = "Time: " + (DateTime.Now - start).TotalMilliseconds.ToString("F0") + " ms";
-                label4.Text = "Size: " + HslCommunication.BasicFramework.SoftBasic.GetSizeDescription(Encoding.UTF8.GetBytes( read.Content ).Length);
+                label5.Text = "Time: " + (DateTime.Now - start).TotalMilliseconds.ToString( "F0" ) + " ms";
+                label4.Text = "Size: " + HslCommunication.BasicFramework.SoftBasic.GetSizeDescription( Encoding.UTF8.GetBytes( read.Content ).Length );
                 if (read.IsSuccess)
                 {
                     textBox5.Text = read.Content;
@@ -186,10 +192,23 @@ namespace HslCommunicationDemo.Redis
             }
             else if (e.Node.ImageKey == "brackets_Square_16xMD")
             {
-                textBox4.Text = e.Node.Tag.ToString( );
-                OperateResult<string[]> read = redisClient.ListRange( e.Node.Tag.ToString( ), 0, -1 );
+                panel5.Visible = true;
+                panel5.BringToFront( );
+                label7.Text = "list key:";
+                textBox7.Text = string.Empty;
+                dataGridView1.Rows.Clear( );
+                this.Refresh( );
+                textBox6.Text = e.Node.Tag.ToString( );
 
-                label5.Text = "Time: " + (DateTime.Now - start).TotalMilliseconds.ToString( "F0" ) + " ms";
+                
+                DateTime start = DateTime.Now;
+                OperateResult<string[]> read = redisClient.ListRange( e.Node.Tag.ToString( ), 0, -1 );
+                if (!read.IsSuccess)
+                {
+                    textBox7.Text = read.Message;
+                    return;
+                }
+                label12.Text = "Time: " + (DateTime.Now - start).TotalMilliseconds.ToString( "F0" ) + " ms";
 
                 int size = 0;
                 for (int i = 0; i < read.Content.Length; i++)
@@ -197,25 +216,85 @@ namespace HslCommunicationDemo.Redis
                     size += Encoding.UTF8.GetBytes( read.Content[i] ).Length;
                 }
 
-                label4.Text = "Size: " + HslCommunication.BasicFramework.SoftBasic.GetSizeDescription( size );
-                label7.Text = "Array: " + read.Content.Length;
+                label13.Text = "Size: " + HslCommunication.BasicFramework.SoftBasic.GetSizeDescription( size );
+                label11.Text = "Array: " + read.Content.Length;
                 if (read.IsSuccess)
                 {
-                    textBox5.Clear( );
-                    StringBuilder sb = new StringBuilder( );
                     for (int i = 0; i < read.Content.Length; i++)
                     {
-                        sb.Append( read.Content[i] );
-                        sb.Append( Environment.NewLine );
-                        sb.Append( "====================================================================" );
-                        sb.Append( Environment.NewLine );
+                        dataGridView1.Rows.Add( i, read.Content[i] );
                     }
-
-                    textBox5.Text = sb.ToString( );
                 }
                 else
                 {
                     MessageBox.Show( read.Message );
+                }
+            }
+            else if (e.Node.ImageKey == "Method_636")
+            {
+                panel5.Visible = true;
+                panel5.BringToFront( );
+                label7.Text = "hash key:";
+                textBox7.Text = string.Empty;
+                dataGridView1.Rows.Clear( );
+                this.Refresh( );
+
+                textBox6.Text = e.Node.Tag.ToString( );
+                DateTime start = DateTime.Now;
+                OperateResult<string[]> read = redisClient.ReadHashKeyAll( e.Node.Tag.ToString( ) );
+                if (!read.IsSuccess)
+                {
+                    textBox7.Text = read.Message;
+                    return;
+                }
+                label12.Text = "Time: " + (DateTime.Now - start).TotalMilliseconds.ToString( "F0" ) + " ms";
+
+                int size = 0;
+                for (int i = 0; i < read.Content.Length; i++)
+                {
+                    size += Encoding.UTF8.GetBytes( read.Content[i] ).Length;
+                }
+
+                label13.Text = "Size: " + HslCommunication.BasicFramework.SoftBasic.GetSizeDescription( size );
+                label11.Text = "Array: " + read.Content.Length;
+                if (read.IsSuccess)
+                {
+                    for (int i = 0; i < read.Content.Length / 2; i++)
+                    {
+                        dataGridView1.Rows.Add( read.Content[2 * i + 0], read.Content[2 * i + 1] );
+                    }
+                }
+                else
+                {
+                    MessageBox.Show( read.Message );
+                }
+            }
+            else
+            {
+                MessageBox.Show( "Not supported" );
+            }
+        }
+
+        private void dataGridView1_CellContentClick( object sender, DataGridViewCellEventArgs e )
+        {
+        }
+
+        private void panel5_SizeChanged( object sender, EventArgs e )
+        {
+            if (panel5.Width > 0)
+            {
+                dataGridView1.Columns[1].Width = panel5.Width - 175;
+            }
+        }
+
+        private void dataGridView1_CellClick( object sender, DataGridViewCellEventArgs e )
+        {
+            if (e.RowIndex >= 0)
+            {
+                if (dataGridView1.SelectedRows.Count > 0)
+                {
+                    textBox7.Text = dataGridView1.SelectedRows[0].Cells[1].Value.ToString( );
+                    label9.Text = "Size: " + HslCommunication.BasicFramework.SoftBasic.GetSizeDescription( Encoding.UTF8.GetBytes( textBox7.Text ).Length );
                 }
             }
         }

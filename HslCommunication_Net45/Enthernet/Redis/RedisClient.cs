@@ -1528,6 +1528,45 @@ namespace HslCommunication.Enthernet.Redis
 
         #endregion
 
+        #region Server Operate
+
+        /// <summary>
+        /// SAVE 命令执行一个同步保存操作，将当前 Redis 实例的所有数据快照(snapshot)以 RDB 文件的形式保存到硬盘。
+        /// </summary>
+        /// <returns>保存成功时返回 OK 。</returns>
+        public OperateResult Save( )
+        {
+            byte[] command = PackCommand( new string[] { "SAVE" } );
+
+            OperateResult<byte[]> read = ReadFromCoreServer( command );
+            if (!read.IsSuccess) return read;
+
+            string msg = Encoding.UTF8.GetString( read.Content );
+            if (!msg.StartsWith( "+OK" )) return new OperateResult( msg );
+
+            return OperateResult.CreateSuccessResult( );
+        }
+
+        /// <summary>
+        /// 在后台异步(Asynchronously)保存当前数据库的数据到磁盘。
+        /// BGSAVE 命令执行之后立即返回 OK ，然后 Redis fork 出一个新子进程，原来的 Redis 进程(父进程)继续处理客户端请求，而子进程则负责将数据保存到磁盘，然后退出。
+        /// </summary>
+        /// <returns>反馈信息。</returns>
+        public OperateResult SaveAsync( )
+        {
+            byte[] command = PackCommand( new string[] { "SAVE" } );
+
+            OperateResult<byte[]> read = ReadFromCoreServer( command );
+            if (!read.IsSuccess) return read;
+
+            string msg = Encoding.UTF8.GetString( read.Content );
+            if (!msg.StartsWith( "+OK" )) return new OperateResult( msg );
+
+            return OperateResult.CreateSuccessResult( );
+        }
+
+        #endregion
+
         #region Publish
 
         /// <summary>
