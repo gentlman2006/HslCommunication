@@ -796,7 +796,7 @@ namespace HslCommunication.BasicFramework
         /// <remarks>
         /// 当你要显示本组件框架的版本号的时候，就可以用这个属性来显示
         /// </remarks>
-        public static SystemVersion FrameworkVersion { get; set; } = new SystemVersion( "5.6.0" );
+        public static SystemVersion FrameworkVersion { get; set; } = new SystemVersion( "5.6.1" );
 
 
         #endregion

@@ -500,6 +500,12 @@ namespace HslCommunication
     ///             <item>初步新增一个redis的类，初步实现了读写关键字。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-11-21" version="5.6.1" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>AB PLC读取数组过长时提示错误信息。</item>
+    ///             <item>正式发布redis客户端，支持一些常用的操作，并提供一个浏览器。博客：https://www.cnblogs.com/dathlin/p/9998013.html </item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc
