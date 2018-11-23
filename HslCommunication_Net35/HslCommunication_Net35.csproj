@@ -406,6 +406,12 @@
     <Compile Include="..\HslCommunication_Net45\Enthernet\Redis\RedisClient.cs">
       <Link>Enthernet\Redis\RedisClient.cs</Link>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\Redis\RedisHelper.cs">
+      <Link>Enthernet\Redis\RedisHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\HslCommunication_Net45\Enthernet\Redis\RedisSubscribe.cs">
+      <Link>Enthernet\Redis\RedisSubscribe.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\Enthernet\SimplifyNet\NetSimplifyClient.cs">
       <Link>Enthernet\SimplifyNet\NetSimplifyClient.cs</Link>
     </Compile>

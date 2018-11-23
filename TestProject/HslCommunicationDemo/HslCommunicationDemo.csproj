@@ -139,6 +139,12 @@
     <Compile Include="FormSerialDebug.Designer.cs">
       <DependentUpon>FormSerialDebug.cs</DependentUpon>
     </Compile>
+    <Compile Include="Redis\FormRedisSubscribe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Redis\FormRedisSubscribe.Designer.cs">
+      <DependentUpon>FormRedisSubscribe.cs</DependentUpon>
+    </Compile>
     <Compile Include="Redis\FormRedisClient.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -341,6 +347,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormSerialDebug.resx">
       <DependentUpon>FormSerialDebug.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Redis\FormRedisSubscribe.resx">
+      <DependentUpon>FormRedisSubscribe.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Redis\FormRedisClient.resx">
       <DependentUpon>FormRedisClient.cs</DependentUpon>

@@ -29,6 +29,8 @@
         private void InitializeComponent( )
         {
             this.panel2 = new System.Windows.Forms.Panel();
+            this.button5 = new System.Windows.Forms.Button();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.button4 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.textBox6 = new System.Windows.Forms.TextBox();
@@ -51,8 +53,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.button5 = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -77,6 +77,25 @@
             this.panel2.Size = new System.Drawing.Size(978, 540);
             this.panel2.TabIndex = 20;
             // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(875, 71);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(91, 28);
+            this.button5.TabIndex = 25;
+            this.button5.Text = "清空";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(322, 8);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(99, 21);
+            this.checkBox2.TabIndex = 24;
+            this.checkBox2.Text = "是否带有回车";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(486, 3);
@@ -98,6 +117,9 @@
             // 
             // textBox6
             // 
+            this.textBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox6.Location = new System.Drawing.Point(11, 103);
             this.textBox6.Multiline = true;
             this.textBox6.Name = "textBox6";
@@ -295,25 +317,6 @@
             this.label1.Size = new System.Drawing.Size(32, 17);
             this.label1.TabIndex = 0;
             this.label1.Text = "Ip：";
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(322, 8);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(99, 21);
-            this.checkBox2.TabIndex = 24;
-            this.checkBox2.Text = "是否带有回车";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(875, 71);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(91, 28);
-            this.button5.TabIndex = 25;
-            this.button5.Text = "清空";
-            this.button5.UseVisualStyleBackColor = true;
             // 
             // FormTcpDebug
             // 

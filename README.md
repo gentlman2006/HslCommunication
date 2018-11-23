@@ -97,7 +97,7 @@ Install-Package HslCommunication
 * [CRC16校验](http://www.cnblogs.com/dathlin/p/7821808.html)
 * [常用控件库](http://www.cnblogs.com/dathlin/p/8150516.html)
 * [连接池使用](https://www.cnblogs.com/dathlin/p/9191211.html)
-* Redis读写
+* [Redis读写](https://www.cnblogs.com/dathlin/p/9998013.html)
 
 
 ## HslCommunication.jar Summary 

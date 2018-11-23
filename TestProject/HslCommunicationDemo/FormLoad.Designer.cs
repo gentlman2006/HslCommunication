@@ -92,8 +92,9 @@
             this.日志ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.verisonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
-            this.button40 = new System.Windows.Forms.Button();
             this.button42 = new System.Windows.Forms.Button();
+            this.button40 = new System.Windows.Forms.Button();
+            this.button43 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -808,6 +809,7 @@
             // 
             // groupBox12
             // 
+            this.groupBox12.Controls.Add(this.button43);
             this.groupBox12.Controls.Add(this.button42);
             this.groupBox12.Controls.Add(this.button40);
             this.groupBox12.Location = new System.Drawing.Point(395, 520);
@@ -818,6 +820,17 @@
             this.groupBox12.TabIndex = 27;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Redis";
+            // 
+            // button42
+            // 
+            this.button42.Location = new System.Drawing.Point(19, 64);
+            this.button42.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button42.Name = "button42";
+            this.button42.Size = new System.Drawing.Size(150, 32);
+            this.button42.TabIndex = 1;
+            this.button42.Text = "Redis Browser";
+            this.button42.UseVisualStyleBackColor = true;
+            this.button42.Click += new System.EventHandler(this.button42_Click);
             // 
             // button40
             // 
@@ -830,16 +843,16 @@
             this.button40.UseVisualStyleBackColor = true;
             this.button40.Click += new System.EventHandler(this.button40_Click);
             // 
-            // button42
+            // button43
             // 
-            this.button42.Location = new System.Drawing.Point(19, 64);
-            this.button42.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button42.Name = "button42";
-            this.button42.Size = new System.Drawing.Size(150, 32);
-            this.button42.TabIndex = 1;
-            this.button42.Text = "Redis Browser";
-            this.button42.UseVisualStyleBackColor = true;
-            this.button42.Click += new System.EventHandler(this.button42_Click);
+            this.button43.Location = new System.Drawing.Point(19, 102);
+            this.button43.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button43.Name = "button43";
+            this.button43.Size = new System.Drawing.Size(150, 32);
+            this.button43.TabIndex = 2;
+            this.button43.Text = "Redis Subscribe";
+            this.button43.UseVisualStyleBackColor = true;
+            this.button43.Click += new System.EventHandler(this.button43_Click);
             // 
             // FormLoad
             // 
@@ -954,6 +967,7 @@
         private System.Windows.Forms.Button button40;
         private System.Windows.Forms.Button button41;
         private System.Windows.Forms.Button button42;
+        private System.Windows.Forms.Button button43;
     }
 }
 

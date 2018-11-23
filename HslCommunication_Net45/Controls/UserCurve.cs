@@ -100,7 +100,6 @@ namespace HslCommunication.Controls
         private int upDowm = 25;
 
 
-
         #endregion
 
         #region Data Member

@@ -6,6 +6,7 @@ using HslCommunication.Profinet.AllenBradley;
 using HslCommunication.Profinet.Siemens;
 using System.Threading.Tasks;
 using HslCommunication.Enthernet;
+using HslCommunication.Enthernet.Redis;
 
 namespace HslCommunicationCoreDemo
 {
@@ -15,22 +16,27 @@ namespace HslCommunicationCoreDemo
         {
             Console.WriteLine("Hello World!");
 
-            Console.WriteLine( System.Globalization.CultureInfo.CurrentCulture.ToString() );
+            //Console.WriteLine( System.Globalization.CultureInfo.CurrentCulture.ToString() );
 
 
-            NetSimplifyClient AccountSimplifyClient = new NetSimplifyClient( "127.0.0.1", 23456 );
-            OperateResult<NetHandle,string> read = AccountSimplifyClient.ReadCustomerFromServer( 1, "" );
-            if (read.IsSuccess)
+            //NetSimplifyClient AccountSimplifyClient = new NetSimplifyClient( "127.0.0.1", 23456 );
+            //OperateResult<NetHandle,string> read = AccountSimplifyClient.ReadCustomerFromServer( 1, "" );
+            //if (read.IsSuccess)
+            //{
+            //    Console.WriteLine( "Handle:" + read.Content1 );
+            //    Console.WriteLine( read.Content2 );
+            //}
+            //else
+            //{
+            //    Console.WriteLine( "失败：" + read.Message );
+            //}
+
+            RedisSubscribe subscribe = new RedisSubscribe( "127.0.0.1", 6379, new string[] { "WareHouse:HuiBo" } );
+            subscribe.CreatePush( ( m, n ) =>
             {
-                Console.WriteLine( "Handle:" + read.Content1 );
-                Console.WriteLine( read.Content2 );
-            }
-            else
-            {
-                Console.WriteLine( "失败：" + read.Message );
-            }
-
-
+                Console.WriteLine( DateTime.Now.ToString() + "  Key: " + m );
+                Console.WriteLine( n );
+            } );
 
             Console.ReadLine( );
         }

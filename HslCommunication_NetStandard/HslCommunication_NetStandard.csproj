@@ -105,6 +105,8 @@
     <Compile Include="..\HslCommunication_Net45\Enthernet\PushNet\NetPushServer.cs" Link="Enthernet\PushNet\NetPushServer.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\PushNet\PushGroupClient.cs" Link="Enthernet\PushNet\PushGroupClient.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\Redis\RedisClient.cs" Link="Enthernet\Redis\RedisClient.cs" />
+    <Compile Include="..\HslCommunication_Net45\Enthernet\Redis\RedisHelper.cs" Link="Enthernet\Redis\RedisHelper.cs" />
+    <Compile Include="..\HslCommunication_Net45\Enthernet\Redis\RedisSubscribe.cs" Link="Enthernet\Redis\RedisSubscribe.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\SimplifyNet\NetSimplifyClient.cs" Link="Enthernet\SimplifyNet\NetSimplifyClient.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\SimplifyNet\NetSimplifyServer.cs" Link="Enthernet\SimplifyNet\NetSimplifyServer.cs" />
     <Compile Include="..\HslCommunication_Net45\Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" Link="Enthernet\SoftUpdateNet\ClassSoftUpdate.cs" />

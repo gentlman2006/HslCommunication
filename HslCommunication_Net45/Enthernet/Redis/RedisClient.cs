@@ -54,7 +54,7 @@ namespace HslCommunication.Enthernet.Redis
         {
             if (!string.IsNullOrEmpty( this.password ))
             {
-                byte[] command = PackCommand( new string[] { "AUTH", this.password } );
+                byte[] command = RedisHelper.PackStringCommand( new string[] { "AUTH", this.password } );
 
                 OperateResult<byte[]> read = ReadFromCoreServer( socket, command );
                 if (!read.IsSuccess) return read;
@@ -90,248 +90,9 @@ namespace HslCommunication.Enthernet.Redis
             if (ReceiveTimeOut < 0) return OperateResult.CreateSuccessResult( new byte[0] );
 
             // 接收数据信息
-            return ReceiveCommand( socket );
+            return RedisHelper.ReceiveCommand( socket );
         }
-
-
-        private OperateResult<byte[]> ReceiveCommandLine( Socket socket )
-        {
-            List<byte> bufferArray = new List<byte>( );
-            try
-            {
-                // 接收到\n为止
-                while (true)
-                {
-                    byte[] head = NetSupport.ReadBytesFromSocket( socket, 1 );
-                    bufferArray.AddRange( head );
-                    if (head[0] == '\n') break;
-                }
-
-                // 指令头已经接收完成
-                return OperateResult.CreateSuccessResult( bufferArray.ToArray( ) );
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<byte[]>( ex.Message );
-            }
-        }
-
-        private OperateResult<byte[]> ReceiveCommandString( Socket socket, int length )
-        {
-            try
-            {
-                List<byte> bufferArray = new List<byte>( );
-                bufferArray.AddRange( NetSupport.ReadBytesFromSocket( socket, length ) );
-                while (true)
-                {
-                    byte[] head = NetSupport.ReadBytesFromSocket( socket, 1 );
-                    bufferArray.AddRange( head );
-                    if (head[0] == '\n') break;
-                }
-
-                return OperateResult.CreateSuccessResult( bufferArray.ToArray( ) );
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<byte[]>( ex.Message );
-            }
-        }
-
-        private OperateResult<int> GetNumberFromCommandLine( byte[] commandLine )
-        {
-            try
-            {
-                string command = Encoding.UTF8.GetString( commandLine ).TrimEnd( '\r', '\n' );
-                return OperateResult.CreateSuccessResult( Convert.ToInt32( command.Substring( 1 ) ) );
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<int>( ex.Message );
-            }
-        }
-
-        private OperateResult<string> GetStringFromCommandLine( byte[] commandLine )
-        {
-            try
-            {
-                if (commandLine[0] != '$') return new OperateResult<string>( Encoding.UTF8.GetString( commandLine ) );
-
-                // 先找到换行符
-                int index_start = -1;
-                int index_end = -1;
-                // 下面的判断兼容windows系统及linux系统
-                for (int i = 0; i < commandLine.Length; i++)
-                {
-                    if (commandLine[i] == '\r' || commandLine[i] == '\n')
-                    {
-                        index_start = i;
-                    }
-
-                    if (commandLine[i] == '\n')
-                    {
-                        index_end = i;
-                        break;
-                    }
-                }
-
-                int length = Convert.ToInt32( Encoding.UTF8.GetString( commandLine, 1, index_start - 1 ) );
-                if (length < 0) return new OperateResult<string>( "(nil) None Value" );
-
-                return OperateResult.CreateSuccessResult( Encoding.UTF8.GetString( commandLine, index_end + 1, length ) );
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<string>( ex.Message );
-            }
-        }
-
-        private OperateResult<string[]> GetStringsFromCommandLine( byte[] commandLine )
-        {
-            try
-            {
-                List<string> lists = new List<string>( );
-                if (commandLine[0] != '*') return new OperateResult<string[]>( Encoding.UTF8.GetString( commandLine ) );
-
-                int index = 0;
-                for (int i = 0; i < commandLine.Length; i++)
-                {
-                    if (commandLine[i] == '\r' || commandLine[i] == '\n')
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-
-                int length = Convert.ToInt32( Encoding.UTF8.GetString( commandLine, 1, index - 1 ) );
-                for (int i = 0; i < length; i++)
-                {
-                    // 提取所有的字符串内容
-                    int index_end = -1;
-                    for (int j = index; j < commandLine.Length; j++)
-                    {
-                        if (commandLine[j] == '\n')
-                        {
-                            index_end = j;
-                            break;
-                        }
-                    }
-                    index = index_end + 1;
-                    // 寻找子字符串
-                    int index_start = -1;
-                    for (int j = index; j < commandLine.Length; j++)
-                    {
-                        if (commandLine[j] == '\r' || commandLine[j] == '\n')
-                        {
-                            index_start = j;
-                            break;
-                        }
-                    }
-                    int stringLength = Convert.ToInt32( Encoding.UTF8.GetString( commandLine, index + 1, index_start - index - 1 ) );
-                    if (stringLength >= 0)
-                    {
-                        for (int j = index; j < commandLine.Length; j++)
-                        {
-                            if (commandLine[j] == '\n')
-                            {
-                                index_end = j;
-                                break;
-                            }
-                        }
-                        index = index_end + 1;
-
-                        lists.Add( Encoding.UTF8.GetString( commandLine, index, stringLength ) );
-                        index = index + stringLength;
-                    }
-                    else
-                    {
-                        lists.Add( null );
-                    }
-                }
-
-
-                return OperateResult.CreateSuccessResult( lists.ToArray( ) );
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<string[]>( ex.Message );
-            }
-        }
-
-        /// <summary>
-        /// 从网络接收一条redis消息
-        /// </summary>
-        /// <param name="socket">网络套接字</param>
-        /// <returns>接收的结果对象</returns>
-        protected OperateResult<byte[]> ReceiveCommand( Socket socket )
-        {
-            List<byte> bufferArray = new List<byte>( );
-            OperateResult<byte[]> readCommandLine = ReceiveCommandLine( socket );
-            if (!readCommandLine.IsSuccess) return readCommandLine;
-
-            bufferArray.AddRange( readCommandLine.Content );
-            if (readCommandLine.Content[0] == '+' || readCommandLine.Content[0] == '-' || readCommandLine.Content[0] == ':')
-            {
-                // 状态回复，错误回复，整数回复
-                return OperateResult.CreateSuccessResult( bufferArray.ToArray( ) );
-            }
-            else if (readCommandLine.Content[0] == '$')
-            {
-                // 批量回复，允许最大512M字节
-                OperateResult<int> lengthResult = GetNumberFromCommandLine( readCommandLine.Content );
-                if (!lengthResult.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( lengthResult );
-
-                if (lengthResult.Content < 0) return OperateResult.CreateSuccessResult( bufferArray.ToArray( ) );
-
-                // 接收字符串信息
-                OperateResult<byte[]> receiveContent = ReceiveCommandString( socket, lengthResult.Content );
-                if (!receiveContent.IsSuccess) return receiveContent;
-
-                bufferArray.AddRange( receiveContent.Content );
-                return OperateResult.CreateSuccessResult( bufferArray.ToArray( ) );
-            }
-            else if (readCommandLine.Content[0] == '*')
-            {
-                // 多参数的回复
-                OperateResult<int> lengthResult = GetNumberFromCommandLine( readCommandLine.Content );
-                if (!lengthResult.IsSuccess) return OperateResult.CreateFailedResult<byte[]>( lengthResult );
-
-                for (int i = 0; i < lengthResult.Content; i++)
-                {
-                    OperateResult<byte[]> receiveCommand = ReceiveCommand( socket );
-                    if (!receiveCommand.IsSuccess) return receiveCommand;
-
-                    bufferArray.AddRange( receiveCommand.Content );
-                }
-
-                return OperateResult.CreateSuccessResult( bufferArray.ToArray( ) );
-            }
-            else
-            {
-                return new OperateResult<byte[]>( "Not Supported HeadCode: " + readCommandLine.Content[0] );
-            }
-        }
-
-        #endregion
-
-        #region Command Support
-
-        private byte[] PackCommand( string[] commands )
-        {
-            StringBuilder sb = new StringBuilder( );
-            sb.Append( '*' );
-            sb.Append( commands.Length.ToString( ) );
-            sb.Append( "\r\n" );
-            for (int i = 0; i < commands.Length; i++)
-            {
-                sb.Append( '$' );
-                sb.Append( Encoding.UTF8.GetBytes( commands[i] ).Length.ToString( ) );
-                sb.Append( "\r\n" );
-                sb.Append( commands[i] );
-                sb.Append( "\r\n" );
-            }
-            return Encoding.UTF8.GetBytes( sb.ToString( ) );
-        }
-
+        
         #endregion
 
         #region Customer
@@ -343,7 +104,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>从服务器返回的结果数据对象</returns>
         public OperateResult<string> ReadCustomer( string command )
         {
-            byte[] byteCommand = PackCommand( command.Split( ' ' ) );
+            byte[] byteCommand = RedisHelper.PackStringCommand( command.Split( ' ' ) );
 
             OperateResult<byte[]> read = ReadFromCoreServer( byteCommand );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
@@ -366,7 +127,7 @@ namespace HslCommunication.Enthernet.Redis
             list.Add( "DEL" );
             list.AddRange( keys );
 
-            byte[] command = PackCommand( list.ToArray( ) );
+            byte[] command = RedisHelper.PackStringCommand( list.ToArray( ) );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -374,7 +135,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -394,7 +155,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>若 key 存在，返回 1 ，否则返回 0 。</returns>
         public OperateResult<int> ExistsKey( string key )
         {
-            byte[] command = PackCommand( new string[] { "EXISTS", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "EXISTS", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -402,7 +163,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -414,7 +175,7 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<int> ExpireKey( string key )
         {
-            byte[] command = PackCommand( new string[] { "EXPIRE", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "EXPIRE", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -422,7 +183,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -435,12 +196,12 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>符合给定模式的 key 列表。</returns>
         public OperateResult<string[]> ReadAllKeys( string pattern )
         {
-            byte[] command = PackCommand( new string[] { "KEYS", pattern } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "KEYS", pattern } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string[]>( read );
 
-            return GetStringsFromCommandLine( read.Content );
+            return RedisHelper.GetStringsFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -453,7 +214,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>是否移动成功</returns>
         public OperateResult MoveKey( string key, int db )
         {
-            byte[] command = PackCommand( new string[] { "MOVE", key, db.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "MOVE", key, db.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -476,7 +237,7 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<int> PersistKey( string key )
         {
-            byte[] command = PackCommand( new string[] { "PERSIST", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "PERSIST", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -484,7 +245,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -498,12 +259,12 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<string> ReadRandomKey( )
         {
-            byte[] command = PackCommand( new string[] { "RANDOMKEY" } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "RANDOMKEY" } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            return GetStringFromCommandLine( read.Content );
+            return RedisHelper.GetStringFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -518,7 +279,7 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult RenameKey( string key1, string key2 )
         {
-            byte[] command = PackCommand( new string[] { "RENAME", key1, key2 } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "RENAME", key1, key2 } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -536,7 +297,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>类型</returns>
         public OperateResult<string> ReadKeyType( string key )
         {
-            byte[] command = PackCommand( new string[] { "TYPE", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "TYPE", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
@@ -565,7 +326,7 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<int> AppendKey( string key, string value )
         {
-            byte[] command = PackCommand( new string[] { "APPEND", key, value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "APPEND", key, value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -573,7 +334,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -586,7 +347,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>执行 DECR 命令之后 key 的值。</returns>
         public OperateResult<int> DecrementKey( string key )
         {
-            byte[] command = PackCommand( new string[] { "DECR", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "DECR", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -594,7 +355,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -608,7 +369,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>返回减去 decrement 之后， key 的值。</returns>
         public OperateResult<int> DecrementKey( string key, long value )
         {
-            byte[] command = PackCommand( new string[] { "DECR", key, value.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "DECR", key, value.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -616,7 +377,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -627,12 +388,12 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>当 key 不存在时，返回 nil ，否则，返回 key 的值。</returns>
         public OperateResult<string> ReadKey( string key )
         {
-            byte[] command = PackCommand( new string[] { "GET", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "GET", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            return GetStringFromCommandLine( read.Content );
+            return RedisHelper.GetStringFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -646,12 +407,12 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>返回截取得出的子字符串。</returns>
         public OperateResult<string> ReadKeyRange( string key, int start, int end )
         {
-            byte[] command = PackCommand( new string[] { "GETRANGE", key, start.ToString( ), end.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "GETRANGE", key, start.ToString( ), end.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            return GetStringFromCommandLine( read.Content );
+            return RedisHelper.GetStringFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -662,12 +423,12 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>返回给定 key 的旧值。当 key 没有旧值时，也即是， key 不存在时，返回 nil 。</returns>
         public OperateResult<string> ReadAndWriteKey( string key, string value )
         {
-            byte[] command = PackCommand( new string[] { "GETSET", key, value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "GETSET", key, value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            return GetStringFromCommandLine( read.Content );
+            return RedisHelper.GetStringFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -679,7 +440,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>返回执行 INCR 命令之后 key 的值。</returns>
         public OperateResult<int> IncrementKey( string key )
         {
-            byte[] command = PackCommand( new string[] { "INCR", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "INCR", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -687,7 +448,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -699,7 +460,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>加上 increment 之后， key 的值。</returns>
         public OperateResult<int> IncrementKey( string key, long value )
         {
-            byte[] command = PackCommand( new string[] { "INCRBY", key, value.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "INCRBY", key, value.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -707,7 +468,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -719,12 +480,12 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>执行命令之后 key 的值。</returns>
         public OperateResult<string> IncrementKey( string key, float value )
         {
-            byte[] command = PackCommand( new string[] { "INCRBYFLOAT", key, value.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "INCRBYFLOAT", key, value.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            return GetStringFromCommandLine( read.Content );
+            return RedisHelper.GetStringFromCommandLine( read.Content );
         }
 
 
@@ -739,12 +500,12 @@ namespace HslCommunication.Enthernet.Redis
             List<string> list = new List<string>( );
             list.Add( "MGET" );
             list.AddRange( keys );
-            byte[] command = PackCommand( list.ToArray( ) );
+            byte[] command = RedisHelper.PackStringCommand( list.ToArray( ) );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string[]>( read );
 
-            return GetStringsFromCommandLine( read.Content );
+            return RedisHelper.GetStringsFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -768,7 +529,7 @@ namespace HslCommunication.Enthernet.Redis
                 list.Add( values[i] );
             }
 
-            byte[] command = PackCommand( list.ToArray( ) );
+            byte[] command = RedisHelper.PackStringCommand( list.ToArray( ) );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -789,7 +550,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns> SET 在设置操作成功完成时，才返回 OK 。</returns>
         public OperateResult WriteKey( string key, string value )
         {
-            byte[] command = PackCommand( new string[] { "SET", key, value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "SET", key, value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -809,7 +570,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>设置成功时返回 OK 。当 seconds 参数不合法时，返回一个错误。</returns>
         public OperateResult WriteExpireKey( string key, string value, long seconds )
         {
-            byte[] command = PackCommand( new string[] { "SETEX", key, seconds.ToString( ), value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "SETEX", key, seconds.ToString( ), value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -828,7 +589,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>设置成功，返回 1 。设置失败，返回 0 。</returns>
         public OperateResult<int> WriteKeyIfNotExists( string key, string value )
         {
-            byte[] command = PackCommand( new string[] { "SETNX", key, value.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "SETNX", key, value.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -836,7 +597,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -848,7 +609,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>被 SETRANGE 修改之后，字符串的长度。</returns>
         public OperateResult<int> WriteKeyRange( string key, string value, int offset )
         {
-            byte[] command = PackCommand( new string[] { "SETRANGE", key, offset.ToString( ), value.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "SETRANGE", key, offset.ToString( ), value.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -856,7 +617,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -866,7 +627,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>字符串值的长度。当 key 不存在时，返回 0 。</returns>
         public OperateResult<int> ReadKeyLength( string key )
         {
-            byte[] command = PackCommand( new string[] { "STRLEN", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "STRLEN", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -874,7 +635,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         #endregion
@@ -897,7 +658,7 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<int> ListInsertBefore( string key, string value, string pivot )
         {
-            byte[] command = PackCommand( new string[] { "LINSERT", key, "BEFORE", pivot, value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "LINSERT", key, "BEFORE", pivot, value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -905,7 +666,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -924,7 +685,7 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<int> ListInsertAfter( string key, string value, string pivot )
         {
-            byte[] command = PackCommand( new string[] { "LINSERT", key, "AFTER", pivot, value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "LINSERT", key, "AFTER", pivot, value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -932,7 +693,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -942,7 +703,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>列表 key 的长度。</returns>
         public OperateResult<int> GetListLength( string key )
         {
-            byte[] command = PackCommand( new string[] { "LLEN", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "LLEN", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -950,7 +711,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -962,12 +723,12 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>列表中下标为 index 的元素。如果 index 参数的值不在列表的区间范围内(out of range)，返回 nil 。</returns>
         public OperateResult<string> ReadListByIndex( string key, long index )
         {
-            byte[] command = PackCommand( new string[] { "LINDEX", key, index.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "LINDEX", key, index.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            return GetStringFromCommandLine( read.Content );
+            return RedisHelper.GetStringFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -977,12 +738,12 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>列表的头元素。</returns>
         public OperateResult<string> ListLeftPop( string key )
         {
-            byte[] command = PackCommand( new string[] { "LPOP", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "LPOP", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            return GetStringFromCommandLine( read.Content );
+            return RedisHelper.GetStringFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1009,7 +770,7 @@ namespace HslCommunication.Enthernet.Redis
             list.Add( key );
             list.AddRange( values );
 
-            byte[] command = PackCommand( list.ToArray( ) );
+            byte[] command = RedisHelper.PackStringCommand( list.ToArray( ) );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -1017,7 +778,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1029,7 +790,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>是否插入数据成功</returns>
         public OperateResult ListLeftPushX( string key, string value )
         {
-            byte[] command = PackCommand( new string[] { "LPUSHX", key, value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "LPUSHX", key, value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -1052,12 +813,12 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>返回一个列表，包含指定区间内的元素。</returns>
         public OperateResult<string[]> ListRange( string key, long start, long stop )
         {
-            byte[] command = PackCommand( new string[] { "LRANGE", key, start.ToString( ), stop.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "LRANGE", key, start.ToString( ), stop.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string[]>( read );
 
-            return GetStringsFromCommandLine( read.Content );
+            return RedisHelper.GetStringsFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1073,7 +834,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>被移除元素的数量。因为不存在的 key 被视作空表(empty list)，所以当 key 不存在时， LREM 命令总是返回 0 。</returns>
         public OperateResult<int> ListRemoveElementMatch( string key, long count, string value )
         {
-            byte[] command = PackCommand( new string[] { "LREM", key, count.ToString( ), value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "LREM", key, count.ToString( ), value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -1081,7 +842,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1093,7 +854,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>操作成功返回 ok ，否则返回错误信息。</returns>
         public OperateResult ListSet( string key, long index, string value )
         {
-            byte[] command = PackCommand( new string[] { "LSET", key.ToString( ), index.ToString( ), value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "LSET", key.ToString( ), index.ToString( ), value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -1117,7 +878,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>是否成功的结果对象</returns>
         public OperateResult ListTrim( string key, long start, long end )
         {
-            byte[] command = PackCommand( new string[] { "LTRIM", key, start.ToString( ), end.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "LTRIM", key, start.ToString( ), end.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -1135,12 +896,12 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>列表的尾元素。</returns>
         public OperateResult<string> ListRightPop( string key )
         {
-            byte[] command = PackCommand( new string[] { "RPOP", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "RPOP", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            return GetStringFromCommandLine( read.Content );
+            return RedisHelper.GetStringFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1156,12 +917,12 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>返回的移除的对象</returns>
         public OperateResult<string> ListRightPopLeftPush( string key1, string key2 )
         {
-            byte[] command = PackCommand( new string[] { "RPOPLPUSH", key1, key2 } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "RPOPLPUSH", key1, key2 } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            return GetStringFromCommandLine( read.Content );
+            return RedisHelper.GetStringFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1192,7 +953,7 @@ namespace HslCommunication.Enthernet.Redis
             list.Add( key );
             list.AddRange( values );
 
-            byte[] command = PackCommand( list.ToArray( ) );
+            byte[] command = RedisHelper.PackStringCommand( list.ToArray( ) );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -1200,7 +961,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1212,7 +973,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>RPUSHX 命令执行之后，表的长度。</returns>
         public OperateResult<int> ListRightPushX( string key, string value )
         {
-            byte[] command = PackCommand( new string[] { "RPUSHX", key, value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "RPUSHX", key, value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -1220,7 +981,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         #endregion
@@ -1251,7 +1012,7 @@ namespace HslCommunication.Enthernet.Redis
             list.Add( key );
             list.AddRange( fields );
 
-            byte[] command = PackCommand( list.ToArray( ) );
+            byte[] command = RedisHelper.PackStringCommand( list.ToArray( ) );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -1259,7 +1020,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1271,7 +1032,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>如果哈希表含有给定域，返回 1 。如果哈希表不含有给定域，或 key 不存在，返回 0 。</returns>
         public OperateResult<int> ExistsHashKey( string key, string field )
         {
-            byte[] command = PackCommand( new string[] { "HEXISTS", key, field } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "HEXISTS", key, field } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -1279,7 +1040,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1293,12 +1054,12 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<string> ReadHashKey( string key, string field )
         {
-            byte[] command = PackCommand( new string[] { "HGET", key, field } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "HGET", key, field } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string>( read );
 
-            return GetStringFromCommandLine( read.Content );
+            return RedisHelper.GetStringFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1311,12 +1072,12 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<string[]> ReadHashKeyAll( string key )
         {
-            byte[] command = PackCommand( new string[] { "HGETALL", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "HGETALL", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string[]>( read );
 
-            return GetStringsFromCommandLine( read.Content );
+            return RedisHelper.GetStringsFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1329,7 +1090,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>返回执行 HINCRBY 命令之后，哈希表 key 中域 field 的值。</returns>
         public OperateResult<int> IncrementHashKey( string key, string field, long value )
         {
-            byte[] command = PackCommand( new string[] { "HINCRBY", key, field, value.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "HINCRBY", key, field, value.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -1337,7 +1098,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1350,7 +1111,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>返回执行 HINCRBY 命令之后，哈希表 key 中域 field 的值。</returns>
         public OperateResult<int> IncrementHashKey( string key, string field, float value )
         {
-            byte[] command = PackCommand( new string[] { "HINCRBYFLOAT", key, field, value.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "HINCRBYFLOAT", key, field, value.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -1358,7 +1119,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1371,12 +1132,12 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<string[]> ReadHashKeys( string key )
         {
-            byte[] command = PackCommand( new string[] { "HKEYS", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "HKEYS", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string[]>( read );
 
-            return GetStringsFromCommandLine( read.Content );
+            return RedisHelper.GetStringsFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1386,7 +1147,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>被成功移除的域的数量，不包括被忽略的域。</returns>
         public OperateResult<int> ReadHashKeyLength( string key )
         {
-            byte[] command = PackCommand( new string[] { "HLEN", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "HLEN", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -1394,7 +1155,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1412,12 +1173,12 @@ namespace HslCommunication.Enthernet.Redis
             list.Add( key );
             list.AddRange( fields );
 
-            byte[] command = PackCommand( list.ToArray( ) );
+            byte[] command = RedisHelper.PackStringCommand( list.ToArray( ) );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string[]>( read );
 
-            return GetStringsFromCommandLine( read.Content );
+            return RedisHelper.GetStringsFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1436,7 +1197,7 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<int> WriteHashKey( string key, string field, string value )
         {
-            byte[] command = PackCommand( new string[] { "HSET", key, field, value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "HSET", key, field, value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -1444,7 +1205,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1474,7 +1235,7 @@ namespace HslCommunication.Enthernet.Redis
                 list.Add( values[i] );
             }
 
-            byte[] command = PackCommand( list.ToArray( ) );
+            byte[] command = RedisHelper.PackStringCommand( list.ToArray( ) );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -1495,7 +1256,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>设置成功，返回 1 。如果给定域已经存在且没有操作被执行，返回 0 。</returns>
         public OperateResult<int> WriteHashKeyNx( string key, string field, string value )
         {
-            byte[] command = PackCommand( new string[] { "HSETNX", key, field, value } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "HSETNX", key, field, value } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
@@ -1503,7 +1264,7 @@ namespace HslCommunication.Enthernet.Redis
             string msg = Encoding.UTF8.GetString( read.Content );
             if (!msg.StartsWith( ":" )) return new OperateResult<int>( msg );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
         }
 
         /// <summary>
@@ -1516,12 +1277,12 @@ namespace HslCommunication.Enthernet.Redis
         /// </returns>
         public OperateResult<string[]> ReadHashValues( string key )
         {
-            byte[] command = PackCommand( new string[] { "HVALS", key } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "HVALS", key } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<string[]>( read );
 
-            return GetStringsFromCommandLine( read.Content );
+            return RedisHelper.GetStringsFromCommandLine( read.Content );
         }
 
 
@@ -1536,7 +1297,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>保存成功时返回 OK 。</returns>
         public OperateResult Save( )
         {
-            byte[] command = PackCommand( new string[] { "SAVE" } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "SAVE" } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -1554,7 +1315,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>反馈信息。</returns>
         public OperateResult SaveAsync( )
         {
-            byte[] command = PackCommand( new string[] { "SAVE" } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "SAVE" } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
@@ -1577,14 +1338,14 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>是否发送成功的结果对象</returns>
         public OperateResult<int> Publish( string channel, string message )
         {
-            byte[] command = PackCommand( new string[] { "PUBLISH", channel, message } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "PUBLISH", channel, message } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return OperateResult.CreateFailedResult<int>( read );
 
             if (read.Content[0] != ':') return new OperateResult<int>( Encoding.UTF8.GetString( read.Content ) );
 
-            return GetNumberFromCommandLine( read.Content );
+            return RedisHelper.GetNumberFromCommandLine( read.Content );
 
         }
 
@@ -1599,7 +1360,7 @@ namespace HslCommunication.Enthernet.Redis
         /// <returns>是否切换成功</returns>
         public OperateResult SelectDB( int db )
         {
-            byte[] command = PackCommand( new string[] { "SELECT", db.ToString( ) } );
+            byte[] command = RedisHelper.PackStringCommand( new string[] { "SELECT", db.ToString( ) } );
 
             OperateResult<byte[]> read = ReadFromCoreServer( command );
             if (!read.IsSuccess) return read;
