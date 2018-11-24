@@ -92,9 +92,9 @@
             this.日志ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.verisonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
+            this.button43 = new System.Windows.Forms.Button();
             this.button42 = new System.Windows.Forms.Button();
             this.button40 = new System.Windows.Forms.Button();
-            this.button43 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -821,6 +821,17 @@
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Redis";
             // 
+            // button43
+            // 
+            this.button43.Location = new System.Drawing.Point(19, 102);
+            this.button43.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.button43.Name = "button43";
+            this.button43.Size = new System.Drawing.Size(150, 32);
+            this.button43.TabIndex = 2;
+            this.button43.Text = "Redis Subscribe";
+            this.button43.UseVisualStyleBackColor = true;
+            this.button43.Click += new System.EventHandler(this.button43_Click);
+            // 
             // button42
             // 
             this.button42.Location = new System.Drawing.Point(19, 64);
@@ -842,17 +853,6 @@
             this.button40.Text = "RedisClient";
             this.button40.UseVisualStyleBackColor = true;
             this.button40.Click += new System.EventHandler(this.button40_Click);
-            // 
-            // button43
-            // 
-            this.button43.Location = new System.Drawing.Point(19, 102);
-            this.button43.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.button43.Name = "button43";
-            this.button43.Size = new System.Drawing.Size(150, 32);
-            this.button43.TabIndex = 2;
-            this.button43.Text = "Redis Subscribe";
-            this.button43.UseVisualStyleBackColor = true;
-            this.button43.Click += new System.EventHandler(this.button43_Click);
             // 
             // FormLoad
             // 
@@ -880,6 +880,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "HslCommunication Test Tools";
             this.Load += new System.EventHandler(this.FormLoad_Load);
+            this.Shown += new System.EventHandler(this.FormLoad_Shown);
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);

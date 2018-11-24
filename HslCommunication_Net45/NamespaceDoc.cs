@@ -506,6 +506,13 @@ namespace HslCommunication
     ///             <item>正式发布redis客户端，支持一些常用的操作，并提供一个浏览器。博客：https://www.cnblogs.com/dathlin/p/9998013.html </item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-11-24" version="5.6.2" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>曲线控件的曲线支持隐藏其中的一条或是多条曲线，可以用来实现手动选择显示曲线的功能。</item>
+    ///             <item>Redis功能块代码优化，支持通知服务器进行数据快照保存，包括同步异步。</item>
+    ///             <item>Redis新增订阅客户端类，可以实现订阅一个或是多个频道数据。</item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc

@@ -681,5 +681,41 @@ namespace HslCommunicationDemo
             System.Threading.Thread.Sleep( 200 );
             Show( );
         }
+
+        private void FormLoad_Shown( object sender, EventArgs e )
+        {
+            System.Threading.ThreadPool.QueueUserWorkItem( new System.Threading.WaitCallback( ThreadPoolCheckVersion ), null );
+        }
+
+        private void ThreadPoolCheckVersion(object obj )
+        {
+            System.Threading.Thread.Sleep( 100 );
+            HslCommunication.Enthernet.NetSimplifyClient simplifyClient = new HslCommunication.Enthernet.NetSimplifyClient( "118.24.36.220", 18467 );
+            HslCommunication.OperateResult<string> read = simplifyClient.ReadFromServer( 1, "" );
+            if (read.IsSuccess)
+            {
+                HslCommunication.BasicFramework.SystemVersion version = new HslCommunication.BasicFramework.SystemVersion( read.Content );
+                if (version > HslCommunication.BasicFramework.SoftBasic.FrameworkVersion)
+                {
+                    // 有更新
+                    Invoke( new Action( ( ) =>
+                     {
+                         if(MessageBox.Show("服务器有新版本："+ read.Content + Environment.NewLine + "是否启动更新？", "检测到更新", MessageBoxButtons.YesNo ) == DialogResult.Yes)
+                         {
+                             try
+                             {
+                                 System.Diagnostics.Process.Start( "软件自动更新.exe" );
+                                 System.Threading.Thread.Sleep( 50 );
+                                 Close( );
+                             }
+                             catch
+                             {
+                                 MessageBox.Show( "更新软件丢失，无法启动更新" );
+                             }
+                         }
+                     } ) );
+                }
+            }
+        }
     }
 }

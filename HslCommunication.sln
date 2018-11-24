@@ -55,6 +55,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunication_Net45.Test
 		{7F8029DA-1B94-4B1D-B91F-5B21DBF2F3A2} = {7F8029DA-1B94-4B1D-B91F-5B21DBF2F3A2}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoUpdateServer", "TestProject\DemoUpdateServer\DemoUpdateServer.csproj", "{E3BB7EEC-E242-4CFB-8C2F-8CF9F25D3F0C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7F8029DA-1B94-4B1D-B91F-5B21DBF2F3A2} = {7F8029DA-1B94-4B1D-B91F-5B21DBF2F3A2}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +118,10 @@ Global
 		{0C8C2401-5643-43E8-9725-29A5DD33EBCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C8C2401-5643-43E8-9725-29A5DD33EBCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C8C2401-5643-43E8-9725-29A5DD33EBCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3BB7EEC-E242-4CFB-8C2F-8CF9F25D3F0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3BB7EEC-E242-4CFB-8C2F-8CF9F25D3F0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3BB7EEC-E242-4CFB-8C2F-8CF9F25D3F0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3BB7EEC-E242-4CFB-8C2F-8CF9F25D3F0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -126,6 +135,7 @@ Global
 		{8E94BA91-5ACB-4C89-9279-BE6A06DA1859} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 		{5DC89157-35FC-4A71-96B1-19FFF54DEDA8} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 		{BE120537-35F6-43E1-92F6-CCD37CA5B4F1} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
+		{E3BB7EEC-E242-4CFB-8C2F-8CF9F25D3F0C} = {C21F81D5-E4E2-470C-8208-518ADF28F364}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ECF517CD-FF89-4611-A2F7-AB7771FCC542}
