@@ -269,6 +269,10 @@ namespace HslCommunicationDemo.Redis
                     MessageBox.Show( read.Message );
                 }
             }
+            else if( e.Node.ImageKey == "Class_489")
+            {
+
+            }
             else
             {
                 MessageBox.Show( "Not supported" );
