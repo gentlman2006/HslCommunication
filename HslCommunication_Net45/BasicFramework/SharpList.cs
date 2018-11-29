@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using HslCommunication.Core;
 
-namespace HslCommunication.Algorithms
+namespace HslCommunication.BasicFramework
 {
     /// <summary>
     /// 一个高效的数组管理类，用于高效控制固定长度的数组实现
@@ -14,6 +14,11 @@ namespace HslCommunication.Algorithms
     {
         #region Constructor
 
+        /// <summary>
+        /// 实例化一个对象，需要指定数组的最大数据对象
+        /// </summary>
+        /// <param name="count">数据的个数</param>
+        /// <param name="appendLast">是否从最后一个数添加</param>
         public SharpList( int count, bool appendLast = false )
         {
             if (count > 8192)
@@ -24,7 +29,7 @@ namespace HslCommunication.Algorithms
             array = new T[capacity + count];
             hybirdLock = new SimpleHybirdLock( );
             this.count = count;
-            if (appendLast) this.lastIndex = count - 1;
+            if (appendLast) this.lastIndex = count;
         }
 
         #endregion
@@ -54,7 +59,7 @@ namespace HslCommunication.Algorithms
         {
             hybirdLock.Enter( );
 
-            if(lastIndex < (capacity + count - 1))
+            if(lastIndex < (capacity + count))
             {
                 array[lastIndex++] = value;
             }
@@ -64,11 +69,16 @@ namespace HslCommunication.Algorithms
                 T[] buffer = new T[capacity + count];
                 Array.Copy( array, capacity, buffer, 0, count );
                 array = buffer;
+                lastIndex = count;
             }
 
             hybirdLock.Leave( );
         }
 
+        /// <summary>
+        /// 批量的增加数据
+        /// </summary>
+        /// <param name="values">批量数据信息</param>
         public void Add( IEnumerable<T> values )
         {
             foreach(var m in values)
@@ -86,14 +96,15 @@ namespace HslCommunication.Algorithms
             T[] result = null;
             hybirdLock.Enter( );
 
-            result = new T[count];
             if (lastIndex < count)
             {
-                Array.Copy( array, 0, result, 0, lastIndex + 1 );
+                result = new T[lastIndex];
+                Array.Copy( array, 0, result, 0, lastIndex );
             }
             else
             {
-                Array.Copy( array, lastIndex - count + 1, result, 0, count );
+                result = new T[count];
+                Array.Copy( array, lastIndex - count, result, 0, count );
             }
             hybirdLock.Leave( );
             return result;
@@ -119,7 +130,7 @@ namespace HslCommunication.Algorithms
                 }
                 else
                 {
-                    tmp = array[index + lastIndex - count + 1];
+                    tmp = array[index + lastIndex - count];
                 }
 
                 hybirdLock.Leave( );
@@ -137,7 +148,7 @@ namespace HslCommunication.Algorithms
                 }
                 else
                 {
-                    array[index + lastIndex - count + 1] = value;
+                    array[index + lastIndex - count] = value;
                 }
 
                 hybirdLock.Leave( );

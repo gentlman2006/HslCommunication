@@ -53,7 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Algorithms\SharpList.cs" />
+    <Compile Include="BasicFramework\SharpList.cs" />
     <Compile Include="Algorithms\ConnectPool\ConnectPool.cs" />
     <Compile Include="Algorithms\ConnectPool\IConnector.cs" />
     <Compile Include="Algorithms\Fourier\FFTHelper.cs" />

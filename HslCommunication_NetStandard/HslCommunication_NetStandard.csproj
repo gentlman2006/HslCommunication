@@ -34,6 +34,7 @@
     <Compile Include="..\HslCommunication_Net45\Algorithms\ConnectPool\ConnectPool.cs" Link="Algorithms\ConnectPool\ConnectPool.cs" />
     <Compile Include="..\HslCommunication_Net45\Algorithms\ConnectPool\IConnector.cs" Link="Algorithms\ConnectPool\IConnector.cs" />
     <Compile Include="..\HslCommunication_Net45\Algorithms\Fourier\FFTHelper.cs" Link="Algorithms\Fourier\FFTHelper.cs" />
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SharpList.cs" Link="BasicFramework\SharpList.cs" />
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftBaseClass.cs" Link="BasicFramework\SoftBaseClass.cs" />
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftBasic.cs" Link="BasicFramework\SoftBasic.cs" />
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftBuffer.cs" Link="BasicFramework\SoftBuffer.cs" />

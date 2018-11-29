@@ -14,7 +14,6 @@ namespace HslCommunication.Serial
     /// </summary>
     public class SerialBase
     {
-
         #region Constructor
 
         /// <summary>
@@ -23,8 +22,6 @@ namespace HslCommunication.Serial
         public SerialBase( )
         {
             SP_ReadData = new SerialPort( );
-            resetEvent = new AutoResetEvent( false );
-            buffer = new byte[4096];
             hybirdLock = new SimpleHybirdLock( );
         }
 
@@ -54,7 +51,7 @@ namespace HslCommunication.Serial
             SP_ReadData.Parity = Parity.None;
 
 
-            SP_ReadData.DataReceived += SP_ReadData_DataReceived;
+            //SP_ReadData.DataReceived += SP_ReadData_DataReceived;
         }
 
         /// <summary>
@@ -81,7 +78,7 @@ namespace HslCommunication.Serial
             initi.Invoke( SP_ReadData );
 
 
-            SP_ReadData.DataReceived += SP_ReadData_DataReceived;
+            //SP_ReadData.DataReceived += SP_ReadData_DataReceived;
         }
 
 
@@ -127,54 +124,19 @@ namespace HslCommunication.Serial
         /// <returns>带接收字节的结果对象</returns>
         public OperateResult<byte[]> ReadBase(byte[] send)
         {
-            OperateResult<byte[]> result = null;
-
             hybirdLock.Enter( );
 
-            try
-            {
-                isReceiveTimeout = false;                         // 是否接收超时的标志位
-                isReceiveComplete = false;                        // 是否接收完成的标志位
-                isComError = false;                               // 是否异常的标志
-                ComErrorMsg = string.Empty;
-                if (send == null) send = new byte[0];
-
-                SP_ReadData.Write( send, 0, send.Length );
-                ThreadPool.QueueUserWorkItem( new WaitCallback( CheckReceiveTimeout ), null );
-                resetEvent.WaitOne( );
-                isReceiveComplete = true;
-
-                if (isComError)
-                {
-                    result = new OperateResult<byte[]>( ComErrorMsg );
-                }
-                else if (isReceiveTimeout)
-                {
-                    result = new OperateResult<byte[]>( StringResources.Language.ReceiveDataTimeout + ReceiveTimeout );
-                }
-                else
-                {
-                    byte[] tmp = new byte[receiveCount];
-                    Array.Copy( buffer, 0, tmp, 0, tmp.Length );
-
-                    result = OperateResult.CreateSuccessResult( tmp );
-                }
-            }
-            catch(Exception ex)
-            {
-                logNet?.WriteException( ToString( ), ex );
-                result = new OperateResult<byte[]>( )
-                {
-                    Message = ex.Message
-                };
-            }
-            finally
+            OperateResult sendResult = SPSend( SP_ReadData, send );
+            if (!sendResult.IsSuccess)
             {
                 hybirdLock.Leave( );
+                return OperateResult.CreateFailedResult<byte[]>( sendResult );
             }
 
-            receiveCount = 0;
-            return result;
+            OperateResult<byte[]> receiveResult = SPReceived( SP_ReadData, true );
+            hybirdLock.Leave( );
+
+            return receiveResult;
         }
 
         #endregion
@@ -216,56 +178,87 @@ namespace HslCommunication.Serial
         #endregion
 
         #region Private Method
-
-
-        private void CheckReceiveTimeout( object obj )
+        
+        /// <summary>
+        /// 发送数据到串口里去
+        /// </summary>
+        /// <param name="serialPort">串口对象</param>
+        /// <param name="data">字节数据</param>
+        /// <returns>是否发送成功</returns>
+        protected virtual OperateResult SPSend( SerialPort serialPort, byte[] data )
         {
-            int receiveTimes = 0;
-            while (!isReceiveComplete)
+            if (data != null && data.Length > 0)
             {
-                Thread.Sleep( 100 );
-                receiveTimes += 100;
-
-                if(receiveTimes >= receiveTimeout)
+                try
                 {
-                    if (!isReceiveComplete)
-                    {
-                        // 超时退出
-                        isReceiveTimeout = true;
-                        resetEvent.Set( );
-                        break;
-                    }
+                    serialPort.Write( data, 0, data.Length );
+                    return OperateResult.CreateSuccessResult( );
                 }
+                catch(Exception ex)
+                {
+                    return new OperateResult( ex.Message );
+                }
+            }
+            else
+            {
+                return OperateResult.CreateSuccessResult( );
             }
         }
 
         /// <summary>
-        /// 串口数据接收的回调方法
+        /// 从串口接收一串数据信息，可以指定是否一定要接收到数据
         /// </summary>
-        /// <param name="sender">数据发送</param>
-        /// <param name="e">消息</param>
-        protected virtual void SP_ReadData_DataReceived( object sender, SerialDataReceivedEventArgs e )
+        /// <param name="serialPort">串口对象</param>
+        /// <param name="awaitData">是否必须要等待数据返回</param>
+        /// <returns>结果数据对象</returns>
+        protected virtual OperateResult<byte[]> SPReceived( SerialPort serialPort, bool awaitData )
         {
+            byte[] buffer = new byte[1024];
+            System.IO.MemoryStream ms = new System.IO.MemoryStream( );
+            DateTime start = DateTime.Now;                                  // 开始时间，用于确认是否超时的信息
             while (true)
             {
-                Thread.Sleep( 20 );
-
+                Thread.Sleep( sleepTime );
                 try
                 {
-                    if (SP_ReadData.BytesToRead < 1) break;
+                    if (serialPort.BytesToRead < 1)
+                    {
+                        if ((DateTime.Now - start).TotalMilliseconds > ReceiveTimeout)
+                        {
+                            ms.Dispose( );
+                            return new OperateResult<byte[]>( $"Time out: {ReceiveTimeout}" );
+                        }
+                        else if (ms.Length > 0)
+                        {
+                            break;
+                        }
+                        else if (awaitData)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
                     // 继续接收数据
-                    receiveCount += SP_ReadData.Read( buffer, receiveCount, SP_ReadData.BytesToRead );
+                    int sp_receive = serialPort.Read( buffer, 0, buffer.Length );
+                    ms.Write( buffer, 0, sp_receive );
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    isComError = true;
-                    ComErrorMsg = ex.Message;
-                    break;
+                    ms.Dispose( );
+                    return new OperateResult<byte[]>( ex.Message );
                 }
             }
-            resetEvent.Set( );
-        }
 
+            //resetEvent.Set( );
+            byte[] result = ms.ToArray( );
+            ms.Dispose( );
+            return OperateResult.CreateSuccessResult( result );
+        }
+        
         #endregion
 
         #region Object Override
@@ -293,7 +286,7 @@ namespace HslCommunication.Serial
         }
 
         /// <summary>
-        /// 接收数据的超时时间
+        /// 接收数据的超时时间，默认5000ms
         /// </summary>
         public int ReceiveTimeout
         {
@@ -301,39 +294,25 @@ namespace HslCommunication.Serial
             set { receiveTimeout = value; }
         }
 
+        /// <summary>
+        /// 连续串口缓冲数据检测的间隔时间，默认20ms
+        /// </summary>
+        public int SleepTime
+        {
+            get { return sleepTime; }
+            set { if (value > 0) sleepTime = value; }
+        }
+
         #endregion
 
         #region Private Member
 
-        /// <summary>
-        /// 串口交互的核心
-        /// </summary>
-        protected SerialPort SP_ReadData = null;                  // 串口交互的核心
-        /// <summary>
-        /// 消息同步机制
-        /// </summary>
-        protected AutoResetEvent resetEvent = null;               // 消息同步机制
-        /// <summary>
-        /// 接收缓冲区
-        /// </summary>
-        protected readonly byte[] buffer = null;                  // 接收缓冲区
-        /// <summary>
-        /// 接收的数据长度
-        /// </summary>
-        protected int receiveCount = 0;                           // 接收的数据长度
-        /// <summary>
-        /// 当前的COM组件是否发生了异常
-        /// </summary>
-        protected bool isComError = false;                        // 当前的COM组件是否发生了异常
-        /// <summary>
-        /// 当前的COM组件异常的消息
-        /// </summary>
-        protected string ComErrorMsg = string.Empty;              // 当前的COM组件异常的消息
+        
+        private SerialPort SP_ReadData = null;                    // 串口交互的核心
         private SimpleHybirdLock hybirdLock;                      // 数据交互的锁
         private ILogNet logNet;                                   // 日志存储
         private int receiveTimeout = 5000;                        // 接收数据的超时时间
-        private bool isReceiveTimeout = false;                    // 是否接收数据超时
-        private bool isReceiveComplete = false;                   // 是否接收数据完成
+        private int sleepTime = 20;                               // 睡眠的时间
 
         #endregion
     }

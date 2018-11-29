@@ -96,6 +96,9 @@
       <Link>BasicFramework\FormSupport.designer.cs</Link>
       <DependentUpon>FormSupport.cs</DependentUpon>
     </Compile>
+    <Compile Include="..\HslCommunication_Net45\BasicFramework\SharpList.cs">
+      <Link>BasicFramework\SharpList.cs</Link>
+    </Compile>
     <Compile Include="..\HslCommunication_Net45\BasicFramework\SoftAnimation.cs">
       <Link>BasicFramework\SoftAnimation.cs</Link>
     </Compile>
