@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using HslCommunication;
+using System.Net.Http;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace DemoUpdateServer
 {
@@ -32,6 +35,9 @@ namespace DemoUpdateServer
             {
                 Directory.CreateDirectory( Application.StartupPath + @"\Demo" );
             }
+
+            lognet = new HslCommunication.LogNet.LogNetSingle( "logs.txt" );
+            lognet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
         }
 
         private void button1_Click( object sender, EventArgs e )
@@ -43,6 +49,8 @@ namespace DemoUpdateServer
         }
 
         private HslCommunication.BasicFramework.SystemVersion version = new HslCommunication.BasicFramework.SystemVersion( "1.0.1" );
+        private HslCommunication.LogNet.ILogNet lognet;
+        private Random random = new Random( );
 
         #region 同步网络中心，用来请求版本号信息
 
@@ -60,6 +68,12 @@ namespace DemoUpdateServer
             if(handle == 1)
             {
                 simplifyServer.SendMessage( arg1, handle, version.ToString( ) );
+                string address = GetAddressByIp( arg1.IpAddress );
+                lognet.WriteInfo( $"{arg1.IpAddress.PadRight( 15 )} [{address}] Run Application" );
+            }
+            else if(handle == 2)
+            {
+                simplifyServer.SendMessage( arg1, random.Next( 10000 ), "这是一条测试的数据：" + random.Next( 10000 ).ToString( ) );
             }
             else
             {
@@ -78,8 +92,7 @@ namespace DemoUpdateServer
         {
             softUpdateServer = new HslCommunication.Enthernet.NetSoftUpdateServer( );
             softUpdateServer.FileUpdatePath = Application.StartupPath + @"\Demo";
-            softUpdateServer.LogNet = new HslCommunication.LogNet.LogNetSingle( "logs.txt" );
-            softUpdateServer.LogNet.BeforeSaveToFile += LogNet_BeforeSaveToFile;
+            softUpdateServer.LogNet = lognet;
             softUpdateServer.ServerStart( 18468 );
         }
 
@@ -87,7 +100,10 @@ namespace DemoUpdateServer
         {
             Invoke( new Action( ( ) =>
              {
-                 textBox2.AppendText( e.HslMessage.ToString( ) + Environment.NewLine );
+                 if (e.HslMessage.Degree != HslCommunication.LogNet.HslMessageDegree.FATAL)
+                 {
+                     textBox2.AppendText( e.HslMessage.ToString( ) + Environment.NewLine );
+                 }
              } ) );
         }
 
@@ -97,6 +113,45 @@ namespace DemoUpdateServer
         {
             NetStart( );
             NetStart2( );
+        }
+
+        private void button2_Click( object sender, EventArgs e )
+        {
+            MessageBox.Show( GetAddressByIp( "47.92.5.140" ) );
+        }
+
+        private string GetAddressByIp(string ip )
+        {
+            try
+            {
+                WebClient webClient = new WebClient( );
+
+                webClient.Encoding = Encoding.UTF8;
+                webClient.Headers.Add( "Accept", "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*" );
+                webClient.Headers.Add( "Accept-Language", "zh-cn" );//ja-jp
+                webClient.Headers.Add( "User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71" );
+                webClient.Headers.Add( "Content-Type", "text/html" );
+                webClient.Headers.Add( "Content-Type", "image/jpeg" );
+                //webClient.Headers.Add("Connection", "Keep-Alive");
+                webClient.Headers.Add( "Accept-Encoding", "gzip,deflate" );
+
+                byte[] data = webClient.DownloadData( "http://www.ip138.com/ips138.asp?ip=" + ip + "&action=2" );
+                webClient.Dispose( );
+
+                string result = Encoding.Default.GetString( data );
+
+                Match match = Regex.Match( result, "<ul class=\"ul1\"><li>[^<]+" );
+                if (match == null)
+                {
+                    return string.Empty;
+                }
+
+                return match.Value.Substring( 25 );
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 }
