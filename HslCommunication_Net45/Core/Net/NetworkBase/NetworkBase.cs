@@ -145,10 +145,20 @@ namespace HslCommunication.Core.Net
         {
             if (length == 0) return OperateResult.CreateSuccessResult( new byte[0] );
 
+            //try
+            //{
+            //    return OperateResult.CreateSuccessResult( NetSupport.ReadBytesFromSocket( socket, length ) );
+            //}
+            //catch(Exception ex)
+            //{
+            //    return new OperateResult<byte[]>( ex.Message );
+            //}
+
 //#if NET35
 
             var result = new OperateResult<byte[]>( );
             var receiveDone = new ManualResetEvent( false );
+            AutoResetEvent autoReset = new AutoResetEvent( false );
             var state = new StateObject( length );
             
             try
@@ -395,7 +405,7 @@ namespace HslCommunication.Core.Net
         /// <summary>
         /// 发送数据异步返回的方法
         /// </summary>
-        /// <param name="ar"></param>
+        /// <param name="ar">异步对象</param>
         private void SendCallBack( IAsyncResult ar )
         {
             if (ar.AsyncState is StateObject state)

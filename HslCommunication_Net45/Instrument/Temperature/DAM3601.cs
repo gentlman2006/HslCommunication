@@ -24,7 +24,7 @@ namespace HslCommunication.Instrument.Temperature
         /// </summary>
         public DAM3601( ) : base( )
         {
-            
+            SleepTime = 200;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace HslCommunication.Instrument.Temperature
         /// <param name="station">站号信息</param>
         public DAM3601( byte station ) : base( station )
         {
-
+            SleepTime = 200;
         }
 
         #endregion
@@ -93,39 +93,7 @@ namespace HslCommunication.Instrument.Temperature
 
             return ReadModBusBase( analysis.Content, length );
         }
-
-        /// <summary>
-        /// 重写的数据接收方法，需要连续接收，直到CRC校验成功或是超时，接收时间会比较久
-        /// </summary>
-        /// <param name="sender">串口对象</param>
-        /// <param name="e">串口的数据对象</param>
-        protected override void SP_ReadData_DataReceived( object sender, SerialDataReceivedEventArgs e )
-        {
-            while (true)
-            {
-                Thread.Sleep( 40 );
-
-                try
-                {
-                    if (SP_ReadData.BytesToRead < 1) continue;
-                    // 继续接收数据
-                    receiveCount += SP_ReadData.Read( buffer, receiveCount, SP_ReadData.BytesToRead );
-
-                    // CRC校验成功及退出
-                    byte[] data = new byte[receiveCount];
-                    Array.Copy( buffer, 0, data, 0, receiveCount );
-                    if (SoftCRC16.CheckCRC16( data )) break;
-                }
-                catch(Exception ex)
-                {
-                    isComError = true;
-                    ComErrorMsg = ex.Message;
-                    break;
-                }
-            }
-            resetEvent.Set( );
-        }
-
+        
         #endregion
 
         #region Object Override
@@ -140,6 +108,5 @@ namespace HslCommunication.Instrument.Temperature
         }
 
         #endregion
-
     }
 }
