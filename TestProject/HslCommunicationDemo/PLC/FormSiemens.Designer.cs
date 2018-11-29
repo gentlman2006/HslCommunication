@@ -50,6 +50,7 @@
             this.label17 = new System.Windows.Forms.Label();
             this.textBox12 = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.userCurve1 = new HslCommunication.Controls.UserCurve();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.textBox11 = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
@@ -66,6 +67,9 @@
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.label19 = new System.Windows.Forms.Label();
             this.button14 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
@@ -105,10 +109,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.userCurve1 = new HslCommunication.Controls.UserCurve();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -148,9 +148,9 @@
             this.label25.ForeColor = System.Drawing.Color.Gray;
             this.label25.Location = new System.Drawing.Point(337, 33);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(98, 17);
+            this.label25.Size = new System.Drawing.Size(110, 17);
             this.label25.TabIndex = 12;
-            this.label25.Text = "Only for s7-400";
+            this.label25.Text = "Not s7-200 smart";
             // 
             // textBox16
             // 
@@ -347,6 +347,17 @@
             this.label15.TabIndex = 4;
             this.label15.Text = "地址：";
             // 
+            // userCurve1
+            // 
+            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.userCurve1.Location = new System.Drawing.Point(13, 82);
+            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userCurve1.Name = "userCurve1";
+            this.userCurve1.Size = new System.Drawing.Size(400, 189);
+            this.userCurve1.TabIndex = 0;
+            this.userCurve1.ValueMaxLeft = 200F;
+            this.userCurve1.ValueMaxRight = 200F;
+            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.textBox11);
@@ -521,6 +532,36 @@
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "单数据写入测试";
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(13, 192);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(82, 28);
+            this.button6.TabIndex = 20;
+            this.button6.Text = "停止";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(101, 158);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(82, 28);
+            this.button5.TabIndex = 19;
+            this.button5.Text = "冷启动";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(13, 158);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(82, 28);
+            this.button4.TabIndex = 18;
+            this.button4.Text = "热启动";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // label19
             // 
@@ -912,47 +953,6 @@
             this.label20.Size = new System.Drawing.Size(108, 17);
             this.label20.TabIndex = 6;
             this.label20.Text = "作者：Richard Hu";
-            // 
-            // userCurve1
-            // 
-            this.userCurve1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.userCurve1.Location = new System.Drawing.Point(13, 82);
-            this.userCurve1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userCurve1.Name = "userCurve1";
-            this.userCurve1.Size = new System.Drawing.Size(400, 189);
-            this.userCurve1.TabIndex = 0;
-            this.userCurve1.ValueMaxLeft = 200F;
-            this.userCurve1.ValueMaxRight = 200F;
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(13, 158);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(82, 28);
-            this.button4.TabIndex = 18;
-            this.button4.Text = "热启动";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(101, 158);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(82, 28);
-            this.button5.TabIndex = 19;
-            this.button5.Text = "冷启动";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(13, 192);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(82, 28);
-            this.button6.TabIndex = 20;
-            this.button6.Text = "停止";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // FormSiemens
             // 

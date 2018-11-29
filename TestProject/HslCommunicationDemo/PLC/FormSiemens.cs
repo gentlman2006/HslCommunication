@@ -57,6 +57,21 @@ namespace HslCommunicationDemo
                 textBox15.Text = "0";
                 textBox16.Text = "3";
             }
+            else if(siemensPLCSelected == SiemensPLCS.S1200)
+            {
+                textBox15.Text = "0";
+                textBox16.Text = "0";
+            }
+            else if (siemensPLCSelected == SiemensPLCS.S300)
+            {
+                textBox15.Text = "0";
+                textBox16.Text = "2";
+            }
+            else if (siemensPLCSelected == SiemensPLCS.S1500)
+            {
+                textBox15.Text = "0";
+                textBox16.Text = "0";
+            }
         }
 
         private void Language( int language )
@@ -183,7 +198,7 @@ namespace HslCommunicationDemo
             siemensTcpNet.IpAddress = textBox1.Text;
             try
             {
-                if (siemensPLCSelected == SiemensPLCS.S400)
+                if (siemensPLCSelected != SiemensPLCS.S200Smart)
                 {
                     siemensTcpNet.Rack = byte.Parse( textBox15.Text );
                     siemensTcpNet.Slot = byte.Parse( textBox16.Text );

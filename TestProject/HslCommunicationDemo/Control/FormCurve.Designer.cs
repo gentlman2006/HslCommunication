@@ -38,6 +38,7 @@
             this.userButton7 = new HslCommunication.Controls.UserButton();
             this.userButton6 = new HslCommunication.Controls.UserButton();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.userButton1 = new HslCommunication.Controls.UserButton();
             this.SuspendLayout();
             // 
             // label11
@@ -114,7 +115,7 @@
             this.userButton8.CustomerInformation = "";
             this.userButton8.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton8.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton8.Location = new System.Drawing.Point(238, 301);
+            this.userButton8.Location = new System.Drawing.Point(216, 301);
             this.userButton8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton8.Name = "userButton8";
             this.userButton8.Size = new System.Drawing.Size(78, 25);
@@ -128,7 +129,7 @@
             this.userButton7.CustomerInformation = "";
             this.userButton7.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton7.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton7.Location = new System.Drawing.Point(322, 301);
+            this.userButton7.Location = new System.Drawing.Point(300, 301);
             this.userButton7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton7.Name = "userButton7";
             this.userButton7.Size = new System.Drawing.Size(78, 25);
@@ -142,7 +143,7 @@
             this.userButton6.CustomerInformation = "";
             this.userButton6.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.userButton6.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton6.Location = new System.Drawing.Point(154, 301);
+            this.userButton6.Location = new System.Drawing.Point(132, 301);
             this.userButton6.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userButton6.Name = "userButton6";
             this.userButton6.Size = new System.Drawing.Size(78, 25);
@@ -153,16 +154,31 @@
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.textBox1.Location = new System.Drawing.Point(65, 302);
+            this.textBox1.Location = new System.Drawing.Point(43, 302);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(83, 26);
             this.textBox1.TabIndex = 40;
+            // 
+            // userButton1
+            // 
+            this.userButton1.BackColor = System.Drawing.Color.Transparent;
+            this.userButton1.CustomerInformation = "";
+            this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton1.Location = new System.Drawing.Point(384, 301);
+            this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton1.Name = "userButton1";
+            this.userButton1.Size = new System.Drawing.Size(78, 25);
+            this.userButton1.TabIndex = 44;
+            this.userButton1.UIText = "隐藏曲线";
+            this.userButton1.Click += new System.EventHandler(this.userButton1_Click);
             // 
             // FormCurve
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1004, 645);
+            this.Controls.Add(this.userButton1);
             this.Controls.Add(this.userButton8);
             this.Controls.Add(this.userButton7);
             this.Controls.Add(this.userButton6);
@@ -196,5 +212,6 @@
         private HslCommunication.Controls.UserButton userButton7;
         private HslCommunication.Controls.UserButton userButton6;
         private System.Windows.Forms.TextBox textBox1;
+        private HslCommunication.Controls.UserButton userButton1;
     }
 }

@@ -64,7 +64,7 @@ namespace HslCommunicationDemo
                     (float)random.NextDouble()*1f+2f,
                 }
             );
-
+            userCurve2.SetCurveVisible( new string[] { "A", "B" }, isVisiable );
         }
 
 
@@ -96,6 +96,13 @@ namespace HslCommunicationDemo
             {
                 userCurve2.RemoveAuxiliary( value );
             }
+        }
+
+        private bool isVisiable = true;
+        private void userButton1_Click( object sender, EventArgs e )
+        {
+            isVisiable = !isVisiable;
+            userCurve2.SetCurveVisible( new string[] { "A", "B" }, isVisiable );
         }
     }
 }
