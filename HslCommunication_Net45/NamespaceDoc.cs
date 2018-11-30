@@ -513,6 +513,15 @@ namespace HslCommunication
     ///             <item>Redis新增订阅客户端类，可以实现订阅一个或是多个频道数据。</item>
     ///         </list>
     ///     </revision>
+    ///     <revision date="2018-11-30" version="5.6.3" author="Richard.Hu">
+    ///         <list type="bullet">
+    ///             <item>串口数据接收的底层机制重新设计。</item>
+    ///             <item>串口底层循环验证缓冲区是否有数据的间隔可更改，默认20ms。</item>
+    ///             <item>串口底层新增一个清除缓冲区数据的方法。</item>
+    ///             <item>串口底层新增一个属性，用于配置是否在每次读写前清除缓冲区的脏数据。</item>
+    ///             <item>新增了一个SharpList类，用于超高性能的管理固定长度的数组。博客：https://www.cnblogs.com/dathlin/p/10042801.html </item>
+    ///         </list>
+    ///     </revision>
     /// </revisionHistory>
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute( )]
     public class NamespaceDoc
