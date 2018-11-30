@@ -285,6 +285,8 @@ namespace HslCommunication.ModBus
             // 发生了错误
             if ((send[1] + 0x80) == result.Content[1]) return new OperateResult<byte[]>( result.Content[2], ModbusInfo.GetDescriptionByErrorCode( result.Content[2] ) );
 
+            if (send[1] != result.Content[1]) return new OperateResult<byte[]>( result.Content[1], $"Receive Command Check Failed: " );
+
             // 移除CRC校验
             byte[] buffer = new byte[result.Content.Length - 2];
             Array.Copy( result.Content, 0, buffer, 0, buffer.Length );

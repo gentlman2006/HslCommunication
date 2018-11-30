@@ -126,6 +126,8 @@ namespace HslCommunication.Serial
         {
             hybirdLock.Enter( );
 
+            if (IsClearCacheBeforeRead) ClearSerialCache( );
+
             OperateResult sendResult = SPSend( SP_ReadData, send );
             if (!sendResult.IsSuccess)
             {
@@ -137,6 +139,15 @@ namespace HslCommunication.Serial
             hybirdLock.Leave( );
 
             return receiveResult;
+        }
+
+        /// <summary>
+        /// 清除串口缓冲区的数据，并返回该数据，如果缓冲区没有数据，返回的字节数组长度为0
+        /// </summary>
+        /// <returns>是否操作成功的方法</returns>
+        public OperateResult<byte[]> ClearSerialCache( )
+        {
+            return SPReceived( SP_ReadData, false );
         }
 
         #endregion
@@ -303,16 +314,26 @@ namespace HslCommunication.Serial
             set { if (value > 0) sleepTime = value; }
         }
 
+        /// <summary>
+        /// 是否在发送数据前清空缓冲数据。
+        /// </summary>
+        public bool IsClearCacheBeforeRead
+        {
+            get { return isClearCacheBeforeRead; }
+            set { isClearCacheBeforeRead = value; }
+        }
+
         #endregion
 
         #region Private Member
 
-        
+
         private SerialPort SP_ReadData = null;                    // 串口交互的核心
         private SimpleHybirdLock hybirdLock;                      // 数据交互的锁
         private ILogNet logNet;                                   // 日志存储
         private int receiveTimeout = 5000;                        // 接收数据的超时时间
         private int sleepTime = 20;                               // 睡眠的时间
+        private bool isClearCacheBeforeRead = false;              // 是否在发送前清除缓冲
 
         #endregion
     }

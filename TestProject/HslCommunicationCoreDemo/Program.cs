@@ -9,6 +9,7 @@ using HslCommunication.Enthernet;
 using HslCommunication.Enthernet.Redis;
 using HslCommunication.BasicFramework;
 using HslCommunication.Core;
+using System.Collections.Generic;
 
 namespace HslCommunicationCoreDemo
 {
@@ -71,7 +72,7 @@ namespace HslCommunicationCoreDemo
 
             int[] buffer = new int[1000];
             DateTime start = DateTime.Now;
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 1000000; i++)
             {
                 hybirdLock.Enter( );
 
@@ -90,7 +91,7 @@ namespace HslCommunicationCoreDemo
 
 
             start = DateTime.Now;
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 1000000; i++)
             {
                 hybirdLock.Enter( );
 
@@ -105,9 +106,24 @@ namespace HslCommunicationCoreDemo
             Console.WriteLine( (DateTime.Now - start).TotalMilliseconds );
 
 
+            List<int> list = new List<int>( buffer );
+            start = DateTime.Now;
+            for (int i = 0; i < 1000000; i++)
+            {
+                hybirdLock.Enter( );
+
+                list.Add( i );
+                list.RemoveAt( 0 );
+
+                hybirdLock.Leave( );
+            }
+
+            Console.WriteLine( (DateTime.Now - start).TotalMilliseconds );
+
+
             SharpList<int> sharpList = new SharpList<int>( 1000, true );
             start = DateTime.Now;
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 1000000; i++)
             {
                 sharpList.Add( i );
             }
