@@ -235,6 +235,7 @@
             // userDrum1
             // 
             this.userDrum1.BackColor = System.Drawing.Color.Transparent;
+            this.userDrum1.BorderColor = System.Drawing.Color.Red;
             this.userDrum1.DrumBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.userDrum1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.userDrum1.Location = new System.Drawing.Point(26, 22);
@@ -242,6 +243,7 @@
             this.userDrum1.Name = "userDrum1";
             this.userDrum1.Size = new System.Drawing.Size(149, 223);
             this.userDrum1.TabIndex = 35;
+            this.userDrum1.Text = "userDrum1";
             // 
             // label10
             // 

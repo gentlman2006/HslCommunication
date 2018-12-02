@@ -12,6 +12,8 @@ namespace HslCommunication.Controls
     /// <summary>
     /// 一个罐子形状的控件
     /// </summary>
+    [DefaultBindingProperty( "Text" )]
+    [DefaultProperty( "Text" )]
     public partial class UserDrum : UserControl
     {
         #region Constructor
@@ -77,11 +79,13 @@ namespace HslCommunication.Controls
         /// 获取或设置显示的文本信息
         /// </summary>
         [Browsable( true )]
-        [DefaultValue( "" )]
         [Category( "外观" )]
+        [EditorBrowsable( EditorBrowsableState.Always )]
+        [Bindable( true )]
+        [DesignerSerializationVisibility( DesignerSerializationVisibility.Visible )]
         public override string Text
         {
-            get { return text; }
+            get { return this.text; }
             set
             {
                 this.text = value;
