@@ -158,7 +158,6 @@ namespace HslCommunication.Core.Net
 
             var result = new OperateResult<byte[]>( );
             var receiveDone = new ManualResetEvent( false );
-            AutoResetEvent autoReset = new AutoResetEvent( false );
             var state = new StateObject( length );
             
             try
