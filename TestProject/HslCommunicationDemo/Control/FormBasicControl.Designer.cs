@@ -34,29 +34,18 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.userButton1 = new HslCommunication.Controls.UserButton();
-            this.userButton2 = new HslCommunication.Controls.UserButton();
-            this.userButton3 = new HslCommunication.Controls.UserButton();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
-            this.userLantern3 = new HslCommunication.Controls.UserLantern();
-            this.userLantern1 = new HslCommunication.Controls.UserLantern();
-            this.userLantern2 = new HslCommunication.Controls.UserLantern();
             this.label5 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.userDrum1 = new HslCommunication.Controls.UserDrum();
             this.label10 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.userClock1 = new HslCommunication.Controls.UserClock();
             this.label9 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.userBottle1 = new HslCommunication.Controls.UserBottle();
-            this.userSwitch1 = new HslCommunication.Controls.UserSwitch();
-            this.userSwitch2 = new HslCommunication.Controls.UserSwitch();
             this.label6 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.userVerticalProgress8 = new HslCommunication.Controls.UserVerticalProgress();
             this.label7 = new System.Windows.Forms.Label();
+            this.userVerticalProgress8 = new HslCommunication.Controls.UserVerticalProgress();
             this.userVerticalProgress7 = new HslCommunication.Controls.UserVerticalProgress();
             this.userVerticalProgress1 = new HslCommunication.Controls.UserVerticalProgress();
             this.userVerticalProgress2 = new HslCommunication.Controls.UserVerticalProgress();
@@ -64,6 +53,17 @@
             this.userVerticalProgress3 = new HslCommunication.Controls.UserVerticalProgress();
             this.userVerticalProgress5 = new HslCommunication.Controls.UserVerticalProgress();
             this.userVerticalProgress4 = new HslCommunication.Controls.UserVerticalProgress();
+            this.userBottle1 = new HslCommunication.Controls.UserBottle();
+            this.userSwitch1 = new HslCommunication.Controls.UserSwitch();
+            this.userSwitch2 = new HslCommunication.Controls.UserSwitch();
+            this.userDrum1 = new HslCommunication.Controls.UserDrum();
+            this.userClock1 = new HslCommunication.Controls.UserClock();
+            this.userLantern3 = new HslCommunication.Controls.UserLantern();
+            this.userLantern1 = new HslCommunication.Controls.UserLantern();
+            this.userLantern2 = new HslCommunication.Controls.UserLantern();
+            this.userButton1 = new HslCommunication.Controls.UserButton();
+            this.userButton2 = new HslCommunication.Controls.UserButton();
+            this.userButton3 = new HslCommunication.Controls.UserButton();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -121,44 +121,6 @@
             this.panel1.Size = new System.Drawing.Size(533, 99);
             this.panel1.TabIndex = 28;
             // 
-            // userButton1
-            // 
-            this.userButton1.BackColor = System.Drawing.Color.Transparent;
-            this.userButton1.CustomerInformation = "";
-            this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton1.Location = new System.Drawing.Point(15, 18);
-            this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton1.Name = "userButton1";
-            this.userButton1.Size = new System.Drawing.Size(118, 39);
-            this.userButton1.TabIndex = 6;
-            // 
-            // userButton2
-            // 
-            this.userButton2.BackColor = System.Drawing.Color.Transparent;
-            this.userButton2.CustomerInformation = "";
-            this.userButton2.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton2.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton2.Location = new System.Drawing.Point(139, 18);
-            this.userButton2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton2.Name = "userButton2";
-            this.userButton2.Selected = true;
-            this.userButton2.Size = new System.Drawing.Size(131, 39);
-            this.userButton2.TabIndex = 7;
-            // 
-            // userButton3
-            // 
-            this.userButton3.BackColor = System.Drawing.Color.Transparent;
-            this.userButton3.CustomerInformation = "";
-            this.userButton3.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.userButton3.Enabled = false;
-            this.userButton3.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.userButton3.Location = new System.Drawing.Point(276, 19);
-            this.userButton3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userButton3.Name = "userButton3";
-            this.userButton3.Size = new System.Drawing.Size(131, 39);
-            this.userButton3.TabIndex = 8;
-            // 
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -180,35 +142,6 @@
             this.label4.Size = new System.Drawing.Size(32, 17);
             this.label4.TabIndex = 29;
             this.label4.Text = "闪烁";
-            // 
-            // userLantern3
-            // 
-            this.userLantern3.BackColor = System.Drawing.Color.Transparent;
-            this.userLantern3.LanternBackground = System.Drawing.Color.Tomato;
-            this.userLantern3.Location = new System.Drawing.Point(280, 18);
-            this.userLantern3.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.userLantern3.Name = "userLantern3";
-            this.userLantern3.Size = new System.Drawing.Size(143, 135);
-            this.userLantern3.TabIndex = 28;
-            // 
-            // userLantern1
-            // 
-            this.userLantern1.BackColor = System.Drawing.Color.Transparent;
-            this.userLantern1.Location = new System.Drawing.Point(3, 4);
-            this.userLantern1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userLantern1.Name = "userLantern1";
-            this.userLantern1.Size = new System.Drawing.Size(142, 152);
-            this.userLantern1.TabIndex = 25;
-            // 
-            // userLantern2
-            // 
-            this.userLantern2.BackColor = System.Drawing.Color.Transparent;
-            this.userLantern2.LanternBackground = System.Drawing.Color.Tomato;
-            this.userLantern2.Location = new System.Drawing.Point(165, 18);
-            this.userLantern2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userLantern2.Name = "userLantern2";
-            this.userLantern2.Size = new System.Drawing.Size(100, 101);
-            this.userLantern2.TabIndex = 26;
             // 
             // label5
             // 
@@ -232,19 +165,6 @@
             this.panel3.Size = new System.Drawing.Size(436, 394);
             this.panel3.TabIndex = 32;
             // 
-            // userDrum1
-            // 
-            this.userDrum1.BackColor = System.Drawing.Color.Transparent;
-            this.userDrum1.BorderColor = System.Drawing.Color.Red;
-            this.userDrum1.DrumBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.userDrum1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userDrum1.Location = new System.Drawing.Point(26, 22);
-            this.userDrum1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userDrum1.Name = "userDrum1";
-            this.userDrum1.Size = new System.Drawing.Size(149, 223);
-            this.userDrum1.TabIndex = 35;
-            this.userDrum1.Text = "userDrum1";
-            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -263,16 +183,6 @@
             this.button1.Text = "右下角弹窗";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // userClock1
-            // 
-            this.userClock1.BackColor = System.Drawing.Color.Transparent;
-            this.userClock1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("userClock1.BackgroundImage")));
-            this.userClock1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userClock1.Location = new System.Drawing.Point(187, 3);
-            this.userClock1.Name = "userClock1";
-            this.userClock1.Size = new System.Drawing.Size(236, 259);
-            this.userClock1.TabIndex = 30;
             // 
             // label9
             // 
@@ -295,50 +205,6 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(536, 236);
             this.panel4.TabIndex = 36;
-            // 
-            // userBottle1
-            // 
-            this.userBottle1.BackColor = System.Drawing.Color.Transparent;
-            this.userBottle1.BottleTag = "1#";
-            this.userBottle1.HeadTag = "1#";
-            this.userBottle1.IsOpen = true;
-            this.userBottle1.Location = new System.Drawing.Point(442, 17);
-            this.userBottle1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userBottle1.Name = "userBottle1";
-            this.userBottle1.Size = new System.Drawing.Size(45, 180);
-            this.userBottle1.TabIndex = 36;
-            this.userBottle1.Value = 20D;
-            // 
-            // userSwitch1
-            // 
-            this.userSwitch1.BackColor = System.Drawing.Color.Transparent;
-            this.userSwitch1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.userSwitch1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userSwitch1.Location = new System.Drawing.Point(34, 17);
-            this.userSwitch1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userSwitch1.Name = "userSwitch1";
-            this.userSwitch1.Size = new System.Drawing.Size(197, 204);
-            this.userSwitch1.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
-            this.userSwitch1.SwitchStatusDescription = new string[] {
-        "Off",
-        "On"};
-            this.userSwitch1.TabIndex = 33;
-            // 
-            // userSwitch2
-            // 
-            this.userSwitch2.BackColor = System.Drawing.Color.Transparent;
-            this.userSwitch2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.userSwitch2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.userSwitch2.Location = new System.Drawing.Point(224, 12);
-            this.userSwitch2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.userSwitch2.Name = "userSwitch2";
-            this.userSwitch2.Size = new System.Drawing.Size(197, 204);
-            this.userSwitch2.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
-            this.userSwitch2.SwitchStatus = true;
-            this.userSwitch2.SwitchStatusDescription = new string[] {
-        "Off",
-        "On"};
-            this.userSwitch2.TabIndex = 34;
             // 
             // label6
             // 
@@ -367,6 +233,15 @@
             this.panel5.Size = new System.Drawing.Size(536, 270);
             this.panel5.TabIndex = 44;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(479, 239);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(32, 17);
+            this.label7.TabIndex = 45;
+            this.label7.Text = "随机";
+            // 
             // userVerticalProgress8
             // 
             this.userVerticalProgress8.BackColor = System.Drawing.SystemColors.Control;
@@ -378,15 +253,6 @@
             this.userVerticalProgress8.Size = new System.Drawing.Size(33, 216);
             this.userVerticalProgress8.TabIndex = 46;
             this.userVerticalProgress8.Value = 50;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(479, 239);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(32, 17);
-            this.label7.TabIndex = 45;
-            this.label7.Text = "随机";
             // 
             // userVerticalProgress7
             // 
@@ -471,6 +337,140 @@
             this.userVerticalProgress4.Size = new System.Drawing.Size(42, 216);
             this.userVerticalProgress4.TabIndex = 40;
             this.userVerticalProgress4.Value = 50;
+            // 
+            // userBottle1
+            // 
+            this.userBottle1.BackColor = System.Drawing.Color.Transparent;
+            this.userBottle1.BottleTag = "1#";
+            this.userBottle1.HeadTag = "1#";
+            this.userBottle1.IsOpen = true;
+            this.userBottle1.Location = new System.Drawing.Point(442, 17);
+            this.userBottle1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userBottle1.Name = "userBottle1";
+            this.userBottle1.Size = new System.Drawing.Size(45, 180);
+            this.userBottle1.TabIndex = 36;
+            this.userBottle1.Value = 20D;
+            // 
+            // userSwitch1
+            // 
+            this.userSwitch1.BackColor = System.Drawing.Color.Transparent;
+            this.userSwitch1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.userSwitch1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userSwitch1.Location = new System.Drawing.Point(34, 17);
+            this.userSwitch1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userSwitch1.Name = "userSwitch1";
+            this.userSwitch1.Size = new System.Drawing.Size(197, 204);
+            this.userSwitch1.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
+            this.userSwitch1.SwitchStatusDescription = new string[] {
+        "Off",
+        "On"};
+            this.userSwitch1.TabIndex = 33;
+            // 
+            // userSwitch2
+            // 
+            this.userSwitch2.BackColor = System.Drawing.Color.Transparent;
+            this.userSwitch2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.userSwitch2.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userSwitch2.Location = new System.Drawing.Point(224, 12);
+            this.userSwitch2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userSwitch2.Name = "userSwitch2";
+            this.userSwitch2.Size = new System.Drawing.Size(197, 204);
+            this.userSwitch2.SwitchForeground = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(36)))), ((int)(((byte)(36)))));
+            this.userSwitch2.SwitchStatus = true;
+            this.userSwitch2.SwitchStatusDescription = new string[] {
+        "Off",
+        "On"};
+            this.userSwitch2.TabIndex = 34;
+            // 
+            // userDrum1
+            // 
+            this.userDrum1.BackColor = System.Drawing.Color.Transparent;
+            this.userDrum1.BorderColor = System.Drawing.Color.Red;
+            this.userDrum1.DrumBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
+            this.userDrum1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userDrum1.Location = new System.Drawing.Point(26, 22);
+            this.userDrum1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userDrum1.Name = "userDrum1";
+            this.userDrum1.Size = new System.Drawing.Size(149, 223);
+            this.userDrum1.TabIndex = 35;
+            this.userDrum1.Text = "userDrum1";
+            // 
+            // userClock1
+            // 
+            this.userClock1.BackColor = System.Drawing.Color.Transparent;
+            this.userClock1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("userClock1.BackgroundImage")));
+            this.userClock1.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.userClock1.Location = new System.Drawing.Point(187, 3);
+            this.userClock1.Name = "userClock1";
+            this.userClock1.Size = new System.Drawing.Size(236, 259);
+            this.userClock1.TabIndex = 30;
+            // 
+            // userLantern3
+            // 
+            this.userLantern3.BackColor = System.Drawing.Color.Transparent;
+            this.userLantern3.LanternBackground = System.Drawing.Color.Tomato;
+            this.userLantern3.Location = new System.Drawing.Point(280, 18);
+            this.userLantern3.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.userLantern3.Name = "userLantern3";
+            this.userLantern3.Size = new System.Drawing.Size(143, 135);
+            this.userLantern3.TabIndex = 28;
+            // 
+            // userLantern1
+            // 
+            this.userLantern1.BackColor = System.Drawing.Color.Transparent;
+            this.userLantern1.Location = new System.Drawing.Point(3, 4);
+            this.userLantern1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userLantern1.Name = "userLantern1";
+            this.userLantern1.Size = new System.Drawing.Size(142, 152);
+            this.userLantern1.TabIndex = 25;
+            // 
+            // userLantern2
+            // 
+            this.userLantern2.BackColor = System.Drawing.Color.Transparent;
+            this.userLantern2.LanternBackground = System.Drawing.Color.Tomato;
+            this.userLantern2.Location = new System.Drawing.Point(165, 18);
+            this.userLantern2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userLantern2.Name = "userLantern2";
+            this.userLantern2.Size = new System.Drawing.Size(100, 101);
+            this.userLantern2.TabIndex = 26;
+            // 
+            // userButton1
+            // 
+            this.userButton1.BackColor = System.Drawing.Color.Transparent;
+            this.userButton1.CustomerInformation = "";
+            this.userButton1.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton1.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton1.Location = new System.Drawing.Point(15, 18);
+            this.userButton1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton1.Name = "userButton1";
+            this.userButton1.Size = new System.Drawing.Size(118, 39);
+            this.userButton1.TabIndex = 6;
+            // 
+            // userButton2
+            // 
+            this.userButton2.BackColor = System.Drawing.Color.Transparent;
+            this.userButton2.CustomerInformation = "";
+            this.userButton2.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton2.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton2.Location = new System.Drawing.Point(139, 18);
+            this.userButton2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton2.Name = "userButton2";
+            this.userButton2.Selected = true;
+            this.userButton2.Size = new System.Drawing.Size(131, 39);
+            this.userButton2.TabIndex = 7;
+            // 
+            // userButton3
+            // 
+            this.userButton3.BackColor = System.Drawing.Color.Transparent;
+            this.userButton3.CustomerInformation = "";
+            this.userButton3.EnableColor = System.Drawing.Color.FromArgb(((int)(((byte)(190)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.userButton3.Enabled = false;
+            this.userButton3.Font = new System.Drawing.Font("微软雅黑", 9F);
+            this.userButton3.Location = new System.Drawing.Point(276, 19);
+            this.userButton3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.userButton3.Name = "userButton3";
+            this.userButton3.Size = new System.Drawing.Size(131, 39);
+            this.userButton3.TabIndex = 8;
             // 
             // FormBasicControl
             // 

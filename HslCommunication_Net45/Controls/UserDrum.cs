@@ -39,6 +39,7 @@ namespace HslCommunication.Controls
         [Browsable(true)]
         [DefaultValue(typeof(Color), "Silver" )]
         [Category("外观")]
+        [Description( "获取或设置容器罐的背景色。" )]
         public Color DrumBackColor
         {
             get
@@ -60,6 +61,7 @@ namespace HslCommunication.Controls
         [Browsable( true )]
         [DefaultValue( typeof( Color ), "DimGray" )]
         [Category( "外观" )]
+        [Description( "获取或设置容器罐的边框色。" )]
         public Color BorderColor
         {
             get
@@ -83,6 +85,7 @@ namespace HslCommunication.Controls
         [EditorBrowsable( EditorBrowsableState.Always )]
         [Bindable( true )]
         [DesignerSerializationVisibility( DesignerSerializationVisibility.Visible )]
+        [Description("获取或设置在容器上显示的文本")]
         public override string Text
         {
             get { return this.text; }
@@ -99,6 +102,7 @@ namespace HslCommunication.Controls
         [Browsable(true)]
         [Category( "外观" )]
         [DefaultValue( typeof( Color ), "White" )]
+        [Description( "获取或设置文本的颜色" )]
         public override Color ForeColor
         {
             get => textColor;
@@ -118,6 +122,7 @@ namespace HslCommunication.Controls
         [Browsable( true )]
         [Category( "外观" )]
         [DefaultValue( typeof( Color ), "DarkGreen" )]
+        [Description( "获取或设置文本的背景色" )]
         public Color TextBackColor
         {
             get => textBackColor;
