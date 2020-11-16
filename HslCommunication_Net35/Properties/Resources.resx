@@ -117,84 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="qrcode_for_gh_319218678954_258" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\qrcode_for_gh_319218678954_258.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Textfile_818_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Textfile_818_16x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="abstr1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\abstr1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Activity_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Activity_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AddressViewer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\AddressViewer.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="asset_progressBar_24x24_on" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\asset_progressBar_24x24_on.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AudioRecording" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\AudioRecording.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="brackets_Square_16xMD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\brackets_Square_16xMD.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="usbcontroller" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\usbcontroller.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Class_489" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\imgaes\Class_489.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ClassIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\ClassIcon.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Cloud_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Cloud_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Copy_6524" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Copy_6524.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Delegate_8339" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Delegate_8339.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="docview_xaml_on_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\docview_xaml_on_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Enum_582" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\imgaes\Enum_582.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Event_594" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Event_594.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Event_594_exp" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Event_594_exp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="glasses_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\glasses_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="grid_Data_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\imgaes\grid_Data_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="lightningBolt_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\lightningBolt_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ClassIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\ClassIcon.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ListView_687" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\ListView_687.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Method_636" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Method_636.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Module_648" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Module_648.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="AddressViewer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\AddressViewer.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PropertyIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\imgaes\PropertyIcon.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Soundfile_461" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Soundfile_461.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Structure_507" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Structure_507.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="TabControl_707" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\TabControl_707.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Cloud_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Cloud_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Table_748" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\imgaes\Table_748.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -202,31 +151,89 @@
   <data name="Tag_7213" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\imgaes\Tag_7213.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Textfile_818_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\Textfile_818_16x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="asset_progressBar_24x24_on1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\asset_progressBar_24x24_on.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TreeView_713" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\TreeView_713.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="usbcontroller" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\usbcontroller.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="UseCaseDiagramFile_usecasediagram_13447_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\UseCaseDiagramFile_usecasediagram_13447_16x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="VirtualMachine" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\VirtualMachine.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="qrcode_for_gh_319218678954_258" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\qrcode_for_gh_319218678954_258.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="WebFormTemplate_11274_16x_color" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\imgaes\WebFormTemplate_11274_16x_color.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="VirtualMachine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\VirtualMachine.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Method_636" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Method_636.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="asset_progressBar_24x24_on" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\asset_progressBar_24x24_on.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="glasses_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\glasses_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="alipay" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\alipay.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Structure_507" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Structure_507.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Delegate_8339" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Delegate_8339.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="abstr1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\abstr1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="WindowsForm_817_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\imgaes\WindowsForm_817_16x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="asset_progressBar_24x24_on1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\imgaes\asset_progressBar_24x24_on.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="brackets_Square_16xMD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\brackets_Square_16xMD.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Event_594" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Event_594.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Copy_6524" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Copy_6524.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Activity_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Activity_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UseCaseDiagramFile_usecasediagram_13447_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\UseCaseDiagramFile_usecasediagram_13447_16x.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Module_648" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Module_648.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AudioRecording" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\AudioRecording.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Soundfile_461" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Soundfile_461.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="abstr11" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\imgaes\abstr11.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ListView_687" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\ListView_687.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TreeView_713" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\TreeView_713.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lightningBolt_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\lightningBolt_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Event_594_exp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\Event_594_exp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="docview_xaml_on_16x16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\docview_xaml_on_16x16.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TabControl_707" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\imgaes\TabControl_707.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="mm_facetoface_collect_qrcode_1525331158525" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\mm_facetoface_collect_qrcode_1525331158525.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

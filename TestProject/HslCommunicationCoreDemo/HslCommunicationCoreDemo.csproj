@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="HslCommunication">
+      <HintPath>..\..\HslCommunication_NetStandard\bin\Debug\netstandard2.0\HslCommunication.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

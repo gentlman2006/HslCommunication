@@ -79,12 +79,19 @@ namespace 软件自动更新
             ServerIp = "117.48.203.204",
             ServerPort = 17538,
         };
+        public static SystemUpdate Demo项目 = new SystemUpdate( )
+        {
+            SoftName = "HslCommunicationDemo",
+            SoftNameHead = "",
+            ServerIp = "118.24.36.220",
+            ServerPort = 18468,
+        };
     }
 
 
     public class Class1
     {
-        public static SystemUpdate CurrentSystem = SystemUpdate.CS项目基础模版;
+        public static SystemUpdate CurrentSystem = SystemUpdate.Demo项目;
     }
     
 

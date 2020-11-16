@@ -103,6 +103,16 @@ namespace HslCommunication.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        internal static System.Drawing.Bitmap alipay {
+            get {
+                object obj = ResourceManager.GetObject("alipay", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         internal static System.Drawing.Bitmap asset_progressBar_24x24_on {
             get {
                 object obj = ResourceManager.GetObject("asset_progressBar_24x24_on", resourceCulture);
@@ -276,6 +286,16 @@ namespace HslCommunication.Properties {
         internal static System.Drawing.Bitmap Method_636 {
             get {
                 object obj = ResourceManager.GetObject("Method_636", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap mm_facetoface_collect_qrcode_1525331158525 {
+            get {
+                object obj = ResourceManager.GetObject("mm_facetoface_collect_qrcode_1525331158525", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
